@@ -1,16 +1,16 @@
 package gift.wishlist.repository;
 
-import gift.wishlist.Wishlist;
+import gift.wishlist.WishlistEntity;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface WishlistRepository {
+@Repository
+public interface WishlistRepository extends JpaRepository<WishlistEntity, Long> {
 
-    Wishlist save(Wishlist wishlist);
+    List<WishlistEntity> findByMemberIdOrderByCreatedAtDesc(Long memberId);
 
-    List<Wishlist> findByMemberIdOrderByCreatedAtDesc(Long memberId);
-    
-    Optional<Wishlist> findByIdAndMemberId(Long id, Long memberId);
+    Optional<WishlistEntity> findByIdAndMemberId(Long id, Long memberId);
 
-    void remove(Long id);
 }

@@ -4,13 +4,13 @@
 
 ### step1 구현 기능
 
-- [ ] JDBC -> JPA
+- [x] JDBC -> JPA
     - [x] ItemEntity 설계
     - [x] ItemRepository JPA로 변환
     - [x] MemberEntity 설계
     - [x] MemberRepository JPA로 변환
     - [x] WishlistEntity 설계
-    - [ ] WishlistRepository JPA로 변환
+    - [x] WishlistRepository JPA로 변환
 - [ ] @DataJpaTest 사용해서 테스트 작성
 
 # spring-gift-wishlist

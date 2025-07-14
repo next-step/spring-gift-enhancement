@@ -3,7 +3,10 @@ package gift.wishlist.service;
 import gift.item.ItemEntity;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
-import gift.wishlist.Wishlist;
+import gift.member.MemberEntity;
+import gift.member.exception.MemberNotFoundException;
+import gift.member.repository.MemberRepository;
+import gift.wishlist.WishlistEntity;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.exception.WishlistNotFoundException;
@@ -11,53 +14,60 @@ import gift.wishlist.repository.WishlistRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ItemRepository itemRepository;
+    private final MemberRepository memberRepository;
 
-    public WishlistService(WishlistRepository wishlistRepository, ItemRepository itemRepository) {
+    public WishlistService(WishlistRepository wishlistRepository, ItemRepository itemRepository,
+        MemberRepository memberRepository) {
         this.wishlistRepository = wishlistRepository;
         this.itemRepository = itemRepository;
+        this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public WishlistResponseDto add(Long memberId, WishlistAddDto wishlistAddDto) {
+        MemberEntity memberEntity = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException(memberId));
+
         // 추가할 상품이 존재하는지 검증
         ItemEntity itemEntity = itemRepository.findById(wishlistAddDto.itemId())
             .orElseThrow(() -> new ItemNotFoundException(wishlistAddDto.itemId()));
 
-        Wishlist wishlist = new Wishlist(memberId, wishlistAddDto.itemId());
-        Wishlist savedWishlist = wishlistRepository.save(wishlist);
+        WishlistEntity wishlistEntity = new WishlistEntity(memberEntity, itemEntity);
+        WishlistEntity savedWishlistEntity = wishlistRepository.save(wishlistEntity);
 
         return new WishlistResponseDto(
-            savedWishlist.getId(),
-            savedWishlist.getMemberId(),
-            savedWishlist.getItemId(),
+            savedWishlistEntity.getId(),
+            memberEntity.getId(),
+            itemEntity.getId(),
             itemEntity.getName(),
             itemEntity.getPrice(),
             itemEntity.getImageUrl(),
-            savedWishlist.getCreatedAt()
+            savedWishlistEntity.getCreatedAt()
         );
     }
 
     public List<WishlistResponseDto> findAll(Long memberId) {
-        List<Wishlist> wishlists = wishlistRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
+        List<WishlistEntity> wishlistEntities =
+            wishlistRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
 
         List<WishlistResponseDto> wishlistResponseDtos = new ArrayList<>();
 
-        for (Wishlist wishlist : wishlists) {
-            ItemEntity itemEntity = itemRepository.findById(wishlist.getItemId())
-                .orElseThrow(() -> new ItemNotFoundException(wishlist.getItemId()));
+        for (WishlistEntity wishlistEntity : wishlistEntities) {
             WishlistResponseDto dto = new WishlistResponseDto(
-                wishlist.getId(),
-                wishlist.getMemberId(),
-                wishlist.getItemId(),
-                itemEntity.getName(),
-                itemEntity.getPrice(),
-                itemEntity.getImageUrl(),
-                wishlist.getCreatedAt()
+                wishlistEntity.getId(),
+                wishlistEntity.getMember().getId(),
+                wishlistEntity.getItem().getId(),
+                wishlistEntity.getItem().getName(),
+                wishlistEntity.getItem().getPrice(),
+                wishlistEntity.getItem().getImageUrl(),
+                wishlistEntity.getCreatedAt()
             );
             wishlistResponseDtos.add(dto);
         }
@@ -67,26 +77,24 @@ public class WishlistService {
     }
 
     public WishlistResponseDto findWishlist(Long wishlistId, long memberId) {
-        Wishlist wishlist = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
+        WishlistEntity wishlistEntity = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
             .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
 
-        ItemEntity itemEntity = itemRepository.findById(wishlist.getItemId())
-            .orElseThrow(() -> new ItemNotFoundException(wishlist.getItemId()));
-
         return new WishlistResponseDto(
-            wishlist.getId(),
-            wishlist.getMemberId(),
-            wishlist.getItemId(),
-            itemEntity.getName(),
-            itemEntity.getPrice(),
-            itemEntity.getImageUrl(),
-            wishlist.getCreatedAt()
+            wishlistEntity.getId(),
+            wishlistEntity.getMember().getId(),
+            wishlistEntity.getItem().getId(),
+            wishlistEntity.getItem().getName(),
+            wishlistEntity.getItem().getPrice(),
+            wishlistEntity.getItem().getImageUrl(),
+            wishlistEntity.getCreatedAt()
         );
     }
 
+    @Transactional
     public void deleteWishlist(Long wishlistId, Long memberId) {
-        Wishlist wishlist = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
+        WishlistEntity wishlistEntity = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
             .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
-        wishlistRepository.remove(wishlist.getId());
+        wishlistRepository.deleteById(wishlistEntity.getId());
     }
 }
