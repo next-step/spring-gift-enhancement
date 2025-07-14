@@ -1,3 +1,18 @@
+# spring-gift-enhancement
+
+## 구현 기능
+
+### step1 구현 기능
+
+- [ ] JDBC -> JPA
+    - [ ] ItemEntity 설계
+    - [ ] ItemRepository JPA로 변환
+    - [ ] MemberEntity 설계
+    - [ ] MemberRepository JPA로 변환
+    - [ ] WishlistEntity 설계
+    - [ ] WishlistRepository JPA로 변환
+- [ ] @DataJpaTest 사용해서 테스트 작성
+
 # spring-gift-wishlist
 
 ## 구현 기능
