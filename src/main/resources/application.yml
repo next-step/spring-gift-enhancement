@@ -5,7 +5,11 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
   h2:
     console:
       enabled: true
@@ -15,6 +19,9 @@ spring:
     username: sa
     password: ""
 
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: TRACE
 jwt:
   secret: kakaoTechCampus2025KNUFightingAzaAzaAza
   access-token-validity: 1800 # 단위: s
