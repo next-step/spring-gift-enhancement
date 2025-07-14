@@ -21,9 +21,9 @@
 + [X] 3 단계 : 위시리스트 구현 완료
 
 ## API 명세서
-
-- [상품 조회 API 명세서.md](document/%EC%83%81%ED%92%88%20%EC%A1%B0%ED%9A%8C%20API%20%EB%AA%85%EC%84%B8%EC%84%9C.md)
+- 
 - [사용자 API 명세서.md](document/%EC%82%AC%EC%9A%A9%EC%9E%90%20API%20%EB%AA%85%EC%84%B8%EC%84%9C.md)
+- [상품 조회 API 명세서.md](document/%EC%83%81%ED%92%88%20%EC%A1%B0%ED%9A%8C%20API%20%EB%AA%85%EC%84%B8%EC%84%9C.md)
 - [인증 API 명세서.md](document/%EC%9D%B8%EC%A6%9D%20API%20%EB%AA%85%EC%84%B8%EC%84%9C.md)
 
 ## 커밋 컨벤션
@@ -38,7 +38,7 @@
 | test     | 테스트 코드 추가/수정 |
 | chore    | 유지보수 작업      |
 
-### 커밋 메시지 작성 규칙(AngularJS 컨벤션 기반)
+### 커밋 메시지 작성 규칙(AngularJS 컨벤션 기반) 
 
 ```md
 <type>(<scope>): <subject>
