@@ -6,9 +6,12 @@ import gift.product.entity.Product;
 import gift.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -17,11 +20,17 @@ public class ProductService {
     }
 
     public ProductResponseDto addProduct(ProductRequestDto requestDto){
-        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl(), requestDto.isKakaoApprovedByMd());
-        Product savedProduct = productRepository.save(product);
-        return ProductResponseDto.from(savedProduct);
+        Product product = new Product(
+                requestDto.name(),
+                requestDto.price(),
+                requestDto.imageUrl(),
+                requestDto.isKakaoApprovedByMd()
+        );
+
+        return ProductResponseDto.from(productRepository.save(product));
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> getProducts(){
         return productRepository.findAll()
                 .stream()
@@ -29,6 +38,7 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ProductResponseDto getProduct(Long id){
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
@@ -37,20 +47,24 @@ public class ProductService {
     }
 
     public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-        Product productToUpdate = new Product(
-                id,
+        Product productToUpdate = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        productToUpdate.updateProduct(
                 requestDto.name(),
                 requestDto.price(),
                 requestDto.imageUrl(),
                 requestDto.isKakaoApprovedByMd()
         );
 
-        Product updatedProduct = productRepository.update(productToUpdate);
-
-        return ProductResponseDto.from(updatedProduct);
+        return ProductResponseDto.from(productToUpdate);
     }
 
     public void deleteProduct(Long id) {
+        if(!productRepository.existsById(id)){
+            throw new ProductNotFoundException(id);
+        }
+
         productRepository.deleteById(id);
     }
 }
