@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.repository.ProductRepository;
 import gift.repository.ProductRepositoryImpl;
 import gift.repository.WishRepository;
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ import org.springframework.stereotype.Service;
 public class WishService {
 
     private final WishRepository wishRepository;
-    private final ProductRepositoryImpl productRepositoryImpl;
+    private final ProductRepository productRepository;
 
-    public WishService(WishRepository wishRepository, ProductRepositoryImpl productRepositoryImpl) {
+    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
         this.wishRepository = wishRepository;
-        this.productRepositoryImpl = productRepositoryImpl;
+        this.productRepository = productRepository;
     }
 
     public void addWish(Long memberId, Long productId) {
@@ -39,7 +40,7 @@ public class WishService {
         List<Product> products = new ArrayList<>();
 
         for(Wish wish : wishlist) {
-            productRepositoryImpl.findById(wish.getProductId())
+            productRepository.findById(wish.getProductId())
                     .ifPresent(products::add);
         }
 
