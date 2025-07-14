@@ -8,7 +8,7 @@
     - [x] ItemEntity 설계
     - [x] ItemRepository JPA로 변환
     - [x] MemberEntity 설계
-    - [ ] MemberRepository JPA로 변환
+    - [x] MemberRepository JPA로 변환
     - [ ] WishlistEntity 설계
     - [ ] WishlistRepository JPA로 변환
 - [ ] @DataJpaTest 사용해서 테스트 작성
