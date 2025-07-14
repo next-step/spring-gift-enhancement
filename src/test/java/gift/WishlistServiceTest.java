@@ -90,7 +90,7 @@ public class WishlistServiceTest {
 
         Product p1 = new Product(10L, "일반상품", 1000L, "http://image1.url", false);
         Product p2 = new Product(20L, "카카오상품", 2000L, "http://image2.url", true);
-        given(productRepository.findAllByIdIn(List.of(10L, 20L)))
+        given(productRepository.findAllById(List.of(10L, 20L)))
                 .willReturn(List.of(p1, p2));
 
         List<WishResponseDto> dtos = wishlistService.getWishesByMemberId(1L);

@@ -5,3 +5,4 @@
 - [ ] Product 리팩토링
   - [x] Product를 JPA 엔티티로 변환
   - [x] ProductRepository를 Jdbc 기반에서 JPA 기반으로 변경 
+  - [x] ProductRepository에 의존하는 WishService 및 WishServiceTest 리팩토링

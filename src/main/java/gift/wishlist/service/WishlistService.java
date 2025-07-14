@@ -57,7 +57,7 @@ public class WishlistService {
 
         if(ids.isEmpty()) {return List.of();}
 
-        Map<Long, Product> productMap = productRepository.findAllByIdIn(ids)
+        Map<Long, Product> productMap = productRepository.findAllById(ids)
                 .stream()
                 .collect(Collectors.toMap(product -> product.getId(), product -> product));
 
