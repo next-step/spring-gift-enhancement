@@ -33,6 +33,10 @@ public class Member {
         this(null, memberRequestDto.email(), memberRequestDto.password());
     }
 
+    public Member(String email, String password) {
+        this(null, email, password);
+    }
+
     public Long getId() {
         return id;
     }
