@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-
     private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.of(
             rs.getString("email"),
             rs.getString("password")
     );
+
+    private final JdbcTemplate jdbcTemplate;
 
     public MemberRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
