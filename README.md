@@ -6,7 +6,7 @@
 
 - [ ] JDBC -> JPA
     - [x] ItemEntity 설계
-    - [ ] ItemRepository JPA로 변환
+    - [x] ItemRepository JPA로 변환
     - [ ] MemberEntity 설계
     - [ ] MemberRepository JPA로 변환
     - [ ] WishlistEntity 설계

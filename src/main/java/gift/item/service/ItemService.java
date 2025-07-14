@@ -1,6 +1,6 @@
 package gift.item.service;
 
-import gift.item.Item;
+import gift.item.ItemEntity;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
@@ -9,6 +9,7 @@ import gift.item.repository.ItemRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ItemService {
@@ -20,28 +21,28 @@ public class ItemService {
     }
 
     public ItemResponseDto findItem(Long itemId) {
-        Item item = itemRepository.findById(itemId)
+        ItemEntity itemEntity = itemRepository.findById(itemId)
             .orElseThrow(() -> new ItemNotFoundException(itemId));
 
         return new ItemResponseDto(
-            item.getId(),
-            item.getName(),
-            item.getPrice(),
-            item.getImageUrl()
+            itemEntity.getId(),
+            itemEntity.getName(),
+            itemEntity.getPrice(),
+            itemEntity.getImageUrl()
         );
     }
 
     public List<ItemResponseDto> findAll() {
-        List<Item> items = itemRepository.findAll();
+        List<ItemEntity> itemEntities = itemRepository.findAll();
 
         List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
 
-        for (Item item : items) {
+        for (ItemEntity itemEntity : itemEntities) {
             ItemResponseDto dto = new ItemResponseDto(
-                item.getId(),
-                item.getName(),
-                item.getPrice(),
-                item.getImageUrl()
+                itemEntity.getId(),
+                itemEntity.getName(),
+                itemEntity.getPrice(),
+                itemEntity.getImageUrl()
             );
             itemResponseDtos.add(dto);
         }
@@ -49,45 +50,48 @@ public class ItemService {
         return itemResponseDtos;
     }
 
+    @Transactional
     public ItemResponseDto createItem(ItemCreateDto itemCreateDto) {
-        Item newItem = new Item(
+        ItemEntity newItemEntity = new ItemEntity(
             itemCreateDto.name(),
             itemCreateDto.price(),
             itemCreateDto.imageUrl()
         );
 
-        Item savedItem = itemRepository.save(newItem);
+        ItemEntity savedItemEntity = itemRepository.save(newItemEntity);
 
         return new ItemResponseDto(
-            savedItem.getId(),
-            savedItem.getName(),
-            savedItem.getPrice(),
-            savedItem.getImageUrl()
+            savedItemEntity.getId(),
+            savedItemEntity.getName(),
+            savedItemEntity.getPrice(),
+            savedItemEntity.getImageUrl()
         );
     }
 
+    @Transactional
     public ItemResponseDto updateItem(Long itemId, ItemUpdateDto itemUpdateDto) {
-        Item oldItem = itemRepository.findById(itemId)
+        ItemEntity oldItemEntity = itemRepository.findById(itemId)
             .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        oldItem.setName(itemUpdateDto.name());
-        oldItem.setPrice(itemUpdateDto.price());
-        oldItem.setImageUrl(itemUpdateDto.imageUrl());
+        oldItemEntity.setName(itemUpdateDto.name());
+        oldItemEntity.setPrice(itemUpdateDto.price());
+        oldItemEntity.setImageUrl(itemUpdateDto.imageUrl());
 
-        Item updatedItem = itemRepository.update(oldItem);
+        ItemEntity updatedItemEntity = itemRepository.save(oldItemEntity);
 
         return new ItemResponseDto(
-            updatedItem.getId(),
-            updatedItem.getName(),
-            updatedItem.getPrice(),
-            updatedItem.getImageUrl()
+            updatedItemEntity.getId(),
+            updatedItemEntity.getName(),
+            updatedItemEntity.getPrice(),
+            updatedItemEntity.getImageUrl()
         );
     }
 
+    @Transactional
     public void deleteItem(Long itemId) {
-        Item item = itemRepository.findById(itemId)
+        ItemEntity itemEntity = itemRepository.findById(itemId)
             .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        itemRepository.remove(item.getId());
+        itemRepository.deleteById(itemEntity.getId());
     }
 }

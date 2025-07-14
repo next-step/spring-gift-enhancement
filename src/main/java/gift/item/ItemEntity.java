@@ -24,7 +24,8 @@ public class ItemEntity {
     @Column(name = "image_url", nullable = false, length = 255)
     private String imageUrl;
 
-    protected ItemEntity() {}
+    protected ItemEntity() {
+    }
 
     public ItemEntity(Long id, String name, Integer price, String imageUrl) {
         this.id = id;

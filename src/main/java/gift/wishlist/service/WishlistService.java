@@ -1,6 +1,6 @@
 package gift.wishlist.service;
 
-import gift.item.Item;
+import gift.item.ItemEntity;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
 import gift.wishlist.Wishlist;
@@ -25,7 +25,7 @@ public class WishlistService {
 
     public WishlistResponseDto add(Long memberId, WishlistAddDto wishlistAddDto) {
         // 추가할 상품이 존재하는지 검증
-        Item item = itemRepository.findById(wishlistAddDto.itemId())
+        ItemEntity itemEntity = itemRepository.findById(wishlistAddDto.itemId())
             .orElseThrow(() -> new ItemNotFoundException(wishlistAddDto.itemId()));
 
         Wishlist wishlist = new Wishlist(memberId, wishlistAddDto.itemId());
@@ -35,9 +35,9 @@ public class WishlistService {
             savedWishlist.getId(),
             savedWishlist.getMemberId(),
             savedWishlist.getItemId(),
-            item.getName(),
-            item.getPrice(),
-            item.getImageUrl(),
+            itemEntity.getName(),
+            itemEntity.getPrice(),
+            itemEntity.getImageUrl(),
             savedWishlist.getCreatedAt()
         );
     }
@@ -48,15 +48,15 @@ public class WishlistService {
         List<WishlistResponseDto> wishlistResponseDtos = new ArrayList<>();
 
         for (Wishlist wishlist : wishlists) {
-            Item item = itemRepository.findById(wishlist.getItemId())
+            ItemEntity itemEntity = itemRepository.findById(wishlist.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(wishlist.getItemId()));
             WishlistResponseDto dto = new WishlistResponseDto(
                 wishlist.getId(),
                 wishlist.getMemberId(),
                 wishlist.getItemId(),
-                item.getName(),
-                item.getPrice(),
-                item.getImageUrl(),
+                itemEntity.getName(),
+                itemEntity.getPrice(),
+                itemEntity.getImageUrl(),
                 wishlist.getCreatedAt()
             );
             wishlistResponseDtos.add(dto);
@@ -70,16 +70,16 @@ public class WishlistService {
         Wishlist wishlist = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
             .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
 
-        Item item = itemRepository.findById(wishlist.getItemId())
+        ItemEntity itemEntity = itemRepository.findById(wishlist.getItemId())
             .orElseThrow(() -> new ItemNotFoundException(wishlist.getItemId()));
 
         return new WishlistResponseDto(
             wishlist.getId(),
             wishlist.getMemberId(),
             wishlist.getItemId(),
-            item.getName(),
-            item.getPrice(),
-            item.getImageUrl(),
+            itemEntity.getName(),
+            itemEntity.getPrice(),
+            itemEntity.getImageUrl(),
             wishlist.getCreatedAt()
         );
     }
