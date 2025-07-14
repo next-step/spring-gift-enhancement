@@ -1,5 +1,6 @@
 package gift.repository;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import gift.entity.Wish;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,18 @@ public class WishRepository {
 
     public List<Wish> findUserWishes(Long userId) {
         return jdbcTemplate.query("SELECT id, user_id, product_id, quantity FROM wishes WHERE user_id = ?", wishRowMapper(), userId);
+    }
+
+    public void checkProductDuplicate(Long userId, Wish wish) {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM wishes WHERE user_id = ? AND product_id = ?",
+                Integer.class,
+                userId,
+                wish.productId()
+        );
+        if (count > 0) {
+            throw new DuplicateRequestException("중복된 상품 추가입니다.");
+        }
     }
 
     public Wish addWish(Long userId, Wish wish) {

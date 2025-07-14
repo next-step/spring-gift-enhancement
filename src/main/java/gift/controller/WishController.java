@@ -1,7 +1,7 @@
 package gift.controller;
 
 import gift.annotation.UserValid;
-import gift.dto.UserInfoRequestDto;
+import gift.dto.UserInfoDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.service.WishService;
@@ -21,26 +21,25 @@ public class WishController {
         this.wishService = wishService;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<WishResponseDto>> findUserWishes(@UserValid UserInfoRequestDto userInfoRequestDto) {
-        System.out.println(userInfoRequestDto.id());
-        return ResponseEntity.ok(wishService.findUserWishes(userInfoRequestDto));
+    @GetMapping()
+    public ResponseEntity<List<WishResponseDto>> findUserWishes(@UserValid UserInfoDto userInfoDto) {
+        return ResponseEntity.ok(wishService.findUserWishes(userInfoDto));
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<WishResponseDto> addWish(@UserValid UserInfoRequestDto userInfoRequestDto, @RequestBody WishRequestDto wishRequestDto) {
-        return new ResponseEntity<>(wishService.addWish(userInfoRequestDto, wishRequestDto), HttpStatus.CREATED);
+    @PostMapping()
+    public ResponseEntity<WishResponseDto> addWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
+        return new ResponseEntity<>(wishService.addWish(userInfoDto, wishRequestDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/patch")
-    public ResponseEntity<Void> updateWish(@UserValid UserInfoRequestDto userInfoRequestDto, @RequestBody WishRequestDto wishrequestDto) {
-        wishService.updateWish(userInfoRequestDto, wishrequestDto);
+    @PatchMapping()
+    public ResponseEntity<Void> updateWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishrequestDto) {
+        wishService.updateWish(userInfoDto, wishrequestDto);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteWish(@UserValid UserInfoRequestDto userInfoRequestDto, @RequestBody WishRequestDto wishRequestDto) {
-        wishService.deleteWish(userInfoRequestDto, wishRequestDto);
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
+        wishService.deleteWish(userInfoDto, wishRequestDto);
         return ResponseEntity.noContent().build();
     }
 }

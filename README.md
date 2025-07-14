@@ -41,3 +41,14 @@ base64로 인코딩하던 이메일과 비밀번호를 이메일 : AES, 비밀�
 5. DB, Repository 레이어 정의 및 Dto 재정의
 6. 토큰 검증 Resolver 및 커스텀 어노테이션 추가, 이에 따른 커스텀 예외 추가
 7. 토큰 검증 어노테이션 이름 변경, DB, 로그인 기능 버그(유저 데이터를 못 불러옴) 해결
+8. 코드 피드백 반영
+
+WishController Restful하도록 URL 변경
+
+UserInfoRequestDto → UserInfoDto로 이름 변경 (혼동 방지)
+
+AuthService에서 User 관련 로직 UserService로 분리
+
+위시리스트 상품 개수 수정 안되는 버그 수정
+
+위시리스트에 같은 상품 추가 못하도록 검증하는 로직 추가

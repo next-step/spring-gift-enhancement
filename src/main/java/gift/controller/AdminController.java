@@ -5,6 +5,7 @@ import gift.dto.ProductResponseDto;
 import gift.dto.UserRequestDto;
 import gift.dto.UserResponseDto;
 import gift.service.AuthService;
+import gift.service.UserService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -16,11 +17,13 @@ import org.springframework.ui.Model;
 public class AdminController {
     // 의존성 고정하여 안전하게 유지
     private final ProductService productService;
+    private final UserService userService;
     private final AuthService authService;
 
     // 의존성 주입
-    private AdminController(ProductService productService, AuthService authService) {
+    private AdminController(ProductService productService, UserService userService, AuthService authService) {
         this.productService = productService;
+        this.userService = userService;
         this.authService = authService;
     }
 
@@ -103,7 +106,7 @@ public class AdminController {
      */
     @GetMapping("/users")
     public String showUsersList(Model model) {
-        model.addAttribute("users", authService.findAllUsers());
+        model.addAttribute("users", userService.findAllUsers());
         return "users_list";
     }
 
@@ -124,7 +127,7 @@ public class AdminController {
      */
     @GetMapping("/users/patch/{id}")
     public String showPatchUser(@PathVariable Long id, Model model) {
-        UserResponseDto responseDto = authService.findUserById(id);
+        UserResponseDto responseDto = userService.findUserById(id);
         model.addAttribute("user", responseDto);
         return "users_patch";
     }
@@ -136,7 +139,7 @@ public class AdminController {
      */
     @PostMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
-        authService.deleteUser(id);
+        userService.deleteUser(id);
         return "redirect:/admin/users"; // 목록으로 리다이렉트
     }
 
@@ -159,7 +162,7 @@ public class AdminController {
      */
     @PostMapping("/users/patch/{id}")
     public String patchUser(@PathVariable Long id, @Valid @ModelAttribute UserRequestDto requestDto) {
-        authService.updateUser(id, requestDto);
+        userService.updateUser(id, requestDto);
         return "redirect:/admin/users";
     }
 

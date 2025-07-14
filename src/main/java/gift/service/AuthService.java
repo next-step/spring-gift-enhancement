@@ -15,8 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
 import java.util.HexFormat;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -122,8 +120,6 @@ public class AuthService {
             throw new LoginFailedException();
         }
 
-        System.out.println(user);
-
         // JWT 생성 후 반환
         return new TokenResponseDto(Jwts.builder()
                 .subject(user.email())
@@ -131,66 +127,5 @@ public class AuthService {
                 .claim("role", user.role())
                 .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes()))
                 .compact());
-    }
-
-    public List<UserResponseDto> findAllUsers(){
-        return userRepository.findAllUsers().stream()
-                .map(user -> {
-                    try {
-                        return new UserResponseDto(
-                                user.id(),
-                                decryptAES(user.email()),
-                                user.password(),
-                                user.createdDate()
-                        );
-                    } catch (Exception e) {
-                        throw new DecryptFailedException();
-                    }
-                })
-                .collect(Collectors.toList());
-    }
-
-    public UserResponseDto findUserById(Long id) {
-        User user = userRepository.findUserById(id);
-        String email;
-
-        // email 복호화
-        try {
-            email = decryptAES(user.email());
-        } catch (Exception e) {
-            throw new DecryptFailedException();
-        }
-
-        return new UserResponseDto(user.id(), email, user.password(), user.createdDate());
-    }
-
-    public void deleteUser(Long id){
-        boolean flag = userRepository.deleteUser(id);
-        if(!flag) {
-            throw new ProductNotFoundException(id);
-        }
-    }
-
-    public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto){
-
-        User user;
-
-        try {
-            user = new User(
-                    encryptAES(userRequestDto.email()),
-                    encryptSHA256(userRequestDto.password()));
-        }
-        catch (Exception e) {throw new EncryptFailedException();
-        }
-
-        boolean flag = userRepository.updateUser(id, user);
-
-        // 수정됐는지 검증
-        if(!flag) {
-            throw new UserNotFoundException(id);
-        }
-
-        user = userRepository.findUserById(id);
-        return new UserResponseDto(user);
     }
 }

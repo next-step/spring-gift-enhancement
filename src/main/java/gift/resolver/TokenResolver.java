@@ -1,7 +1,7 @@
 package gift.resolver;
 
 import gift.annotation.UserValid;
-import gift.dto.UserInfoRequestDto;
+import gift.dto.UserInfoDto;
 import gift.exception.TokenUnauthorizedException;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,12 +15,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+import javax.crypto.SecretKey;
+
 @Component
 public class TokenResolver implements HandlerMethodArgumentResolver {
-    private final String jwtKey;
+    private final SecretKey jwtKey;
 
     public TokenResolver(@Value("${jwt_key}") String jwtKey) {
-        this.jwtKey = jwtKey;
+        this.jwtKey = Keys.hmacShaKeyFor(jwtKey.getBytes());
     }
 
     @Override
@@ -43,7 +45,7 @@ public class TokenResolver implements HandlerMethodArgumentResolver {
         Claims claims;
         try {
             claims = Jwts.parser()
-                .setSigningKey(Keys.hmacShaKeyFor(jwtKey.getBytes()))
+                .setSigningKey(jwtKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -51,6 +53,6 @@ public class TokenResolver implements HandlerMethodArgumentResolver {
             throw new TokenUnauthorizedException("유효하지 않은 JWT 입니다.");
         }
 
-        return new UserInfoRequestDto(claims.get("id", Long.class), claims.get("role", String.class));
+        return new UserInfoDto(claims.get("id", Long.class), claims.get("role", String.class));
     }
 }

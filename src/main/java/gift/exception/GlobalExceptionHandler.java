@@ -1,5 +1,6 @@
 package gift.exception;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -34,6 +35,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(IllegalArgumentException e) { return e.getMessage(); }
+    @ExceptionHandler(DuplicateRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(DuplicateRequestException e) { return e.getMessage(); }
 
     // CONFLICT 응답하는 예외처리 핸들러
     @ExceptionHandler(DuplicateKeyException.class)
