@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 public class MemberService {
 
@@ -35,10 +36,11 @@ public class MemberService {
                 });
 
         String encodedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
-        Member member = new Member(request.email(), encodedPassword, "USER");
-        memberRepository.save(member);
+        String role = memberRepository.count() == 0 ? "ADMIN" : "USER";
+        Member member = new Member(request.email(), encodedPassword, role);
 
-        String token = jwtUtil.generateToken(member);
+        Member savedMember = memberRepository.save(member);
+        String token = jwtUtil.generateToken(savedMember);
         return new LoginResponse(token);
     }
 
@@ -54,38 +56,41 @@ public class MemberService {
         return new LoginResponse(token);
     }
 
+    @Transactional(readOnly = true)
+    public List<MemberResponse> findAllMembers() {
+        return memberRepository.findAll().stream()
+                .map(member -> new MemberResponse(member.getId(), member.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .map(member -> new MemberResponse(member.getId(), member.getEmail()))
+                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
+    }
+
+    @Transactional
     public void updateMember(Long id, MemberRequest request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
 
-        if (!member.getEmail().equals(request.email())) {
-            memberRepository.findByEmail(request.email())
-                    .ifPresent(m -> {
-                        throw new MemberAlreadyExistsException("이미 사용 중인 이메일입니다.");
-                    });
+        String newEmail = request.email();
+        if (newEmail != null && !newEmail.isBlank() && !newEmail.equals(member.getEmail())) {
+            memberRepository.findByEmail(newEmail).ifPresent(m -> {
+                throw new MemberAlreadyExistsException("이미 사용 중인 이메일입니다.");
+            });
+            member.setEmail(newEmail);
         }
 
-        String password = request.password().isBlank() ? member.getPassword() : BCrypt.hashpw(request.password(), BCrypt.gensalt());
-
-        Member updatedMember = new Member(id, request.email(), password, member.getRole());
-        memberRepository.update(updatedMember);
+        String newPassword = request.password();
+        if (newPassword != null && !newPassword.isBlank()) {
+            member.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+        }
     }
 
+    @Transactional
     public void deleteMember(Long id) {
-        memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
         memberRepository.deleteById(id);
-    }
-
-    public List<MemberResponse> findAllMembers() {
-        return memberRepository.findAll().stream()
-                .map(MemberResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    public MemberResponse findMemberById(Long id) {
-        return memberRepository.findById(id)
-                .map(MemberResponse::from)
-                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
     }
 }
