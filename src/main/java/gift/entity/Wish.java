@@ -34,4 +34,12 @@ public class Wish {
     public Long getId() {
         return id;
     }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
 }

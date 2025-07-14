@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
@@ -22,6 +23,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto) {
         Product product = new Product(
                 productRequestDto.name(),
@@ -29,7 +31,7 @@ public class ProductService {
                 productRequestDto.imageUrl()
         );
 
-        Product saveProduct = productRepository.addProduct(product);
+        Product saveProduct = productRepository.save(product);
         return new ProductResponseDto(
                 saveProduct.getId(),
                 saveProduct.getName(),
@@ -38,14 +40,21 @@ public class ProductService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> findAllProduct() {
-        return productRepository.findAllProduct().stream()
-            .map(p -> new ProductResponseDto(p.getId(), p.getName(), p.getPrice(), p.getImageUrl()))
+        return productRepository.findAll().stream()
+            .map(p -> new ProductResponseDto(
+                    p.getId(),
+                    p.getName(),
+                    p.getPrice(),
+                    p.getImageUrl()
+            ))
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepository.findProductById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 id 입니다."));
 
         return new ProductResponseDto(
@@ -56,26 +65,27 @@ public class ProductService {
         );
     }
 
+    @Transactional
     public ProductResponseDto updateProduct(UpdateProductRequestDto productRequestDto) {
-        Product product = productRepository.findProductById(productRequestDto.id())
+        Product product = productRepository.findById(productRequestDto.id())
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 id 입니다."));
 
         product.updateProduct(productRequestDto.name(), productRequestDto.price(), productRequestDto.imageUrl());
-        Product updateProduct = productRepository.updateProduct(product);
 
         return new ProductResponseDto(
-            updateProduct.getId(),
-            updateProduct.getName(),
-            updateProduct.getPrice(),
-            updateProduct.getImageUrl()
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
         );
     }
 
 
     public void deleteProduct(Long id) {
-        Product product = productRepository.findProductById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 id 입니다."));
+        if(!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("존재하지 않는 id 입니다.");
+        }
 
-        productRepository.deleteProduct(id);
+        productRepository.deleteById(id);
     }
 }
