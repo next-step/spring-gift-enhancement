@@ -5,7 +5,7 @@
 ### step1 구현 기능
 
 - [ ] JDBC -> JPA
-    - [ ] ItemEntity 설계
+    - [x] ItemEntity 설계
     - [ ] ItemRepository JPA로 변환
     - [ ] MemberEntity 설계
     - [ ] MemberRepository JPA로 변환
