@@ -11,7 +11,7 @@
     - [x] MemberRepository JPA로 변환
     - [x] WishlistEntity 설계
     - [x] WishlistRepository JPA로 변환
-- [ ] @DataJpaTest 사용해서 테스트 작성
+- [x] @DataJpaTest 사용해서 테스트 작성
 
 # spring-gift-wishlist
 
