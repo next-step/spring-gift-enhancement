@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class WishRestControllerTest {
+public class WishRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -175,6 +175,4 @@ class WishRestControllerTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
-
-
 }
