@@ -39,7 +39,7 @@ public class WishService {
                 .map(Wish::getProductId)
                 .toList();
 
-        return productRepository.findAllByIdIn(productIds).stream()
+        return productRepository.findAllById(productIds).stream()
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
     }
