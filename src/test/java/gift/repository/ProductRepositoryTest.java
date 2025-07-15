@@ -23,7 +23,7 @@ public class ProductRepositoryTest {
         assertThat(product.getId()).isNull();
 
         // 저장 후 잘 저장됐는지 검증(id 존재, 이름 일치 확인)
-        Product actual = (Product)products.save(product);
+        Product actual = products.save(product);
         assertThat(actual.getId()).isNotNull();
         assertThat(actual.getName()).isEqualTo("감자");
     }
