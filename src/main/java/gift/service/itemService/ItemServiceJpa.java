@@ -33,7 +33,8 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     public void delete(String name) {
-
+        Item targetItem = itemRepository.findByName(name);
+        itemRepository.delete(targetItem);
     }
 
     @Override
