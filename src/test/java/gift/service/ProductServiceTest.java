@@ -55,7 +55,7 @@ class ProductServiceTest {
 
         assertThat(update.getId()).isEqualTo(product.getId());
         assertThat(update.getName()).isEqualTo("칫솔2");
-        assertThat(product.getImageUrl()).isEqualTo("image2");
+        assertThat(update.getImageUrl()).isEqualTo("image2");
         assertThat(update.getPrice()).isEqualTo(30000);
         assertThat(update.getQuantity()).isEqualTo(111);
     }
