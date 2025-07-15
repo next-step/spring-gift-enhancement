@@ -18,7 +18,7 @@ public class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @Test
-    @DisplayName("상품을 저장한다")
+    @DisplayName("멤버를 저장한다")
     void save_test() {
         Member test = MemberFixture.createMember2();
         Member actual=memberRepository.save(test);
@@ -29,7 +29,7 @@ public class MemberRepositoryTest {
 
 
     @Test
-    @DisplayName("ID값으로 상품을 찾는다")
+    @DisplayName("ID값으로 멤버을 찾는다")
     void findById_test() {
         Member test = memberRepository.save(MemberFixture.createMember2());
         Long id = test.getId();
@@ -44,7 +44,7 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("Email값으로 상품을 찾는다")
+    @DisplayName("Email값으로 멤버을 찾는다")
     void findByEmail_test() {
         Member test = memberRepository.save(MemberFixture.createMember2());
         String email = test.getEmail();

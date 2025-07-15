@@ -1,50 +1,68 @@
 package gift.entity;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Wish {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long memberId;
-    private Long productId;
+
+    @ManyToOne()
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+
+    @ManyToOne()
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
     private int quantity;
-
-
-    public Wish(Long id, Long memberId, Long productId, int quantity) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
 
     public Wish() {
     }
 
+    public Wish(Member member, Product product, int quantity) {
+        this.member = member;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+
+    public Wish(Long id, Member member, Product product, int quantity) {
+        this.id = id;
+        this.member = member;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+
+
     public Long getId() {
         return id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public void setQuantity(int quantity) {
