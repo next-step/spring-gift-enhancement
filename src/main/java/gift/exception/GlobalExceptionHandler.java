@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Void> handleProductNotFound(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ErrorResponseDto> handleProductNotFound(ProductNotFoundException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
     @ExceptionHandler(OperationFailedException.class)
@@ -37,8 +42,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<Void> handleMemberNotFound(MemberNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND.value(),
+                "NotFound",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
     @ExceptionHandler(InvalidMemberException.class)
@@ -72,7 +82,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(WishlistItemNotFoundException.class)
-    public ResponseEntity<Void> handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ErrorResponseDto> handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND.value(),
+                "NotFound",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 }
