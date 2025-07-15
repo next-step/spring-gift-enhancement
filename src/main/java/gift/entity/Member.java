@@ -1,16 +1,34 @@
 package gift.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "member")
 public class Member {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    public Member(Long id, String email, String password, RoleType role) {
-        this.id = id;
+    protected Member() {}
+
+    public Member(String email, String password, RoleType role) {
         this.email = email;
         this.password = password;
+        this.role = role;
+    }
+
+    public void changeRole(RoleType role) {
         this.role = role;
     }
 
