@@ -1,9 +1,7 @@
 package gift.entity;
 
-import gift.dto.MemberResponseDto;
-import gift.dto.MemberUpdateRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.dto.ProductUpdateRequestDto;
+import gift.member.dto.MemberResponseDto;
+import gift.member.dto.MemberUpdateRequestDto;
 
 public record Member(Long id, String email, String password, String name, String role){
     public MemberResponseDto toMemberResponseDto(){

@@ -1,8 +1,7 @@
 package gift.entity;
 
-import gift.dto.ProductAddRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.dto.ProductUpdateRequestDto;
+import gift.product.dto.ProductResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
 
 public record Product(Long id, String name, Long price, String url){
     public ProductResponseDto toProductResponseDto(){
