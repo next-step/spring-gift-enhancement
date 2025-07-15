@@ -39,7 +39,7 @@ public class WishlistController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/{itemId}")
+    @PatchMapping("/{itemId}")
     public ResponseEntity<Void> updateWishlistItemById(
             @PathVariable Long itemId,
             @RequestParam Long quantity
