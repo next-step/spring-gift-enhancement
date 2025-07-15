@@ -62,4 +62,14 @@ public class WishlistRepositoryImpl implements WishlistRepository {
         return result;
     }
 
+    @Override
+    public Optional<WishlistItem> findProductInMemberById(Long memberId, Long productId) {
+        Optional<WishlistItem> result = jdbcClient.sql("select * from wishlist where member_id = :memberId and product_id = :productId")
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .query(WishlistItem.class)
+                .optional();
+        return result;
+    }
+
 }
