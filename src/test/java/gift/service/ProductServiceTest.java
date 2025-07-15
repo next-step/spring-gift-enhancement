@@ -9,8 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Transactional
 class ProductServiceTest {
 
     @Autowired
@@ -29,20 +27,21 @@ class ProductServiceTest {
 
     @BeforeEach
     void before() {
-        CreateProductRequest createProductRequest = new CreateProductRequest("칫솔", 10000, 12);
+        CreateProductRequest createProductRequest = new CreateProductRequest("칫솔", "image", 10000, 12);
         product = productService.saveProduct(createProductRequest);
     }
 
     @Test
     @DisplayName("사용자는 상품을 저장할 수 있다.")
     void test1() {
-        CreateProductRequest createProductRequest = new CreateProductRequest("칫솔", 10000, 12);
+        CreateProductRequest createProductRequest = new CreateProductRequest("칫솔", "image", 10000, 12);
 
         Product product = productService.saveProduct(createProductRequest);
 
         assertThat(product).isNotNull();
         assertThat(product.getId()).isNotNull();
         assertThat(product.getName()).isEqualTo("칫솔");
+        assertThat(product.getImageUrl()).isEqualTo("image");
         assertThat(product.getPrice()).isEqualTo(10000);
         assertThat(product.getQuantity()).isEqualTo(12);
 
@@ -51,11 +50,12 @@ class ProductServiceTest {
     @Test
     @DisplayName("사용자는 상품을 수정할 수 있다.")
     void test2() {
-        UpdateProductRequest updateProductRequest = new UpdateProductRequest("칫솔2", 30000, 111);
+        UpdateProductRequest updateProductRequest = new UpdateProductRequest("칫솔2", "image2", 30000, 111);
         Product update = productService.updateProduct(product.getId(), updateProductRequest);
 
         assertThat(update.getId()).isEqualTo(product.getId());
         assertThat(update.getName()).isEqualTo("칫솔2");
+        assertThat(product.getImageUrl()).isEqualTo("image2");
         assertThat(update.getPrice()).isEqualTo(30000);
         assertThat(update.getQuantity()).isEqualTo(111);
     }
@@ -63,7 +63,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("사용자는 상품 목록을 조회할 수 있다.")
     void test3() {
-        CreateProductRequest createProductRequest = new CreateProductRequest("칫솔", 10000, 12);
+        CreateProductRequest createProductRequest = new CreateProductRequest("칫솔", "image", 10000, 12);
         productService.saveProduct(createProductRequest);
 
         //beforeEach에서 생성한 것 까지 총 2건의 데이터 있음
@@ -79,6 +79,7 @@ class ProductServiceTest {
 
         assertThat(getProduct.getId()).isEqualTo(product.getId());
         assertThat(getProduct.getName()).isEqualTo("칫솔");
+        assertThat(getProduct.getImageUrl()).isEqualTo("image");
         assertThat(getProduct.getPrice()).isEqualTo(10000);
         assertThat(getProduct.getQuantity()).isEqualTo(12);
     }

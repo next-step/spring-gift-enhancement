@@ -21,22 +21,19 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity;
 
-
-    public Product(String name, Integer price, Integer quantity) {
+    public Product(String name, String imageUrl, Integer price, Integer quantity) {
         this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-    }
-
-    public Product(Long id, String name, Integer price, Integer quantity) {
-        this.id = id;
-        this.name = name;
+        this.imageUrl = imageUrl;
         this.price = price;
         this.quantity = quantity;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getName() {
@@ -51,8 +48,9 @@ public class Product {
         return quantity;
     }
 
-    public void update(String name, Integer price, Integer quantity) {
+    public void update(String name, String imageUrl, Integer price, Integer quantity) {
         this.name = name;
+        this.imageUrl = imageUrl;
         this.price = price;
         this.quantity = quantity;
     }

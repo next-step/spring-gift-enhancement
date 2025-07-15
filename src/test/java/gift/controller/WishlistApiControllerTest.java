@@ -19,20 +19,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Transactional
 class WishlistApiControllerTest {
 
     @Autowired
@@ -59,7 +55,7 @@ class WishlistApiControllerTest {
         user = userService.saveUser(new CreateUserRequest("tkddnr@thanks.com", "1234"));
         accessToken = "Bearer " + userService.login(new LoginRequest("tkddnr@thanks.com", "1234")).accessToken();
 
-        product = productService.saveProduct(new CreateProductRequest("연필", 10000, 100));
+        product = productService.saveProduct(new CreateProductRequest("연필", "image", 10000, 100));
     }
 
     @Test
@@ -109,7 +105,7 @@ class WishlistApiControllerTest {
     @DisplayName("위시리스트 목록을 조회할 수 있다.")
     void test4() throws Exception {
 
-        Product product2 = productService.saveProduct(new CreateProductRequest("가방", 30000, 10));
+        Product product2 = productService.saveProduct(new CreateProductRequest("가방", "image", 30000, 10));
         wishlistService.saveWishlist(user.getId(), new CreateWishlistRequest(product.getId()));
         wishlistService.saveWishlist(user.getId(), new CreateWishlistRequest(product2.getId()));
 

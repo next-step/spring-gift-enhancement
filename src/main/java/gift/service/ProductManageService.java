@@ -28,7 +28,7 @@ public class ProductManageService {
     }
 
     public Product saveProduct(CreateProductRequest request) {
-        Product product = new Product(request.name(), request.price(), request.quantity());
+        Product product = new Product(request.name(), request.imageUrl(), request.price(), request.quantity());
         return productRepository.save(product);
     }
 
@@ -48,7 +48,7 @@ public class ProductManageService {
 
     public Product updateProduct(Long id, UpdateProductRequest request) {
         Product product = getById(id);
-        product.update(request.name(), request.price(), request.quantity());
+        product.update(request.name(),  request.imageUrl(), request.price(), request.quantity());
         return product;
     }
 }

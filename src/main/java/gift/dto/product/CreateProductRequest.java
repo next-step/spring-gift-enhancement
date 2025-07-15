@@ -8,6 +8,9 @@ public record CreateProductRequest(
         @Pattern(regexp = "^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣()\\[\\]+\\-&/_\\s]*$", message = "특수문자는 ( ), [ ], +, -, &, /, _ 만 허용됩니다.")
         String name,
 
+        @NotNull
+        String imageUrl,
+
         @NotNull(message = "가격은 필수 입력 값입니다.")
         @Min(value = 0, message = "가격은 0 이상이어야 합니다.")
         @Max(value = 100_000_000, message = "가격은 1억원 이하여야 합니다.")
@@ -19,7 +22,7 @@ public record CreateProductRequest(
         Integer quantity
 ) {
 
-    private static final CreateProductRequest EMPTY = new CreateProductRequest(null, null, null);
+    private static final CreateProductRequest EMPTY = new CreateProductRequest(null, null, null, null);
 
     public static CreateProductRequest empty() {
         return EMPTY;
