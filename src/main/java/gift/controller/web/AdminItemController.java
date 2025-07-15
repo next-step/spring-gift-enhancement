@@ -84,7 +84,7 @@ public class AdminItemController {
     }
 
     @Authenticated
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PostMapping("/{id}/update")
     public String updateItem(
         @PathVariable("id") Long id,
         @Valid @ModelAttribute("item") ItemRequest itemRequest,
@@ -101,12 +101,13 @@ public class AdminItemController {
     }
 
     @Authenticated
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @PostMapping("/{id}/delete")
     public String deleteItem(
         @PathVariable("id") Long id,
+        @Login Member loginMember,
         RedirectAttributes redirectAttributes
     ) {
-        itemService.deleteItem(id);
+        itemService.deleteItem(id, loginMember);
         redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 삭제되었습니다!");
         return "redirect:/admin/items";
     }

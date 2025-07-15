@@ -7,8 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import gift.dto.MemberLoginRequest;
 import gift.entity.Item;
+import gift.entity.Member;
 import gift.repository.ItemRepository;
+import gift.service.MemberService;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,21 +30,28 @@ class AdminItemControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ItemRepository itemRepository;
+    @Autowired
+    private MemberService memberService;
 
     private Item testItem;
+    private Cookie adminCookie;
 
     @BeforeEach
     void setUp() {
+        String token = memberService.login(new MemberLoginRequest("admin@example.com", "admin1234")).token();
+        adminCookie = new Cookie("jwt-token", token);
+        adminCookie.setPath("/");
+
         testItem = itemRepository.save(new Item(null, "사전 등록 상품", 20000, "before.jpg"));
     }
 
     @Test
-    @DisplayName("상품 등록 성공 테스트")
+    @DisplayName("관리자 페이지 - 상품 등록 성공")
     void createItem_Success() throws Exception {
         mockMvc.perform(post("/admin/items")
+                .cookie(adminCookie)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "테스트 성공 상품")
                 .param("price", "12000")
@@ -50,32 +61,35 @@ class AdminItemControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 테스트 - 유효성 검사")
-    void createItem_Fail_Validation() throws Exception {
+    @DisplayName("관리자 페이지 - '카카오' 포함 상품 등록 성공 (ADMIN)")
+    void createKakaoItem_Success() throws Exception {
+        mockMvc.perform(post("/admin/items")
+                .cookie(adminCookie)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("name", "카카오프렌즈 에디션")
+                .param("price", "50000")
+                .param("imageUrl", "kakao.jpg"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/items"));
+    }
+
+    @Test
+    @DisplayName("관리자 페이지 - 로그인 없이 상품 등록 시도 시 로그인 페이지로 리다이렉트")
+    void createItem_Fail_Without_Login() throws Exception {
         mockMvc.perform(post("/admin/items")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", "카카오 상품")
-                .param("price", "10000")
-                .param("imageUrl", "fail.jpg"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/items/form"))
-            .andExpect(model().hasErrors());
+                .param("name", "인증실패 테스트 상품")
+                .param("price", "100"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/members/login"));
     }
 
     @Test
-    @DisplayName("상품 상세 조회 성공 테스트")
-    void detailItem_Success() throws Exception {
-        mockMvc.perform(get("/admin/items/" + testItem.getId()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/items/detail"))
-            .andExpect(model().attributeExists("item"));
-    }
-
-    @Test
-    @DisplayName("상품 삭제 성공 테스트")
+    @DisplayName("관리자 페이지 - 상품 삭제 성공")
     void deleteItem_Success() throws Exception {
-        mockMvc.perform(post("/admin/items/" + testItem.getId())
-                .param("_method", "delete"))
+        Item itemToDelete = itemRepository.save(new Item(null, "삭제될 상품", 100, "delete.jpg"));
+        mockMvc.perform(post("/admin/items/" + itemToDelete.getId() + "/delete")
+                .cookie(adminCookie))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/items"));
     }

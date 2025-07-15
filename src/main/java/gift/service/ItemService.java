@@ -62,7 +62,12 @@ public class ItemService {
     }
 
     @Transactional
-    public void deleteItem(Long id) {
+    public void deleteItem(Long id, Member loginMember) {
+        Item item = itemRepository.findById(id)
+            .orElseThrow(() -> new ItemNotFoundException("삭제할 상품을 찾을 수 없습니다: " + id));
+        if (loginMember.getRole() != Role.ADMIN) {
+            throw new AuthorizationException("상품을 삭제할 권한이 없습니다.");
+        }
         itemRepository.deleteById(id);
     }
 
