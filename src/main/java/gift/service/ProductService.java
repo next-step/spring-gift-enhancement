@@ -32,7 +32,7 @@ public class ProductService {
         updated.setPrice(requestDto.getPrice());
         updated.setImageUrl(requestDto.getImageUrl());
 
-        return productRepository.update(updated);
+        return updated;
     }
 
 
