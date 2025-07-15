@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String AUTH_HEADER = "Authorization";
     private static final String HEADER_PREFIX = "Bearer ";
     private static final String COOKIE_NAME = "accessToken";
+    private static final AntPathMatcher MATCHER = new AntPathMatcher();
 
     private static final Map<String, Set<HttpMethod>> BLACKLIST = Map.of(
             "/api/users/register", Set.of(HttpMethod.POST),
@@ -42,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/product-form.css", Set.of(HttpMethod.GET),
             "/product-list.css", Set.of(HttpMethod.GET),
 
-            "/h2-console", Set.of(HttpMethod.GET, HttpMethod.POST)
+            "/h2-console/**", Set.of(HttpMethod.GET, HttpMethod.POST)
     );
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -54,9 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
         String requestURI = request.getRequestURI();
 
-        Optional<String> first = BLACKLIST.keySet().stream().filter(requestURI::startsWith).findFirst();
-        if (first.isPresent()) {
-            Set<HttpMethod> methods = BLACKLIST.get(first.get());
+        Optional<String> match = BLACKLIST.keySet().stream().filter(pattern -> MATCHER.match(pattern, requestURI)).findFirst();
+        if (match.isPresent()) {
+            Set<HttpMethod> methods = BLACKLIST.get(match.get());
             if (methods.contains(method)) {
                 filterChain.doFilter(request, response);
                 return;
