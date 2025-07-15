@@ -32,7 +32,7 @@ public class ProductService {
     }
 
     public List<Product> getByStatus(ProductStatus status){
-        return productRepository.findByStatus(status);
+        return productRepository.findByStatusAndIsDeletedFalse(status);
     }
 
     public Product getById(Long id) {
@@ -56,7 +56,7 @@ public class ProductService {
     }
 
     public void update(Long id, Product product) {
-        boolean updated = productRepository.updateById(id, product);
+        boolean updated = productRepository.updateById(id, product) > 0;
         if (!updated) {
             throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
         }
