@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,12 +34,15 @@ public class WishListController {
 
     @GetMapping
     public ResponseEntity<ResponseWishItem> getWishItemList(@LoginUser String userEmail, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
-        List<ResponseWishItemDto> wishItemList = wishListService.getItemList(name, price, userEmail);
-        ResponseWishItem response = new ResponseWishItem(wishItemList);
+        List<WishItem> wishItemList = wishListService.getItemList(name, price, userEmail);
 
-        return ResponseEntity.ok(response);
+        List<ResponseWishItemDto> wishItemDtoList = new ArrayList<>();
+        for (WishItem wishItem : wishItemList) {
+            wishItemDtoList.add(ResponseWishItemDto.from(wishItem));
+        }
+
+        return ResponseEntity.ok(new ResponseWishItem(wishItemDtoList));
     }
-
     @DeleteMapping
     public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {
 

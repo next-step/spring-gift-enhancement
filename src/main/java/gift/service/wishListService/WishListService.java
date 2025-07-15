@@ -11,7 +11,7 @@ public interface WishListService {
 
     WishItem addWishItem(@Valid AddWishItemDto dto, String userEmail);
 
-    List<ResponseWishItemDto> getItemList(String name, Integer price, String userEmail);
+    List<WishItem> getItemList(String name, Integer price, String userEmail);
 
     ResponseWishItemDto deleteWishItem(String name, String userEmail);
 

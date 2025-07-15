@@ -53,25 +53,33 @@ public class WishListServiceImpl implements WishListService{
 
         return savedWishItem;
     }
+
     @Override
-    public List<ResponseWishItemDto> getItemList(String name, Integer price, String userEmail) {
+    public List<WishItem> getItemList(String name, Integer price, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        List<WishItem> wishItems = wishListRepository.getAllWishItems(user.id());
+        List<WishItem> wishItems = wishListRepository.findAllByUser(user);
         if (wishItems.isEmpty()) {
             throw new ItemNotFoundException();
         }
 
-        List<ResponseWishItemDto> result = getWishItems(wishItems, name, price);
+        List<WishItem> result = new ArrayList<>();
+        for (WishItem wishItem : wishItems) {
+            Item item = wishItem.getItem();
+            if (isValid(item, name, price)) {
+                result.add(wishItem);
+            }
+        }
 
         return result;
     }
-    private boolean isValid(ItemResponseDto item, String name, Integer price) {
-        boolean nameMatches = (name == null || item.name().equals(name));
-        boolean priceMatches = (price == null || item.price().equals(price));
+
+    private boolean isValid(Item item, String name, Integer price) {
+        boolean nameMatches = (name == null || item.getName().equals(name));
+        boolean priceMatches = (price == null || item.getPrice().equals(price));
 
         return nameMatches && priceMatches;
     }
