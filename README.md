@@ -59,10 +59,10 @@
   - [x] Product
   - [x] Wish
   
-- [ ] Repository 인터페이스 변경
-  - [ ] MemberRepository
-  - [ ] ProductRepository
-  - [ ] WishRepository
+- [x] Repository 인터페이스 변경
+  - [x] MemberRepository
+  - [x] ProductRepository
+  - [x] WishRepository
 
 - [ ] Service 클래스 변경
   - [ ] MemberService
