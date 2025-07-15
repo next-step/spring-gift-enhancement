@@ -1,44 +1,43 @@
 package gift.entity;
 
-public class Wish {
-    private Long id;
-    private Long memberId;
-    private Long productId;
-    private Integer quantity;
+import jakarta.persistence.*;
 
-    // 연관관계 객체 (조회용으로 쓰는거)
+@Entity
+@Table(name = "wish")
+public class Wish {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    @Column(nullable = false)
+    private Integer quantity;
 
     public Wish() {}
 
-    public Wish(Long id, Long memberId, Long productId, Integer quantity) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
+    public Wish(Member member, Product product, Integer quantity) {
+        this.member = member;
+        this.product = product;
         this.quantity = quantity;
-    }
-
-    public Wish(Long memberId, Long productId, Integer quantity) {
-        this(null, memberId, productId, quantity);
     }
 
     // Getter/Setter
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getMemberId() { return memberId; }
-    public void setMemberId(Long memberId) { this.memberId = memberId; }
+    public Member getMember() { return member; }
 
-    public Long getProductId() { return productId; }
-    public void setProductId(Long productId) { this.productId = productId; }
+    public Product getProduct() { return product; }
 
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
-    public Member getMember() { return member; }
-    public void setMember(Member member) { this.member = member; }
-
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
-} 
+}

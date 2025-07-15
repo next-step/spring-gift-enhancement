@@ -54,10 +54,10 @@
 
 - [X] JPA 의존성 추가 및 설정 변경
 
-- [ ] 엔티티 클래스 변경
-  - [ ] Member
-  - [ ] Product
-  - [ ] Wish
+- [x] 엔티티 클래스 변경
+  - [x] Member
+  - [x] Product
+  - [x] Wish
   
 - [ ] Repository 인터페이스 변경
   - [ ] MemberRepository
