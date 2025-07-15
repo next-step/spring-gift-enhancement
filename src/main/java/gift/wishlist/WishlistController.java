@@ -25,7 +25,7 @@ public class WishlistController {
 
     @PostMapping("/add")
     public ResponseEntity<Wishlist> addWishlist(@LoginUser User user, @RequestBody WishlistSaveRequestDto wishlistSaveRequestDto) {
-        Wishlist wishlist =  wishlistService.saveWishlist(user.getId(), wishlistSaveRequestDto);
+        Wishlist wishlist =  wishlistService.createWishlist(user, wishlistSaveRequestDto);
         return ResponseEntity
                 .created(URI.create("/api/wishlist/" + wishlist.getId()))
                 .body(wishlist);

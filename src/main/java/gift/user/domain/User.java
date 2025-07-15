@@ -1,21 +1,38 @@
 package gift.user.domain;
 
 import gift.auth.PasswordUtil;
+import jakarta.persistence.*;
 
 import java.util.Base64;
-import java.util.UUID;
 
+@Entity
+@Table(name = "\"user\""    )
 public class User {
-    private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
     private String salt;
 
-    public User(UUID id, String email, String password, String salt) {
+    public User() {
+
+    }
+
+    public User(Long id, String email, String password, String salt) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.salt = salt;
+    }
+
+    public User(String email, String password, String salt) {
+        this(null, email, password, salt);
     }
 
     public boolean isEqualToPassword(String password) {
@@ -24,7 +41,21 @@ public class User {
         return this.password.equals(hashedPassword);
     }
 
-    public UUID getId() {
+    public void changeEmail(String email) {
+        if(email == null || email.isBlank()) {
+            throw new IllegalArgumentException("이메일은 필수입니다.");
+        }
+        this.email = email;
+    }
+
+    public void changePassword(String password) {
+        if(password == null || password.isBlank()) {
+            throw new IllegalArgumentException("비밀번호는 필수입니다.");
+        }
+        this.password = password;
+    }
+
+    public Long getId() {
         return id;
     }
 

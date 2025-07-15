@@ -1,46 +1,52 @@
 package gift.wishlist;
 
-import java.util.UUID;
+import gift.product.domain.Product;
+import gift.user.domain.User;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "wishlist")
 public class Wishlist {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
 
-    private UUID productId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Product product;
 
     public Wishlist() {}
 
-    public Wishlist(Long id, UUID userId, UUID productId) {
+    public Wishlist(Long id, User user, Product product) {
         this.id = id;
-        this.userId = userId;
-        this.productId = productId;
+        this.user = user;
+        this.product = product;
     }
 
-    public Wishlist(UUID userId, UUID productId) {
-        this.id = null;
-        this.userId = userId;
-        this.productId = productId;
+    public Wishlist(User user, Product product) {
+        this(null, user, product);
     }
 
     public Long getId() {
         return id;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public UUID getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setProductId(UUID productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public void setId(Long id) {

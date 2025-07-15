@@ -49,20 +49,20 @@ public class UserAdminViewController {
         if (bindingResult.hasErrors()) {
             return "userAddForm";
         }
-        userService.save(userSaveRequestDto);
+        userService.createUser(userSaveRequestDto);
         return "redirect:/api/admin/user/list";
     }
 
     @GetMapping("/{id}/update")
-    public String updateForm(@PathVariable UUID id, Model model) {
-        User user = userService.findById(id).orElseThrow(() -> new NoSuchIdException("존재하지 않는 ID입니다."));
+    public String updateForm(@PathVariable Long id, Model model) {
+        User user = userService.findById(id);
         UserPatchRequestDto userPatchRequestDto = new UserPatchRequestDto(user);
         model.addAttribute("userPatchRequestDto", userPatchRequestDto);
         return "userUpdateForm";
     }
 
     @PatchMapping("/{id}/update")
-    public String update(@PathVariable UUID id, @Valid @ModelAttribute UserPatchRequestDto userPatchRequestDto, BindingResult bindingResult) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute UserPatchRequestDto userPatchRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "userUpdateForm";
         }
@@ -71,7 +71,7 @@ public class UserAdminViewController {
     }
 
     @DeleteMapping("/{id}/delete")
-    public String deleteById(@PathVariable UUID id) {
+    public String deleteById(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/api/admin/user/list";
     }

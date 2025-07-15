@@ -1,20 +1,20 @@
 package gift.wishlist;
 
-import java.util.UUID;
+import gift.product.domain.Product;
 
 public class WishlistSaveRequestDto {
 
-    private UUID productId;
+    private Product product;
 
-    public WishlistSaveRequestDto(UUID productId) {
-        this.productId = productId;
+    public WishlistSaveRequestDto(Product product) {
+        this.product = product;
     }
 
-    public UUID getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(UUID productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

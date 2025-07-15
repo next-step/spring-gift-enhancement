@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class crudE2ETest {
     @LocalServerPort
     private int port;
-    private UUID lastUUID;
+    private Long lastId;
 
     private RestClient restClient = RestClient.builder().build();
 
@@ -34,8 +34,8 @@ class crudE2ETest {
     @BeforeEach
     void setUp() {
         ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct1", 1000, "imageUrl1");
-        productService.saveProduct(productSaveRequestDto);
-        lastUUID = productService.findAll().getLast().getId();
+        productService.createProduct(productSaveRequestDto);
+        lastId = productService.findAll().getLast().getId();
     }
 
     @Test
@@ -75,7 +75,7 @@ class crudE2ETest {
 
     @Test
     void 상품이_정상적으로_조회() {
-        String url = "http://localhost:" + port + "/api/product/" + lastUUID;
+        String url = "http://localhost:" + port + "/api/product/" + lastId;
         ResponseEntity<ResponseDto> response = restClient
                 .get()
                 .uri(url)
@@ -89,7 +89,7 @@ class crudE2ETest {
 
     @Test
     void 존재하지_않는_상품에_대한_조회요청_시_404_반환() {
-        String url = "http://localhost:" + port + "/api/product/" + "00000000-0000-0000-0000-000000000000";
+        String url = "http://localhost:" + port + "/api/product/" + "0";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> restClient
@@ -100,12 +100,12 @@ class crudE2ETest {
                 )
                 .extracting(RestClientResponseException::getResponseBodyAsString)
                 .asString()
-                .isEqualTo("DB에서 해당 ID를 찾을 수 없습니다.");
+                .isEqualTo("해당 ID가 존재하지 않습니다.");
     }
 
     @Test
     void 상품이_정상적으로_수정() {
-        String url = "http://localhost:" + port + "/api/product/" + lastUUID + "/update";
+        String url = "http://localhost:" + port + "/api/product/" + lastId + "/update";
         ProductPatchRequestDto productPatchRequestDto = new ProductPatchRequestDto("updatedName", 10, "updatedUrl");
         ResponseEntity<ResponseDto> response = restClient
                 .patch()
@@ -121,7 +121,7 @@ class crudE2ETest {
 
     @Test
     void 존재하지_않는_상품에_대해_수정요청_시_404_반환() {
-        String url = "http://localhost:" + port + "/api/product/00000000-0000-0000-0000-000000000000/update";
+        String url = "http://localhost:" + port + "/api/product/0/update";
         ProductPatchRequestDto productPatchRequestDto = new ProductPatchRequestDto("updatedName", 10, "updatedUrl");
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
@@ -134,12 +134,12 @@ class crudE2ETest {
                 )
                 .extracting(RestClientResponseException::getResponseBodyAsString)
                 .asString()
-                .isEqualTo("DB에서 해당 ID를 찾을 수 없습니다.");
+                .isEqualTo("해당 ID가 존재하지 않습니다.");
     }
 
     @Test
     void 상품이_정상적으로_삭제() {
-        String url = "http://localhost:" + port + "/api/product/" + lastUUID + "/delete";
+        String url = "http://localhost:" + port + "/api/product/" + lastId + "/delete";
         ResponseEntity<ResponseDto> response = restClient
                 .delete()
                 .uri(url)
@@ -151,7 +151,7 @@ class crudE2ETest {
 
     @Test
     void 존재하지_않는_상품에_대한_삭제요청_시_404_반환() {
-        String url = "http://localhost:" + port + "/api/product/00000000-0000-0000-0000-000000000000/delete";
+        String url = "http://localhost:" + port + "/api/product/0/delete";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> restClient
@@ -162,6 +162,6 @@ class crudE2ETest {
                 )
                 .extracting(RestClientResponseException::getResponseBodyAsString)
                 .asString()
-                .isEqualTo("DB에서 해당 ID를 찾을 수 없습니다.");
+                .isEqualTo("해당 ID가 존재하지 않습니다.");
     }
 }

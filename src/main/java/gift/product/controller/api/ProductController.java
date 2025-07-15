@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -33,26 +32,26 @@ public class ProductController {
 
     @PostMapping("/product/add")
     public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid ProductSaveRequestDto productSaveRequestDto) {
-        Product product =  productService.saveProduct(productSaveRequestDto);
+        Product product =  productService.createProduct(productSaveRequestDto);
         return ResponseEntity
                 .created(URI.create("/api/product/" + product.getId()))
                 .body(new ResponseDto(product));
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<ResponseDto> findById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDto> findById(@PathVariable Long id) {
         Product product = productService.findById(id);
         return ResponseEntity.ok(new ResponseDto(product));
     }
 
     @PatchMapping("/product/{id}/update")
-    public ResponseEntity<ResponseDto> updateProduct(@PathVariable UUID id, @RequestBody @Valid ProductPatchRequestDto productPatchRequestDto) {
+    public ResponseEntity<ResponseDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductPatchRequestDto productPatchRequestDto) {
         Product product = productService.updateProduct(id, productPatchRequestDto);
         return ResponseEntity.ok(new ResponseDto(product));
     }
 
     @DeleteMapping("/product/{id}/delete")
-    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

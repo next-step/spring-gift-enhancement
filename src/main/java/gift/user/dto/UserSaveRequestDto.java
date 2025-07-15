@@ -1,6 +1,5 @@
 package gift.user.dto;
 
-import gift.user.domain.User;
 import jakarta.validation.constraints.NotNull;
 
 public class UserSaveRequestDto {
