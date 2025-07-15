@@ -28,9 +28,9 @@ public class JwtUtil {
         Date expiry = new Date(now.getTime() + EXPIRATION.toMillis());
 
         return Jwts.builder()
-                .subject(user.id().toString())
-                .claim("email", user.email())
-                .claim("role", user.role().name())
+                .subject(user.getId().toString())
+                .claim("email", user.getEmail())
+                .claim("role", user.getRole().name())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)

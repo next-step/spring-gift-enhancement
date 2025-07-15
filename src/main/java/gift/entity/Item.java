@@ -5,22 +5,33 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "items") // 테이블명이 items인 경우 명시
 public class Item {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String name;
 
     @Column(nullable = false)
     @Min(0)
     private Integer price;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 255, nullable = true)
     private String imageUrl;
 
+    public Item() {
+
+    }
+
+    public Item(String name, Integer price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
 
     public Item(Long id, String name, Integer price, String imageUrl) {
         this.id = id;
@@ -34,16 +45,6 @@ public class Item {
         this.name = item.getName();
         this.price = item.getPrice();
         this.imageUrl = item.getImageUrl();
-    }
-
-    public Item(String name,Integer price,String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
-
-    public Item() {
-
     }
 
     public Long getId() {

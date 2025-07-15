@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WishListServiceImpl implements WishListService{
@@ -37,13 +38,13 @@ public class WishListServiceImpl implements WishListService{
             throw new UserNotFoundException();
         }
 
-        ItemResponseDto item = itemService.findItemByName(dto.name());
-        if (item == null) {
+        Optional<Item> item = itemService.findItemByName(dto.name());
+        if (item.isEmpty()) {
             throw new ItemNotFoundException(dto.name());
         }
 
         Integer quantity = dto.quantity();
-        WishItem addedWishItem = wishListRepository.addWishItem(user.id(), item.id(), quantity);
+        WishItem addedWishItem = wishListRepository.addWishItem(user.getId(),id(), quantity);
 
 
         return ResponseWishItemDto.from(addedWishItem);

@@ -11,18 +11,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     @NotNull
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private UserRole role;
 
-    protected User() {
-    }
+    protected User() {}
 
     public User(String email, String password, UserRole role) {
         this.email = email;
