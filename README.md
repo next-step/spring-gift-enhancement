@@ -65,6 +65,7 @@
 - [x] domain 모델 JPA entity로 전환하기
 - [x] repository interface 추가
 - [x] JdbcClient -> JPA 전환하기
+- [ ] @DataJpaTest를 활용한 테스트 코드 작성해보기
 
 # spring-gift-product (Mission 1)
 
