@@ -5,6 +5,7 @@ import gift.dto.WishlistItemResponseDto;
 import gift.entity.Product;
 import gift.entity.WishlistItem;
 import gift.exception.OperationFailedException;
+import gift.exception.WishlistItemNotFoundException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
@@ -58,5 +59,9 @@ public class WishlistServiceImpl implements WishlistService {
         if (result == 0) {
             throw new OperationFailedException();
         }
+    }
+
+    public WishlistItem findWishlistItemByIdOrElseThrow(Long itemId) {
+        return wishlistRepository.findWishlistById(itemId).orElseThrow(() -> new WishlistItemNotFoundException(itemId));
     }
 }

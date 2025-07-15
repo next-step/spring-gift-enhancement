@@ -28,12 +28,12 @@ public class WishlistRepositoryImpl implements WishlistRepository {
     }
 
     @Override
-    public WishlistItem findByIdOrElseThrow(Long id) {
+    public Optional<WishlistItem> findWishlistById(Long id) {
         Optional<WishlistItem> item = jdbcClient.sql("select id, member_id, product_id, quantity from wishlist where id = :id")
                 .param("id", id)
                 .query(WishlistItem.class)
                 .optional();
-        return item.orElseThrow(() -> new WishlistItemNotFoundException(id));
+        return item;
     }
 
     @Override
