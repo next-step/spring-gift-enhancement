@@ -24,12 +24,12 @@
 
   <div class="pagination" th:if="${!wishlistPage.empty}">
     <span th:if="${wishlistPage.hasPrevious()}">
-        <a th:href="@{/members/wishlist(page=${wishlistPage.number - 1})}">&laquo; 이전</a>
+        <a th:href="@{/members/wishes(page=${wishlistPage.number - 1})}">&laquo; 이전</a>
     </span>
     <span>페이지 <b th:text="${wishlistPage.number + 1}"></b> / <b
         th:text="${wishlistPage.totalPages}"></b></span>
     <span th:if="${wishlistPage.hasNext()}">
-        <a th:href="@{/members/wishlist(page=${wishlistPage.number + 1})}">다음 &raquo;</a>
+        <a th:href="@{/members/wishes(page=${wishlistPage.number + 1})}">다음 &raquo;</a>
     </span>
   </div>
 </div>

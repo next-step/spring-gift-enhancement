@@ -403,29 +403,49 @@ HTTP/1.1 204 No Content
 <summary>📌 DB 초기화</summary>
 
 ```sql
-create table product (
-    id bigint auto_increment primary key,
-    name varchar(255) not null,
-    price bigint not null,
-    image_url varchar(1000)
-);
+drop table if exists member
+drop table if exists product
+drop table if exists wish
 
 create table member (
-    id bigint auto_increment primary key,
-    email varchar(255) not null unique,
+    id bigint not null auto_increment,
+    email varchar(255) not null,
     password varchar(255) not null,
-    role varchar(50) not null
-);
+    role enum ('ADMIN','USER') not null,
+    primary key (id)
+)
 
-create table wishlist (
-    id bigint auto_increment primary key,
+create table product (
+    id bigint not null auto_increment,
+    price bigint not null,
+    image_url varchar(255) not null,
+    name varchar(255) not null,
+    primary key (id)
+)
+
+create table wish (
+    created_date datetime(6) not null,
+    id bigint not null auto_increment,
     member_id bigint not null,
     product_id bigint not null,
-    created_date timestamp(6) not null,
-    foreign key (member_id) references member(id) on delete cascade,
-    foreign key (product_id) references product(id) on delete cascade,
-    unique (member_id, product_id)
-);
+    primary key (id)
+)
+
+alter table member 
+   add constraint UKmbmcqelty0fbrvxp1q58dn57t unique (email);
+
+alter table wish 
+   add constraint UKimrh37c61jscdegh9fi3jbpix unique (member_id, product_id);
+
+alter table wish 
+   add constraint FK70nrc4a6uvljrtemsn80eq1gd 
+   foreign key (member_id) 
+   references member (id)
+       
+alter table wish 
+   add constraint FKh3bvkvkslnehbxqma1x2eynqb 
+   foreign key (product_id) 
+   references product (id)
 ```
 
 </details>
@@ -456,17 +476,24 @@ create table wishlist (
 <details>
 <summary>🚨 예외 처리</summary>
 
-### 상품 조회
+### AuthenticationException
+- 인증되지 않은 사용자 (로그인하지 않은 경우)
+- 인증 토큰이 유효하지 않은 경우 (예: 만료된 토큰)
 
-- 상품이 존재하지 않을 경우: `ProductNotFoundException`
+### AuthorizationException
+- 인증된 사용자 (로그인한 경우) 권한이 없는 요청
+  - 다른 사용자의 위시 리스트 삭제
+  - 일반 사용자가 관리자 권한이 필요한 행위 요청
 
-### 상품 수정
+### LoginFailedException
+- 로그인 실패 시 (잘못된 이메일 또는 비밀번호)
 
-- 상품이 존재하지 않을 경우: `ProductNotFoundException`
+### ProductNotFoundException
+- 상품이 존재하지 않을 경우 (조회, 수정, 삭제 시)
 
-### 상품 삭제
-
-- 상품이 존재하지 않을 경우: `ProductNotFoundException`
+### WishException
+- 위시 리스트가 존재하지 않을 경우
+- 위시 리스트 중복 저장 시
 
 </details>
 
@@ -492,4 +519,22 @@ create table wishlist (
 - 상품 이름 (특수 문자 실패)
 - 상품 이름 (MD 승인 글자)
 - 상품 가격 (0원 이상 실패)
+</details>
+<details>
+<summary>DataJpa 테스트</summary>
+
+### 상품 CRUD 테스트
+- 상품 저장 및 조회
+- 상품 수정
+- 상품 삭제
+
+### 멤버 CRUD 테스트
+- 멤버 저장 및 조회
+- 멤버 조회 실패
+- 멤버 회원가입 실패 (중복 이메일)
+
+### 위시 리스트 CRUD 테스트
+- 위시 리스트 저장
+- 위시 리스트 조회
+- 위시 중복 저장 실패
 </details>

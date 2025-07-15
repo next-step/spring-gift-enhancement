@@ -1,13 +1,13 @@
 package gift.exception.handler;
 
-import gift.exception.dto.ErrorResponseDto;
 import gift.exception.AuthenticationException;
 import gift.exception.AuthorizationException;
 import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
-import gift.exception.WishlistException;
+import gift.exception.WishException;
+import gift.exception.dto.ErrorResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +34,23 @@ public class FrontExceptionHandler {
         return "error";
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String handleEntityNotFound(
+            EntityNotFoundException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String handleValidationException(
             MethodArgumentNotValidException ex,
@@ -43,7 +60,7 @@ public class FrontExceptionHandler {
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage(),
+                ex.getMessage(),
                 request.getRequestURI()
         );
         model.addAttribute("errorInfo", error);
@@ -104,9 +121,9 @@ public class FrontExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler(WishlistException.class)
+    @ExceptionHandler(WishException.class)
     public String handleWishlistException(
-            WishlistException ex,
+            WishException ex,
             Model model,
             HttpServletRequest request) {
 

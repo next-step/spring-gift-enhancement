@@ -1,8 +1,8 @@
-package gift.api.wishlist.controller;
+package gift.api.wish.controller;
 
-import gift.api.wishlist.dto.WishlistRequestDto;
-import gift.api.wishlist.dto.WishlistResponseDto;
-import gift.api.wishlist.service.WishlistService;
+import gift.api.wish.dto.WishRequestDto;
+import gift.api.wish.dto.WishResponseDto;
+import gift.api.wish.service.WishService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -21,42 +21,42 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(("/api/wishes"))
-public class WishlistController {
+public class WishController {
 
-    private final WishlistService wishlistService;
+    private final WishService wishService;
 
-    public WishlistController(WishlistService wishlistService) {
-        this.wishlistService = wishlistService;
+    public WishController(WishService wishService) {
+        this.wishService = wishService;
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistResponseDto>> getWishlist(
+    public ResponseEntity<List<WishResponseDto>> getWishlist(
             @RequestAttribute("userEmail") String email,
             @PageableDefault(size = 5, sort = "created_date", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<WishlistResponseDto> wishlist = wishlistService.getWishlist(email, pageable)
+        List<WishResponseDto> wishlist = wishService.getWishlist(email, pageable)
                 .getContent();
 
         return ResponseEntity.ok(wishlist);
     }
 
     @PostMapping
-    public ResponseEntity<WishlistResponseDto> addProductToWishlist(
+    public ResponseEntity<WishResponseDto> addProductToWishlist(
             @RequestAttribute("userEmail") String email,
-            @Valid @RequestBody WishlistRequestDto wishlistRequestDto
+            @Valid @RequestBody WishRequestDto wishRequestDto
     ) {
-        WishlistResponseDto wishlistResponseDto = wishlistService.addProductToWishlist(email,
-                wishlistRequestDto.productId());
+        WishResponseDto wishResponseDto = wishService.addProductToWishlist(email,
+                wishRequestDto.productId());
 
-        URI location = URI.create("/members/products/" + wishlistResponseDto.product().id());
+        URI location = URI.create("/members/products/" + wishResponseDto.product().id());
 
-        return ResponseEntity.created(location).body(wishlistResponseDto);
+        return ResponseEntity.created(location).body(wishResponseDto);
     }
 
     @DeleteMapping("/{wishlistId}")
     public ResponseEntity<Void> removeProductFromWishlist(
             @RequestAttribute("userEmail") String email,
             @PathVariable Long wishlistId) {
-        wishlistService.removeProductFromWishlist(email, wishlistId);
+        wishService.removeProductFromWishlist(email, wishlistId);
 
         return ResponseEntity.noContent().build();
     }

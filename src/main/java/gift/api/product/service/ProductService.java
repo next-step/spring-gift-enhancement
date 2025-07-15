@@ -8,8 +8,10 @@ import gift.exception.ProductNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -18,57 +20,50 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Page<ProductResponseDto> findAllProducts(Pageable pageable, Long categoryId) {
-        Page<Product> page = productRepository.findAllProducts(pageable, categoryId);
-
-        return page.map(ProductResponseDto::from);
+    public Page<ProductResponseDto> findAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(ProductResponseDto::from);
     }
 
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepository.findProductById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
-        return new ProductResponseDto(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
-        );
+        return ProductResponseDto.from(product);
     }
 
+    @Transactional
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
-        Product createdProduct = productRepository.createProduct(
-                new Product(
-                        null,
-                        productRequestDto.name(),
-                        productRequestDto.price(),
-                        productRequestDto.imageUrl()
-                )
+        Product createdProduct = new Product(
+                productRequestDto.name(),
+                productRequestDto.price(),
+                productRequestDto.imageUrl()
         );
 
-        return ProductResponseDto.from(createdProduct);
+        Product savedProduct = productRepository.save(createdProduct);
+
+        return ProductResponseDto.from(savedProduct);
     }
 
+    @Transactional
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
-        findProductById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
 
-        Product updatedProduct = productRepository.updateProduct(
-                new Product(
-                        id,
-                        productRequestDto.name(),
-                        productRequestDto.price(),
-                        productRequestDto.imageUrl()
-                )
+        product.update(
+                productRequestDto.name(),
+                productRequestDto.price(),
+                productRequestDto.imageUrl()
         );
 
-        return ProductResponseDto.from(updatedProduct);
+        return ProductResponseDto.from(product);
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
-        boolean deleted = productRepository.deleteProduct(id);
-
-        if (!deleted) {
+        if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException(id);
         }
+
+        productRepository.deleteById(id);
     }
 }
