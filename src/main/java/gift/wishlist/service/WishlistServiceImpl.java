@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WishlistServiceImpl implements WishlistService {
@@ -32,17 +33,19 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    @Transactional
     public void addWishlistItem(Long memberId, WishlistItemRequestDto requestDto) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
         Product product = productRepository.findById(requestDto.productId()).orElseThrow(() -> new ProductNotFoundException(requestDto.productId()));
-        boolean productIsInWishlist = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId).isPresent();
-        if (productIsInWishlist) {
-            throw new ProductIsInWishlistException(product.getName());
-        }
-        WishlistItem item = new WishlistItem(null, member, product, requestDto.quantity());
-        WishlistItem saved = wishlistRepository.save(item);
-        if (saved.getId() == null) {
-            throw new OperationFailedException("저장 실패");
+        Optional<WishlistItem> foundItem = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId);
+        if (foundItem.isPresent()) {
+            updateWishlistItemById(foundItem.get().getId(), foundItem.get().getQuantity()+requestDto.quantity());
+        } else{
+            WishlistItem item = new WishlistItem(null, member, product, requestDto.quantity());
+            WishlistItem saved = wishlistRepository.save(item);
+            if (saved.getId() == null) {
+                throw new OperationFailedException("저장 실패");
+            }
         }
     }
 
