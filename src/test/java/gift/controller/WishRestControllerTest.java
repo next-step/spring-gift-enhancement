@@ -149,10 +149,13 @@ public class WishRestControllerTest {
         when(memberRepository.findByEmail(testMember.getEmail())).thenReturn(
                 Optional.of(testMember));
 
+        Long productId = 10L;
+
         // 삭제는 반환값 없음
 
         // when
-        MvcResult result = mockMvc.perform(delete("/api/wishes/{productId}", 10L)
+        MvcResult result = mockMvc.perform(delete("/api/wishes")
+                        .param("productId", String.valueOf(productId))
                         .header("Authorization", "Bearer " + token))
                 .andReturn();
 
@@ -169,7 +172,7 @@ public class WishRestControllerTest {
         when(jwtTokenProvider.validateToken(invalidToken)).thenReturn(false);
 
         // when
-        MvcResult result = mockMvc.perform(delete("/api/wishes/{productId}", 10L)
+        MvcResult result = mockMvc.perform(delete("/api/wishes", 10L)
                         .header("Authorization", "Bearer " + invalidToken))
                 .andReturn();
 
