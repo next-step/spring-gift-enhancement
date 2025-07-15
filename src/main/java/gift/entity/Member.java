@@ -1,12 +1,21 @@
 package gift.entity;
 
-import gift.dto.request.MemberRequsetDto;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false,unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
     private String role;
+
+    public Member() {
+    }
 
     public Member(Long id, String email, String password, String role) {
         this.id = id;
