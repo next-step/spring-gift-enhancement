@@ -13,7 +13,7 @@ public interface WishListService {
 
     List<WishItem> getItemList(String name, Integer price, String userEmail);
 
-    ResponseWishItemDto deleteWishItem(String name, String userEmail);
+    WishItem deleteWishItem(String name, String userEmail);
 
     ResponseWishItemDto updateWishItem(Integer quantity, String name, String userEmail);
 }

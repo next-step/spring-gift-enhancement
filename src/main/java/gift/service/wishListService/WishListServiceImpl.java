@@ -105,22 +105,28 @@ public class WishListServiceImpl implements WishListService{
     }
 
     @Override
-    public ResponseWishItemDto deleteWishItem(String name, String userEmail) {
+    public WishItem deleteWishItem(String name, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
-
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        ItemResponseDto item = itemService.findItemByName(name);
+        Optional<Item> targetItem = itemService.findItemByName(name);
+        if (targetItem.isEmpty()) {
+            throw new ItemNotFoundException(name);
+        }
 
-        if (item == null) {
+        Item item = targetItem.get();
+
+        Optional<WishItem> deletedWishItem = wishListRepository.findByUserAndItem(user, item);
+        if (deletedWishItem.isEmpty()) {
             throw new ItemNotFoundException();
         }
 
-        WishItem deletedWishItem = wishListRepository.deleteWishItem(user.id(), item.id());
+        WishItem wishItem = deletedWishItem.get();
+        wishListRepository.delete(wishItem);
 
-        return ResponseWishItemDto.delete(deletedWishItem);
+        return wishItem;
     }
 
     @Override

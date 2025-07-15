@@ -46,9 +46,9 @@ public class WishListController {
     @DeleteMapping
     public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {
 
-        ResponseWishItemDto deletedWishItem = wishListService.deleteWishItem(name, userEmail);
+        WishItem targetWishItem = wishListService.deleteWishItem(name, userEmail);
 
-        return new ResponseEntity<>(deletedWishItem, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseWishItemDto.from(targetWishItem), HttpStatus.NO_CONTENT);
     }
 
     @PutMapping
