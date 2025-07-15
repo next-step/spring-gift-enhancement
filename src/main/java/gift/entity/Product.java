@@ -25,7 +25,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, String imageUrl) {
+    public static Product createProduct(String name, String imageUrl) {
+        return new Product(null, name, imageUrl);
+    }
+
+    private Product(Long id, String name, String imageUrl) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
