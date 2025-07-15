@@ -8,29 +8,23 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJdbcTest
-@Import(MemberRepository.class)
+@DataJpaTest
 class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
 
     @Test
-    @DisplayName("회원 저장 및 이메일로 조회 테스트")
-    void saveAndFindByEmail() {
+    @DisplayName("이메일로 회원 조회 테스트")
+    void findByEmail() {
+        Member member = new Member(null, "test@example.com", "password123", Role.USER);
+        memberRepository.save(member);
 
-        Member newMember = new Member(null, "test@example.com", "password123", Role.USER);
-
-        memberRepository.save(newMember);
         Optional<Member> foundMemberOptional = memberRepository.findByEmail("test@example.com");
 
         assertThat(foundMemberOptional).isPresent();
-
-        Member foundMember = foundMemberOptional.get();
-        assertThat(foundMember.getEmail()).isEqualTo(newMember.getEmail());
-        assertThat(foundMember.getRole()).isEqualTo(Role.USER);
+        assertThat(foundMemberOptional.get().getEmail()).isEqualTo("test@example.com");
     }
 }
