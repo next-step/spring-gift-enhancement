@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public String loginUser(UserLoginDto dto) {
         String targetEmail = dto.email();
 
-        User findUser = userRepository.findUserByEmail(targetEmail);
+        User findUser = findUserByEmail(targetEmail);
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
@@ -91,9 +91,9 @@ public class UserServiceImpl implements UserService {
 
     private List<User> getUsersByEmail(String email) {
         if (email == null) {
-            return userRepository.getAllUsers();
+            return userRepository.findAll();
         } else {
-            User findUser = userRepository.findUserByEmail(email);
+            User findUser = findUserByEmail(email);
             if (findUser == null) {
                 throw new UserNotFoundException();
             } else {
@@ -104,11 +104,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto finUserById(Long id) {
-        User user = userRepository.findUserById(id);
+        User user = findUserById(id);
         if (user == null) {
             throw new UserNotFoundException();
         }
         return new UserResponseDto(user.email(), user.password());
+    }
+
+    private User findUserById(Long id) {
+        User user = userRepository.findUserById(id);
+        return user;
     }
 
     @Override
