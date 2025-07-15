@@ -7,7 +7,6 @@ import gift.dto.WishUpdateDTO;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
-import gift.entity.WishWithProduct;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +36,8 @@ public class WishService {
         return wishRepository.findByMemberIdAndProductId(member.getId(), productId)
             .map(existingWish -> {
                 int newQuantity = existingWish.getQuantity() + wishRequestDTO.quantity();
-                wishRepository.updateQuantity(member.getId(), productId, newQuantity);
+                existingWish.setQuantity(newQuantity);  // JPA 엔티티 기반 업데이트
+                wishRepository.save(existingWish);
                 return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), newQuantity);
             })
             .orElseGet(() -> {
@@ -61,23 +61,27 @@ public class WishService {
         }
 
         Pageable pageable = PageRequest.of(page, size, sortBy);
-        List<WishWithProduct> wishWithProducts = wishRepository.findByMemberIdWithPagination(member.getId(), pageable);
-
-        return wishWithProducts.stream()
-            .map(this::convertToWishResponseDTO)
+        return wishRepository.findByMemberId(member.getId(), pageable)
+            .stream()
+            .map(wish -> new WishResponseDTO(
+                member.getId(),
+                new ProductResponseDTO(wish.getProduct()),
+                wish.getQuantity()
+            ))
             .toList();
     }
 
     @Transactional
     public void updateWishQuantity(Long productId, WishUpdateDTO wishUpdateDTO, Member member) {
-        wishRepository.findByMemberIdAndProductId(member.getId(), productId)
+        Wish wish = wishRepository.findByMemberIdAndProductId(member.getId(), productId)
             .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
 
         int newQuantity = wishUpdateDTO.quantity();
         if (newQuantity == 0) {
             wishRepository.deleteByMemberIdAndProductId(member.getId(), productId);
         } else {
-            wishRepository.updateQuantity(member.getId(), productId, newQuantity);
+            wish.setQuantity(newQuantity);
+            wishRepository.save(wish);
         }
     }
 
@@ -87,10 +91,5 @@ public class WishService {
             .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
 
         wishRepository.deleteByMemberIdAndProductId(member.getId(), productId);
-    }
-
-    private WishResponseDTO convertToWishResponseDTO(WishWithProduct wishWithProduct) {
-        ProductResponseDTO productResponseDTO = new ProductResponseDTO(wishWithProduct.product());
-        return new WishResponseDTO(wishWithProduct.memberId(), productResponseDTO, wishWithProduct.quantity());
     }
 }
