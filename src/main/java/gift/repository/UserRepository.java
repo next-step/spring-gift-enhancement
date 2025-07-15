@@ -2,10 +2,11 @@ package gift.repository;
 
 import gift.entity.User;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    User save(User user);
+    boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
 }
