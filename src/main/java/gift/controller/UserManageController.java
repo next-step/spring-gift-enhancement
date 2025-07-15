@@ -41,7 +41,7 @@ public class UserManageController {
         cookie.setMaxAge(1800);
         response.addCookie(cookie);
 
-        return "redirect:/admin/users";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/users")
