@@ -30,6 +30,10 @@ public class Wishlist {
         this.product = product;
     }
 
+    public Wishlist() {
+
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,11 +42,11 @@ public class Wishlist {
         this.id = id;
     }
 
-    public Long getMember() {
+    public Member getMember() {
         return member;
     }
 
-    public Long getProduct() {
+    public Product getProduct() {
         return product;
     }
 }
