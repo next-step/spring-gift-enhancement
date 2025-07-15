@@ -60,6 +60,11 @@
 
 ### 0단계 - 기본 코드 준비
 
+### 1단계 - 엔티티 매핑
+
+- [ ] repository interface 추가
+- [ ] JdbcClient -> JPA 전환하기
+
 # spring-gift-product (Mission 1)
 
 ## 상품관리 - 스프링 입문
