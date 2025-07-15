@@ -1,23 +1,8 @@
 package gift.repository;
 
 import gift.entity.Product;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // 1. 저장
-    Product save(Product product);
-
-    // 2-1. 전체 조회
-    List<Product> findAll();
-
-    // 2-2. 선택 조회
-    Optional<Product> findById(Long id);
-
-    // 3. 수정
-    void update(Product product);
-
-    // 4. 삭제
-    void deleteById(Long id);
 }
