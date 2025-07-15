@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class Wish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_wishes_members"))
@@ -22,7 +22,7 @@ public class Wish {
     private Product product;
 
     @Column(nullable = false)
-    private final int quantity;
+    private int quantity;
 
     public Wish(){
 
