@@ -6,12 +6,14 @@ import gift.domain.Wishlist;
 public class WishlistResponse {
     Long productId;
     String productName;
+    String productImageUrl;
     Integer productPrice;
 
     public WishlistResponse(Wishlist wishlist) {
         Product product = wishlist.getProduct();
         this.productId = product.getId();
         this.productName = product.getName();
+        this.productImageUrl = product.getImageUrl();
         this.productPrice = product.getPrice();
     }
 
@@ -25,5 +27,9 @@ public class WishlistResponse {
 
     public Integer getProductPrice() {
         return productPrice;
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
     }
 }

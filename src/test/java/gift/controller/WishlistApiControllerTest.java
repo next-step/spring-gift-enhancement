@@ -105,7 +105,7 @@ class WishlistApiControllerTest {
     @DisplayName("위시리스트 목록을 조회할 수 있다.")
     void test4() throws Exception {
 
-        Product product2 = productService.saveProduct(new CreateProductRequest("가방", "image", 30000, 10));
+        Product product2 = productService.saveProduct(new CreateProductRequest("가방", "image2", 30000, 10));
         wishlistService.saveWishlist(user.getId(), new CreateWishlistRequest(product.getId()));
         wishlistService.saveWishlist(user.getId(), new CreateWishlistRequest(product2.getId()));
 
@@ -116,8 +116,10 @@ class WishlistApiControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].productName").value("연필"))
                 .andExpect(jsonPath("$[0].productPrice").value(10000))
+                .andExpect(jsonPath("$[0].productImageUrl").value("image"))
                 .andExpect(jsonPath("$[1].productName").value("가방"))
-                .andExpect(jsonPath("$[1].productPrice").value(30000));
+                .andExpect(jsonPath("$[1].productPrice").value(30000))
+                .andExpect(jsonPath("$[1].productImageUrl").value("image2"));
     }
 
     @Test
