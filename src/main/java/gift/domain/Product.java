@@ -2,15 +2,31 @@ package gift.domain;
 
 
 import gift.dto.product.ProductRequest;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 
+@Entity
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String name;
+
+    @Column
     private int price;
+
+    @Column
     private String imageUrl;
 
-    public Product(){}
+    protected Product(){}
 
     public Product(Long id, String name, int price, String imageUrl) {
         this.id = id;

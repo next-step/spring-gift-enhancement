@@ -20,3 +20,13 @@ create table wishlists
     product_id bigint,
     quantity   int
 )
+
+alter table if exists wishlists
+    add constraint fk_wish_member_id_ref_member_id
+    foreign key (member_id)
+    references members
+
+alter table if exists wishlists
+    add constraint fk_wish_product_id_ref_product_id
+    foreign key (product_id)
+    references products
