@@ -4,10 +4,11 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.InvalidProductNameException;
-import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import gift.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,43 +30,39 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional
     public ProductResponseDto findProductById(Long id){
-        Product product = productRepository.findProductById(id);
+        Product product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product", id));
         return new ProductResponseDto(product);
     }
 
+    @Transactional
     public List<ProductResponseDto> findAllProduct(){
-        return productRepository.findAllProducts().stream().map(ProductResponseDto::new).collect(Collectors.toList());
+        return productRepository.findAll().stream().map(ProductResponseDto::new).collect(Collectors.toList());
     }
 
+    @Transactional
     public ProductResponseDto saveProduct(ProductRequestDto requestDto){
         List<String> matched = forbiddenWords.stream().filter(requestDto.name()::contains).toList();
         if(!matched.isEmpty()){ // 금지 단어 포함돼있을 경우 예외 던지기
             throw new InvalidProductNameException(matched);
         }
-        return new ProductResponseDto(productRepository.saveProduct(new Product(requestDto)));
+        return new ProductResponseDto(productRepository.save(new Product(requestDto)));
     }
 
+    @Transactional
     public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto){
         List<String> matched = forbiddenWords.stream().filter(requestDto.name()::contains).toList();
         if(!matched.isEmpty()){ // 금지 단어 포함돼있을 경우 예외 던지기
             throw new InvalidProductNameException(matched);
         }
-        boolean flag = productRepository.updateProduct(id, new Product(requestDto));
-        
-        // 수정됐는지 검증
-        if(!flag) {
-            throw new ProductNotFoundException(id);
-        }
-
-        Product product = productRepository.findProductById(id);
+        Product product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product", id));
+        product.update(requestDto.name(), requestDto.price(), requestDto.imageUrl());
         return new ProductResponseDto(product);
     }
 
+    @Transactional
     public void deleteProduct(Long id){
-        boolean flag = productRepository.deleteProduct(id);
-        if(!flag) {
-            throw new ProductNotFoundException(id);
-        }
+        productRepository.deleteById(id);
     }
 }

@@ -5,9 +5,9 @@ import gift.dto.UserResponseDto;
 import gift.entity.User;
 import gift.exception.DecryptFailedException;
 import gift.exception.EncryptFailedException;
-import gift.exception.ProductNotFoundException;
-import gift.exception.UserNotFoundException;
+import gift.exception.NotFoundException;
 import gift.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,15 +24,16 @@ public class UserService {
         this.authService = authService;
     }
 
+    @Transactional
     public List<UserResponseDto> findAllUsers(){
-        return userRepository.findAllUsers().stream()
+        return userRepository.findAll().stream()
                 .map(user -> {
                     try {
                         return new UserResponseDto(
-                                user.id(),
-                                authService.decryptAES(user.email()),
-                                user.password(),
-                                user.createdDate()
+                                user.getId(),
+                                authService.decryptAES(user.getEmail()),
+                                user.getPassword(),
+                                user.getCreatedDate()
                         );
                     } catch (Exception e) {
                         throw new DecryptFailedException();
@@ -41,47 +42,39 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public UserResponseDto findUserById(Long id) {
-        User user = userRepository.findUserById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User", id));
         String email;
-
         // email 복호화
         try {
-            email = authService.decryptAES(user.email());
+            email = authService.decryptAES(user.getEmail());
         } catch (Exception e) {
             throw new DecryptFailedException();
         }
 
-        return new UserResponseDto(user.id(), email, user.password(), user.createdDate());
+        return new UserResponseDto(user.getId(), email, user.getPassword(), user.getCreatedDate());
     }
 
+    @Transactional
     public void deleteUser(Long id){
-        boolean flag = userRepository.deleteUser(id);
-        if(!flag) {
-            throw new ProductNotFoundException(id);
-        }
+        userRepository.deleteById(id);
     }
 
+    @Transactional
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto){
-
-        User user;
+        String email;
+        String password;
 
         try {
-            user = new User(
-                    authService.encryptAES(userRequestDto.email()),
-                    authService.encryptSHA256(userRequestDto.password()));
+            email = authService.encryptAES(userRequestDto.email());
+            password = authService.encryptSHA256(userRequestDto.password());
         }
         catch (Exception e) {throw new EncryptFailedException();
         }
 
-        boolean flag = userRepository.updateUser(id, user);
-
-        // 수정됐는지 검증
-        if(!flag) {
-            throw new UserNotFoundException(id);
-        }
-
-        user = userRepository.findUserById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User", id));
+        user.update(email, password);
         return new UserResponseDto(user);
     }
 }

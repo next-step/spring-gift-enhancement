@@ -6,6 +6,7 @@ import gift.exception.*;
 import gift.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -84,6 +85,7 @@ public class AuthService {
     }
 
 
+    @Transactional
     public UserResponseDto userSignUp(UserRequestDto userRequestDto) {
 
         User user;
@@ -97,34 +99,36 @@ public class AuthService {
             throw new EncryptFailedException();
         }
 
-        return new UserResponseDto(userRepository.createUser(user));
+        return new UserResponseDto(userRepository.save(user));
     }
 
+    @Transactional
     public TokenResponseDto userLogin(UserRequestDto userRequestDto) {
 
+        String email;
+        String password;
         User user;
 
         // 이메일 AES 암호화, 비밀번호 SHA-256 해싱
         try {
-           user = new User(
-                    encryptAES(userRequestDto.email()),
-                    encryptSHA256(userRequestDto.password()));
+            email = encryptAES(userRequestDto.email());
+            password = encryptSHA256(userRequestDto.password());
         } catch (Exception e) {
             throw new EncryptFailedException();
         }
 
-        // 동일한 회원 정보 받고 없을 경우 예외 반환
-        try{
-            user = userRepository.checkUser(user);
+        // 유저 정보 확인
+        try {
+            user = userRepository.findByEmailAndPassword(email, password);
         } catch (Exception e) {
             throw new LoginFailedException();
         }
 
         // JWT 생성 후 반환
         return new TokenResponseDto(Jwts.builder()
-                .subject(user.email())
-                .claim("id", user.id())
-                .claim("role", user.role())
+                .subject(user.getEmail())
+                .claim("id", user.getId())
+                .claim("role", user.getRole())
                 .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes()))
                 .compact());
     }
