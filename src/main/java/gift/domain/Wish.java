@@ -1,42 +1,51 @@
 package gift.domain;
-import gift.domain.Product;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(
+        name = "wishes",
+        uniqueConstraints = @UniqueConstraint(name = "uk_wishes_members_products", columnNames = {"member_id", "product_id"})
+)
 
 public class Wish {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id;
-    private final Long memberId;
-    private final Long productId;
-    private final int quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_wishes_members"))
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "fk_wishes_products"))
     private Product product;
 
-    public Wish(Long id, Long memberId, Long productId, int quantity, Product product) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.product = product;
+    @Column(nullable = false)
+    private final int quantity;
+
+    public Wish(){
+
     }
 
-    public Wish(Long memberId, Long productId, int quantity) {
-        this(null, memberId, productId, quantity, null);
+    public Wish(Member member, Product product, int quantity){
+        this.member = member;
+        this.product = product;
+        this.quantity = quantity;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getMemberId() {
-        return memberId;
-    }
+    public Member getMember() { return member;}
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct(){
+        return product;
     }
 
     public int getQuantity(){
         return quantity;
     }
 
-    public Product getProduct(){
-        return product;
-    }
 }

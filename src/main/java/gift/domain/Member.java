@@ -1,9 +1,21 @@
 package gift.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "members")
 public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, updatable = true, length = 320)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private Role role;
 
     public Member(){

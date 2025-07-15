@@ -1,11 +1,28 @@
 package gift.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 255)
     private String name;
+
+    @Column(nullable = false)
     private int price;
+
+    @Column(name = "image_url", length = 2048)
     private String imageUrl;
+
+    @Column(nullable = false)
     private ProductStatus status;
+
+    @Column(nullable = false)
     private boolean isDeleted;
 
     public Product() {
