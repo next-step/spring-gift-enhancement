@@ -12,6 +12,7 @@ import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
 import gift.exception.userException.UserPasswordException;
 import gift.repository.userRepository.UserRepository;
+import gift.repository.userRepository.UserRepositoryJPA;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final UserRepositoryJPA userRepository;
     private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepositoryJPA userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }
@@ -34,11 +35,11 @@ public class UserServiceImpl implements UserService {
         String password = dto.password();
         UserRole role = dto.role();
 
-        if (userRepository.findUserByEmail(email) != null) {
+        if (findUserByEmail(email)!= null) {
             throw new UserDuplicatedException();
         }
-
-        User savedUser = userRepository.save(email, password, role);
+        User user = new User(null, email, password, role);
+        User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser);
 
         return token;
