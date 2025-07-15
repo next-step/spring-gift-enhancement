@@ -9,6 +9,7 @@ import gift.entity.Wish;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class WishRepositoryTest {
     @BeforeEach
     void Setup() {
         member = memberRepository.saveAndFlush(new Member("test@naver.com", "qwe123"));
-        product = productRepository.saveAndFlush(new Product("test 상품", 3000, "testurl@naver.com"));
+        product = productRepository.saveAndFlush(new Product("test 상품", BigDecimal.valueOf(3000), "testurl@naver.com"));
     }
 
     @Test
@@ -55,7 +56,7 @@ public class WishRepositoryTest {
         List<Wish> wishes = wishRepository.findByMember(member);
 
         assertAll(
-                () -> assertThat(wishes.get(0).getProduct().getPrice()).isEqualTo(3000),
+                () -> assertThat(wishes.get(0).getProduct().getPrice()).isEqualTo(BigDecimal.valueOf(3000)),
                 () -> assertThat(wishes.get(0).getProduct().getName()).isEqualTo("test 상품")
         );
     }

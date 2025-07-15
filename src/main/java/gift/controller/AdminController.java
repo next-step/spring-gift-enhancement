@@ -5,6 +5,7 @@ import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +35,7 @@ public class AdminController {
 
   @GetMapping("/add")
   public String addForm(Model model) {
-    model.addAttribute("product", new ProductRequestDto("", 0, "", false));
+    model.addAttribute("product", new ProductRequestDto("", BigDecimal.ZERO, "", false));
     model.addAttribute("mode", "add");
     return "admin/form";
   }

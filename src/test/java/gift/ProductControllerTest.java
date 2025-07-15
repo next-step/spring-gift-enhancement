@@ -9,6 +9,7 @@ import gift.dto.MemberResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,7 +65,7 @@ public class ProductControllerTest {
     void 올바른_상품_생성() {
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "치킨",
-                10000,
+                BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
                 false
         );
@@ -87,7 +88,7 @@ public class ProductControllerTest {
     void MD승인_없이_카카오_이름이_들어간_상품_생성() {
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "카카오치킨",
-                10000,
+                BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
                 false
         );
@@ -106,7 +107,7 @@ public class ProductControllerTest {
     void MD승인_받고_카카오_이름이_들어간_상품_생성() {
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "카카오치킨",
-                10000,
+                BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
                 true
         );
@@ -129,7 +130,7 @@ public class ProductControllerTest {
     void MD승인_없이_카카오_이름으로_상품_수정() {
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "치킨",
-                10000,
+                BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
                 false
         );
@@ -147,7 +148,7 @@ public class ProductControllerTest {
         UpdateProductRequestDto updateProductRequestDto = new UpdateProductRequestDto(
                 productId,
                 "카카오치킨",
-                10000,
+                BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
                 false
         );
