@@ -1,13 +1,24 @@
 package gift.entity;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
+@Entity
 public class Item {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    @Min(0)
     private Integer price;
+
+    @Column(name = "image_url")
     private String imageUrl;
 
 
@@ -25,10 +36,14 @@ public class Item {
         this.imageUrl = item.getImageUrl();
     }
 
-    public Item(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl) {
+    public Item(String name,Integer price,String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public Item() {
+
     }
 
     public Long getId() {
