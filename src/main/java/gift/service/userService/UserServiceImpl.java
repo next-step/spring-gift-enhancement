@@ -32,9 +32,10 @@ public class UserServiceImpl implements UserService {
         String password = dto.password();
         UserRole role = dto.role();
 
-        if (findUserByEmail(email)!= null) {
+        if (findUserEmailByEmail(email)) {
             throw new UserDuplicatedException();
         }
+
         User user = new User(null, email, password, role);
         User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser);
@@ -42,11 +43,17 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    private boolean findUserEmailByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+
     @Override
     public String loginUser(UserLoginDto dto) {
         String targetEmail = dto.email();
 
         User findUser = findUserByEmail(targetEmail);
+        System.out.println("UserServiceImpl.loginUser");
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
@@ -60,6 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String userEmail) {
         User user = userRepository.findUserByEmail(userEmail);
+        System.out.println("UserServiceImpl.findUserByEmail");
 
         if (user == null) {
             throw new UserNotFoundException();
