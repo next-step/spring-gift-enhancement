@@ -11,3 +11,4 @@
 - [ ] Member 리펙토링
   - [x] Member를 JPA 엔티티로 변환
   - [x] MemberRepository를 Jdbc 기반에서 JPA 기반으로 변경
+  - [x] JPA 적용으로 인한 MemberService 로직 변경
