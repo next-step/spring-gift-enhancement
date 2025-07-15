@@ -5,14 +5,20 @@ import gift.dto.ItemResponse;
 import gift.entity.Item;
 import gift.entity.Member;
 import gift.entity.Role;
+import gift.exception.AuthorizationException;
 import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import gift.exception.AuthorizationException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -21,12 +27,14 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public ItemResponse createItem(ItemRequest request, Member loginMember) {
-        validateAdminRoleForKakaoKeyword(request.name(), loginMember); // 권한 확인 로직 호출
+    public List<ItemResponse> getAllItems(int page, int size, String sortProperty, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortProperty);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Item> itemPage = itemRepository.findAll(pageable);
 
-        Item item = new Item(null, request.name(), request.price(), request.imageUrl());
-        Item savedItem = itemRepository.save(item);
-        return ItemResponse.from(savedItem);
+        return itemPage.getContent().stream()
+            .map(ItemResponse::from)
+            .collect(Collectors.toList());
     }
 
     public ItemResponse getItemById(Long id) {
@@ -35,26 +43,26 @@ public class ItemService {
             .orElseThrow(() -> new ItemNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + id));
     }
 
-    public List<ItemResponse> getAllItems(int page, int size, String sortProperty, String sortDirection) {
-        List<Item> items = itemRepository.findAll(page, size, sortProperty, sortDirection);
-        return items.stream()
-            .map(ItemResponse::from)
-            .collect(Collectors.toList());
+    @Transactional
+    public ItemResponse createItem(ItemRequest request, Member loginMember) {
+        validateAdminRoleForKakaoKeyword(request.name(), loginMember);
+        Item item = new Item(null, request.name(), request.price(), request.imageUrl());
+        Item savedItem = itemRepository.save(item);
+        return ItemResponse.from(savedItem);
     }
 
+    @Transactional
     public ItemResponse updateItem(Long id, ItemRequest request, Member loginMember) {
-        validateAdminRoleForKakaoKeyword(request.name(), loginMember); // 권한 확인 로직 호출
+        validateAdminRoleForKakaoKeyword(request.name(), loginMember);
+        Item item = itemRepository.findById(id)
+            .orElseThrow(() -> new ItemNotFoundException("수정할 상품을 찾을 수 없습니다: " + id));
 
-        Item existingItem = itemRepository.findById(id)
-            .orElseThrow(() -> new ItemNotFoundException("수정하려는 상품을 찾을 수 없습니다: " + id));
-        existingItem.updateItemInfo(request.name(), request.price(), request.imageUrl());
-        itemRepository.update(existingItem);
-        return ItemResponse.from(existingItem);
+        item.updateInfo(request.name(), request.price(), request.imageUrl());
+        return ItemResponse.from(item);
     }
 
+    @Transactional
     public void deleteItem(Long id) {
-        itemRepository.findById(id)
-            .orElseThrow(() -> new ItemNotFoundException("삭제하려는 상품을 찾을 수 없습니다: " + id));
         itemRepository.deleteById(id);
     }
 
