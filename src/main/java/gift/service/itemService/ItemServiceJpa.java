@@ -62,8 +62,8 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getAllItems() {
-        return List.of();
+    public List<Item> getAllItems() {
+        return itemRepository.findAll();
     }
 
     @Override

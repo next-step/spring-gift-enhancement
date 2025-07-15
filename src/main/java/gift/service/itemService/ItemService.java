@@ -25,7 +25,7 @@ public interface ItemService {
 
     void deleteById(Long id);
 
-    List<ItemResponseDto> getAllItems();
+    List<Item> getAllItems();
 
     ItemResponseDto findItemByName(@NotNull String name);
 
