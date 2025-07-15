@@ -6,6 +6,7 @@ import gift.product.dto.ProductUpdateRequestDto;
 import gift.entity.Product;
 import gift.product.exception.InvalidProductException;
 import gift.exception.OperationFailedException;
+import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,43 +25,36 @@ public class ProductServiceImpl implements ProductService {
     public void addProduct(ProductAddRequestDto requestDto) {
         validateProductName(requestDto.name(), "admin/add");
         Product product = new Product(null, requestDto.name(), requestDto.price(), requestDto.url());
-        int result = productRepository.addProduct(product);
-        if (result == 0) {
-            throw new OperationFailedException();
+        Product saved = productRepository.save(product);
+        if (saved.getId() == null) {
+            throw new OperationFailedException("저장 실패");
         }
     }
 
     @Override
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepository.findProductByIdOrElseThrow(id);
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         return new ProductResponseDto(product);
     }
 
     @Override
     public List<ProductResponseDto> findAllProduct() {
-        List<Product> products = productRepository.findAllProduct();
+        List<Product> products = productRepository.findAll();
         List<ProductResponseDto> responseDtos = products.stream().map(Product::toProductResponseDto).toList();
         return responseDtos;
     }
 
     @Override
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
-        Product product = productRepository.findProductByIdOrElseThrow(id);
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         validateProductName(requestDto.name(), "admin/edit");
-        Product newProduct = new Product(id, requestDto);
-        int result = productRepository.updateProductById(newProduct);
-        if (result == 0) {
-            throw new OperationFailedException();
-        }
+        product.update(id, requestDto);
     }
 
     @Override
     public void deleteProductById(Long id) {
-        Product product = productRepository.findProductByIdOrElseThrow(id);
-        int result = productRepository.deleteProductById(product.id());
-        if (result == 0) {
-            throw new OperationFailedException();
-        }
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        productRepository.deleteById(id);
     }
 
     @Override

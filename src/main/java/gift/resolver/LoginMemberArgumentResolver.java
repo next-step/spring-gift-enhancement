@@ -2,6 +2,7 @@ package gift.resolver;
 
 import gift.entity.Member;
 import gift.authorization.exception.UnauthorizedException;
+import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.authorization.service.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +41,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         Long memberId = jwtProvider.getMemberId(token);
 
-        Member member = memberRepository.findMemberByIdOrElseThrow(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
 
         return member;
     }
