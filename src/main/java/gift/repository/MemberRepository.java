@@ -1,10 +1,8 @@
 package gift.repository;
 
 import gift.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
-public interface MemberRepository {
-    Member save(Member member);
-    Optional<Member> findByEmail(String email);
+public interface MemberRepository extends JpaRepository<Member,Long> {
+    Member findByEmail(String email);
 }
