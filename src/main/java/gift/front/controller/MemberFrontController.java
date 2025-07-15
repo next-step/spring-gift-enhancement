@@ -1,7 +1,7 @@
 package gift.front.controller;
 
 import gift.api.product.service.ProductService;
-import gift.api.wishlist.service.WishlistService;
+import gift.api.wish.service.WishService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,18 +13,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/members")
 public class MemberFrontController {
 
     private final ProductService productService;
-    private final WishlistService wishlistService;
+    private final WishService wishService;
 
-    public MemberFrontController(ProductService productService, WishlistService wishlistService) {
+    public MemberFrontController(ProductService productService, WishService wishService) {
         this.productService = productService;
-        this.wishlistService = wishlistService;
+        this.wishService = wishService;
     }
 
     @GetMapping("/login")
@@ -50,7 +49,6 @@ public class MemberFrontController {
     @GetMapping("/products")
     public String allProducts(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam(required = false) Long categoryId,
             Model model,
             HttpServletRequest request
     ) {
@@ -65,7 +63,7 @@ public class MemberFrontController {
             model.addAttribute("userRole", userRole);
         }
 
-        model.addAttribute("products", productService.findAllProducts(pageable, categoryId));
+        model.addAttribute("products", productService.findAllProducts(pageable));
         model.addAttribute("page", pageable.getPageNumber());
 
         return "member/product-list";
@@ -79,7 +77,7 @@ public class MemberFrontController {
         return "member/product-detail";
     }
 
-    @GetMapping("/wishlist")
+    @GetMapping("/wishes")
     public String wishlist(
             @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             Model model,
@@ -89,7 +87,7 @@ public class MemberFrontController {
         model.addAttribute("userEmail", userEmail);
         model.addAttribute("userRole", request.getAttribute("userRole"));
 
-        model.addAttribute("wishlistPage", wishlistService.getWishlist(userEmail, pageable));
+        model.addAttribute("wishlistPage", wishService.getWishlist(userEmail, pageable));
 
         return "member/wishlist";
     }

@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/wishes/**",
                         "/admin/**",
                         "/members/products/**",
-                        "/members/wishlist/**"
+                        "/members/wishes/**"
                 );
     }
 }

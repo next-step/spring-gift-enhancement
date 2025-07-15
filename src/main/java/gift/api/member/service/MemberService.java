@@ -7,11 +7,12 @@ import gift.api.member.dto.TokenResponseDto;
 import gift.api.member.repository.MemberRepository;
 import gift.exception.LoginFailedException;
 import gift.util.JwtUtil;
-import jakarta.transaction.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -29,25 +30,26 @@ public class MemberService {
         });
 
         String encodedPassword = BCrypt.hashpw(memberRequestDto.password(), BCrypt.gensalt());
+
         Member member = new Member(
-                null,
                 memberRequestDto.email(),
                 encodedPassword,
                 MemberRole.USER
         );
-        memberRepository.registerMember(member);
 
-        String token = jwtUtil.createToken(memberRequestDto.email(), MemberRole.USER);
+        memberRepository.save(member);
+
+        String token = jwtUtil.createToken(member.getEmail(), member.getRole());
 
         return new TokenResponseDto(token);
     }
 
     public TokenResponseDto loginMember(MemberRequestDto memberRequestDto) {
         Member member = memberRepository.findByEmail(memberRequestDto.email())
-                .orElseThrow(() -> new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다."));
+                .orElseThrow(LoginFailedException::new);
 
         if (!BCrypt.checkpw(memberRequestDto.password(), member.getPassword())) {
-            throw new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new LoginFailedException();
         }
 
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());

@@ -403,29 +403,49 @@ HTTP/1.1 204 No Content
 <summary>📌 DB 초기화</summary>
 
 ```sql
-create table product (
-    id bigint auto_increment primary key,
-    name varchar(255) not null,
-    price bigint not null,
-    image_url varchar(1000)
-);
+drop table if exists member
+drop table if exists product
+drop table if exists wish
 
 create table member (
-    id bigint auto_increment primary key,
-    email varchar(255) not null unique,
+    id bigint not null auto_increment,
+    email varchar(255) not null,
     password varchar(255) not null,
-    role varchar(50) not null
-);
+    role enum ('ADMIN','USER') not null,
+    primary key (id)
+)
 
-create table wishlist (
-    id bigint auto_increment primary key,
+create table product (
+    id bigint not null auto_increment,
+    price bigint not null,
+    image_url varchar(255) not null,
+    name varchar(255) not null,
+    primary key (id)
+)
+
+create table wish (
+    created_date datetime(6) not null,
+    id bigint not null auto_increment,
     member_id bigint not null,
     product_id bigint not null,
-    created_date timestamp(6) not null,
-    foreign key (member_id) references member(id) on delete cascade,
-    foreign key (product_id) references product(id) on delete cascade,
-    unique (member_id, product_id)
-);
+    primary key (id)
+)
+
+alter table member 
+   add constraint UKmbmcqelty0fbrvxp1q58dn57t unique (email);
+
+alter table wish 
+   add constraint UKimrh37c61jscdegh9fi3jbpix unique (member_id, product_id);
+
+alter table wish 
+   add constraint FK70nrc4a6uvljrtemsn80eq1gd 
+   foreign key (member_id) 
+   references member (id)
+       
+alter table wish 
+   add constraint FKh3bvkvkslnehbxqma1x2eynqb 
+   foreign key (product_id) 
+   references product (id)
 ```
 
 </details>

@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 위시리스트 추가 또는 삭제 버튼
-    if (event.target.classList.contains('add-to-wishlist-btn')
-        || event.target.classList.contains('delete-from-wishlist-btn')) {
-      handleWishlistAction(event);
+    if (event.target.classList.contains('add-to-wish-btn')
+        || event.target.classList.contains('delete-from-wish-btn')) {
+      handleWishAction(event);
     }
   });
 
@@ -91,7 +91,7 @@ async function handleAuthFormSubmit(event) {
 }
 
 // 위시리스트 추가/삭제 비동기 함수
-async function handleWishlistAction(event) {
+async function handleWishAction(event) {
   event.stopPropagation();
   const button = event.target;
   const productId = button.dataset.productId;

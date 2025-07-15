@@ -23,12 +23,11 @@ public class DataInitializer implements CommandLineRunner {
 
         if (memberRepository.findByEmail(adminEmail).isEmpty()) {
             Member admin = new Member(
-                    null,
                     adminEmail,
                     BCrypt.hashpw(adminPassword, BCrypt.gensalt()),
                     MemberRole.ADMIN
             );
-            memberRepository.registerMember(admin);
+            memberRepository.save(admin);
         }
     }
 }
