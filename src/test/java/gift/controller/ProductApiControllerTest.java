@@ -241,6 +241,34 @@ class ProductApiControllerTest {
         ).andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("상품 생성 dto 유효성 검증10 - 상품 이미지 값이 들어오지 않을 경우 상태코드 400을 반환한다.")
+    void test5_10() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", null, 1000, 10000)
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 생성 dto 유효성 검증11 - 상품 이미지 값이 빈 문자열로 들어올 경우 상태코드 400을 반환한다.")
+    void test5_11() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "", 1000, 10000)
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
 
     @Test
     @DisplayName("없는 아이디의 상품 수정을 요청할 경우 상태코드 400을 반환한다.")
