@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService{
 
     public List<ProductResponseDto> findAllProducts(){
 
-        List<Product> findList = productRepository.findAllProducts();
+        List<Product> findList = productRepository.findAll();
 
         List<ProductResponseDto> dtoList = findList
                 .stream()
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductResponseDto findProductById(Long id) {
 
-        return productRepository.findProductById(id)
+        return productRepository.findById(id)
                 .map(product -> new ProductResponseDto(
                         product.getId(),
                         product.getName(),
@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponseDto findProductByIdElseThrow(Long id) {
-        return productRepository.findProductById(id)
+        return productRepository.findById(id)
                 .map(product -> new ProductResponseDto(
                         product.getId(),
                         product.getName(),
@@ -69,6 +69,7 @@ public class ProductServiceImpl implements ProductService{
                 );
     }
 
+    @Transactional
     @Override
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
 
@@ -81,15 +82,16 @@ public class ProductServiceImpl implements ProductService{
         if (!approved)
             description = "카카오 문구가 담긴 상품은 담당 MD와 협의 후 사용가능합니다.";
 
-        Product product = productRepository.saveProduct(name, price, imageUrl, approved, description);
+        Product newProduct = new Product(name, price, imageUrl, approved, description);
+        Product savedProduct = productRepository.save(newProduct);
 
         return new ProductResponseDto(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl(),
-                product.getApproved(),
-                product.getDescription());
+                savedProduct.getId(),
+                savedProduct.getName(),
+                savedProduct.getPrice(),
+                savedProduct.getImageUrl(),
+                savedProduct.getApproved(),
+                savedProduct.getDescription());
     }
 
     @Transactional
@@ -102,8 +104,12 @@ public class ProductServiceImpl implements ProductService{
         if (!approved)
             description = "카카오 문구가 담긴 상품은 담당 MD와 협의 후 사용가능합니다.";
 
-        int updatedNum = productRepository.updateProduct(
-                id,
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(
+                        "해당 ID의 상품은 존재하지 않습니다."
+                ));
+
+        product.updateProduct(
                 dto.getName(),
                 dto.getPrice(),
                 dto.getImageUrl(),
@@ -111,24 +117,26 @@ public class ProductServiceImpl implements ProductService{
                 description
         );
 
-        if (updatedNum == 0) {
-            throw new ProductNotFoundException(
-                    "해당 ID의 상품은 존재하지 않습니다."
-            );
-        }
-
-        return findProductById(id);
+        return new ProductResponseDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl(),
+                product.getApproved(),
+                product.getDescription()
+        );
     }
 
+    @Transactional
     @Override
     public void deleteProduct(Long id) {
 
-        int deletedNum = productRepository.deleteProduct(id);
-
-        if (deletedNum == 0) {
+        if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException(
                     "해당 ID의 상품은 존재하지 않습니다."
             );
         }
+
+        productRepository.deleteById(id);
     }
 }
