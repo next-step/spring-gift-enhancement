@@ -4,6 +4,7 @@ import gift.config.LoginUser;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItem;
 import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.entity.WishItem;
 import gift.service.wishListService.WishListService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -25,9 +26,9 @@ public class WishListController {
     @PostMapping
     public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid AddWishItemDto dto, @LoginUser String userEmail) {
 
-        ResponseWishItemDto addedWishItem = wishListService.addWishItem(dto, userEmail);
+        WishItem addedWishItem = wishListService.addWishItem(dto, userEmail);
 
-        return new ResponseEntity<>(addedWishItem, HttpStatus.CREATED);
+        return new ResponseEntity<>(ResponseWishItemDto.from(addedWishItem), HttpStatus.CREATED);
     }
 
     @GetMapping

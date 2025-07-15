@@ -10,6 +10,7 @@ import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
+import gift.repository.wishListRepository.WishListRepositoryJPA;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
 import org.springframework.stereotype.Service;
@@ -21,35 +22,37 @@ import java.util.Optional;
 @Service
 public class WishListServiceImpl implements WishListService{
 
-    private final WishListRepository wishListRepository;
+    private final WishListRepositoryJPA wishListRepository;
     private final UserService userService;
     private final ItemService itemService;
 
-    public WishListServiceImpl(WishListRepository wishListRepository, UserService userService, ItemService itemService) {
+    public WishListServiceImpl(WishListRepositoryJPA wishListRepository, UserService userService, ItemService itemService) {
         this.wishListRepository = wishListRepository;
         this.userService = userService;
         this.itemService = itemService;
     }
 
     @Override
-    public ResponseWishItemDto addWishItem(AddWishItemDto dto, String userEmail) {
+    public WishItem addWishItem(AddWishItemDto dto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        Optional<Item> item = itemService.findItemByName(dto.name());
-        if (item.isEmpty()) {
+        Optional<Item> findItem = itemService.findItemByName(dto.name());
+        if (findItem.isEmpty()) {
             throw new ItemNotFoundException(dto.name());
         }
 
+        Item item = findItem.get();
         Integer quantity = dto.quantity();
-        WishItem addedWishItem = wishListRepository.addWishItem(user.getId(),id(), quantity);
 
+        WishItem wishItem = new WishItem(user, item, quantity);
 
-        return ResponseWishItemDto.from(addedWishItem);
+        WishItem savedWishItem = wishListRepository.save(wishItem);
+
+        return savedWishItem;
     }
-
     @Override
     public List<ResponseWishItemDto> getItemList(String name, Integer price, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
