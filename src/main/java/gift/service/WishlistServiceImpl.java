@@ -5,6 +5,7 @@ import gift.dto.WishlistItemResponseDto;
 import gift.entity.Product;
 import gift.entity.WishlistItem;
 import gift.exception.OperationFailedException;
+import gift.exception.ProductIsInWishlistException;
 import gift.exception.WishlistItemNotFoundException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
@@ -29,7 +30,11 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public void addWishlistItem(Long memberId, WishlistItemRequestDto requestDto) {
         memberRepository.findMemberByIdOrElseThrow(memberId);
-        productRepository.findProductByIdOrElseThrow(requestDto.productId());
+        Product product = productRepository.findProductByIdOrElseThrow(requestDto.productId());
+        boolean productIsInWishlist = wishlistRepository.findProductInMemberById(memberId, requestDto.productId()).isPresent();
+        if (productIsInWishlist) {
+            throw new ProductIsInWishlistException(product.name());
+        }
         WishlistItem item = new WishlistItem(null, memberId, requestDto.productId(), requestDto.quantity());
         int result = wishlistRepository.addWishlistItem(item);
         if (result == 0) {

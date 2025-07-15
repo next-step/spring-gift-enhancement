@@ -1,11 +1,8 @@
 package gift.exception;
 
 import gift.dto.ErrorResponseDto;
-import gift.dto.WishlistItemRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -89,5 +86,15 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
+
+    @ExceptionHandler(ProductIsInWishlistException.class)
+    public ResponseEntity<ErrorResponseDto> handleProductIsInWishlist(ProductIsInWishlistException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDto);
     }
 }

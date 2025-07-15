@@ -17,4 +17,6 @@ public interface WishlistRepository {
     int updateWishlistItemById(Long id, Long quantity);
 
     int deleteById(Long id);
+
+    Optional<WishlistItem> findProductInMemberById(Long memberId, Long productId);
 }
