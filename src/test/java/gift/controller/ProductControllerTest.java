@@ -1,15 +1,13 @@
 package gift.controller;
 
-import gift.dto.ErrorResponseDto;
-import gift.dto.ProductAddRequestDto;
+import gift.exception.ErrorResponseDto;
+import gift.product.dto.ProductAddRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

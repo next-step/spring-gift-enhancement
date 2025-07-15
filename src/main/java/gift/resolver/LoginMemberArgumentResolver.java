@@ -1,9 +1,9 @@
 package gift.resolver;
 
 import gift.entity.Member;
-import gift.exception.UnauthorizedException;
-import gift.repository.MemberRepository;
-import gift.service.JwtProvider;
+import gift.authorization.exception.UnauthorizedException;
+import gift.member.repository.MemberRepository;
+import gift.authorization.service.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,13 @@
 package gift.exception;
 
-import gift.dto.ErrorResponseDto;
+import gift.authorization.exception.ForbiddenException;
+import gift.authorization.exception.UnauthorizedException;
+import gift.member.exception.InvalidMemberException;
+import gift.member.exception.MemberNotFoundException;
+import gift.product.exception.InvalidProductException;
+import gift.product.exception.ProductIsInWishlistException;
+import gift.product.exception.ProductNotFoundException;
+import gift.wishlist.exception.WishlistItemNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
