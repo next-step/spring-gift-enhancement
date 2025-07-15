@@ -6,6 +6,7 @@ import gift.entity.Product;
 import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,6 +64,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         productRepository.deleteById(id);
     }
 }

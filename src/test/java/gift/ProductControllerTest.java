@@ -323,7 +323,7 @@ public class ProductControllerTest {
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(() ->
                 client.delete()
-                    .uri(BASE_URL + "/5")
+                    .uri(BASE_URL + "/999")
                     .retrieve()
                     .toBodilessEntity()
             );
