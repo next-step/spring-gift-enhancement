@@ -10,6 +10,7 @@ import gift.repository.MemberRepository;
 import gift.security.JwtTokenProvider;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -21,21 +22,23 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public MemberResponseDto registerMember(MemberRequestDto memberRequestDto) {
-        Optional<Member> optionalMember = memberRepository.findMemberByEmail(memberRequestDto.email());
+        Optional<Member> optionalMember = memberRepository.findByEmail(memberRequestDto.email());
 
         if (optionalMember.isPresent()) {
             throw new EmailAlreadyExistsException("이미 등록된 이메일입니다.");
         }
 
         Member member = new Member(memberRequestDto);
-        memberRepository.registerMember(member);
+        memberRepository.save(member);
 
         return new MemberResponseDto(jwtTokenProvider.generateToken(member));
     }
 
+    @Transactional(readOnly = true)
     public MemberResponseDto loginMember(MemberRequestDto memberRequestDto) {
-        Member member = memberRepository.findMemberByEmail(memberRequestDto.email())
+        Member member = memberRepository.findByEmail(memberRequestDto.email())
                 .orElseThrow(() -> new ResourceNotFoundException("등록된 사용자가 아닙니다."));
 
         if (!member.getPassword().equals(memberRequestDto.password())) {

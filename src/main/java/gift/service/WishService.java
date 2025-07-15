@@ -2,33 +2,45 @@ package gift.service;
 
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
+import gift.entity.Member;
 import gift.entity.Product;
+import gift.entity.Wish;
 import gift.exception.DuplicateWishException;
 import gift.exception.ResourceNotFoundException;
+import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WishService {
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
 
-    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
+    public WishService(
+            WishRepository wishRepository,
+            ProductRepository productRepository,
+            MemberRepository memberRepository
+    ) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public List<WishResponseDto> getWishes(Long memberId){
-        return wishRepository.findByMemberId(memberId).stream()
-                .map(w -> {
-                    Product product = productRepository.findProductById(w.getProductId())
-                            .orElseThrow(() -> new ResourceNotFoundException("상품 정보를 찾을 수 없습니다: ID " + w.getProductId()));
+    @Transactional(readOnly = true)
+    public List<WishResponseDto> getWishes(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 회원을 찾을 수 없습니다. ID: " + memberId));
 
+        return wishRepository.findByMember(member).stream()
+                .map(wish -> {
+                    Product product = wish.getProduct();
                     return new WishResponseDto(
-                            w.getId(),
+                            wish.getId(),
                             product.getId(),
                             product.getName(),
                             product.getPrice(),
@@ -38,22 +50,32 @@ public class WishService {
                 .collect(Collectors.toList());
     }
 
-    public void addWish(Long memberId, WishRequestDto wishRequestDto){
-        productRepository.findProductById(wishRequestDto.productId())
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + wishRequestDto.productId()));
+    @Transactional
+    public void addWish(Long memberId, WishRequestDto wishRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 회원을 찾을 수 없습니다. ID: " + memberId));
+        Product product = productRepository.findById(wishRequestDto.productId())
+                .orElseThrow(() -> new ResourceNotFoundException("해당 상품을 찾을 수 없습니다. ID: " + wishRequestDto.productId()));
 
-        if (wishRepository.existWish(memberId, wishRequestDto.productId())) {
+        if (wishRepository.existsByMemberAndProduct(member, product)) {
             throw new DuplicateWishException("이미 위시리스트에 추가된 상품입니다.");
         }
 
-        wishRepository.addWish(memberId, wishRequestDto.productId());
+        Wish wish = new Wish(member, product);
+        wishRepository.save(wish);
     }
 
+    @Transactional
     public void deleteWish(Long memberId, Long productId){
-        if (!wishRepository.existWish(memberId, productId)) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 회원을 찾을 수 없습니다. ID: " + memberId));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 상품을 찾을 수 없습니다. ID: " + productId));
+
+        if (!wishRepository.existsByMemberAndProduct(member, product)) {
             throw new ResourceNotFoundException("해당 상품이 위시리스트에 존재하지 않습니다.");
         }
 
-        wishRepository.deleteWish(memberId, productId);
+        wishRepository.deleteByMemberAndProduct(member, product);
     }
 }

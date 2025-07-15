@@ -1,10 +1,29 @@
 package gift.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "products")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false, length = 15)
     private String name;
+
+    @Column(name = "price", nullable = false)
     private long price;
+
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
+
+    public Product() {}
 
     public Product(String name, long price, String imageUrl) {
         this.name = name;
@@ -21,10 +40,6 @@ public class Product {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

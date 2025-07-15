@@ -36,7 +36,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         Long memberId = (Long) request.getAttribute("memberId");
 
-        return memberRepository.findMemberById(memberId)
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + memberId));
     }
 }

@@ -52,6 +52,8 @@ public class WishControllerTest {
 
     @AfterEach
     void rollback() {
+        jdbcClient.sql("DELETE FROM wishlist")
+                .update();
         jdbcClient.sql("DELETE FROM members")
                 .update();
     }
