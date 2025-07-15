@@ -27,11 +27,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @GetMapping
-    public List<Product> getAll() {
-        return productService.getAllActive();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
         try {

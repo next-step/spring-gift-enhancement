@@ -1,7 +1,6 @@
 package gift.service;
 
 import gift.domain.Product;
-import gift.domain.ProductStatus;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,19 +24,10 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<Product> getAllActive() {
-        return productRepository.findAllActive();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Product> getAllProduct(){
+    public List<Product> getAll(){
         return productRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public List<Product> getByStatus(ProductStatus status){
-        return productRepository.findByStatusAndIsDeletedFalse(status);
-    }
 
     @Transactional(readOnly = true)
     public Product getById(Long id) {
@@ -47,7 +37,13 @@ public class ProductService {
 
     @Transactional
     public void update(Long id, Product product) {
-        boolean updated = productRepository.updateById(id, product) > 0;
+        boolean updated = productRepository.updateById(
+                id,
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        ) > 0;
+
         if (!updated) {
             throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
         }
@@ -59,14 +55,6 @@ public class ProductService {
             throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
         }
         productRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void softDelete(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
-        }
-        productRepository.softDeleteById(id);
     }
 
 }
