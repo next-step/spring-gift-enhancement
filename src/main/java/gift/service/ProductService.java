@@ -6,11 +6,13 @@ import gift.dto.product.CreateProductRequest;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -24,10 +26,12 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Product getProduct(Long id) {
         return getById(id);
     }
@@ -35,7 +39,6 @@ public class ProductService {
     public Product updateProduct(Long id, UpdateProductRequest request) {
         Product product = getById(id);
         product.update(request.name(), request.price(), request.quantity());
-        productRepository.update(product);
         return product;
     }
 

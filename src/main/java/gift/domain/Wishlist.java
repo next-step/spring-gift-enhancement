@@ -12,17 +12,30 @@ public class Wishlist {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Product product;
 
     public Long getId() {
         return id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
     public Wishlist() {
+    }
+
+    public Wishlist(User user, Product product) {
+        this.user = user;
+        this.product = product;
     }
 }
