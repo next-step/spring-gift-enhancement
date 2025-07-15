@@ -1,4 +1,4 @@
-package gift;
+package gift.controller;
 
 import gift.controller.AdminController;
 import gift.dto.ProductRequestDto;
@@ -7,6 +7,7 @@ import gift.dto.UserRequestDto;
 import gift.dto.UserResponseDto;
 import gift.service.AuthService;
 import gift.service.ProductService;
+import gift.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,10 @@ class AdminControllerTest {
     // MockitoBean으로 AuthService 모킹
     @MockitoBean
     private AuthService authService;
+
+    // MockitoBean으로 UserService 모킹
+    @MockitoBean
+    private UserService userService;
 
     //////////////////////////////////////////////   Products   /////////////////////////////////////////////
 
@@ -129,7 +134,7 @@ class AdminControllerTest {
                 new UserResponseDto(1L, "a@e.com", "pwd", LocalDateTime.now()),
                 new UserResponseDto(2L, "b@e.com", "pwd2", LocalDateTime.now())
         );
-        when(authService.findAllUsers()).thenReturn(users);
+        when(userService.findAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/admin/users"))
                 .andExpect(status().isOk())
@@ -150,7 +155,7 @@ class AdminControllerTest {
     void showPatchUserPage() throws Exception {
         Long id = 3L;
         var dto = new UserResponseDto(id, "c@e.com", "pass", LocalDateTime.now());
-        when(authService.findUserById(id)).thenReturn(dto);
+        when(userService.findUserById(id)).thenReturn(dto);
 
         mockMvc.perform(get("/admin/users/patch/{id}", id))
                 .andExpect(status().isOk())
@@ -167,7 +172,7 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/users"));
 
-        verify(authService).deleteUser(id);
+        verify(userService).deleteUser(id);
     }
 
     @Test
@@ -195,7 +200,7 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/users"));
 
-        verify(authService).updateUser(eq(id), any(UserRequestDto.class));
+        verify(userService).updateUser(eq(id), any(UserRequestDto.class));
     }
 }
 

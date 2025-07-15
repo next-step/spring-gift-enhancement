@@ -1,4 +1,4 @@
-package gift;
+package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.controller.AuthController;
