@@ -4,12 +4,13 @@ import gift.entity.WishlistItem;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface WishlistRepository {
     int addWishlistItem(WishlistItem item);
 
-    WishlistItem findByIdOrElseThrow(Long id);
+    Optional<WishlistItem> findWishlistById(Long id);
 
     List<WishlistItem> findAllWishlistItemsByMemberId(Long memberId);
 
