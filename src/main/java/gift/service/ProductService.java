@@ -3,12 +3,14 @@ package gift.service;
 import gift.dto.request.ProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
