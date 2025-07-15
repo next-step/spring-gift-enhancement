@@ -12,7 +12,6 @@ import gift.member.dto.LogInRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.dto.RegisterRequest;
 import gift.member.repository.MemberRepository;
-import gift.wishlist.repository.WishlistRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
