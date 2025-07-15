@@ -32,6 +32,13 @@ public class Product {
         this.mdApproval = MdApprovalStatus.of(name);
     }
 
+    public Product(String name, long price, String imageUrl, MdApprovalStatus approved) {
+        this.name = new ProductName(name);
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.mdApproval = approved;
+    }
+
     public void update(String name, Long price, String imageUrl) {
         this.name = new ProductName(name);
         this.price = price;
