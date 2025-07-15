@@ -74,5 +74,5 @@
   - [x] ProductController
   - [x] WishController
 
-- [ ] 테스트 코드 변경
-  - [ ] @DataJpaTest 적용한 테스트 클래스 작성
+- [x] 테스트 코드 변경
+  - [x] @DataJpaTest 적용한 테스트 클래스 작성

@@ -21,7 +21,7 @@ public class AdminAccountInitializer implements CommandLineRunner {
         String adminPassword = "admin123";
 
         if (memberRepository.findByEmail(adminEmail).isEmpty()) {
-            Member admin = new Member(null, adminEmail, adminPassword, MemberRole.ADMIN);
+            Member admin = new Member(adminEmail, adminPassword, MemberRole.ADMIN);
             memberRepository.save(admin);
         }
     }

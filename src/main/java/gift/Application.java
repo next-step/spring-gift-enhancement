@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import gift.config.JwtAuthFilter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @SpringBootApplication
 public class Application {
@@ -12,12 +14,15 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilterRegistration(JwtAuthFilter jwtAuthFilter) {
-        FilterRegistrationBean<JwtAuthFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(jwtAuthFilter);
-        registrationBean.addUrlPatterns("/admin/*", "/api/products/*"); // 인증이 필요한 경로만 적용
-        registrationBean.setOrder(1); // 필터 순서
-        return registrationBean;
+    @Configuration
+    @Profile("!test")
+    public class FilterConfig {
+        @Bean
+        public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilterRegistration(JwtAuthFilter jwtAuthFilter) {
+            FilterRegistrationBean<JwtAuthFilter> registrationBean = new FilterRegistrationBean<>();
+            registrationBean.setFilter(jwtAuthFilter);
+            registrationBean.addUrlPatterns("/*");
+            return registrationBean;
+        }
     }
 }

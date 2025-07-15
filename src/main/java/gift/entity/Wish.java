@@ -34,10 +34,13 @@ public class Wish {
     public void setId(Long id) { this.id = id; }
 
     public Member getMember() { return member; }
+    public void setMember(Member member) { this.member = member; }
 
     public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
+
 
 }
