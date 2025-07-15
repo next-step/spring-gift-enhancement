@@ -1,12 +1,26 @@
 package gift.domain;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 15)
     private String name;
+
+    @Column(nullable = false)
+    private String imageUrl;
+
+    @Column(nullable = false)
     private Integer price;
+
+    @Column(nullable = false)
     private Integer quantity;
+
 
     public Product(String name, Integer price, Integer quantity) {
         this.name = name;
@@ -41,5 +55,8 @@ public class Product {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    public Product() {
     }
 }

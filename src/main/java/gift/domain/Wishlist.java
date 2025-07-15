@@ -1,30 +1,28 @@
 package gift.domain;
 
+import jakarta.persistence.*;
+
+import static jakarta.persistence.FetchType.*;
+
+@Entity
 public class Wishlist {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
-    private Long productId;
+
+    @ManyToOne(fetch = LAZY)
+    @Column(nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = LAZY)
+    @Column(nullable = false)
+    private Product product;
 
     public Long getId() {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public Wishlist(Long id, Long userId, Long productId) {
-        this.id = id;
-        this.userId = userId;
-        this.productId = productId;
-    }
-
-    public Wishlist(Long userId, Long productId) {
-        this.userId = userId;
-        this.productId = productId;
+    public Wishlist() {
     }
 }
