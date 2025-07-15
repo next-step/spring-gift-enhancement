@@ -4,6 +4,7 @@ import gift.dto.wishListDto.AddWishItemDto;
 import gift.entity.Item;
 import gift.entity.User;
 import gift.entity.WishItem;
+import gift.exception.itemException.ItemDuplicatedException;
 import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
@@ -45,6 +46,10 @@ public class WishListServiceImpl implements WishListService{
         Integer quantity = dto.quantity();
 
         WishItem wishItem = new WishItem(user, item, quantity);
+
+        if (wishListRepository.existsByItem(item)) {
+            throw new ItemDuplicatedException();
+        }
 
         WishItem savedWishItem = wishListRepository.save(wishItem);
 

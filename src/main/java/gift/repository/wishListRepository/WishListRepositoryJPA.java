@@ -14,4 +14,6 @@ public interface WishListRepositoryJPA extends JpaRepository<WishItem, Long> {
     List<WishItem> findAllByUser(User user);
 
     Optional<WishItem> findByUserAndItem(User user, Item item);
+
+    boolean existsByItem(Item item);
 }
