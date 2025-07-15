@@ -12,7 +12,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     List<Product> findByStatusAndIsDeletedFalse(ProductStatus status);
 
-    @Query("SELECT p FROM Product p WHERE p.status = 'ACTIVE' AND p.isDeleted = false")
+    @Query("SELECT p FROM Product p WHERE p.status = gift.domain.ProductStatus.ACTIVE AND p.isDeleted = false")
     List<Product> findAllActive();
 
     @Modifying(clearAutomatically = true)
