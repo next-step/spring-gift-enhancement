@@ -5,25 +5,25 @@ import gift.dto.itemDto.ItemDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
-import gift.repository.itemRepository.ItemRepository;
+
+import gift.repository.itemRepository.ItemRepositoryJPA;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ItemServiceJpa implements ItemService {
-    private final ItemRepository itemRepository;
+    private final ItemRepositoryJPA itemRepository;
 
-    public ItemServiceJpa(ItemRepository itemRepository) {
+    public ItemServiceJpa(ItemRepositoryJPA itemRepository) {
         this.itemRepository = itemRepository;
     }
 
     @Override
     public Item saveItem(ItemCreateDto dto) {
         Item item = new Item(dto.name(), dto.price(),dto.imageUrl());
-        itemRepository.saveItem(item);
 
-        return item;
+        return itemRepository.save(item);
     }
 
     @Override
