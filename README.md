@@ -13,4 +13,4 @@
 - [x] `Wish` 클래스를 JPA 엔티티로 매핑하고 `Member`, `Product`와 연관관계 설정
 - [x] Spring Data JPA를 사용하도록 리포지토리 계층 리팩터링 (`JdbcTemplate` 구현체 삭제)
 - [x] 리포지토리 변경에 따른 서비스 계층 코드 수정
-- [ ] `@DataJpaTest`를 이용한 JPA 리포지토리 학습 테스트 작성
+- [x] `@DataJpaTest`를 이용한 JPA 리포지토리 학습 테스트 작성
