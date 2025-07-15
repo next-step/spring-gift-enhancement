@@ -26,7 +26,7 @@ public class WishlistController {
     public ResponseEntity<List<WishlistItemResponseDto>> findAllWishlistItemsByMemberId(
             @LoginMember Member member
     ) {
-        List<WishlistItemResponseDto> items = wishlistService.findAllWishlistItemsByMemberId(member.id());
+        List<WishlistItemResponseDto> items = wishlistService.findAllWishlistItemsByMemberId(member.getId());
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
@@ -35,7 +35,7 @@ public class WishlistController {
             @LoginMember Member member,
             @Valid @RequestBody WishlistItemRequestDto requestDto
     ) {
-        wishlistService.addWishlistItem(member.id(), requestDto);
+        wishlistService.addWishlistItem(member.getId(), requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

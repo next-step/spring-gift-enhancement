@@ -7,11 +7,14 @@ import gift.member.dto.*;
 import gift.member.exception.InvalidMemberException;
 import gift.exception.OperationFailedException;
 import gift.authorization.exception.UnauthorizedException;
+import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.authorization.service.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static gift.authorization.service.SaltedSHA256.hashWithSHA256;
 
@@ -31,9 +34,9 @@ public class MemberServiceImpl implements MemberService{
         validateMemberRole(requestDto.role(), "admin/memberAdd");
         String hashedPassword = hashWithSHA256(requestDto.password());
         Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
-        int result = memberRepository.addMember(member);
-        if (result == 0) {
-            throw new OperationFailedException();
+        Member saved = memberRepository.save(member);
+        if (saved.getId() == null) {
+            throw new OperationFailedException("저장 실패");
         }
     }
 
@@ -44,68 +47,61 @@ public class MemberServiceImpl implements MemberService{
         String hashedPassword = hashWithSHA256(requestDto.password());
 
         Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), "USER");
-        int result = memberRepository.addMember(member);
-        if (result == 0) {
-            throw new OperationFailedException();
+        Member savedMember = memberRepository.save(member);
+        if (savedMember.getId() == null) {
+            throw new OperationFailedException("저장 실패");
         }
 
-        Member findMember = memberRepository.findMemberByEmail(requestDto.email());
-
-        return new TokenResponseDto(jwtProvider.createToken(findMember.id(), member.name(), member.email(), member.role()));
+        return new TokenResponseDto(jwtProvider.createToken(savedMember.getId(), savedMember.getName(), savedMember.getEmail(), savedMember.getRole()));
     }
 
     @Override
     public TokenResponseDto loginMember(MemberLoginRequestDto requestDto) {
-        Member member = memberRepository.findMemberByEmailOrElseThrow(requestDto.email());
+        Member member = memberRepository.findByEmail(requestDto.email()).orElseThrow(() -> new MemberNotFoundException(requestDto.email()));
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
-        if (!member.password().equals(hashedPassword)) {
+        if (!member.getPassword().equals(hashedPassword)) {
             throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new TokenResponseDto(jwtProvider.createToken(member.id(), member.name(), member.email(), member.role()));
+        return new TokenResponseDto(jwtProvider.createToken(member.getId(), member.getName(), member.getEmail(), member.getRole()));
     }
 
     @Override
     public MemberResponseDto findMemberById(Long id) {
-        Member member = memberRepository.findMemberByIdOrElseThrow(id);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
         return new MemberResponseDto(member);
     }
 
     @Override
     public List<MemberResponseDto> findAllMembers() {
-        List<Member> members = memberRepository.findAllMembers();
+        List<Member> members = memberRepository.findAll();
         List<MemberResponseDto> responseDtos = members.stream().map(Member::toMemberResponseDto).toList();
         return responseDtos;
     }
 
     @Override
+    @Transactional
     public void updateMemberById(Long id, MemberUpdateRequestDto requestDto) {
-        Member member = memberRepository.findMemberByIdOrElseThrow(id);
-        if (!member.email().equals(requestDto.email())) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
+        if (!member.getEmail().equals(requestDto.email())) {
             validateMemberEmail(requestDto.email(), "admin/memberEdit");
         }
         validateMemberRole(requestDto.role(), "admin/memberEdit");
+        member.update(id, requestDto);
         Member newMember = new Member(id, requestDto);
-        int result = memberRepository.updateMemberById(newMember);
-        if (result == 0) {
-            throw new OperationFailedException();
-        }
     }
 
     @Override
     public void deleteMemberById(Long id) {
-        Member member = memberRepository.findMemberByIdOrElseThrow(id);
-        int result = memberRepository.deleteMemberById(member.id());
-        if (result == 0) {
-            throw new OperationFailedException();
-        }
+        Member member = memberRepository.findById(id).orElseThrow(()-> new MemberNotFoundException(id));
+        memberRepository.deleteById(member.getId());
     }
 
     public void validateMemberEmail(String email, String viewName) {
-        Member existing = memberRepository.findMemberByEmail(email);
-        if (existing != null) {
+        Optional<Member> existing = memberRepository.findByEmail(email);
+        if (existing.isPresent()) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }

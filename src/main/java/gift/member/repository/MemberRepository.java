@@ -1,16 +1,14 @@
 package gift.member.repository;
 
 import gift.entity.Member;
+import gift.entity.WishlistItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-
-public interface MemberRepository {
-    public int addMember(Member member);
-    public Member findMemberByIdOrElseThrow(Long id);
-    public Member findMemberByEmail(String email);
-    public Member findMemberByEmailOrElseThrow(String email);
-    public List<Member> findAllMembers();
-    public int updateMemberById(Member member);
-    public int deleteMemberById(Long id);
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    Optional<Member> findByEmail(String email);
 }

@@ -9,6 +9,6 @@ public record MemberResponseDto (
         String role
 ) {
     public MemberResponseDto(Member member) {
-        this(member.id(), member.email(), member.name(), member.role());
+        this(member.getId(), member.getEmail(), member.getName(), member.getRole());
     }
 }

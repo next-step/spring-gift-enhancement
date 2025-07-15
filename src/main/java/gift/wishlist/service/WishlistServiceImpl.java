@@ -1,5 +1,8 @@
 package gift.wishlist.service;
 
+import gift.entity.Member;
+import gift.member.exception.MemberNotFoundException;
+import gift.product.exception.ProductNotFoundException;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
 import gift.entity.Product;
@@ -11,6 +14,7 @@ import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
 import gift.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,44 +33,36 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public void addWishlistItem(Long memberId, WishlistItemRequestDto requestDto) {
-        memberRepository.findMemberByIdOrElseThrow(memberId);
-        Product product = productRepository.findProductByIdOrElseThrow(requestDto.productId());
-        boolean productIsInWishlist = wishlistRepository.findProductInMemberById(memberId, requestDto.productId()).isPresent();
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
+        Product product = productRepository.findById(requestDto.productId()).orElseThrow(() -> new ProductNotFoundException(requestDto.productId()));
+        boolean productIsInWishlist = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId).isPresent();
         if (productIsInWishlist) {
-            throw new ProductIsInWishlistException(product.name());
+            throw new ProductIsInWishlistException(product.getName());
         }
-        WishlistItem item = new WishlistItem(null, memberId, requestDto.productId(), requestDto.quantity());
-        int result = wishlistRepository.addWishlistItem(item);
-        if (result == 0) {
-            throw new OperationFailedException();
+        WishlistItem item = new WishlistItem(null, member, product, requestDto.quantity());
+        WishlistItem saved = wishlistRepository.save(item);
+        if (saved.getId() == null) {
+            throw new OperationFailedException("저장 실패");
         }
     }
 
     @Override
     public void deleteWishlistItemById(Long itemId) {
-        int result = wishlistRepository.deleteById(itemId);
-        if (result == 0) {
-            throw new OperationFailedException();
-        }
+        wishlistRepository.deleteById(itemId);
     }
 
     @Override
     public List<WishlistItemResponseDto> findAllWishlistItemsByMemberId(Long memberId) {
-        List<WishlistItem> items = wishlistRepository.findAllWishlistItemsByMemberId(memberId);
+        List<WishlistItem> items = wishlistRepository.findAllByMemberId(memberId);
         return items.stream()
-                .map(item -> new WishlistItemResponseDto(item.id(), item.productId(), item.quantity()))
+                .map(item -> new WishlistItemResponseDto(item.getId(), item.getProduct().getId(), item.getQuantity()))
                 .toList();
     }
 
     @Override
+    @Transactional
     public void updateWishlistItemById(Long itemId, Long quantity) {
-        int result = wishlistRepository.updateWishlistItemById(itemId, quantity);
-        if (result == 0) {
-            throw new OperationFailedException();
-        }
-    }
-
-    public WishlistItem findWishlistItemByIdOrElseThrow(Long itemId) {
-        return wishlistRepository.findWishlistById(itemId).orElseThrow(() -> new WishlistItemNotFoundException(itemId));
+        WishlistItem item = wishlistRepository.findById(itemId).orElseThrow(() -> new WishlistItemNotFoundException(itemId));
+        item.updateQuantity(quantity);
     }
 }
