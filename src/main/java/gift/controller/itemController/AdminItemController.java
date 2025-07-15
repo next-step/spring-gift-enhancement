@@ -1,10 +1,8 @@
 package gift.controller.itemController;
 
 
-import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemDto;
-import gift.dto.itemDto.ItemResponseDto;
-import gift.dto.itemDto.ItemUpdateDto;
+import gift.dto.itemDto.*;
+import gift.entity.Item;
 import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -12,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -29,16 +28,22 @@ public class AdminItemController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer price) {
 
-        List<ItemResponseDto> items = findItems(name, price);
+        ResponseItems items = findItems(name, price);
         model.addAttribute("items", items);
         return "admin/list";
     }
 
-    private List<ItemResponseDto> findItems(String name, Integer price) {
+    private ResponseItems findItems(String name, Integer price) {
+        List<Item> items;
+
         if (name == null && price == null) {
-            return itemService.getAllItems();
+            items = itemService.getAllItems();
+        } else {
+            items = itemService.getItems(name, price);
         }
-        return itemService.getItems(name, price);
+
+        List<ItemResponseDto> itemList = ItemResponseDto.from(items);
+        return new ResponseItems(itemList);
     }
 
     @PostMapping
@@ -56,7 +61,7 @@ public class AdminItemController {
 
     @PostMapping("/delete")
     public String deleteItem(@RequestParam Long id) {
-        ItemDto item = itemService.findById(id);
+        Optional<Item> item = itemService.findById(id);
         if (item != null) {
             itemService.deleteById(id);
         }
@@ -71,7 +76,7 @@ public class AdminItemController {
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
-        ItemDto item = itemService.findById(id);
+        Optional<Item> item = itemService.findById(id);
         ItemUpdateDto dto = new ItemUpdateDto(item);
         model.addAttribute("itemDTO", dto);
         return "admin/editForm";

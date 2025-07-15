@@ -1,7 +1,6 @@
 package gift.service.itemService;
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
@@ -10,6 +9,7 @@ import gift.repository.itemRepository.ItemRepositoryJPA;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemServiceJpa implements ItemService {
@@ -52,8 +52,8 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
-    public ItemDto findById(Long id) {
-        return null;
+    public Optional<Item> findById(Long id) {
+        return itemRepository.findById(id);
     }
 
     @Override
