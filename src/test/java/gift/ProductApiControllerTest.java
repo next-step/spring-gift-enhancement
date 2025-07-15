@@ -8,6 +8,7 @@ import gift.product.dto.request.ProductSaveRequest;
 import gift.product.dto.request.ProductUpdateRequest;
 import gift.product.dto.response.ProductResponse;
 import gift.product.repository.ProductRepository;
+import java.net.http.HttpClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -204,14 +205,16 @@ public class ProductApiControllerTest {
         assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(deleteResponse.getBody()).contains("상품 삭제가 완료되었습니다.");
 
-        assertThatExceptionOfType(HttpServerErrorException.InternalServerError.class)
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
                 () ->
                     restClient.get()
                         .uri("/{id}", id)
                         .retrieve()
-                        .toEntity(void.class)
-            );
+                        .toEntity(ErrorResult.class)
+            )
+            .withMessageContaining(
+                "존재하지 않는 상품입니다.");;
 
     }
 }
