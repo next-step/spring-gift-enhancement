@@ -39,10 +39,13 @@ public class WishServiceImpl implements WishService {
             throw new ProductNotFoundException("상품을 찾을 수 없습니다.");
         }
 
-        Wish wish = new Wish(member.getId(), productId);
+        Product product = productRepository.findProductById(productId);
+        Wish wish = new Wish(member, product);
         wishRepository.saveWish(wish);
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public WishListResponseDto getWishList(Member member) {
         List<WishWithProductDto> wishesWithProduct = wishRepository
                 .findByMemberIdWithProduct(member.getId());
@@ -66,6 +69,8 @@ public class WishServiceImpl implements WishService {
         );
     }
 
+    @Override
+    @Transactional
     public void removeWish(Member member, Long productId) {
         Wish wish = wishRepository.findByMemberIdAndProductId(member.getId(), productId)
                 .orElseThrow(() -> new WishNotFoundException("위시리스트에서 해당 상품을 찾을 수 없습니다."));

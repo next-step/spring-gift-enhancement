@@ -1,12 +1,16 @@
 package gift.domain.product;
 
+import jakarta.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class ProductName {
     private static final int MAX_PRODUCT_NAME_LENGTH = 15;
     private static final String ALLOWED_NAME_PATTERN = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ()\\[\\]+\\-&/_\\s]*$";
 
-    private final String productName;
+    private String productName;
+
+    protected ProductName() {}
 
     public ProductName(String productName) {
         validate(productName);

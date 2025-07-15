@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.domain.member.Email;
 import gift.domain.member.Password;
+import gift.domain.member.Role;
 import gift.dto.LoginResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
@@ -38,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = passwordUtil.encode(dto.password());
         Email email = new Email(dto.email());
         Password password = new Password(encodedPassword);
-        Member member = new Member(email, password);
+        Member member = new Member(email, password, Role.USER);
         Member savedMember = memberRepository.saveMember(member);
 
         String token = jwtUtil.generateToken(savedMember.getEmail().getValue(), savedMember.getId(), savedMember.getRole().name());

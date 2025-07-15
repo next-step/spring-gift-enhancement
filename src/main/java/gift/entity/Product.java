@@ -2,26 +2,40 @@ package gift.entity;
 
 import gift.domain.product.MdApprovalStatus;
 import gift.domain.product.ProductName;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "products")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Embedded
     private ProductName name;
+
     private Long price;
+
     private String imageUrl;
+
+    @Embedded
+    @AttributeOverride(name = "approved", column = @Column(name = "md_approved"))
     private MdApprovalStatus mdApproval;
+
+    protected Product() {
+    }
 
     public Product(String name, Long price, String imageUrl) {
         this.name = new ProductName(name);
         this.price = price;
         this.imageUrl = imageUrl;
+        this.mdApproval = MdApprovalStatus.of(name);
     }
 
-    public Product(long id, String name, long price, String imageUrl, MdApprovalStatus mdApproved) {
-        this.id = id;
+    public void update(String name, Long price, String imageUrl) {
         this.name = new ProductName(name);
         this.price = price;
         this.imageUrl = imageUrl;
-        this.mdApproval = mdApproved;
     }
 
     public Long getId() {
@@ -40,9 +54,11 @@ public class Product {
         return imageUrl;
     }
 
+    public boolean isApproved() {
+        return mdApproval != null && mdApproval.isApproved();
+    }
+
     public void setId(Long productId) {
         this.id = productId;
     }
-
-    public boolean isApproved() { return mdApproval.isApproved(); }
 }

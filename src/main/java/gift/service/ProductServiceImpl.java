@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
 
     public void validateMdApprovalForSave(ProductRequestDto dto) {
         if (dto.name().contains("카카오")) {
-            throw new MdApprovalException("상품 이름에 ‘카카오’가 포함된 상품은 MD 승인 후 등록할 수 있습니다.");
+            throw new MdApprovalException("상품 이름에 '카카오'가 포함된 상품은 MD 승인 후 등록할 수 있습니다.");
         }
     }
 
@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 
     public void validateMdApprovalForUpdate(ProductRequestDto dto, boolean mdApproved) {
         if (dto.name().contains("카카오") && !mdApproved) {
-            throw new MdApprovalException("상품 이름에 ‘카카오’가 포함된 상품은 MD 승인 후 등록할 수 있습니다.");
+            throw new MdApprovalException("상품 이름에 '카카오'가 포함된 상품은 MD 승인 후 등록할 수 있습니다.");
         }
     }
 
