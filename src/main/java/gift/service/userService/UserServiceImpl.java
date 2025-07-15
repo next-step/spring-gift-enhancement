@@ -11,6 +11,7 @@ import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
 import gift.exception.userException.UserPasswordException;
 import gift.repository.userRepository.UserRepositoryJPA;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -133,6 +134,7 @@ public class UserServiceImpl implements UserService {
         return findUser;
     }
 
+    @Transactional
     @Override
     public void deleteUserById(Long id,boolean isAdmin) {
         if (!isAdmin) {
