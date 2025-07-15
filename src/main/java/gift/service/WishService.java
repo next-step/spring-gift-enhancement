@@ -4,6 +4,8 @@ import gift.dto.UserInfoDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Wish;
+import gift.exception.DuplicateException;
+import gift.exception.NotFoundException;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +22,24 @@ public class WishService {
     }
 
     public List<WishResponseDto> findUserWishes(UserInfoDto userInfoDto) {
-        return wishRepository.findUserWishes(userInfoDto.id()).stream().map(WishResponseDto::new).collect(Collectors.toList());
+        return wishRepository.findByUserId(userInfoDto.id()).stream().map(WishResponseDto::new).collect(Collectors.toList());
     }
 
     public WishResponseDto addWish(UserInfoDto userInfoDto, WishRequestDto wishRequestDto) {
-        wishRepository.checkProductDuplicate(userInfoDto.id(), new Wish(wishRequestDto)); // 제품 중복 검사
-        return new WishResponseDto(wishRepository.addWish(userInfoDto.id(), new Wish(wishRequestDto)));
+        if (wishRepository.existsByProductId(wishRequestDto.productId())) {  // 제품 중복 검사
+            throw new DuplicateException("이미 리스트에 존재하는 제품입니다.");
+        }
+
+        Wish wish = new Wish(wishRequestDto.id(), userInfoDto.id(), wishRequestDto.productId(), wishRequestDto.quantity());
+        return new WishResponseDto(wishRepository.save(wish));
     }
 
-    public void updateWish(UserInfoDto userInfoDto, WishRequestDto wishRequestDto) {
-        wishRepository.updateWish(userInfoDto.id(), new Wish(wishRequestDto));
+    public void updateWish(WishRequestDto wishRequestDto) {
+        Wish wish = wishRepository.findById(wishRequestDto.id()).orElseThrow(() -> new NotFoundException("wish", wishRequestDto.id()));
+        wish.update(wishRequestDto.quantity());
     }
 
-    public void deleteWish(UserInfoDto userInfoDto, WishRequestDto wishRequestDto) {
-        wishRepository.deleteWish(userInfoDto.id(), new Wish(wishRequestDto));
+    public void deleteWish(WishRequestDto wishRequestDto) {
+        wishRepository.deleteById(wishRequestDto.id());
     }
 }

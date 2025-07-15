@@ -5,3 +5,4 @@
 
 # 엔티티 매핑
 1. products, users 테이블 매핑을 위한 entity 변경 및 이에 따른 service, repository 레이어 수정
+2. wishes 테이블 매핑을 위한 entity 변경 및 이에 따른 3레이어 수정 및 예외 수정

@@ -118,11 +118,7 @@ public class AuthService {
         }
 
         // 유저 정보 확인
-        try {
-            user = userRepository.findByEmailAndPassword(email, password);
-        } catch (Exception e) {
-            throw new LoginFailedException();
-        }
+        user = userRepository.findByEmailAndPassword(email, password).orElseThrow(LoginFailedException::new);
 
         // JWT 생성 후 반환
         return new TokenResponseDto(Jwts.builder()

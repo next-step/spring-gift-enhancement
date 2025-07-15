@@ -33,13 +33,13 @@ public class WishController {
 
     @PatchMapping()
     public ResponseEntity<Void> updateWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishrequestDto) {
-        wishService.updateWish(userInfoDto, wishrequestDto);
+        wishService.updateWish(wishrequestDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping()
     public ResponseEntity<Void> deleteWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
-        wishService.deleteWish(userInfoDto, wishRequestDto);
+        wishService.deleteWish(wishRequestDto);
         return ResponseEntity.noContent().build();
     }
 }
