@@ -11,7 +11,6 @@ import gift.exception.userException.UserAuthorizationException;
 import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
 import gift.exception.userException.UserPasswordException;
-import gift.repository.userRepository.UserRepository;
 import gift.repository.userRepository.UserRepositoryJPA;
 import org.springframework.stereotype.Service;
 
@@ -117,22 +116,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
+    public User updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
         if (!isAdmin) {
-            System.out.println("권한이 없습니다.");
             throw new UserAuthorizationException();
         }
 
-        User findUser = userRepository.findUserById(id);
+        User findUser = userRepository.findById(id).orElse(null);
+
         if (findUser == null) {
             throw new UserNotFoundException();
         }
-        String changeEmail = dto.email();
-        String changePassword = dto.password();
-        User updatedUser = userRepository.updateUser(findUser, changeEmail, changePassword);
 
+        findUser.setEmail(dto.email());
+        findUser.setPassword(dto.password());
 
-        return new UserResponseDto(updatedUser.email(), updatedUser.password());
+        return findUser;
     }
 
     @Override
