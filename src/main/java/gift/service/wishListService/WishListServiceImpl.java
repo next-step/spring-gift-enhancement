@@ -65,7 +65,7 @@ public class WishListServiceImpl implements WishListService{
 
         List<WishItem> wishItems = wishListRepository.findAllByUser(user);
         if (wishItems.isEmpty()) {
-            throw new ItemNotFoundException();
+            return wishItems;
         }
 
         List<WishItem> result = new ArrayList<>();
