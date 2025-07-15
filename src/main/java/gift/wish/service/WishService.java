@@ -32,10 +32,9 @@ public class WishService {
         if (wishRepository.isExist(memberTokenRequest.id(), productId)) {
             throw new IllegalArgumentException("이미 위시 리스트에 추가된 상품입니다.");
         }
-
         Wish wish = wishRepository.save(memberTokenRequest.id(), productId);
 
-        return new WishResponse(wish.getMemberId(), wish.getProductId(), 1);
+        return new WishResponse(wish.getMember().getId(), wish.getProduct().getId(), 1);
     }
 
     public List<WishListResponse> getWishes(MemberTokenRequest memberTokenRequest) {

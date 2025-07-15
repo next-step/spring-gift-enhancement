@@ -62,8 +62,9 @@
 
 ### 1단계 - 엔티티 매핑
 
-- [ ] repository interface 추가
-- [ ] JdbcClient -> JPA 전환하기
+- [x] domain 모델 JPA entity로 전환하기
+- [x] repository interface 추가
+- [x] JdbcClient -> JPA 전환하기
 
 # spring-gift-product (Mission 1)
 

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface ProductRepository {
 
-    Product save(String name, int price, String imageUrl);
-
     List<Product> findAll();
+
+    Product save(String name, int price, String imageUrl);
 
     Optional<Product> findById(Long id);
 
