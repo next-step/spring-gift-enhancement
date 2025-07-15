@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -35,7 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/users/register", Set.of(HttpMethod.POST),
             "/api/users/login", Set.of(HttpMethod.POST),
             "/admin/login", Set.of(HttpMethod.GET, HttpMethod.POST),
-            "/api/products", Set.of(HttpMethod.GET)
+            "/api/products", Set.of(HttpMethod.GET),
+
+            "/favicon.ico", Set.of(HttpMethod.GET),
+            "/product-form.css", Set.of(HttpMethod.GET),
+            "/product-list.css", Set.of(HttpMethod.GET),
+
+            "/h2-console", Set.of(HttpMethod.GET, HttpMethod.POST)
     );
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -47,8 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
         String requestURI = request.getRequestURI();
 
-        if (BLACKLIST.containsKey(requestURI)) {
-            Set<HttpMethod> methods = BLACKLIST.get(requestURI);
+        Optional<String> first = BLACKLIST.keySet().stream().filter(requestURI::startsWith).findFirst();
+        if (first.isPresent()) {
+            Set<HttpMethod> methods = BLACKLIST.get(first.get());
             if (methods.contains(method)) {
                 filterChain.doFilter(request, response);
                 return;
