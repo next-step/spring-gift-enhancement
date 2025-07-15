@@ -17,7 +17,7 @@ import gift.common.dto.CustomResponseBody;
 import gift.common.exception.CustomException;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
-import gift.entity.User;
+import gift.entity.Member;
 import gift.service.WishService;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +50,7 @@ class WishControllerTest {
     @MockBean
     private WishService wishService;
 
-    private final User mockUser = new User(1L, "test@domain.com", "pw");
+    private final Member mockMember = new Member(1L, "test@domain.com", "pw");
 
     @TestConfiguration
     static class JwtTestConfig {
@@ -67,10 +67,10 @@ class WishControllerTest {
         WishRequest request = new WishRequest(10L, 2);
         WishResponse response = new WishResponse(1L, 10L, 2, "상품명", 1000, "https://img");
 
-        given(wishService.addWish(eq(mockUser.getId()), any(WishRequest.class))).willReturn(
+        given(wishService.addWish(eq(mockMember.getId()), any(WishRequest.class))).willReturn(
             response);
 
-        String token = createToken(mockUser.getId(), mockUser.getEmail());
+        String token = createToken(mockMember.getId(), mockMember.getEmail());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/wishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,10 +101,10 @@ class WishControllerTest {
     void testAddWishDuplicateFail() throws Exception {
         WishRequest request = new WishRequest(10L, 1);
 
-        given(wishService.addWish(eq(mockUser.getId()), any(WishRequest.class)))
+        given(wishService.addWish(eq(mockMember.getId()), any(WishRequest.class)))
             .willThrow(new CustomException(CustomResponseCode.ALREADY_EXISTS));
 
-        String token = createToken(mockUser.getId(), mockUser.getEmail());
+        String token = createToken(mockMember.getId(), mockMember.getEmail());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/wishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ class WishControllerTest {
     void testAddWishValidationFail() throws Exception {
         WishRequest invalidRequest = new WishRequest(null, -1);
 
-        String token = createToken(mockUser.getId(), mockUser.getEmail());
+        String token = createToken(mockMember.getId(), mockMember.getEmail());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/wishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -137,9 +137,9 @@ class WishControllerTest {
         WishResponse response = new WishResponse(1L, 10L, 2, "상품명", 1000, "https://img");
         List<WishResponse> wishList = Collections.singletonList(response);
 
-        given(wishService.getWishes(eq(mockUser.getId()))).willReturn(wishList);
+        given(wishService.getWishes(eq(mockMember.getId()))).willReturn(wishList);
 
-        String token = createToken(mockUser.getId(), mockUser.getEmail());
+        String token = createToken(mockMember.getId(), mockMember.getEmail());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/wishes")
                 .header("Authorization", "Bearer " + token))
@@ -175,7 +175,7 @@ class WishControllerTest {
     @Test
     @DisplayName("위시 삭제 성공")
     void testDeleteWishSuccess() throws Exception {
-        String token = createToken(mockUser.getId(), mockUser.getEmail());
+        String token = createToken(mockMember.getId(), mockMember.getEmail());
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.delete("/api/wishes/{productId}", 10L)
@@ -191,9 +191,9 @@ class WishControllerTest {
     @DisplayName("위시 삭제 실패 - 존재하지 않는 wish")
     void testDeleteWishNotFoundFail() throws Exception {
         doThrow(new CustomException(CustomResponseCode.NOT_FOUND))
-            .when(wishService).deleteWish(eq(mockUser.getId()), eq(999L));
+            .when(wishService).deleteWish(eq(mockMember.getId()), eq(999L));
 
-        String token = createToken(mockUser.getId(), mockUser.getEmail());
+        String token = createToken(mockMember.getId(), mockMember.getEmail());
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.delete("/api/wishes/{productId}", 999L)

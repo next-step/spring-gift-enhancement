@@ -4,11 +4,11 @@ import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
+import gift.entity.Member;
 import gift.entity.Product;
-import gift.entity.User;
 import gift.entity.Wish;
+import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
-import gift.repository.UserRepository;
 import gift.repository.WishRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,30 +20,30 @@ public class WishServiceImpl implements WishService {
 
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     public WishServiceImpl(WishRepository wishRepository, ProductRepository productRepository,
-        UserRepository userRepository) {
+        MemberRepository memberRepository) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Override
     @Transactional
     public WishResponse addWish(Long userId, WishRequest request) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
         Product product = productRepository.findById(request.productId())
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        boolean exists = wishRepository.existsByUserAndProduct(user, product);
+        boolean exists = wishRepository.existsByMemberAndProduct(member, product);
         if (exists) {
             throw new CustomException(CustomResponseCode.ALREADY_EXISTS);
         }
 
         Wish savedWish = wishRepository.save(
-            new Wish(null, user, product, request.quantity()));
+            new Wish(null, member, product, request.quantity()));
 
         return WishResponse.from(savedWish);
     }
@@ -51,26 +51,26 @@ public class WishServiceImpl implements WishService {
     @Override
     @Transactional
     public void deleteWish(Long userId, Long productId) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        boolean exists = wishRepository.existsByUserAndProduct(user, product);
+        boolean exists = wishRepository.existsByMemberAndProduct(member, product);
         if (!exists) {
             throw new CustomException(CustomResponseCode.NOT_FOUND);
         }
 
-        wishRepository.deleteByUserAndProduct(user, product);
+        wishRepository.deleteByMemberAndProduct(member, product);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<WishResponse> getWishes(Long userId) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        List<Wish> wishes = wishRepository.findAllByUser(user);
+        List<Wish> wishes = wishRepository.findAllByMember(member);
 
         return wishes.stream()
             .map(WishResponse::from)

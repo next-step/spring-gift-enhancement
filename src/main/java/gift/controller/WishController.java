@@ -5,7 +5,7 @@ import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
-import gift.entity.User;
+import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -31,9 +31,9 @@ public class WishController {
     @PostMapping
     public ResponseEntity<CustomResponseBody<WishResponse>> addWish(
         @RequestBody @Valid WishRequest request,
-        @CurrentUser User user
+        @CurrentUser Member member
     ) {
-        WishResponse response = wishService.addWish(user.getId(), request);
+        WishResponse response = wishService.addWish(member.getId(), request);
         return ResponseEntity
             .status(CustomResponseCode.CREATED.getHttpStatus())
             .body(CustomResponseBody.of(CustomResponseCode.CREATED, response));
@@ -41,9 +41,9 @@ public class WishController {
 
     @GetMapping
     public ResponseEntity<CustomResponseBody<List<WishResponse>>> getWishes(
-        @CurrentUser User user
+        @CurrentUser Member member
     ) {
-        List<WishResponse> wishes = wishService.getWishes(user.getId());
+        List<WishResponse> wishes = wishService.getWishes(member.getId());
         return ResponseEntity
             .ok(CustomResponseBody.of(CustomResponseCode.RETRIEVED, wishes));
     }
@@ -51,9 +51,9 @@ public class WishController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<CustomResponseBody<Void>> deleteWish(
         @PathVariable Long productId,
-        @CurrentUser User user
+        @CurrentUser Member member
     ) {
-        wishService.deleteWish(user.getId(), productId);
+        wishService.deleteWish(member.getId(), productId);
         return ResponseEntity
             .status(CustomResponseCode.DELETED.getHttpStatus())
             .body(CustomResponseBody.of(CustomResponseCode.DELETED));

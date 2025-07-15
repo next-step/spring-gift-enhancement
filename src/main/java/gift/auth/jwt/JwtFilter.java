@@ -2,7 +2,7 @@ package gift.auth.jwt;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
-import gift.entity.User;
+import gift.entity.Member;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,11 +47,11 @@ public class JwtFilter implements Filter {
 
             String token = jwtProvider.extractToken(httpRequest);
             Map<String, Object> claims = jwtProvider.getClaimsFromToken(token);
-            Long userId = ((Number) claims.get("userId")).longValue();
+            Long memberId = ((Number) claims.get("memberId")).longValue();
             String email = (String) claims.get("sub");
 
-            User user = new User(userId, email, null);
-            httpRequest.setAttribute("user", user);
+            Member member = new Member(memberId, email, null);
+            httpRequest.setAttribute("member", member);
 
             chain.doFilter(request, response);
 
