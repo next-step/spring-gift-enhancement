@@ -10,3 +10,4 @@
   - [x] DataJpaTest를 이용한 ProductRepository 테스트 코드 추가
 - [ ] Member 리펙토링
   - [x] Member를 JPA 엔티티로 변환
+  - [x] MemberRepository를 Jdbc 기반에서 JPA 기반으로 변경
