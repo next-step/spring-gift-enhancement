@@ -54,8 +54,9 @@ public class WishListController {
     @PutMapping
     public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestParam Integer quantity, @RequestParam String name) {
 
-        ResponseWishItemDto updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
+        WishItem updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
 
-        return new ResponseEntity<>(updatedWishItem, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(ResponseWishItemDto.from(updatedWishItem), HttpStatus.ACCEPTED);
     }
+
 }

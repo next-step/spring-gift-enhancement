@@ -1,15 +1,12 @@
 package gift.service.wishListService;
 
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.wishListDto.AddWishItemDto;
-import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.Item;
 import gift.entity.User;
 import gift.entity.WishItem;
 import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
-import gift.repository.wishListRepository.WishListRepository;
 import gift.repository.wishListRepository.WishListRepositoryJPA;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
@@ -130,25 +127,31 @@ public class WishListServiceImpl implements WishListService{
     }
 
     @Override
-    public ResponseWishItemDto updateWishItem(Integer quantity, String name, String userEmail) {
+    public WishItem updateWishItem(Integer quantity, String name, String userEmail) {
+
         User user = userService.findUserByEmail(userEmail);
 
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        ItemResponseDto item = itemService.findItemByName(name);
+        Optional<Item> targetWishItem = itemService.findItemByName(name);
+        if (targetWishItem.isEmpty()) {
+            throw new ItemNotFoundException(name);
+        }
+        Item item = targetWishItem.get();
 
-        if (item == null) {
+        Optional<WishItem> toUpdatedWishItem = wishListRepository.findByUserAndItem(user, item);
+        if (toUpdatedWishItem.isEmpty()) {
             throw new ItemNotFoundException();
         }
 
-        WishItem updateItem = wishListRepository.updateWishItem(quantity, item.id(), user.id());
+        WishItem wishItem = toUpdatedWishItem.get();
+        wishItem.setQuantity(quantity);
 
-        if (updateItem == null) {
-            throw new ItemNotFoundException();
-        }
+        WishItem upatedWishItem = wishListRepository.save(wishItem);
 
-        return ResponseWishItemDto.from(updateItem);
+        return upatedWishItem;
     }
+
 }
