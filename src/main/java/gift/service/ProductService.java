@@ -6,11 +6,13 @@ import gift.dto.product.CreateProductRequest;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -20,27 +22,29 @@ public class ProductService {
     }
 
     public Product saveProduct(CreateProductRequest request) {
-        Product product = new Product(request.name(), request.price(), request.quantity());
+        Product product = new Product(request.name(), request.imageUrl(), request.price(), request.quantity());
         return productRepository.save(product);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Product getProduct(Long id) {
         return getById(id);
     }
 
     public Product updateProduct(Long id, UpdateProductRequest request) {
         Product product = getById(id);
-        product.update(request.name(), request.price(), request.quantity());
-        productRepository.update(product);
+        product.update(request.name(), request.imageUrl(), request.price(), request.quantity());
         return product;
     }
 
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Product product = getById(id);
+        productRepository.delete(product);
     }
 
     private Product getById(Long id) {

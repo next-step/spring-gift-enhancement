@@ -12,10 +12,12 @@ import gift.dto.user.CreateUserRequest;
 import gift.dto.user.LoginRequest;
 import gift.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -53,12 +55,10 @@ public class UserService {
             throw new InvalidUserException();
         }
         user.changePassword(request.newPassword());
-        userRepository.update(user);
     }
 
     public void changeRole(ChangeRoleRequest request) {
         User user = getUserByEmail(request.email());
         user.changeRole(request.role());
-        userRepository.update(user);
     }
 }

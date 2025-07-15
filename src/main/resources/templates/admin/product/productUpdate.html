@@ -14,6 +14,11 @@
     </div>
     <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError"></p>
     <div>
+        <label for="imageUrl">이미지: </label>
+        <input id="imageUrl" type="text" th:field="*{imageUrl}">
+    </div>
+    <p th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="fieldError"></p>
+    <div>
         <label for="price">가격: </label>
         <input id="price" type="number" th:field="*{price}">
     </div>
