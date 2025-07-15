@@ -20,7 +20,7 @@ public class WishRequestDto {
     public static WishRequestDto fromEntity(Wish wish) {
         return new WishRequestDto(
                 wish.getId(),
-                wish.getmemberId(),
+                wish.getMemberId(),
                 wish.getProductId(),
                 wish.getQuantity()
         );

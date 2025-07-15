@@ -23,7 +23,7 @@ public class Wish {
         this.id = id;
     }
 
-    public Long getmemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
