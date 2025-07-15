@@ -6,8 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "wishlists")
 public class WishList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,20 +35,23 @@ public class WishList {
         this.quantity = quantity;
     }
 
-    public WishList() {}
+    public static WishList of(Member member, Product product, int quantity){
+        return new WishList(null, member, product, quantity);
+    }
+
+    protected WishList() {}
 
     public Long getId() {
         return id;
     }
 
-    public Long getMemberId() {
-        return member.getId();
+    public Member getMember() {
+        return member;
     }
 
-    public Long getProductId() {
-        return product.getId();
+    public Product getProduct() {
+        return product;
     }
-
 
     public int getQuantity() {
         return quantity;

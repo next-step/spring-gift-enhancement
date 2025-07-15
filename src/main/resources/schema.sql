@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS wishlists;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS members;
+
 create table products
 (
     id        bigint auto_increment primary key,
@@ -19,14 +23,14 @@ create table wishlists
     member_id  bigint,
     product_id bigint,
     quantity   int
-)
+);
 
 alter table if exists wishlists
     add constraint fk_wish_member_id_ref_member_id
     foreign key (member_id)
-    references members
+    references members;
 
 alter table if exists wishlists
     add constraint fk_wish_product_id_ref_product_id
     foreign key (product_id)
-    references products
+    references products;
