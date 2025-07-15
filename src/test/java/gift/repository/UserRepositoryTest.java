@@ -19,7 +19,7 @@ public class UserRepositoryTest {
         User actual = userRepository.save(expected);
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
-                //() -> assertThat(actual.getCreatedDate()).isNotNull(), // 여기 원래 Null 이면 안되는데 Null이 나옵니다....
+                () -> assertThat(actual.getCreatedDate()).isNotNull(),
                 () -> assertThat(actual.getEmail()).isEqualTo(expected.getEmail()),
                 () -> assertThat(actual.getPassword()).isEqualTo(expected.getPassword())
         );

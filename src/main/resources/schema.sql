@@ -8,7 +8,7 @@ DROP TABLE users IF EXISTS;
 CREATE TABLE users(id BIGINT AUTO_INCREMENT PRIMARY KEY,
                    email VARCHAR(255) UNIQUE,
                    password VARCHAR(255),
-                   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                   created_date TIMESTAMP NOT NULL,
                    role VARCHAR(255));
 
 DROP TABLE wishes IF EXISTS;
