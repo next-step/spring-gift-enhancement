@@ -18,3 +18,32 @@
 - [x] Wish 엔티티에서 member 와 prouct의 id를 외래 키로 매핑한다.
 - [x] Repository 를 리팩터링 한다.
 - [x] @DataJpaTest 를 사용하여 테스트 코드를 작성한다.
+
+## 테이블 설명
+
+### Product
+
+| 컬럼명      | 타입           | 제약 조건              | 설명              |
+| ----------- | -------------- | ---------------------- | ----------------- |
+| `id`        | `BIGINT`       | `PK`, `AUTO_INCREMENT` | 상품 ID (기본 키) |
+| `name`      | `VARCHAR(15)`  | `NOT NULL`             | 상품 이름         |
+| `price`     | `INT`          | `NOT NULL`             | 상품 가격         |
+| `image_url` | `VARCHAR(255)` | `NOT NULL`             | 상품 이미지 URL   |
+
+### Member
+
+| 컬럼명     | 타입           | 제약 조건              | 설명                             |
+| ---------- | -------------- | ---------------------- | -------------------------------- |
+| `id`       | `BIGINT`       | `PK`, `AUTO_INCREMENT` | 회원 고유 ID                     |
+| `email`    | `VARCHAR(255)` | `NOT NULL`, `UNIQUE`   | 회원 이메일 (로그인 ID로 사용)   |
+| `password` | `VARCHAR(255)` | `NOT NULL`             | 회원 비밀번호                    |
+| `role`     | `VARCHAR(255)` |                        | 사용자 역할 (예: USER, ADMIN 등) |
+
+### Wish
+
+| 컬럼명       | 타입     | 제약 조건              | 설명                            |
+| ------------ | -------- | ---------------------- | ------------------------------- |
+| `id`         | `BIGINT` | `PK`, `AUTO_INCREMENT` | 위시 항목의 고유 ID             |
+| `member_id`  | `BIGINT` | `FK`, `NOT NULL`       | 회원 ID (`Member` 테이블 참조)  |
+| `product_id` | `BIGINT` | `FK`, `NOT NULL`       | 상품 ID (`Product` 테이블 참조) |
+| `quantity`   | `INT`    | `NOT NULL`             | 원하는 수량                     |
