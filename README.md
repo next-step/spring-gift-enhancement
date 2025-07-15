@@ -1,5 +1,9 @@
 # spring-gift-enhancement
 
+# 1단계 수행
+- 엔티티와 레포지터리를 JPA로 리펙터링
+- DATAJPATEXT하기
+
 # 이전 단계 피드백 반영
 - 통일성 주기
 - 서비스 레이어에서 예외 뱉기
