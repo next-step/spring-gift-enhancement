@@ -18,6 +18,7 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<WishResponse> getWishes(Long memberId) {
         List<Wish> wishes = wishRepository.findAllByMemberId(memberId);
         return wishes.stream()
@@ -43,6 +44,7 @@ public class WishService {
         }
     }
 
+    @Transactional
     public void deleteWish(Long memberId, Long productId) {
         wishRepository.deleteByMemberIdAndProductId(memberId, productId);
     }
