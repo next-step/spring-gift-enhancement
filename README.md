@@ -18,3 +18,5 @@
   - [x] WishlistRepository를 Jdbc 기반에서 JPA 기반으로 변경
   - [x] JPA 적용으로 인한 MemberService 로직 변경 및 관련 예외 처리 추가
   - [x] MemberService 로직 변경으로 인한 WishlistController 리팩토링
+
+- [x] JPA의 데이터베이스 스키마 자동 생성을 위한 설정 추가 및 data.sql 사용을 위한 설정 추가
