@@ -7,6 +7,7 @@ import gift.dto.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.MemberRole;
 import gift.repository.MemberRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class MemberService {
     }
 
     // 회원 가입
+    @Transactional
     public TokenResponseDto register(MemberRequestDto requestDto) {
         // 중복 이메일 검사
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
@@ -59,6 +61,7 @@ public class MemberService {
     }
 
     // 회원 조회 (ID로)
+    @Transactional
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
@@ -67,6 +70,7 @@ public class MemberService {
     }
 
     // 회원 조회 (이메일로)
+    @Transactional
     public MemberResponseDto getMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
@@ -75,6 +79,7 @@ public class MemberService {
     }
 
     // 전체 회원 조회
+    @Transactional
     public List<MemberResponseDto> getAllMembers() {
         return memberRepository.findAll().stream()
                 .map(MemberResponseDto::new)
@@ -82,14 +87,16 @@ public class MemberService {
     }
 
     // 회원 삭제
+    @Transactional
     public void deleteMember(Long id) {
-        if (!memberRepository.findById(id).isPresent()) {
+        if (!memberRepository.existsById(id)) {
             throw new NoSuchElementException("존재하지 않는 회원입니다.");
         }
         memberRepository.deleteById(id);
     }
 
     // 회원 수정
+    @Transactional
     public MemberResponseDto updateMember(Long id, MemberRequestDto dto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
