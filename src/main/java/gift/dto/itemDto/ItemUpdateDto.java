@@ -11,8 +11,8 @@ import java.util.Optional;
 @ItemFieldValid
 public record ItemUpdateDto(@NotNull Long id, String name, @Min(0) Integer price,
                             @NotNull @Size(max = 255) String imageUrl, boolean useKakaoName) {
-    public ItemUpdateDto(Optional<Item> item) {
-        this(item.get().getId(), item.get().getName(), item.get().getPrice(), item.get().getImageUrl(), false);
+    public static ItemUpdateDto from(Item item) {
+        return new ItemUpdateDto(item.getId(), item.getName(), item.getPrice(), item.getImageUrl(), false);
     }
 
     public ItemUpdateDto(ItemDto item) {

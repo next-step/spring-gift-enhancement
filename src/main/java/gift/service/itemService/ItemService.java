@@ -1,7 +1,6 @@
 package gift.service.itemService;
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ public interface ItemService {
 
     void delete(String name);
 
-    ItemUpdateDto updateItem(Long id, ItemUpdateDto dto);
+    Item updateItem(Long id, ItemUpdateDto dto);
 
     Optional<Item> findById(Long id);
 
@@ -24,7 +23,7 @@ public interface ItemService {
 
     List<Item> getAllItems();
 
-    ItemResponseDto findItemByName(@NotNull String name);
+    Optional<Item> findItemByName(@NotNull String name);
 
-    ItemResponseDto findItemById(Long itemId);
+    Optional<Item> findItemById(Long itemId);
 }

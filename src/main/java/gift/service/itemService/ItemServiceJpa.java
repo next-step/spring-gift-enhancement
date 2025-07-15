@@ -1,7 +1,6 @@
 package gift.service.itemService;
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
 
@@ -47,8 +46,17 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
-    public ItemUpdateDto updateItem(Long id, ItemUpdateDto dto) {
-        return null;
+    public Item updateItem(Long id, ItemUpdateDto dto) {
+        Optional<Item> targetItem = findItemById(id);
+
+        Item item = targetItem.get();
+        item.setName(dto.name());
+        item.setPrice(dto.price());
+        item.setImageUrl(dto.imageUrl());
+
+        Item updatedItem = itemRepository.save(item);
+
+        return updatedItem;
     }
 
     @Override
@@ -58,7 +66,7 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     public void deleteById(Long id) {
-
+        itemRepository.deleteById(id);
     }
 
     @Override
@@ -67,12 +75,12 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
-    public ItemResponseDto findItemByName(String name) {
-        return null;
+    public Optional<Item> findItemByName(String name) {
+        return Optional.ofNullable(itemRepository.findByName(name));
     }
 
     @Override
-    public ItemResponseDto findItemById(Long itemId) {
-        return null;
+    public Optional<Item> findItemById(Long itemId) {
+        return itemRepository.findById(itemId);
     }
 }
