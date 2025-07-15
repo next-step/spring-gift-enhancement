@@ -8,6 +8,7 @@ import gift.entity.Member;
 import gift.entity.RoleType;
 import gift.exception.member.InvalidCredentialsException;
 import gift.exception.member.MemberAlreadyExistsException;
+import gift.exception.member.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import gift.util.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class MemberServiceImpl implements MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     @Override
     public TokenResponseDto registerMember(MemberRequestDto dto) {
 
@@ -36,12 +38,13 @@ public class MemberServiceImpl implements MemberService {
         String password = dto.getPassword();
         RoleType role = RoleType.USER;
 
-        if (memberRepository.findMemberByEmail(email).isPresent()) {
+        if (memberRepository.findByEmail(email).isPresent()) {
             throw new MemberAlreadyExistsException("이미 해당 이메일로 가입된 회원이 존재합니다.");
         }
 
-        Member member = memberRepository.saveMember(email, password, role);
-        String token = jwtTokenProvider.getAccessToken(member);
+        Member newMember = new Member(email, password, role);
+        Member savedMember = memberRepository.save(newMember);
+        String token = jwtTokenProvider.getAccessToken(savedMember);
 
         return new TokenResponseDto(token);
     }
@@ -51,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
         String email = dto.getEmail();
         String password = dto.getPassword();
 
-        Member member = memberRepository.findMemberByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new InvalidCredentialsException(
                                 "아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요."
@@ -69,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberResponseDto> findAllMembers() {
-        List<Member> findList = memberRepository.findAllMembers();
+        List<Member> findList = memberRepository.findAll();
 
         List<MemberResponseDto> dtoList = findList
                 .stream()
@@ -87,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Optional<MemberResponseDto> findMemberById(Long id) {
 
-        return memberRepository.findMemberById(id)
+        return memberRepository.findById(id)
                 .map(member -> new MemberResponseDto(
                         member.getId(),
                         member.getEmail(),
@@ -99,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto findMemberByIdElseThrow(Long id) {
 
-        return memberRepository.findMemberById(id)
+        return memberRepository.findById(id)
                 .map(member -> new MemberResponseDto(
                         member.getId(),
                         member.getEmail(),
@@ -114,6 +117,7 @@ public class MemberServiceImpl implements MemberService {
                 );
     }
 
+    @Transactional
     @Override
     public MemberResponseDto saveMember(MemberRequestDto dto) {
 
@@ -121,43 +125,44 @@ public class MemberServiceImpl implements MemberService {
         String password = dto.getPassword();
         RoleType role = RoleType.USER;
 
-        if (memberRepository.findMemberByEmail(email).isPresent()) {
+        if (memberRepository.findByEmail(email).isPresent()) {
             throw new MemberAlreadyExistsException("이미 해당 이메일로 가입된 회원이 존재합니다.");
         }
 
-        Member member = memberRepository.saveMember(email, password, role);
+        Member newMember = new Member(email, password, role);
+        Member savedMember = memberRepository.save(newMember);
 
-        return new MemberResponseDto(member.getId(), member.getEmail(), member.getPassword(), member.getRole());
+        return new MemberResponseDto(savedMember.getId(), savedMember.getEmail(), savedMember.getPassword(), savedMember.getRole());
     }
 
     @Transactional
     @Override
     public MemberResponseDto updateMember(Long id, MemberRoleRequestDto dto) {
 
-        int updatedNum = memberRepository.updateMember(
-                id,
-                dto.getRole()
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "해당 ID의 멤버는 존재하지 않습니다."
+                ));
+
+        member.changeRole(dto.getRole());
+
+        return new MemberResponseDto(
+                member.getId(),
+                member.getEmail(),
+                member.getPassword(),
+                member.getRole()
         );
-
-        if (updatedNum == 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "해당 ID의 멤버은 존재하지 않습니다."
-            );
-        }
-
-        return findMemberByIdElseThrow(id);
     }
 
+    @Transactional
     @Override
     public void deleteMember(Long id) {
-        int deletedNum = memberRepository.deleteMember(id);
-
-        if (deletedNum == 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "해당 ID의 멤버은 존재하지 않습니다."
+        if (!memberRepository.existsById(id)) {
+            throw new MemberNotFoundException(
+                    "해당 ID의 멤버는 존재하지 않습니다."
             );
         }
+
+        memberRepository.deleteById(id);
     }
 }
