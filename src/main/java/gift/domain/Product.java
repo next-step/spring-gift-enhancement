@@ -48,6 +48,8 @@ public class Product {
         this(null, name, price, imageUrl,status, false);
     }
 
+    public Product(Long id) { this.id = id; }
+
     public Long getId() {
         return id;
     }

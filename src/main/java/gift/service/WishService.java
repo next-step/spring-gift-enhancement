@@ -1,5 +1,7 @@
 package gift.service;
 
+import gift.domain.Member;
+import gift.domain.Product;
 import gift.domain.Wish;
 import gift.dto.WishResponse;
 import gift.repository.WishRepository;
@@ -31,7 +33,8 @@ public class WishService {
         if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
             wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId,quantity);
         } else {
-            wishRepository.save(memberId, productId, quantity);
+            Wish wish = new Wish(new Member(memberId), new Product(productId), quantity);
+            wishRepository.save(wish);
         }
     }
 
