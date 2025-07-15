@@ -77,8 +77,7 @@ public class AdminItemController {
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<Item> item = itemService.findById(id);
-        ItemUpdateDto dto = new ItemUpdateDto(item);
-        model.addAttribute("itemDTO", dto);
+        model.addAttribute("itemDTO", item);
         return "admin/editForm";
     }
 

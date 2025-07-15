@@ -50,11 +50,13 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemUpdateDto> updateItems(
+    public ResponseEntity<ResponseItems> updateItems(
             @PathVariable Long id,
             @RequestBody @Valid ItemUpdateDto dto
     ) {
-        ItemUpdateDto item = itemService.updateItem(id, dto);
-        return ResponseEntity.ok(item);
+        Item updatedItem = itemService.updateItem(id, dto);
+        ItemResponseDto responseDto = ItemResponseDto.from(updatedItem);
+
+        return ResponseEntity.ok(new ResponseItems(List.of(responseDto)));
     }
 }
