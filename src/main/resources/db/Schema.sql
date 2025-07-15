@@ -1,0 +1,19 @@
+CREATE TABLE member (
+    email VARCHAR(255) PRIMARY KEY UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE product (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    price INT NOT NULL,
+    image_url VARCHAR(1000)
+);
+
+CREATE TABLE wish (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id VARCHAR(255) NOT NULL,
+    product_id BIGINT NOT NULL
+);
+
