@@ -32,7 +32,7 @@ public class MemberService {
         }
 
         // 회원 생성
-        Member member = new Member(null, requestDto.getEmail(), requestDto.getPassword(), MemberRole.USER);
+        Member member = new Member(requestDto.getEmail(), requestDto.getPassword(), MemberRole.USER);
         Member savedMember = memberRepository.save(member);
 
         // JWT 토큰 생성 (역할 정보 포함)
@@ -95,7 +95,6 @@ public class MemberService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
         member.setEmail(dto.getEmail());
         member.setPassword(dto.getPassword());
-        memberRepository.update(id, member);
-        return new MemberResponseDto(member);
+        return new MemberResponseDto(member); // JPA가 자동으로 변경된 엔티티를 저장함
     }
 } 
