@@ -4,6 +4,7 @@ package gift.controller.itemController;
 import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
+import gift.dto.itemDto.ResponseItems;
 import gift.entity.Item;
 import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;
@@ -33,12 +34,11 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemResponseDto>> getItems(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer price
-    ) {
-        List<ItemResponseDto> items = itemService.getItems(name, price);
-        return ResponseEntity.ok(items);
+    public ResponseEntity<ResponseItems> getItems(@RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
+        List<Item> items = itemService.getItems(name, price);
+        List<ItemResponseDto> itemList = ItemResponseDto.from(items);
+
+        return ResponseEntity.ok(new ResponseItems(itemList));
     }
 
     @DeleteMapping

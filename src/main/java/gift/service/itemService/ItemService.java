@@ -15,7 +15,7 @@ import java.util.List;
 public interface ItemService {
     Item saveItem(ItemCreateDto dto);
 
-    List<ItemResponseDto> getItems(String name, Integer price);
+    List<Item> getItems(String name, Integer price);
 
     void delete(String name);
 

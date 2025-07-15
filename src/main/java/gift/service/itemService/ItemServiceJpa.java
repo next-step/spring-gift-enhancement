@@ -27,8 +27,17 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getItems(String name, Integer price) {
-        return List.of();
+    public List<Item> getItems(String name, Integer price) {
+        if (name == null && price == null) {
+            return getAllItems();
+        }
+        if (name == null) {
+            return itemRepository.findByPrice(price);
+        }
+        if (price == null) {
+            itemRepository.findByName(name);
+        }
+        return itemRepository.findByNameAndPrice(name, price);
     }
 
     @Override
