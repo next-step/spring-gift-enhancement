@@ -25,7 +25,7 @@ public class WishResponse {
     public static WishResponse from(Wish wish) {
         return new WishResponse(
                 wish.getId(),
-                wish.getProductId(),
+                wish.getProduct().getId(),
                 wish.getQuantity(),
                 wish.getProduct().getName(),
                 wish.getProduct().getPrice(),
