@@ -58,7 +58,7 @@ public class WishRestControllerTest {
         when(memberRepository.findByEmail(testMember.getEmail())).thenReturn(
                 Optional.of(testMember));
 
-        CreateWishRequest request = new CreateWishRequest(1L, 10L);
+        CreateWishRequest request = new CreateWishRequest(1L);
 
         // when
         MvcResult result = mockMvc.perform(post("/api/wishes")
@@ -75,7 +75,7 @@ public class WishRestControllerTest {
     @DisplayName("위시 추가 실패")
     void addWishFail() throws Exception {
         // given
-        CreateWishRequest request = new CreateWishRequest(1L, 10L);
+        CreateWishRequest request = new CreateWishRequest(1L);
         String invalidToken = "invalid_token";
 
         when(jwtTokenProvider.validateToken(invalidToken)).thenReturn(false);
@@ -105,8 +105,8 @@ public class WishRestControllerTest {
                 Optional.of(testMember));
 
         // WishService가 반환할 상품 리스트 생성
-        List<Product> wishList = Collections.singletonList(new Product(10L, "gamja", "gam.com"));
-        when(wishService.getAllWish(testMember.getId())).thenReturn(wishList);
+        List<Product> wishList = Collections.singletonList(Product.createProduct("gamja", "gam.com"));
+        when(wishService.getAllWish(testMember)).thenReturn(wishList);
 
         // when
         MvcResult result = mockMvc.perform(get("/api/wishes")
