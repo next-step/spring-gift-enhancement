@@ -40,9 +40,11 @@ public class JwtFilter implements Filter {
         try {
             String path = httpRequest.getRequestURI();
 
-            if (EXCLUDED_PATHS.contains(path)) {
-                chain.doFilter(request, response);
-                return;
+            for (String excludedPath : EXCLUDED_PATHS) {
+                if (path.startsWith(excludedPath)) {
+                    chain.doFilter(request, response);
+                    return;
+                }
             }
 
             String token = jwtProvider.extractToken(httpRequest);
