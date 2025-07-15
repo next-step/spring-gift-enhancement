@@ -31,6 +31,12 @@ public class MemberRepositoryTest {
     }
 
     @Test
+    void findById() {
+        Member actual = memberRepository.findById(1L).get();
+        assertThat(actual.getId()).isEqualTo(1L);
+    }
+
+    @Test
     void existsByEmail() {
         Member expected = new Member("test@naver.com", "qwer");
         memberRepository.save(expected);
