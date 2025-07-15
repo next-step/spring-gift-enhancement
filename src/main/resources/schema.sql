@@ -20,7 +20,7 @@ CREATE TABLE wishes(
     member_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
-    UNIQUE (member_id, product_id),
-    FOREIGN KEY (member_id) REFERENCES members(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
+    CONSTRAINT uk_wishes_members_products UNIQUE (member_id, product_id),
+    CONSTRAINT fk_wishes_members FOREIGN KEY (member_id) REFERENCES members(id),
+    CONSTRAINT fk_wishes_products FOREIGN KEY (product_id) REFERENCES products(id)
 )
