@@ -1,5 +1,11 @@
 # spring-gift-enhancement
 
+## 구현 기능 목록
+
+### 1. JPA로 리팩터링
+
+### 2. @DataJpaTest
+
 # spring-gift-wishlist
 
 ## 구현 기능 목록
