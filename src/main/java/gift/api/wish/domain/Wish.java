@@ -56,4 +56,8 @@ public class Wish {
     public Product getProduct() {
         return product;
     }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 }

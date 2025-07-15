@@ -1,7 +1,6 @@
 package gift;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gift.api.member.dto.MemberRequestDto;
 import gift.api.member.dto.TokenResponseDto;
@@ -72,8 +71,8 @@ public class AuthE2ETest {
                 .retrieve()
                 .body(TokenResponseDto.class);
 
-        assertNotNull(response);
-        assertNotNull(response.token());
+        assertThat(response).isNotNull();
+        assertThat(response.token()).isNotNull().startsWith("Bearer ");
     }
 
     @Test
@@ -95,8 +94,8 @@ public class AuthE2ETest {
                 .retrieve()
                 .body(String.class);
 
-        assertNotNull(response);
-        assertTrue(response.contains("상품 등록"));
+        assertThat(response).isNotNull()
+                .contains("상품 등록");
     }
 
     @Test
@@ -118,9 +117,9 @@ public class AuthE2ETest {
                 .retrieve()
                 .body(String.class);
 
-        assertNotNull(responseBody);
-        assertTrue(responseBody.contains("관리자 권한이 필요한 페이지입니다."));
-        assertTrue(responseBody.contains("오류가 발생했습니다"));
+        assertThat(responseBody).isNotNull()
+                .contains("관리자 권한이 필요한 페이지입니다.")
+                .contains("오류가 발생했습니다");
     }
 
     @Test
@@ -130,8 +129,8 @@ public class AuthE2ETest {
                 .retrieve()
                 .body(String.class);
 
-        assertNotNull(responseBody);
-        assertTrue(responseBody.contains("로그인이 필요한 페이지입니다."));
-        assertTrue(responseBody.contains("오류가 발생했습니다"));
+        assertThat(responseBody).isNotNull()
+                .contains("로그인이 필요한 페이지입니다.")
+                .contains("오류가 발생했습니다");
     }
 }
