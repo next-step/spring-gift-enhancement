@@ -138,17 +138,17 @@
 ### 0단계. 기본 코드 준비 (완료)
 - [X] 이전 단계의 상품 관리 코드를 옮겨 온다.
 
-### 1단계. JPA 기반으로 리팩토링
+### 1단계. JPA 기반으로 리팩토링 (완료)
 
-- [ ] **JPA 환경 설정:**
+- [X] **JPA 환경 설정:**
     - `build.gradle`에 `spring-boot-starter-data-jpa` 의존성을 추가한다.
     - `application.properties`에 JPA 및 Hibernate 관련 설정을 추가한다.
-- [ ] **엔티티 매핑:**
+- [X] **엔티티 매핑:**
     - 기존 클래스들을 `@Entity` 어노테이션을 사용하여 JPA 엔티티로 전환한다.
     - `Wish` 엔티티의 `memberId`, `productId` 필드를 `@ManyToOne` 연관관계를 사용한 `Member member`, `Item product` 객체 참조로 변경한다.
-- [ ] **Repository 전환:**
+- [X] **Repository 전환:**
     - `JdbcTemplate` 기반의 기존 Repository 클래스들을, `JpaRepository`를 상속받는 인터페이스로 변경한다.
-- [ ] **Repository 테스트 수정:**
+- [X] **Repository 테스트 수정:**
     - `@DataJpaTest`를 사용하여 JPA 기반의 Repository들이 올바르게 동작하는지 검증하는 테스트를 작성한다.
-- [ ] **서비스 계층 리팩토링:**
+- [X] **서비스 계층 리팩토링:**
     - `ItemService`, `MemberService`, `WishService`가 새로운 `JpaRepository`를 사용하도록 내부 로직을 수정한다.
