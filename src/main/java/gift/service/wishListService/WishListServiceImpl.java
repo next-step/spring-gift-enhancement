@@ -84,11 +84,11 @@ public class WishListServiceImpl implements WishListService{
         return nameMatches && priceMatches;
     }
 
-    private List<ResponseWishItemDto> getWishItems(List<WishItem> wishItems, String name, Integer price) {
-        List<ResponseWishItemDto> result = new ArrayList<>();
+    private List<WishItem> getWishItems(List<WishItem> wishItems, String name, Integer price) {
+        List<WishItem> result = new ArrayList<>();
 
         for (WishItem wishItem : wishItems) {
-            ItemResponseDto item = itemService.findItemById(wishItem.itemId());
+            Item item = wishItem.getItem();
             if (item == null) {
                 if (name == null && price == null) {
                     throw new UserInputException();
@@ -96,8 +96,8 @@ public class WishListServiceImpl implements WishListService{
                 continue;
             }
 
-            if (name == null && price == null || isValid(item, name, price)) {
-                result.add(ResponseWishItemDto.from(wishItem));
+            if ((name == null && price == null) || isValid(item, name, price)) {
+                result.add(wishItem);
             }
         }
 
