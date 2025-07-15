@@ -1,11 +1,10 @@
 package gift.service;
 
+import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
 import gift.repository.ProductRepository;
-import gift.repository.ProductRepositoryImpl;
 import gift.repository.WishRepository;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -20,30 +19,25 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    public void addWish(Long memberId, Long productId) {
+    public void addWish(Member member, Product product) {
 
-        if (wishRepository.exists(memberId, productId)) {
+        if (wishRepository.exists(member, product)) {
             throw new IllegalArgumentException("이미 위시리스트에 추가된 상품입니다.");
         }
 
-        wishRepository.insert(memberId, productId);
+        Wish wish = Wish.createWish(member, product);
+
+        wishRepository.save(wish);
     }
 
-    public void removeWish(Long memberId, Long productId) {
-        wishRepository.delete(memberId, productId);
+    public void removeWish(Member member, Product product) {
+
+        wishRepository.delete(member, product);
     }
 
-    public List<Product> getAllWish(Long memberId) {
-
-        List<Wish> wishlist = wishRepository.findAllByMemberId(memberId);
-
-        List<Product> products = new ArrayList<>();
-
-        for(Wish wish : wishlist) {
-            productRepository.findById(wish.getProductId())
-                    .ifPresent(products::add);
-        }
-
-        return products;
+    public List<Product> getAllWish(Member member) {
+        return wishRepository.findAllByMember(member).stream()
+                .map(Wish::getProduct)
+                .toList();
     }
 }
