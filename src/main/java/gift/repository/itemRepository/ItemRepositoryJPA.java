@@ -2,6 +2,8 @@ package gift.repository.itemRepository;
 
 import gift.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ItemRepositoryJPA extends JpaRepository<Long, Item> {
+@Repository
+public interface ItemRepositoryJPA extends JpaRepository<Item,Long> {
 }

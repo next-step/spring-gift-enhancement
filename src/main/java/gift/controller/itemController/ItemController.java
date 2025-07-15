@@ -4,6 +4,7 @@ package gift.controller.itemController;
 import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
+import gift.entity.Item;
 import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,12 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemCreateDto> addItems(
+    public ResponseEntity<ItemResponseDto> addItems(
             @RequestBody @Valid ItemCreateDto dto
     ) {
-        ItemCreateDto item = itemService.saveItem(dto);
-        return new ResponseEntity<>(item, HttpStatus.CREATED);
+        Item item = itemService.saveItem(dto);
+
+        return new ResponseEntity<>(ItemResponseDto.from(item), HttpStatus.CREATED);
     }
 
     @GetMapping

@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.List;
 
 
-@Repository
+//@Repository
 public class ItemRepositoryJdbcTemplate implements ItemRepository {
 
     private final JdbcTemplate jdbcTemplate;

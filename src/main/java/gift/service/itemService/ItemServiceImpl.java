@@ -1,6 +1,5 @@
 package gift.service.itemService;
 
-
 import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemDto;
 import gift.dto.itemDto.ItemResponseDto;
@@ -13,8 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl {
 
     private final ItemRepository itemRepository;
 
@@ -22,7 +20,6 @@ public class ItemServiceImpl implements ItemService {
         this.itemRepository = itemRepository;
     }
 
-    @Override
     public ItemCreateDto saveItem(ItemCreateDto dto) {
         Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
         Item saveditem = itemRepository.saveItem(item);
@@ -30,7 +27,6 @@ public class ItemServiceImpl implements ItemService {
         return new ItemCreateDto(saveditem);
     }
 
-    @Override
     public List<ItemResponseDto> getItems(String name, Integer price) {
         List<Item> items;
         List<ItemResponseDto> result = new ArrayList<>();
@@ -45,12 +41,10 @@ public class ItemServiceImpl implements ItemService {
 
         for (Item item : items) {
             result.add(ItemResponseDto.from(item));
-
         }
         return result;
     }
 
-    @Override
     public void delete(String name) {
         Item item = itemRepository.deleteItems(name);
         if (item == null) {
@@ -58,7 +52,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    @Override
     public ItemUpdateDto updateItem(Long id, ItemUpdateDto dto) {
         Item item = itemRepository.findById(id);
         if (item != null) {
@@ -71,7 +64,6 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemNotFoundException();
     }
 
-    @Override
     public ItemDto findById(Long id) {
         List<Item> items = itemRepository.getAllItems();
 
@@ -83,7 +75,6 @@ public class ItemServiceImpl implements ItemService {
         return null;
     }
 
-    @Override
     public void deleteById(Long id) {
         Item item = itemRepository.deleteById(id);
         if (item == null) {
@@ -91,7 +82,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    @Override
     public List<ItemResponseDto> getAllItems() {
         List<Item> items = itemRepository.getAllItems();
         List<ItemResponseDto> result = new ArrayList<>();
@@ -103,7 +93,6 @@ public class ItemServiceImpl implements ItemService {
         return result;
     }
 
-    @Override
     public ItemResponseDto findItemByName(String name) {
         Item item = itemRepository.findItemByName(name);
 
@@ -114,7 +103,6 @@ public class ItemServiceImpl implements ItemService {
         return ItemResponseDto.from(item);
     }
 
-    @Override
     public ItemResponseDto findItemById(Long itemId) {
         Item item = itemRepository.findItemById(itemId);
 

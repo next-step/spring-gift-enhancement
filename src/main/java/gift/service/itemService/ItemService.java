@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public interface ItemService {
-    ItemCreateDto saveItem(ItemCreateDto dto);
+    Item saveItem(ItemCreateDto dto);
 
     List<ItemResponseDto> getItems(String name, Integer price);
 
