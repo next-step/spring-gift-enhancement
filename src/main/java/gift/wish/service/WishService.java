@@ -1,10 +1,15 @@
 package gift.wish.service;
 
+import gift.member.entity.Member;
+import gift.member.repository.MemberRepository;
+import gift.product.entity.Product;
+import gift.product.repository.ProductRepository;
 import gift.wish.dto.WishRequestDto;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.entity.Wish;
 import gift.wish.repository.WishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,35 +17,50 @@ import java.util.List;
 public class WishService {
 
     private final WishRepository wishRepository;
-    public WishService(WishRepository wishRepository) {
+    private final MemberRepository memberRepository;
+    private final ProductRepository productRepository;
+
+    public WishService(WishRepository wishRepository,
+                       MemberRepository memberRepository,
+                       ProductRepository productRepository) {
         this.wishRepository = wishRepository;
+        this.memberRepository = memberRepository;
+        this.productRepository = productRepository;
     }
 
     public List<WishResponseDto> getWishlist(WishRequestDto dto) {
 
-        Wish wish = new Wish(null, dto.getMemberId(),null,null);
+        Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
 
-        return wishRepository.getWishList(wish).stream()
-                .map(WishResponseDto::fromEntity).toList();
+        Wish wish = new Wish(null, member, null, null);
+
+        return wishRepository.findByMemberId(wish.getMember().getId())
+                .stream().map(WishResponseDto::fromEntity).toList();
     }
 
     public WishResponseDto addWish(WishRequestDto dto) {
 
-        Wish wish = new Wish(null, dto.getMemberId(), dto.getProductId(), dto.getQuantity());
+        Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
+        Product product = productRepository.findById(dto.getProductId()).orElse(null);
 
-        List<Wish> list = wishRepository.getWishList(wish);
-        List<Long> productIds = list.stream().map(Wish::getProductId).toList();
-        if(productIds.stream().anyMatch(dto.getProductId()::equals)){
+        Wish wish = new Wish(null, member, product, dto.getQuantity());
+
+        List<Wish> list = wishRepository.findByMemberId(wish.getMember().getId());
+        List<Long> productIds = list.stream().map(Wish::getProduct).map(Product::getId).toList();
+        if (productIds.stream().anyMatch(dto.getProductId()::equals)) {
             throw new IllegalArgumentException("이미 추가 되어있습니다!");
         }
 
 
-        return WishResponseDto.fromEntity(wishRepository.addWish(wish));
+        return WishResponseDto.fromEntity(wishRepository.save(wish));
     }
 
+    @Transactional
     public void deleteWish(WishRequestDto dto) {
-        Wish wish = new Wish(null, dto.getMemberId(), dto.getProductId(), null);
-        wishRepository.deleteWish(wish);
+        Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
+        Product product = productRepository.findById(dto.getProductId()).orElse(null);
+        Wish wish = new Wish(null, member, product, null);
+        wishRepository.deleteByMemberIdAndProductId(wish.getMember().getId(), wish.getProduct().getId());
     }
 
 }
