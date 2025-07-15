@@ -14,6 +14,6 @@ public record MemberUpdateRequestDto(
         String role
 ) {
     public MemberUpdateRequestDto() {
-        this(null, null, null, null);
+        this(null, "", "", "");
     }
 }

@@ -107,7 +107,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     public void validateMemberRole(String role, String viewName) {
-        if (!Role.isValid(role)){
+        if (!Role.containsIgnoreCase(role)){
             throw new InvalidMemberException("잘못된 등급입니다.", viewName, "roleErrorMessage");
         }
     }

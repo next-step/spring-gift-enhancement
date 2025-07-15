@@ -9,6 +9,7 @@ import gift.exception.OperationFailedException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         validateProductName(requestDto.name(), "admin/edit");

@@ -40,7 +40,6 @@ public class AdminProductController {
     public String addProduct(
             @Valid @ModelAttribute("product") ProductAddRequestDto requestDto,
             BindingResult bindingResult,
-            Model model,
             HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "admin/add";

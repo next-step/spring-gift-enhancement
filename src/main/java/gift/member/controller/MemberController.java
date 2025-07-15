@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
@@ -20,23 +22,25 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    //멤버를 추가하는 api
     @PostMapping
     public ResponseEntity<Void> addMember(
             @Valid @RequestBody MemberAddRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(bindingResult.getFieldError().getDefaultMessage());
+            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         memberService.addMember(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //멤버를 추가하고 토큰을 반환하는 api
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> RegisterMember(
             @Valid @RequestBody MemberRegisterRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(bindingResult.getFieldError().getDefaultMessage());
+            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         TokenResponseDto responseDto = memberService.registerMember(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -47,7 +51,7 @@ public class MemberController {
             @Valid @RequestBody MemberLoginRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(bindingResult.getFieldError().getDefaultMessage());
+            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         TokenResponseDto responseDto = memberService.loginMember(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -68,7 +72,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(bindingResult.getFieldError().getDefaultMessage());
+            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
         memberService.updateMemberById(id, requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
