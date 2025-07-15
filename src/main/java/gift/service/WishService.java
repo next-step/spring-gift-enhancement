@@ -19,7 +19,7 @@ public class WishService {
     }
 
     public List<WishResponse> getWishes(Long memberId) {
-        List<Wish> wishes = wishRepository.findWishByMemberId(memberId);
+        List<Wish> wishes = wishRepository.findAllByMemberId(memberId);
         return wishes.stream()
                 .map(WishResponse::from)
                 .collect(Collectors.toList());
@@ -27,8 +27,8 @@ public class WishService {
 
     @Transactional
     public void addWish(Long memberId, Long productId, int quantity) {
-        if (wishRepository.exists(memberId, productId)) {
-            wishRepository.updateQuantity(memberId, productId,quantity);
+        if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
+            wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId,quantity);
         } else {
             wishRepository.save(memberId, productId, quantity);
         }
@@ -37,13 +37,13 @@ public class WishService {
     @Transactional
     public void updateWish(Long memberId, Long productId, int quantity) {
         if (quantity <= 0) {
-            wishRepository.deleteByMemberAndProduct(memberId, productId);
+            wishRepository.deleteByMemberIdAndProductId(memberId, productId);
         } else {
-            wishRepository.updateQuantity(memberId, productId, quantity);
+            wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId, quantity);
         }
     }
 
     public void deleteWish(Long memberId, Long productId) {
-        wishRepository.deleteByMemberAndProduct(memberId, productId);
+        wishRepository.deleteByMemberIdAndProductId(memberId, productId);
     }
 }
