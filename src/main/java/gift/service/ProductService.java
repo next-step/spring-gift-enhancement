@@ -22,14 +22,14 @@ public class ProductService {
     public ProductResponseDTO create(ProductRequestDTO dto) {
         Product product = new Product();
         product.updateFromProductRequestDTO(dto);
-        return new ProductResponseDTO(productRepository.create(product));
+        return new ProductResponseDTO(productRepository.save(product));
     }
 
     @Transactional
     public Optional<ProductResponseDTO> update(Long id, ProductRequestDTO dto) {
         return productRepository.findById(id).map(product -> {
             product.updateFromProductRequestDTO(dto);
-            return productRepository.update(product);
+            return productRepository.save(product);
         }).map(ProductResponseDTO::new);
     }
 

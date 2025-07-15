@@ -10,6 +10,9 @@ import gift.entity.Wish;
 import gift.entity.WishWithProduct;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,15 +41,27 @@ public class WishService {
                 return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), newQuantity);
             })
             .orElseGet(() -> {
-                wishRepository.save(new Wish(member.getId(), productId, wishRequestDTO.quantity()));
+                wishRepository.save(new Wish(member, product, wishRequestDTO.quantity()));
                 return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), wishRequestDTO.quantity());
             });
     }
 
     @Transactional(readOnly = true)
     public List<WishResponseDTO> getWishes(Member member, int page, int size, String sort) {
-        long offset = (long) page * size;
-        List<WishWithProduct> wishWithProducts = wishRepository.findByMemberIdWithPagination(member.getId(), size, offset, sort);
+        Sort sortBy;
+        switch (sort) {
+            case "name":
+                sortBy = Sort.by("product.name");
+                break;
+            case "price":
+                sortBy = Sort.by("product.price");
+                break;
+            default:
+                sortBy = Sort.by("id");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sortBy);
+        List<WishWithProduct> wishWithProducts = wishRepository.findByMemberIdWithPagination(member.getId(), pageable);
 
         return wishWithProducts.stream()
             .map(this::convertToWishResponseDTO)
