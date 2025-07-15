@@ -1,6 +1,7 @@
 package gift.auth;
 
 import gift.common.exception.NoAuthorizationHeaderException;
+
 import gift.user.domain.User;
 import gift.user.service.UserService;
 import org.springframework.core.MethodParameter;

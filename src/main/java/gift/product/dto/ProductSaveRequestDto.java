@@ -18,7 +18,7 @@ public class ProductSaveRequestDto {
     private String imageUrl;
 
     public ProductSaveRequestDto() {}
-
+  
     public ProductSaveRequestDto(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
@@ -32,7 +32,7 @@ public class ProductSaveRequestDto {
     public Integer getPrice() {
         return price;
     }
-
+  
     public String getImageUrl() {
         return imageUrl;
     }

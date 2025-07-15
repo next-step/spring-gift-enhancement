@@ -34,7 +34,7 @@ public class User {
     public User(String email, String password, String salt) {
         this(null, email, password, salt);
     }
-
+  
     public boolean isEqualToPassword(String password) {
         byte[] salt = Base64.getDecoder().decode(this.salt);
         String hashedPassword = PasswordUtil.encryptPassword(password, salt);
