@@ -48,7 +48,7 @@ public class WishService {
     // 위시리스트 조회
     @Transactional(readOnly = true)
     public List<WishResponseDto> getWishesByMember(Member member) {
-        List<Wish> wishes = wishRepository.findByMemberIdOrderByIdDesc(member.getId());
+        List<Wish> wishes = wishRepository.findByMemberIdOrderByIdDesc(member);
         
         return wishes.stream()
                 .map(wish -> new WishResponseDto(wish, new ProductResponseDto(wish.getProduct())))
