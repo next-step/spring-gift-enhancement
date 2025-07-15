@@ -5,6 +5,7 @@ import gift.common.security.exception.MissingTokenException;
 import gift.item.exception.ItemNotFoundException;
 import gift.member.exception.DuplicateEmailException;
 import gift.member.exception.InvalidLoginException;
+import gift.member.exception.MemberNotFoundException;
 import gift.wishlist.exception.WishlistNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -19,7 +20,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
         ItemNotFoundException.class,
-        WishlistNotFoundException.class
+        WishlistNotFoundException.class,
+        MemberNotFoundException.class
     })
     public ResponseEntity<ErrorResponseDto> handleItemNotFoundException(
         RuntimeException e,

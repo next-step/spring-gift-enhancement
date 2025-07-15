@@ -1,19 +1,10 @@
 package gift.item.repository;
 
-import gift.item.Item;
-import java.util.List;
-import java.util.Optional;
+import gift.item.ItemEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ItemRepository {
-
-    Optional<Item> findById(Long id);
-
-    List<Item> findAll();
-
-    Item save(Item item);
-
-    Item update(Item item);
-
-    void remove(Long id);
+@Repository
+public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
 
 }

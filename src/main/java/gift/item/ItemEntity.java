@@ -1,13 +1,33 @@
 package gift.item;
 
-public class Item {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "item")
+public class ItemEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false, length = 15)
     private String name;
+
+    @Column(name = "price", nullable = false)
     private Integer price;
+
+    @Column(name = "image_url", nullable = false, length = 255)
     private String imageUrl;
 
-    public Item(Long id, String name, Integer price, String imageUrl) {
+    protected ItemEntity() {
+    }
+
+    public ItemEntity(Long id, String name, Integer price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -15,7 +35,7 @@ public class Item {
     }
 
     // 새로운 item 생성시 사용하는 생성자
-    public Item(String name, Integer price, String imageUrl) {
+    public ItemEntity(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
@@ -53,5 +73,3 @@ public class Item {
         this.imageUrl = imageUrl;
     }
 }
-
-

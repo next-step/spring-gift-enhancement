@@ -1,23 +1,13 @@
 package gift.member.repository;
 
-import gift.member.Member;
-import java.util.List;
+import gift.member.MemberEntity;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface MemberRepository {
-    // findById와 findAll은 관리자용 API 구현 시 사용
+@Repository
+public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
-    Optional<Member> findByEmail(String email);
+    Optional<MemberEntity> findByEmail(String email);
 
-    Optional<Member> findById(Long id);
-
-    List<Member> findAll();
-
-    Member save(Member member);
-
-    Member updateProfile(Member member);
-
-    void updatePassword(Member member);
-
-    void remove(Long id);
 }
