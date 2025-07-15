@@ -3,7 +3,6 @@ package gift.service.userService;
 import gift.Jwt.JwtUtil;
 import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
-import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.entity.UserRole;
@@ -14,7 +13,6 @@ import gift.exception.userException.UserPasswordException;
 import gift.repository.userRepository.UserRepositoryJPA;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,21 +69,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getUserList(String email,boolean isAdmin) {
+    public List<User> getUserList(String email,boolean isAdmin) {
 
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
-        List<User> users = getUsersByEmail(email);
-        return addResponseDto(users);
-    }
 
-    private List<UserResponseDto> addResponseDto(List<User> users) {
-        List<UserResponseDto> result = new ArrayList<>();
-        for (User user : users) {
-            result.add(new UserResponseDto(user.email(), user.password()));
-        }
-        return result;
+        List<User> users = getUsersByEmail(email);
+
+        return users;
     }
 
     private List<User> getUsersByEmail(String email) {
@@ -102,12 +94,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto finUserById(Long id) {
+    public User finUserById(Long id) {
         User user = findUserById(id);
         if (user == null) {
             throw new UserNotFoundException();
         }
-        return new UserResponseDto(user.email(), user.password());
+        return user;
     }
 
     private User findUserById(Long id) {

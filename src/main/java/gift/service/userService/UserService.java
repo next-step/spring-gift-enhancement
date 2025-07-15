@@ -12,9 +12,9 @@ import java.util.List;
 public interface UserService {
     String registerUser(UserRegisterDto dto);
 
-    List<UserResponseDto> getUserList(String email,boolean isAdmin);
+    List<User> getUserList(String email,boolean isAdmin);
 
-    UserResponseDto finUserById(Long id);
+    User finUserById(Long id);
 
     User updateUser(Long id, @Valid UserUpdateDto dto,boolean isAdmin);
 
