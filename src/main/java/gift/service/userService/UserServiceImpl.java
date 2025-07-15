@@ -140,8 +140,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAuthorizationException();
         }
 
-        User findUser = userRepository.findUserById(id);
-        userRepository.deleteUser(findUser);
+        userRepository.deleteUserById(id);
     }
 
 }
