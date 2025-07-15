@@ -1,14 +1,22 @@
 package gift.product.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "product")
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private Integer price;
+
     private String imageUrl;
-    
-    //자동으로 생성되지만 가독성을 위해 생성
-    public Product() {}
 
     public Long getId() {
         return id;
