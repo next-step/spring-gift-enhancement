@@ -5,12 +5,13 @@ import gift.common.exception.CustomException;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.Product;
+import gift.entity.User;
 import gift.entity.Wish;
 import gift.repository.ProductRepository;
+import gift.repository.UserRepository;
 import gift.repository.WishRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,54 +20,60 @@ public class WishServiceImpl implements WishService {
 
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public WishServiceImpl(
-        WishRepository wishRepository,
-        @Qualifier("JDBC-Repo") ProductRepository productRepository
-    ) {
+    public WishServiceImpl(WishRepository wishRepository, ProductRepository productRepository,
+        UserRepository userRepository) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
     public WishResponse addWish(Long userId, WishRequest request) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
         Product product = productRepository.findById(request.productId())
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        boolean exists = wishRepository.existsByUserIdAndProductId(userId, request.productId());
+        boolean exists = wishRepository.existsByUserAndProduct(user, product);
         if (exists) {
             throw new CustomException(CustomResponseCode.ALREADY_EXISTS);
         }
 
         Wish savedWish = wishRepository.save(
-            new Wish(null, userId, request.productId(), request.quantity()));
+            new Wish(null, user, product, request.quantity()));
 
-        return WishResponse.from(savedWish, product);
+        return WishResponse.from(savedWish);
     }
 
     @Override
     @Transactional
     public void deleteWish(Long userId, Long productId) {
-        boolean exists = wishRepository.existsByUserIdAndProductId(userId, productId);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
+
+        boolean exists = wishRepository.existsByUserAndProduct(user, product);
         if (!exists) {
             throw new CustomException(CustomResponseCode.NOT_FOUND);
         }
 
-        wishRepository.deleteByUserIdAndProductId(userId, productId);
+        wishRepository.deleteByUserAndProduct(user, product);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<WishResponse> getWishes(Long userId) {
-        List<Wish> wishes = wishRepository.findByUserId(userId);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
+
+        List<Wish> wishes = wishRepository.findAllByUser(user);
 
         return wishes.stream()
-            .map(wish -> {
-                Product product = productRepository.findById(wish.getProductId())
-                    .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
-                return WishResponse.from(wish, product);
-            })
+            .map(WishResponse::from)
             .collect(Collectors.toList());
     }
 }

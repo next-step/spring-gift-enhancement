@@ -1,15 +1,16 @@
 package gift.repository;
 
+import gift.entity.Product;
+import gift.entity.User;
 import gift.entity.Wish;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WishRepository {
+public interface WishRepository extends JpaRepository<Wish, Long> {
 
-    Wish save(Wish wish);
+    void deleteByUserAndProduct(User user, Product product);
 
-    void deleteByUserIdAndProductId(Long userId, Long productId);
+    boolean existsByUserAndProduct(User user, Product product);
 
-    boolean existsByUserIdAndProductId(Long userId, Long productId);
-
-    List<Wish> findByUserId(Long userId);
+    List<Wish> findAllByUser(User user);
 }
