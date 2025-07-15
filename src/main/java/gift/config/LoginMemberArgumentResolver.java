@@ -1,6 +1,7 @@
 package gift.config;
 
 import gift.annotation.CurrentMember;
+import gift.exception.member.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import gift.util.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,10 +50,9 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         long id = Long.parseLong(jwtTokenProvider.getIdFromToken(token.get()));
 
-        return memberRepository.findMemberById(id)
+        return memberRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
+                        new MemberNotFoundException(
                                 "해당 ID의 멤버은 존재하지 않습니다."
                         )
                 );
