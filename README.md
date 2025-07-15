@@ -64,16 +64,15 @@
   - [x] ProductRepository
   - [x] WishRepository
 
-- [ ] Service 클래스 변경
-  - [ ] MemberService
-  - [ ] ProductService
-  - [ ] WishService
+- [x] Service 클래스 변경
+  - [x] MemberService
+  - [x] ProductService
+  - [x] WishService
 
-- [ ] Controller 클래스 변경
-  - [ ] AdminController
-  - [ ] MemberController
-  - [ ] ProductController
-  - [ ] WishController
+- [x] Controller 클래스 변경
+  - [x] MemberController
+  - [x] ProductController
+  - [x] WishController
 
 - [ ] 테스트 코드 변경
   - [ ] @DataJpaTest 적용한 테스트 클래스 작성
