@@ -25,7 +25,7 @@ public class WishlistController {
             @LoginMember Member member,
             @RequestBody WishRequestDto wishRequestDto) {
         WishResponseDto wishResponseDto =
-                wishlistService.addWish(member.getId(), wishRequestDto);
+                wishlistService.addWish(member, wishRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(wishResponseDto);
     }
@@ -33,7 +33,7 @@ public class WishlistController {
     @GetMapping
     public ResponseEntity<List<WishResponseDto>> getWishlist(
             @LoginMember Member member) {
-        List<WishResponseDto> wishResponseDto = wishlistService.getWishesByMemberId(member.getId());
+        List<WishResponseDto> wishResponseDto = wishlistService.getWishesByMember(member);
 
         return ResponseEntity.ok(wishResponseDto);
     }
@@ -42,7 +42,7 @@ public class WishlistController {
     public ResponseEntity<Void> deleteWishlist(
             @LoginMember Member member,
             @PathVariable Long wishId) {
-        wishlistService.deleteWish(member.getId(), wishId);
+        wishlistService.deleteWish(member, wishId);
 
         return ResponseEntity.noContent().build();
     }

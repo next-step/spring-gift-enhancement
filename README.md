@@ -17,3 +17,4 @@
   - [x] Wishlist를 JPA 엔티티로 변환
   - [x] WishlistRepository를 Jdbc 기반에서 JPA 기반으로 변경
   - [x] JPA 적용으로 인한 MemberService 로직 변경 및 관련 예외 처리 추가
+  - [x] MemberService 로직 변경으로 인한 WishlistController 리팩토링
