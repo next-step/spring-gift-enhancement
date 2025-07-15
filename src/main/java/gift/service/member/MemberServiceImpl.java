@@ -1,9 +1,9 @@
 package gift.service.member;
 
+import gift.dto.member.MemberCredentialDto;
 import gift.dto.member.MemberPasswordChangeDto;
 import gift.dto.member.MemberRequestDto;
 import gift.dto.member.MemberResponseDto;
-import gift.dto.member.MemberCredentialDto;
 import gift.entity.Member;
 import gift.repository.member.MemberRepository;
 import gift.util.JwtUtil;
@@ -32,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        Member member = memberRepository.create(
+        Member member = memberRepository.save(
             new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
 
         String accessToken = jwtUtil.createToken(member.getId(), member.getEmail());
@@ -61,7 +61,8 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         int changeRow = memberRepository.changePassword(
-            new Member(requestDto.email(), sha256Util.encrypt(requestDto.beforePassword())),
+            requestDto.email(),
+            sha256Util.encrypt(requestDto.beforePassword()),
             sha256Util.encrypt(requestDto.afterPassword()));
 
         if (changeRow <= 0) {
@@ -77,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
         // TODO: 주어진 이메일에 대해 전송 후, 사용자에게 인증받는 절차는 거쳤다고 가정
 
         memberRepository.resetPassword(
-            new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
+            requestDto.email(), sha256Util.encrypt(requestDto.password()));
     }
 
     @Override
