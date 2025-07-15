@@ -15,3 +15,4 @@
   - [x] DataJpaTest를 이용한 MemberRepository 테스트 코드 추가
 - [ ] Wishlist 리펙토링
   - [x] Wishlist를 JPA 엔티티로 변환
+  - [x] WishlistRepository를 Jdbc 기반에서 JPA 기반으로 변경
