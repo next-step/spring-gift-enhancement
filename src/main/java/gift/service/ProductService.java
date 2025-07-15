@@ -19,27 +19,41 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public Product create(Product product) {
         return productRepository.save(product);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getAllActive() {
         return productRepository.findAllActive();
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getAllProduct(){
         return productRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getByStatus(ProductStatus status){
         return productRepository.findByStatusAndIsDeletedFalse(status);
     }
 
+    @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다."));
     }
 
+    @Transactional
+    public void update(Long id, Product product) {
+        boolean updated = productRepository.updateById(id, product) > 0;
+        if (!updated) {
+            throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
+        }
+    }
+
+    @Transactional
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
             throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
@@ -53,13 +67,6 @@ public class ProductService {
             throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
         }
         productRepository.softDeleteById(id);
-    }
-
-    public void update(Long id, Product product) {
-        boolean updated = productRepository.updateById(id, product) > 0;
-        if (!updated) {
-            throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
-        }
     }
 
 }
