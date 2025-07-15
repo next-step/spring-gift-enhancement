@@ -8,7 +8,6 @@ import gift.entity.Product;
 import gift.repository.ProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +16,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductServiceImpl(@Qualifier("JDBC-Repo") ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductResponse create(ProductRequest request) {
-
         Product savedProduct = productRepository.save(
             new Product(null, request.name(), request.price(), request.imageUrl()));
 
@@ -51,20 +49,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
-
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
         product.update(request.name(), request.price(), request.imageUrl());
-        Product updatedProduct = productRepository.update(product);
 
-        return ProductResponse.from(updatedProduct);
+        return ProductResponse.from(product);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        if (productRepository.findById(id).isEmpty()) {
+        if (!productRepository.existsById(id)) {
             throw new CustomException(CustomResponseCode.NOT_FOUND);
         }
 
