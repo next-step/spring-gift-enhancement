@@ -7,6 +7,7 @@ import gift.global.exception.ErrorCode;
 import gift.repository.product.ProductJpaRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductServiceAdmin {
@@ -30,6 +31,7 @@ public class ProductServiceAdmin {
         return productRepository.save(product).getId();
     }
 
+    @Transactional
     public void updateAdmin(ProductRequest request) {
         productRepository.findById(request.id())
             .orElseThrow(()-> CustomException.from(ErrorCode.NOT_EXISTS));

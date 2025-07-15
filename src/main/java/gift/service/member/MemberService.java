@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -34,8 +35,7 @@ public class MemberService {
 
         // Member 클래스에 정의된 비밀번호 확인 메서드를 사용하도록 변경
         if (!member.matches(request.password(), passwordEncoder)) {
-            throw new CustomException(ErrorCode.INCORRECT_LOGIN_INFO,
-                ErrorCode.INCORRECT_LOGIN_INFO.getErrorMessage());
+            throw CustomException.from(ErrorCode.INCORRECT_LOGIN_INFO);
         }
 
         String token = jwtUtil.generateToken(member.getId());
@@ -64,6 +64,7 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    @Transactional
     public void update(Long memberId, MemberRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> CustomException.from(ErrorCode.NOT_EXISTS));
