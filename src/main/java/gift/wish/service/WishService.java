@@ -38,8 +38,8 @@ public class WishService {
 
     public WishResponseDto addWish(WishRequestDto dto) {
 
-        Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
-        Product product = productRepository.findById(dto.getProductId()).orElse(null);
+        Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new IllegalArgumentException("member를 찾을 수 없습니다"));
+        Product product = productRepository.findById(dto.getProductId()).orElseThrow(() -> new IllegalArgumentException("product를 찾을 수 없습니다"));
 
         Wish wish = new Wish(null, member, product, dto.getQuantity());
 
@@ -55,8 +55,8 @@ public class WishService {
 
     @Transactional
     public void deleteWish(WishRequestDto dto) {
-        Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
-        Product product = productRepository.findById(dto.getProductId()).orElse(null);
+        Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new IllegalArgumentException("member를 찾을 수 없습니다"));
+        Product product = productRepository.findById(dto.getProductId()).orElseThrow(() -> new IllegalArgumentException("product를 찾을 수 없습니다"));
         Wish wish = new Wish(null, member, product, null);
         wishRepository.deleteByMemberIdAndProductId(wish.getMember().getId(), wish.getProduct().getId());
     }
