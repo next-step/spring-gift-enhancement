@@ -15,6 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @DataJpaTest
 public class WishRepositoryTest {
@@ -53,9 +57,14 @@ public class WishRepositoryTest {
         Wish wish = new Wish(member, product);
         wishRepository.save(wish);
 
-        List<Wish> wishes = wishRepository.findByMember(member);
+        Pageable pageable = PageRequest.of(0, 3, Sort.by("id").descending());
+
+        Page<Wish> wishPage = wishRepository.findByMember(member, pageable);
+        List<Wish> wishes = wishPage.getContent();
 
         assertAll(
+                () -> assertThat(wishPage.getTotalElements()).isEqualTo(1),
+                () -> assertThat(wishPage.getTotalPages()).isEqualTo(1),
                 () -> assertThat(wishes.get(0).getProduct().getPrice()).isEqualTo(BigDecimal.valueOf(3000)),
                 () -> assertThat(wishes.get(0).getProduct().getName()).isEqualTo("test 상품")
         );
