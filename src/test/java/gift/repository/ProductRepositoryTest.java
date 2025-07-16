@@ -18,14 +18,13 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 레퍼지토리에 상품이 정상적으로 저장되는지 테스트")
     void save() {
-        Product expectedProduct = productRepository.save(
-                new Product(
-                        "테스트",
-                        10000L,
-                        "https://test.com",
-                        true,
-                        ""
-                ));
+        Product expectedProduct = new Product(
+                "테스트",
+                10000L,
+                "https://test.com",
+                true,
+                ""
+        );
 
         Product actualProduct = productRepository.save(expectedProduct);
 
@@ -51,8 +50,7 @@ public class ProductRepositoryTest {
                         ""
                 ));
 
-        Long id = productRepository.save(expectedProduct).getId();
-        Product actualProduct = productRepository.findById(id).get();
+        Product actualProduct = productRepository.findById(expectedProduct.getId()).get();
 
         assertAll(
                 () -> assertThat(actualProduct.getId()).isNotNull(),
@@ -64,4 +62,53 @@ public class ProductRepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("상품 레퍼지토리에 상품이 정상적으로 수정되는지 테스트")
+    void update() {
+        Product expectedProduct = productRepository.save(
+                new Product(
+                        "테스트",
+                        10000L,
+                        "https://test.com",
+                        true,
+                        ""
+                ));
+
+        expectedProduct.updateProduct(
+                "수정됨",
+                20000L,
+                "https://test2.com",
+                true,
+                ""
+        );
+
+        Product actualProduct = productRepository.findById(expectedProduct.getId()).get();
+
+        assertAll(
+                () -> assertThat(actualProduct.getId()).isNotNull(),
+                () -> assertThat(actualProduct.getName()).isEqualTo(expectedProduct.getName()),
+                () -> assertThat(actualProduct.getPrice()).isEqualTo(expectedProduct.getPrice()),
+                () -> assertThat(actualProduct.getImageUrl()).isEqualTo(expectedProduct.getImageUrl()),
+                () -> assertThat(actualProduct.getApproved()).isEqualTo(expectedProduct.getApproved()),
+                () -> assertThat(actualProduct.getDescription()).isEqualTo(expectedProduct.getDescription())
+        );
+    }
+
+    @Test
+    @DisplayName("상품 레퍼지토리에 상품이 정상적으로 삭제되는지 테스트")
+    void delete() {
+        Product expectedProduct = productRepository.save(
+                new Product(
+                        "테스트",
+                        10000L,
+                        "https://test.com",
+                        true,
+                        ""
+                ));
+
+        Long id = expectedProduct.getId();
+        productRepository.deleteById(id);
+
+        assertThat(productRepository.existsById(id)).isEqualTo(false);
+    }
 }
