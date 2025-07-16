@@ -1,15 +1,18 @@
 package gift.member.service;
 
 import gift.authorization.dto.TokenResponseDto;
+import gift.authorization.exception.UnauthorizedException;
+import gift.authorization.service.JwtProvider;
 import gift.entity.Member;
 import gift.entity.Role;
-import gift.member.dto.*;
+import gift.member.dto.MemberAddRequestDto;
+import gift.member.dto.MemberLoginRequestDto;
+import gift.member.dto.MemberRegisterRequestDto;
+import gift.member.dto.MemberResponseDto;
+import gift.member.dto.MemberUpdateRequestDto;
 import gift.member.exception.InvalidMemberException;
-import gift.exception.OperationFailedException;
-import gift.authorization.exception.UnauthorizedException;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
-import gift.authorization.service.JwtProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

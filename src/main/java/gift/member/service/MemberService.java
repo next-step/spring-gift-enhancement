@@ -2,7 +2,11 @@ package gift.member.service;
 
 import gift.authorization.dto.TokenResponseDto;
 import gift.entity.Member;
-import gift.member.dto.*;
+import gift.member.dto.MemberAddRequestDto;
+import gift.member.dto.MemberLoginRequestDto;
+import gift.member.dto.MemberRegisterRequestDto;
+import gift.member.dto.MemberResponseDto;
+import gift.member.dto.MemberUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,11 +1,10 @@
 package gift.product.service;
 
+import gift.entity.Product;
 import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.dto.ProductUpdateRequestDto;
-import gift.entity.Product;
 import gift.product.exception.InvalidProductException;
-import gift.exception.OperationFailedException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
