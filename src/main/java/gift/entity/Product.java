@@ -19,7 +19,7 @@ public class Product {
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    @Column(name = "imageUrl", nullable = false, length = 255)
+    @Column(name = "image_url", nullable = false, length = 255)
     private String imageUrl;
 
     public Product() {
