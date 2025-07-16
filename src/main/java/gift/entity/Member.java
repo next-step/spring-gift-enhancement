@@ -21,7 +21,7 @@ public class Member{
         return new MemberResponseDto(this);
     }
 
-    public Member(){}
+    protected Member(){}
 
     public Member(Long id, String email, String password, String name, String role) {
         this.id = id;

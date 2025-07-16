@@ -1,5 +1,6 @@
 package gift.product.controller;
 
+import gift.member.exception.InvalidMemberException;
 import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductResponseDto;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +28,7 @@ public class ProductController {
             @Valid @RequestBody ProductAddRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidProductException(bindingResult.getFieldError().getDefaultMessage());
+            throw new InvalidProductException(getDefaultMessage(bindingResult));
         }
         productService.addProduct(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -46,7 +48,7 @@ public class ProductController {
             @Valid @RequestBody ProductUpdateRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidProductException(bindingResult.getFieldError().getDefaultMessage());
+            throw new InvalidProductException(getDefaultMessage(bindingResult));
         }
         productService.updateProductById(id, requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -60,4 +62,11 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    private String getDefaultMessage(BindingResult bindingResult) {
+        FieldError fieldError = bindingResult.getFieldError();
+        if (fieldError == null || fieldError.getDefaultMessage() == null) {
+            throw new InvalidMemberException("잘못된 요청입니다.");
+        }
+        return fieldError.getDefaultMessage();
+    }
 }

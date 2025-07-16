@@ -16,7 +16,7 @@ public class Wishlist {
     private Product product;
     private Long quantity;
 
-    public Wishlist() {
+    protected Wishlist() {
     }
 
     public Wishlist(Long id, Member member, Product product, Long quantity) {

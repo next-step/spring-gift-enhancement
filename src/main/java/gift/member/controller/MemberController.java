@@ -8,8 +8,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Binding;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 @RestController
@@ -28,7 +31,7 @@ public class MemberController {
             @Valid @RequestBody MemberAddRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+            throw new InvalidMemberException(getDefaultMessage(bindingResult));
         }
         memberService.addMember(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -40,7 +43,7 @@ public class MemberController {
             @Valid @RequestBody MemberRegisterRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+            throw new InvalidMemberException(getDefaultMessage(bindingResult));
         }
         TokenResponseDto responseDto = memberService.registerMember(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -51,7 +54,7 @@ public class MemberController {
             @Valid @RequestBody MemberLoginRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+            throw new InvalidMemberException(getDefaultMessage(bindingResult));
         }
         TokenResponseDto responseDto = memberService.loginMember(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -72,7 +75,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidMemberException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+            throw new InvalidMemberException(getDefaultMessage(bindingResult));
         }
         memberService.updateMemberById(id, requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -84,5 +87,13 @@ public class MemberController {
     ) {
         memberService.deleteMemberById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private String getDefaultMessage(BindingResult bindingResult) {
+        FieldError fieldError = bindingResult.getFieldError();
+        if (fieldError == null || fieldError.getDefaultMessage() == null) {
+            throw new InvalidMemberException("잘못된 요청입니다.");
+        }
+        return fieldError.getDefaultMessage();
     }
 }

@@ -16,7 +16,7 @@ public class Product {
     private Long price;
     private String url;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(Long id, String name, Long price, String url) {
