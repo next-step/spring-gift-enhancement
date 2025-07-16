@@ -71,10 +71,10 @@ class ProductApiControllerTest {
         mvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("연필"))
-                .andExpect(jsonPath("$[0].price").value(1000))
-                .andExpect(jsonPath("$[1].name").value("가방"))
-                .andExpect(jsonPath("$[1].price").value("2000"));
+                .andExpect(jsonPath("$[0].name").value("가방"))
+                .andExpect(jsonPath("$[0].price").value(2000))
+                .andExpect(jsonPath("$[1].name").value("연필"))
+                .andExpect(jsonPath("$[1].price").value(1000));
     }
 
     @Test

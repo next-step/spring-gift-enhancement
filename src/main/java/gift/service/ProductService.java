@@ -3,8 +3,12 @@ package gift.service;
 import gift.common.exception.ProductNotFoundException;
 import gift.domain.Product;
 import gift.dto.product.CreateProductRequest;
+import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +20,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private static final int PAGE_SIZE = 10;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -27,8 +32,16 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<ProductResponse> getAllProductsByOffset(int page) {
+        return productRepository.findAll(PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending())).map(ProductResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getAllProductsByCursor(Long lastId) {
+        if (lastId == null) {
+            return productRepository.findAll(PageRequest.of(0, PAGE_SIZE, Sort.by("id").descending())).map(ProductResponse::from).stream().toList();
+        }
+        return productRepository.findAllWithCursor(lastId, PageRequest.ofSize(PAGE_SIZE));
     }
 
     @Transactional(readOnly = true)

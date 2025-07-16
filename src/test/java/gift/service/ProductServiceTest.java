@@ -3,15 +3,15 @@ package gift.service;
 import gift.common.exception.ProductNotFoundException;
 import gift.domain.Product;
 import gift.dto.product.CreateProductRequest;
+import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -67,9 +67,9 @@ class ProductServiceTest {
         productService.saveProduct(createProductRequest);
 
         //beforeEach에서 생성한 것 까지 총 2건의 데이터 있음
-        List<Product> products = productService.getAllProducts();
+        Page<ProductResponse> products = productService.getAllProductsByOffset(1);
         assertThat(products).isNotEmpty();
-        assertThat(products.size()).isEqualTo(2);
+        assertThat(products.getTotalElements()).isEqualTo(2);
     }
 
     @Test
