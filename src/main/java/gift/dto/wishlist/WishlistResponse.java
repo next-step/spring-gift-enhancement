@@ -4,6 +4,8 @@ import gift.domain.Product;
 import gift.domain.Wishlist;
 
 public class WishlistResponse {
+    Long id;
+
     Long productId;
     String productName;
     String productImageUrl;
@@ -11,10 +13,15 @@ public class WishlistResponse {
 
     public WishlistResponse(Wishlist wishlist) {
         Product product = wishlist.getProduct();
+        this.id = wishlist.getId();
         this.productId = product.getId();
         this.productName = product.getName();
         this.productImageUrl = product.getImageUrl();
         this.productPrice = product.getPrice();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getProductId() {

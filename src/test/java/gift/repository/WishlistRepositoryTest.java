@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -113,15 +115,15 @@ public class WishlistRepositoryTest {
 
         em.flush();
 
-        List<WishlistResponse> responses = wishlistRepository.findAllByUserId(user.getId());
+        Page<Wishlist> responses = wishlistRepository.findAllByUserId(user.getId(), PageRequest.of(0, 10));
 
-        assertThat(responses.size()).isEqualTo(1);
+        assertThat(responses.getTotalElements()).isEqualTo(1);
 
-        WishlistResponse response = responses.get(0);
+        Wishlist response = responses.getContent().get(0);
 
-        assertThat(response.getProductId()).isEqualTo(product.getId());
-        assertThat(response.getProductName()).isEqualTo(product.getName());
-        assertThat(response.getProductPrice()).isEqualTo(product.getPrice());
-        assertThat(response.getProductImageUrl()).isEqualTo(product.getImageUrl());
+        assertThat(response.getProduct().getId()).isEqualTo(product.getId());
+        assertThat(response.getProduct().getName()).isEqualTo(product.getName());
+        assertThat(response.getProduct().getPrice()).isEqualTo(product.getPrice());
+        assertThat(response.getProduct().getImageUrl()).isEqualTo(product.getImageUrl());
     }
 }

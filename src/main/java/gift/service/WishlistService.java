@@ -9,10 +9,11 @@ import gift.dto.wishlist.WishlistResponse;
 import gift.repository.ProductRepository;
 import gift.repository.UserRepository;
 import gift.repository.WishlistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,8 @@ public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+
+    private final static int PAGE_SIZE = 10;
 
     public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.wishlistRepository = wishlistRepository;
@@ -41,8 +44,8 @@ public class WishlistService {
     }
 
     @Transactional(readOnly = true)
-    public List<WishlistResponse> getWishlistsByUserId(Long id) {
-        return wishlistRepository.findAllByUserId(id);
+    public Page<WishlistResponse> getWishlistsByUserId(Long userId, int page) {
+        return wishlistRepository.findAllByUserId(userId, PageRequest.of(page - 1, PAGE_SIZE)).map(WishlistResponse::new);
     }
 
     public void deleteWishlist(Long userId, Long wishlistId) {
