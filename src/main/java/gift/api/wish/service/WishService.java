@@ -7,9 +7,11 @@ import gift.api.product.repository.ProductRepository;
 import gift.api.wish.domain.Wish;
 import gift.api.wish.dto.WishResponseDto;
 import gift.api.wish.repository.WishRepository;
-import gift.exception.AuthorizationException;
-import gift.exception.ProductNotFoundException;
-import gift.exception.WishException;
+import gift.exception.auth.AuthorizationException;
+import gift.exception.conflict.DuplicateWishException;
+import gift.exception.notfound.MemberNotFoundException;
+import gift.exception.notfound.ProductNotFoundException;
+import gift.exception.notfound.WishNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class WishService {
 
     public Page<WishResponseDto> getWishlist(String email, Pageable pageable) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(email));
 
         Page<Wish> wishlistPage = wishRepository.findByMember(member, pageable);
 
@@ -43,14 +45,14 @@ public class WishService {
     @Transactional
     public WishResponseDto addProductToWishlist(String email, Long productId) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(email));
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
 
         wishRepository.findByMemberAndProduct(member, product)
                 .ifPresent(wish -> {
-                    throw new WishException("이미 위시리스트에 추가된 상품입니다.");
+                    throw new DuplicateWishException(wish.getProduct().getName());
                 });
 
         Wish newWish = new Wish(member, product);
@@ -62,7 +64,7 @@ public class WishService {
     @Transactional
     public void removeProductFromWishlist(String email, Long wishId) {
         Wish wish = wishRepository.findById(wishId)
-                .orElseThrow(() -> new WishException("해당 위시를 찾을 수 없습니다."));
+                .orElseThrow(() -> new WishNotFoundException(wishId));
 
         if (!wish.getMember().getEmail().equals(email)) {
             throw new AuthorizationException("해당 위시를 삭제할 권한이 없습니다.");

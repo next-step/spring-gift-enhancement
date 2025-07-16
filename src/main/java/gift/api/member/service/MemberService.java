@@ -5,7 +5,8 @@ import gift.api.member.domain.MemberRole;
 import gift.api.member.dto.MemberRequestDto;
 import gift.api.member.dto.TokenResponseDto;
 import gift.api.member.repository.MemberRepository;
-import gift.exception.LoginFailedException;
+import gift.exception.auth.LoginFailedException;
+import gift.exception.conflict.DuplicateEmailException;
 import gift.util.JwtUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class MemberService {
     @Transactional
     public TokenResponseDto registerMember(MemberRequestDto memberRequestDto) {
         memberRepository.findByEmail(memberRequestDto.email()).ifPresent(member -> {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new DuplicateEmailException(memberRequestDto.email());
         });
 
         String encodedPassword = BCrypt.hashpw(memberRequestDto.password(), BCrypt.gensalt());

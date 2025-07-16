@@ -1,8 +1,8 @@
 package gift.interceptor;
 
 import gift.api.member.domain.MemberRole;
-import gift.exception.AuthenticationException;
-import gift.exception.AuthorizationException;
+import gift.exception.auth.AuthenticationException;
+import gift.exception.auth.AuthorizationException;
 import gift.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;

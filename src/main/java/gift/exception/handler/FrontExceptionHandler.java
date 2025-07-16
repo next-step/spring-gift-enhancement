@@ -1,12 +1,10 @@
 package gift.exception.handler;
 
-import gift.exception.AuthenticationException;
-import gift.exception.AuthorizationException;
-import gift.exception.LoginFailedException;
-import gift.exception.ProductNotFoundException;
-import gift.exception.WishException;
+import gift.exception.auth.AuthenticationException;
+import gift.exception.auth.AuthorizationException;
+import gift.exception.conflict.DataConflictException;
 import gift.exception.dto.ErrorResponseDto;
-import jakarta.persistence.EntityNotFoundException;
+import gift.exception.notfound.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -16,23 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class FrontExceptionHandler {
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public String handleProductNotFound(
-            ProductNotFoundException ex,
-            Model model,
-            HttpServletRequest request) {
-
-        ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-        model.addAttribute("errorInfo", error);
-
-        return "error";
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public String handleEntityNotFound(
@@ -51,15 +32,15 @@ public class FrontExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleValidationException(
-            MethodArgumentNotValidException ex,
+    @ExceptionHandler(DataConflictException.class)
+    public String handleDataConflict(
+            DataConflictException ex,
             Model model,
             HttpServletRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );
@@ -68,24 +49,6 @@ public class FrontExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler(LoginFailedException.class)
-    public String handleLoginFailedException(
-            LoginFailedException ex,
-            Model model,
-            HttpServletRequest request) {
-
-        ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-        model.addAttribute("errorInfo", error);
-
-        return "error";
-    }
-
-    // 인증
     @ExceptionHandler(AuthenticationException.class)
     public String handleAuthenticationException(
             AuthenticationException ex,
@@ -103,7 +66,6 @@ public class FrontExceptionHandler {
         return "error";
     }
 
-    // 인가
     @ExceptionHandler(AuthorizationException.class)
     public String handleAuthorizationException(
             AuthorizationException ex,
@@ -121,9 +83,9 @@ public class FrontExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler(WishException.class)
-    public String handleWishlistException(
-            WishException ex,
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleMethodArgumentNotValid(
+            Exception ex,
             Model model,
             HttpServletRequest request) {
 
@@ -146,7 +108,7 @@ public class FrontExceptionHandler {
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                ex.getClass().getSimpleName(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );

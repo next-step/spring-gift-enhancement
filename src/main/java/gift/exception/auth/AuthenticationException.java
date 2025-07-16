@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.exception.auth;
 
 // 인증
 public class AuthenticationException extends RuntimeException {
