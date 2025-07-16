@@ -79,27 +79,6 @@ public class WishListServiceImpl implements WishListService {
         return result;
     }
 
-
-    private List<WishItem> getWishItems(List<WishItem> wishItems, String name, Integer price) {
-        List<WishItem> result = new ArrayList<>();
-
-        for (WishItem wishItem : wishItems) {
-            Item item = wishItem.getItem();
-            if (item == null) {
-                if (name == null && price == null) {
-                    throw new UserInputException();
-                }
-                continue;
-            }
-
-            if ((name == null && price == null) || item.isValid(name, price)) {
-                result.add(wishItem);
-            }
-        }
-
-        return result;
-    }
-
     @Override
     public WishItem deleteWishItem(String name, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
