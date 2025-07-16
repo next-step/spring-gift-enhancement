@@ -3,17 +3,14 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
-import gift.entity.Member;
 import gift.entity.Product;
-import gift.exception.EmailAlreadyExistsException;
 import gift.exception.ResourceNotFoundException;
 import gift.repository.ProductRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 public class ProductService {
@@ -41,15 +38,14 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> findAllProduct() {
-        return productRepository.findAll().stream()
-            .map(p -> new ProductResponseDto(
+    public Page<ProductResponseDto> findAllProduct(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(p -> new ProductResponseDto(
                     p.getId(),
                     p.getName(),
                     p.getPrice(),
                     p.getImageUrl()
-            ))
-            .collect(Collectors.toList());
+            ));
     }
 
     @Transactional(readOnly = true)

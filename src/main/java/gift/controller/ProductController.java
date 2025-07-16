@@ -5,7 +5,8 @@ import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,8 +33,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> findAllProduct() {
-        return new ResponseEntity<>(productService.findAllProduct(), HttpStatus.OK);
+    public ResponseEntity<Page<ProductResponseDto>> findAllProduct(Pageable pageable) {
+        return new ResponseEntity<>(productService.findAllProduct(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
