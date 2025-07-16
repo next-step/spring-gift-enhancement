@@ -8,7 +8,7 @@ import gift.exception.itemException.ItemDuplicatedException;
 import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
-import gift.repository.wishListRepository.WishListRepositoryJPA;
+import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,11 @@ import java.util.Optional;
 @Service
 public class WishListServiceImpl implements WishListService {
 
-    private final WishListRepositoryJPA wishListRepository;
+    private final WishListRepository wishListRepository;
     private final UserService userService;
     private final ItemService itemService;
 
-    public WishListServiceImpl(WishListRepositoryJPA wishListRepository, UserService userService, ItemService itemService) {
+    public WishListServiceImpl(WishListRepository wishListRepository, UserService userService, ItemService itemService) {
         this.wishListRepository = wishListRepository;
         this.userService = userService;
         this.itemService = itemService;

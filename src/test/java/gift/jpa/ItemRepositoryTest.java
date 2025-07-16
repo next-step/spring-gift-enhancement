@@ -3,9 +3,9 @@ package gift.jpa;
 import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
-import gift.repository.itemRepository.ItemRepositoryJPA;
+import gift.repository.itemRepository.ItemRepository;
 import gift.service.itemService.ItemService;
-import gift.service.itemService.ItemServiceJpa;
+import gift.service.itemService.ItemServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ItemRepositoryTest {
 
     @Autowired
-    private ItemRepositoryJPA itemRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -30,7 +30,7 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        itemService = new ItemServiceJpa(itemRepository);
+        itemService = new ItemServiceImpl(itemRepository);
     }
 
     @Test

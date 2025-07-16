@@ -10,7 +10,7 @@ import gift.exception.userException.UserAuthorizationException;
 import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
 import gift.exception.userException.UserPasswordException;
-import gift.repository.userRepository.UserRepositoryJPA;
+import gift.repository.userRepository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +18,10 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepositoryJPA userRepository;
+    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepositoryJPA userRepository, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }
