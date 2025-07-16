@@ -1,14 +1,17 @@
 package gift.service;
 
-import gift.dto.ProductRequestDto;
+import gift.dto.ProductRequest;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -25,23 +28,23 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public Product createProduct(ProductRequestDto productRequestDto) {
-        Product product = new Product(productRequestDto);
-        return productRepository.save(product);
+    public Product createProduct(ProductRequest productRequest) {
+        return productRepository.save(productRequest.toEntity());
     }
 
-    public Optional<Product> updateProduct(Long id, ProductRequestDto productRequestDto) {
-        Product product = new Product(productRequestDto);
-        product.setId(id);
+    public Product updateProduct(Long id, ProductRequest productRequest) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 상품이 없습니다."));
 
-        if (productRepository.update(product)) {
-            return Optional.empty();
-        }
+        product.update(productRequest.getName(), productRequest.getPrice(), productRequest.getImageUrl());
 
-        return productRepository.findById(id);
+        return product;
     }
 
-    public boolean deleteProduct(Long id) {
-        return productRepository.deleteById(id);
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 상품이 없습니다."));
+
+        productRepository.delete(product);
     }
 }

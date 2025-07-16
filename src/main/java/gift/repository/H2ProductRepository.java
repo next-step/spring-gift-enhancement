@@ -1,17 +1,9 @@
 package gift.repository;
 
-import gift.entity.Product;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
+@Deprecated
+public class H2ProductRepository {
 
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-public class H2ProductRepository implements ProductRepository {
-
+    /*
     private final JdbcClient jdbcClient;
 
     public H2ProductRepository(JdbcClient jdbcClient) {
@@ -62,4 +54,5 @@ public class H2ProductRepository implements ProductRepository {
                 .param("id", id)
                 .update() != 0;
     }
+     */
 }
