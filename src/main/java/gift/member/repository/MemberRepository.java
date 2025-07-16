@@ -1,16 +1,12 @@
 package gift.member.repository;
 
 import gift.member.domain.Member;
-import gift.member.domain.RoleType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-public interface MemberRepository {
-
-    Member save(String email, String password, RoleType role);
-
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
-
-    void updatePassword(Long id, String newPassword);
-
-    void deleteById(Long id);
 }

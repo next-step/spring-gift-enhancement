@@ -35,7 +35,7 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다: " + request.email());
         }
 
-        Member member = memberRepository.save(request.email(), request.password(), roleType);
+        Member member = memberRepository.save(new Member(request.email(), request.password(), roleType));
 
         return new MemberTokenResponse(jwtUtil.generateToken(member));
     }
@@ -52,7 +52,9 @@ public class MemberService {
     public void updatePassword(MemberTokenRequest memberTokenRequest, MemberUpdateRequest request) {
         checkPassword(memberTokenRequest.password(), request.password(), "현재 비밀번호가 일치하지 않습니다.");
 
-        memberRepository.updatePassword(memberTokenRequest.id(), request.newPassword());
+        Member member = memberRepository.findById(memberTokenRequest.id())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        member.updatePassword(request.password());
     }
 
     public void deleteMember(MemberTokenRequest memberTokenRequest, String password) {

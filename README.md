@@ -73,8 +73,8 @@
 - [x] 코드 포매팅 개선
 - [x] @ManyToOne optional 설정
 - [x] 외래 키 제약조건 명시적으로 설정하기
-- [ ] member repository 인터페이스 파라미터 참조형으로 변경
-- [ ] member repository 불필요한 Adapter 코드 제거
+- [x] member repository 인터페이스 파라미터 참조형으로 변경
+- [x] member repository 불필요한 Adapter 코드 제거
 - [ ] product repository 인터페이스 파라미터 참조형으로 변경
 - [ ] product repository 불필요한 Adapter 코드 제거
 - [ ] wish repository 인터페이스 파라미터 참조형으로 변경
