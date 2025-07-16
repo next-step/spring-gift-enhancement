@@ -7,6 +7,9 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,9 +30,9 @@ public class AdminController {
   }
 
   @GetMapping
-  public String productList(Model model) {
-    List<ProductResponseDto> products = productService.findAllProduct();
-    model.addAttribute("products", products);
+  public String productList(Model model, @PageableDefault(size = 5, sort = "id") Pageable pageable) {
+    Page<ProductResponseDto> productPage = productService.findAllProduct(pageable);
+    model.addAttribute("productPage", productPage);
     return "admin/list"; // templates/admin/list.html
   }
 
