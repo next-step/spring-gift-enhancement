@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         String password = dto.password();
         UserRole role = dto.role();
 
-        if (findUserEmailByEmail(email)) {
+        if (isEmailExist(email)) {
             throw new UserDuplicatedException();
         }
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
-    private boolean findUserEmailByEmail(String email) {
+    private boolean isEmailExist(String email) {
         return userRepository.existsByEmail(email);
     }
 
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         String targetEmail = dto.email();
 
         User findUser = findUserByEmail(targetEmail);
-        System.out.println("UserServiceImpl.loginUser");
+
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
@@ -68,7 +68,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String userEmail) {
         User user = userRepository.findUserByEmail(userEmail);
-        System.out.println("UserServiceImpl.findUserByEmail");
 
         if (user == null) {
             throw new UserNotFoundException();
@@ -138,7 +137,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long id, boolean isAdmin) {
         if (!isAdmin) {
-            System.out.println("권한이 없습니다.");
+
             throw new UserAuthorizationException();
         }
 
