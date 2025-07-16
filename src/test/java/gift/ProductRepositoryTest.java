@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
-@EntityScan(basePackages = "gift")
 public class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
