@@ -46,7 +46,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByEmail(String Email) {
         return userRepository.findByEmail(Email)
-                .orElseThrow();
+                .orElseThrow(()->new EntityNotFoundException("등록되지 않은 이메일입니다."));
     }
 
     @Transactional

@@ -1,20 +1,20 @@
 package gift.wishlist;
 
-import gift.product.domain.Product;
-
 public class WishlistSaveRequestDto {
 
-    private Product product;
+    private Long productId;
 
-    public WishlistSaveRequestDto(Product product) {
-        this.product = product;
+    public WishlistSaveRequestDto() {}
+
+    public WishlistSaveRequestDto(Long productId) {
+        this.productId = productId;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }
