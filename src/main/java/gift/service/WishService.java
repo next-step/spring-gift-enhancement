@@ -1,47 +1,58 @@
 package gift.service;
 
+import gift.domain.Member;
 import gift.domain.Product;
 import gift.domain.Wish;
 import gift.dto.WishRequest;
-import gift.repository.WishRepository;
+import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
+import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class WishService {
 
     private final WishRepository wishRepository;
+    private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
 
-    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
+    public WishService(WishRepository wishRepository, MemberRepository memberRepository, ProductRepository productRepository) {
         this.wishRepository = wishRepository;
+        this.memberRepository = memberRepository;
         this.productRepository = productRepository;
     }
 
-    public List<Product> getWishlist(Long memberId) {
-        List<Wish> wishes = wishRepository.findByMemberId(memberId);
-        List<Long> productIds = wishes.stream().map(Wish::getProductId).collect(Collectors.toList());
-        return productRepository.findAllByIds(productIds);
+    public List<Product> getWishList(Long memberId) {
+        return wishRepository.findByMemberId(memberId).stream()
+            .map(Wish::getProduct)
+            .collect(Collectors.toList());
     }
 
     public void addWish(Long memberId, WishRequest wishRequest) {
-        Wish wish = new Wish(null, memberId, wishRequest.getProductId(), wishRequest.getQuantity());
-        wishRepository.save(wish);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+        Product product = productRepository.findById(wishRequest.getProductId()).orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
+        wishRepository.save(new Wish(member, product, wishRequest.getQuantity()));
     }
 
+    @Transactional
     public boolean removeWish(Long memberId, Long productId) {
-        return wishRepository.deleteByMemberAndProduct(memberId, productId);
+        if (wishRepository.findByMemberIdAndProductId(memberId, productId).isPresent()) {
+            wishRepository.deleteByMemberIdAndProductId(memberId, productId);
+            return true;
+        }
+        return false;
     }
 
-    public void updateWishQuantity(Long memberId, Long wishId, int quantity) {
-        Wish wish = wishRepository.findByMemberId(memberId).stream()
-            .filter(w -> w.getId().equals(wishId))
-            .findFirst()
+    @Transactional
+    public void updateWishQuantity(Long memberId, Long productId, int quantity) {
+        Wish wish = wishRepository.findByMemberIdAndProductId(memberId, productId)
             .orElseThrow(() -> new IllegalArgumentException("Wish not found"));
         wish.setQuantity(quantity);
-        wishRepository.update(wish);
     }
 }
+
