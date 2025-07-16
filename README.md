@@ -79,8 +79,8 @@
 - [x] product repository 불필요한 Adapter 코드 제거
 - [x] wish repository 인터페이스 파라미터 참조형으로 변경
 - [x] wish repository 불필요한 Adapter 코드 제거
-- [ ] wish repository Response 의존성 제거
-- [ ] wish repository 메소드에서 JPA 변경 감지 활용하기
+- [x] wish repository Response 의존성 제거
+- [x] wish repository 메소드에서 JPA 변경 감지 활용하기
 
 # spring-gift-product (Mission 1)
 

@@ -44,7 +44,10 @@ public class WishService {
     }
 
     public List<WishListResponse> getWishes(MemberTokenRequest memberTokenRequest) {
-        return wishRepository.findWishesByMemberId(memberTokenRequest.id());
+        return wishRepository.findWishesByMemberId(memberTokenRequest.id())
+                .stream()
+                .map(WishListResponse::getWishListResponse)
+                .toList();
     }
 
     public void updateQuantity(MemberTokenRequest memberTokenRequest, Long wishId, Integer quantity){
