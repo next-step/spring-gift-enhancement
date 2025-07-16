@@ -8,6 +8,9 @@ import gift.entity.Wish;
 import gift.service.WishService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +31,8 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishes(@Login Member member) {
-        return new ResponseEntity<>(wishService.getWishes(member.getId()), HttpStatus.OK);
+    public ResponseEntity<Page<WishResponseDto>> getWishes(@Login Member member, @PageableDefault(size = 5, sort = "id") Pageable pageable) {
+        return new ResponseEntity<>(wishService.getWishes(member.getId(), pageable), HttpStatus.OK);
     }
 
     @PostMapping
