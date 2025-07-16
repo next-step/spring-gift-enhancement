@@ -1,33 +1,54 @@
 package gift.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "wishes")
 public class Wish {
-    private final Long id;
-    private final Long memberId;
-    private final Long productId;
-    private final LocalDateTime createdAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Wish(Long id, Long memberId, Long productId, LocalDateTime createdAt) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
-        this.createdAt = createdAt;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    public Wish(Long memberId, Long productId) {
-        this.id = null;
-        this.memberId = memberId;
-        this.productId = productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    protected Wish() {}
+
+    public Wish(Member member, Product product) {
+        this.member = member;
+        this.product = product;
         this.createdAt = LocalDateTime.now();
     }
 
+    public Wish(Long id, Member member, Product product, LocalDateTime createdAt) {
+        this.id = id;
+        this.member = member;
+        this.product = product;
+        this.createdAt = createdAt;
+    }
+
+    public Long getMemberId() {
+        return member != null ? member.getId() : null;
+    }
+
+    public Long getProductId() {
+        return product != null ? product.getId() : null;
+    }
+
     public Long getId() { return id; }
-    public Long getMemberId() { return memberId; }
-    public Long getProductId() { return productId; }
+    public Member getMember() { return member; }
+    public Product getProduct() { return product; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public Wish withId(Long id) {
-        return new Wish(id, this.memberId, this.productId, this.createdAt);
-    }
+    public void setMember(Member member) { this.member = member; }
+    public void setProduct(Product product) { this.product = product; }
 }

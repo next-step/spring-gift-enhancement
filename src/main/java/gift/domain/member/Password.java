@@ -1,7 +1,17 @@
 package gift.domain.member;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import java.util.Objects;
+
+@Embeddable
 public class Password {
-    private final String value;
+
+    @Column(name = "password", nullable = false)
+    private String value;
+
+    protected Password() {
+    }
 
     public Password(String value) {
         if (value == null || value.length() < 8) {
@@ -17,5 +27,18 @@ public class Password {
     @Override
     public String toString() {
         return "********";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Password)) return false;
+        Password password = (Password) o;
+        return Objects.equals(value, password.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

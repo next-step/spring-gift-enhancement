@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS wishes;
+DROP TABLE IF EXISTS products;
+
 CREATE TABLE products (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(20) NOT NULL,

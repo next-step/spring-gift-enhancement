@@ -33,6 +33,7 @@ class WishIntegrationTest {
     private ObjectMapper objectMapper;
 
     private String token;
+    private Long productId;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -51,13 +52,42 @@ class WishIntegrationTest {
         String response = result.getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(response);
         token = jsonNode.get("token").asText();
+
+        productId = createTestProduct("테스트 상품", 1000L, "test-image.jpg");
+    }
+
+    private Long createTestProduct(String name, Long price, String imageUrl) throws Exception {
+        Map<String, Object> product = new HashMap<>();
+        product.put("name", name);
+        product.put("price", price);
+        product.put("imageUrl", imageUrl);
+
+        MvcResult productResult = mockMvc.perform(post("/api/products")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(product)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String productResponse = productResult.getResponse().getContentAsString();
+        JsonNode productJson = objectMapper.readTree(productResponse);
+        return productJson.get("id").asLong();
     }
 
     @Test
-    @DisplayName("위시리스트에 상품 추가 → 조회 → 삭제 테스트")
-    void addWish_thenGet_thenDelete() throws Exception {
-        Long productId = 1L;
+    @DisplayName("위시리스트에 상품 추가 테스트")
+    void addWish() throws Exception {
+        WishRequestDto request = new WishRequestDto(productId);
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
+    }
 
+    @Test
+    @DisplayName("위시리스트 조회 테스트")
+    void getWishList() throws Exception {
         WishRequestDto request = new WishRequestDto(productId);
         mockMvc.perform(post("/api/wishes")
                         .header("Authorization", "Bearer " + token)
@@ -70,9 +100,26 @@ class WishIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalCount").value(1))
                 .andExpect(jsonPath("$.wishes[0].productId").value(productId));
+    }
+
+    @Test
+    @DisplayName("위시리스트에서 상품 삭제 테스트")
+    void deleteWish() throws Exception {
+        WishRequestDto request = new WishRequestDto(productId);
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
 
         mockMvc.perform(delete("/api/wishes/{productId}", productId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/wishes")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalCount").value(0));
     }
 }
+

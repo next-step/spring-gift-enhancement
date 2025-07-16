@@ -1,14 +1,10 @@
 package gift.repository;
 
 import gift.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 
-public interface ProductRepository {
-    List<Product> findAllProducts();
-    Product saveProduct(Product product);
-    Product findProductById(Long id);
-    void updateProduct(Long id, String name, Long price, String ImageUrl);
-    void deleteProduct(Long id);
-    boolean findMdApprovedById(Long id);
-    boolean existsById(Long id);
+public interface ProductRepository extends JpaRepository<Product, Long>{
+    List<Product> findAllByOrderByIdAsc();
 }

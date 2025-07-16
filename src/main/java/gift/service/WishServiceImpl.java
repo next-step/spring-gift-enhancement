@@ -1,6 +1,8 @@
 package gift.service;
 
 import gift.dto.WishListResponseDto;
+import gift.exception.member.MemberNotFoundException;
+import gift.repository.MemberRepository;
 import gift.dto.WishResponseDto;
 import gift.dto.WishWithProductDto;
 import gift.entity.Member;
@@ -21,31 +23,46 @@ import java.util.stream.Collectors;
 public class WishServiceImpl implements WishService {
 
     private final WishRepository wishRepository;
+    private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
 
-    public WishServiceImpl(WishRepository wishRepository, ProductRepository productRepository) {
+    public WishServiceImpl(WishRepository wishRepository, MemberRepository memberRepository, ProductRepository productRepository) {
         this.wishRepository = wishRepository;
+        this.memberRepository = memberRepository;
         this.productRepository = productRepository;
     }
 
-    @Override
     @Transactional
-    public void addWish(Member member, Long productId) {
-        if (wishRepository.existsByMemberIdAndProductId(member.getId(), productId)) {
+    public void addWish(Long memberId, Long productId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("Member not found with id: " + memberId));
+
+        if (wishRepository.existsByMember_IdAndProduct_Id(memberId, productId)) {
             throw new WishAlreadyExistsException("이미 위시리스트에 추가된 상품입니다.");
         }
 
-        if (!productRepository.existsById(productId)) {
-            throw new ProductNotFoundException("상품을 찾을 수 없습니다.");
-        }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
 
-        Wish wish = new Wish(member.getId(), productId);
-        wishRepository.saveWish(wish);
+        Wish wish = new Wish(member, product);
+        wishRepository.save(wish);
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public WishListResponseDto getWishList(Member member) {
-        List<WishWithProductDto> wishesWithProduct = wishRepository
-                .findByMemberIdWithProduct(member.getId());
+        List<Wish> wishes = wishRepository
+                .findAllByMember_Id(member.getId());
+
+        List<WishWithProductDto> wishesWithProduct = wishes.stream()
+                .map(wish -> new WishWithProductDto(
+                        wish.getId(),
+                        wish.getMemberId(),
+                        wish.getProductId(),
+                        wish.getCreatedAt(),
+                        wish.getProduct()
+                ))
+                .collect(Collectors.toList());
 
         List<WishResponseDto> wishResponses = wishesWithProduct.stream()
                 .map(this::mapToWishResponseDto)
@@ -66,10 +83,12 @@ public class WishServiceImpl implements WishService {
         );
     }
 
+    @Override
+    @Transactional
     public void removeWish(Member member, Long productId) {
-        Wish wish = wishRepository.findByMemberIdAndProductId(member.getId(), productId)
+        Wish wish = wishRepository.findByMember_IdAndProduct_Id(member.getId(), productId)
                 .orElseThrow(() -> new WishNotFoundException("위시리스트에서 해당 상품을 찾을 수 없습니다."));
 
-        wishRepository.deleteWish(wish.getId());
+        wishRepository.deleteById(wish.getId());
     }
 }

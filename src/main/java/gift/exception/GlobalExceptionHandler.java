@@ -2,6 +2,8 @@ package gift.exception;
 
 import gift.exception.member.EmailAlreadyExistsException;
 import gift.exception.member.LoginFailedException;
+import gift.exception.member.MemberNotFoundException;
+import gift.exception.product.MdApprovalMissingException;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.wish.WishAlreadyExistsException;
 import gift.exception.wish.WishNotFoundException;
@@ -70,5 +72,20 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(MdApprovalMissingException.class)
+    public ResponseEntity<String> handleMdApprovalMissingException(MdApprovalMissingException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<String> handleMemberNotFoundException(MemberNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }
