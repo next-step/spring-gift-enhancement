@@ -26,7 +26,7 @@ public class ProductManageService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductManageResponse> getAllProductsByOffset(int page) {
+    public Page<ProductManageResponse> getAllProducts(int page) {
         return productRepository.findAll(PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending())).map(ProductManageResponse::from);
     }
 

@@ -25,7 +25,7 @@ public class ProductManageController {
 
     @GetMapping
     public String getProductsForm(@RequestParam(required = false, defaultValue = "1") int page, Model model) {
-        Page<ProductManageResponse> products = productManageService.getAllProductsByOffset(page);
+        Page<ProductManageResponse> products = productManageService.getAllProducts(page);
         model.addAttribute("products", products);
         return "/admin/product/productList";
     }

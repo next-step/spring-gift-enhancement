@@ -31,7 +31,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAllProductsByCursor(Long cursor) {
+    public List<ProductResponse> getAllProducts(Long cursor) {
         if (cursor == null) {
             return productRepository.findAll(PageRequest.of(0, PAGE_SIZE, Sort.by("id").descending())).map(ProductResponse::from).stream().toList();
         }

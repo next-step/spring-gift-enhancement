@@ -33,7 +33,7 @@ public class ProductApiController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getProducts(@RequestParam(required = false) Long cursor) {
-        List<ProductResponse> products = productService.getAllProductsByCursor(cursor);
+        List<ProductResponse> products = productService.getAllProducts(cursor);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
