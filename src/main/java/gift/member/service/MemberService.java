@@ -35,10 +35,13 @@ public class MemberService {
     //로그인 기능
     public MemberResponseDto login(MemberRequestDto memberRequestDto){
 
-        Member member = memberRepository.findByEmailAndPassword(memberRequestDto.getEmail(),
-                memberRequestDto.getPassword()).orElseThrow(
-                () -> new RuntimeException("멤버를 찾지 못했습니다")
+        Member member = memberRepository.findMemberByEmail(memberRequestDto.getEmail()).orElseThrow(
+                () -> new IllegalArgumentException  ("이메일이 일치하지 않습니다")
         );
+
+        if(!member.getPassword().equals(memberRequestDto.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+        }
 
         return new MemberResponseDto(jwtProvider.generateToken(member));
 
