@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // IDENTITY로 설정하면 AUTO_INCREMENT 됨.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
@@ -21,10 +21,9 @@ public class Member {
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    public Member() {   // JPA는 기본 생성자 없으면 오류남
+    public Member() {
     }
 
-    // 정적 팩토리 메서드
     public static Member of(String email, String password) {
         return new Member(null, email, password);
     }

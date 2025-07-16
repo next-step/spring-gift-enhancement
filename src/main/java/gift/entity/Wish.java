@@ -16,7 +16,7 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne  // 하나의 Wish는 하나의 멤버만 가진다.(DB엔 외래키로, 여기선 Member객체를 참조)
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
