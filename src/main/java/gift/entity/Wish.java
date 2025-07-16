@@ -24,6 +24,8 @@ public class Wish {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    protected Wish() { }
+
     public Wish(Product product, Member member) {
         this.product = product;
         this.member = member;
