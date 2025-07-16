@@ -1,8 +1,14 @@
 package gift.entity.vo;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Password {
 
-    private final String value;
+    private String value;
+
+    protected Password() {
+    }
 
     public Password(String value) {
         check(value);

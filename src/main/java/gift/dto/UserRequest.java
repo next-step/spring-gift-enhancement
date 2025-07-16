@@ -4,12 +4,12 @@ import gift.entity.User;
 import gift.entity.vo.Email;
 import gift.entity.vo.Password;
 
-public class UserRequestDto {
+public class UserRequest {
 
     private final Email email;
     private final Password password;
 
-    public UserRequestDto(Email email, Password password) {
+    public UserRequest(Email email, Password password) {
         this.email = email;
         this.password = password;
     }

@@ -1,8 +1,16 @@
 package gift.entity.vo;
 
+import jakarta.persistence.Embeddable;
+
+import java.util.Objects;
+
+@Embeddable
 public class Email {
 
-    private final String value;
+    private String value;
+
+    protected Email() {
+    }
 
     public Email(String value) {
         check(value);
@@ -20,5 +28,17 @@ public class Email {
 
     public String value() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Email email = (Email) o;
+        return Objects.equals(value, email.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
     }
 }
