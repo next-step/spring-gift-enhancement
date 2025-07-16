@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -67,9 +69,9 @@ class ProductServiceTest {
         productService.saveProduct(createProductRequest);
 
         //beforeEach에서 생성한 것 까지 총 2건의 데이터 있음
-        Page<ProductResponse> products = productService.getAllProductsByOffset(1);
+        List<ProductResponse> products = productService.getAllProductsByCursor(null);
         assertThat(products).isNotEmpty();
-        assertThat(products.getTotalElements()).isEqualTo(2);
+        assertThat(products.size()).isEqualTo(2);
     }
 
     @Test

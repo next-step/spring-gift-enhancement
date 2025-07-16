@@ -32,11 +32,6 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> getAllProductsByOffset(int page) {
-        return productRepository.findAll(PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending())).map(ProductResponse::from);
-    }
-
-    @Transactional(readOnly = true)
     public List<ProductResponse> getAllProductsByCursor(Long lastId) {
         if (lastId == null) {
             return productRepository.findAll(PageRequest.of(0, PAGE_SIZE, Sort.by("id").descending())).map(ProductResponse::from).stream().toList();
