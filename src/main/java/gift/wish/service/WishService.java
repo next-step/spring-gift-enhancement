@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static gift.wish.dto.WishResponseDto.fromEntity;
+
 @Service
 public class WishService {
 
@@ -48,7 +50,7 @@ public class WishService {
         }
 
 
-        return WishResponseDto.fromEntity(wishRepository.save(wish));
+        return fromEntity(wishRepository.save(wish));
     }
 
     @Transactional
