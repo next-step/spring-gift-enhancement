@@ -36,6 +36,23 @@ public class ProductApiTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.update("DELETE FROM wishlists");
+        jdbcTemplate.update("DELETE FROM products");
+        jdbcTemplate.update("ALTER TABLE products ALTER COLUMN id RESTART WITH 1");
+
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p1",
+            1000, "url1");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p2",
+            2000, "url2");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p3",
+            3000, "url3");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p4",
+            4000, "url4");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p5",
+            5000, "url5");
+    }
 
     @BeforeEach
     void loginSetTup(){
@@ -55,23 +72,6 @@ public class ProductApiTest {
         assertThat(loginResponse.getBody()).isNotNull();
         this.jwtToken = loginResponse.getBody().token(); // JWT 토큰 저장
         assertThat(jwtToken).isNotBlank(); // 토큰이 비어있지 않은지 확인
-    }
-
-    @BeforeEach
-    void setUp() {
-        jdbcTemplate.update("DELETE FROM products");
-        jdbcTemplate.update("ALTER TABLE products ALTER COLUMN id RESTART WITH 1");
-
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p1",
-            1000, "url1");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p2",
-            2000, "url2");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p3",
-            3000, "url3");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p4",
-            4000, "url4");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p5",
-            5000, "url5");
     }
 
     @Test

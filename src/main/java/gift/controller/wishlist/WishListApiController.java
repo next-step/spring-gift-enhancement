@@ -32,7 +32,7 @@ public class WishListApiController {
     public ResponseEntity<?> getWishList(
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId
     ) {
-        List<WishListResponse> list = wishListService.findWishListAllById(memberId);
+        List<WishListResponse> list = wishListService.findAllByMemberId(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(list);
@@ -45,7 +45,7 @@ public class WishListApiController {
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(wishListService.findWishListByMemberAndProduct(memberId, productId));
+            .body(wishListService.findByMemberAndProduct(memberId, productId));
     }
 
 

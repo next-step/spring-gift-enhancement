@@ -5,96 +5,75 @@ import gift.domain.Product;
 import gift.domain.WishList;
 import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
-import gift.repository.member.MemberRepository;
-import gift.repository.product.ProductRepository;
-import gift.repository.wishlist.WishListRepository;
+import gift.global.exception.CustomException;
+import gift.global.exception.ErrorCode;
+import gift.repository.member.MemberJpaRepository;
+import gift.repository.product.ProductJpaRepository;
+import gift.repository.wishlist.WishListJpaRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 public class WishListService {
 
-    private final WishListRepository wishListRepository;
-    private final MemberRepository memberRepository;
-    private final ProductRepository productRepository;
+    private final WishListJpaRepository wishListRepository;
+    private final MemberJpaRepository memberRepository;
+    private final ProductJpaRepository productRepository;
 
-    public WishListService(WishListRepository wishListRepository, MemberRepository memberRepository,
-        ProductRepository productRepository) {
+    public WishListService(WishListJpaRepository wishListRepository,
+        MemberJpaRepository memberRepository, ProductJpaRepository productRepository) {
         this.wishListRepository = wishListRepository;
         this.memberRepository = memberRepository;
         this.productRepository = productRepository;
     }
 
     // wishList 조회
-    public List<WishListResponse> findWishListAllById(Long memberId) {
-        List<WishList> list = wishListRepository.findWishListAllById(memberId);
+    public List<WishListResponse> findAllByMemberId(Long memberId) {
+        List<WishList> list = wishListRepository.findAllByMemberId(memberId);
 
         return list.stream()
-            .map(each -> {
-                Member member = memberRepository.findById(each.getMemberId());
-                Product product = productRepository.findById(each.getProductId());
-
-                return new WishListResponse(
-                    member.getId(),
-                    member.getEmail(),
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    each.getQuantity(),
-                    product.getPrice() * each.getQuantity()
-                );
-            }).toList();
-
+            .map(WishListResponse::from).toList();
     }
 
     // wishlist 단건 조회
-    public WishListResponse findWishListByMemberAndProduct(Long memberId, Long productId) {
-        WishList wishList = wishListRepository.findWishListByMemberAndProduct(memberId, productId);
+    public WishListResponse findByMemberAndProduct(Long memberId, Long productId) {
+        WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId, productId)
+            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
 
-        Member member = memberRepository.findById(wishList.getMemberId());
-        Product product = productRepository.findById(wishList.getProductId());
-
-        return new WishListResponse(
-            member.getId(),
-            member.getEmail(),
-            product.getId(),
-            product.getName(),
-            product.getPrice(),
-            wishList.getQuantity(),
-            product.getPrice() * wishList.getQuantity()
-        );
+        return WishListResponse.from(wishList);
     }
 
+    @Transactional
     public Long update(Long memberId, WishListRequest wishListRequest) {
-        try {
-            WishList wishList = wishListRepository.findWishListByMemberAndProduct(memberId,
-                wishListRequest.productId());
 
-            // 만약 수정 후 quantity 값이 음수라면 0으로 보정
-            int requestQuantity = wishList.getQuantity() + wishListRequest.quantity();
-            if (requestQuantity < 0) {
-                requestQuantity = 0;
-            }
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
 
-            // update 호출할 때 계산된 quantity 값을 전달해야 함.
-            wishListRepository.updateWishList(wishList.getId(), requestQuantity);
+        Product product = productRepository.findById(wishListRequest.productId())
+            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
 
-            return wishList.getId();
-        } catch (DataAccessException e) {
-            // 만약 찾는 위시리스트가 없으면 생성부터 해야 함.
-            // 존재하지 않는 proudctId를 준 경우에는 예외 터지도록.
-            productRepository.findById(wishListRequest.productId());
+        Optional<WishList> wishList = wishListRepository.findByMemberIdAndProductId(memberId,
+            wishListRequest.productId());
 
-            return wishListRepository.insertWishList(memberId, wishListRequest.productId(),
-                wishListRequest.quantity());
+        // wishList가 존재하지 않으면 새로 생성
+        if (wishList.isEmpty()) {
+            return wishListRepository.save(WishList.of(member, product, wishListRequest.quantity()))
+                .getId();
         }
+
+        wishList.get().update(wishListRequest.quantity());
+        return wishList.get().getId();
     }
 
     public void delete(Long memberId, WishListRequest wishListRequest) {
-        WishList wishList = wishListRepository.findWishListByMemberAndProduct(memberId,
-            wishListRequest.productId());
+        WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId, wishListRequest.productId())
+                .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
 
         wishListRepository.deleteById(wishList.getId());
     }
 }
+

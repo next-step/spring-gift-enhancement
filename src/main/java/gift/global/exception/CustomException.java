@@ -17,4 +17,11 @@ public class CustomException extends RuntimeException{
         return this.message;
     }
 
+    public static CustomException from(ErrorCode errorCode){
+        return new CustomException(
+            errorCode,
+            errorCode.getErrorMessage()
+        );
+    }
+
 }
