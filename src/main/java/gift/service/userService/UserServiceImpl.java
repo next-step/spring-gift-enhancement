@@ -9,7 +9,7 @@ import gift.entity.UserRole;
 import gift.exception.userException.UserAuthorizationException;
 import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
-import gift.exception.userException.UserPasswordException;
+import gift.exception.userException.UserPasswordInputException;
 import gift.repository.userRepository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException(targetEmail);
         }
         if (!findUser.checkPassword(dto.password())) {
-            throw new UserPasswordException();
+            throw new UserPasswordInputException();
         }
         return jwtUtil.generateToken(findUser);
 
@@ -127,8 +127,9 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
         }
 
-        findUser.setEmail(dto.email());
-        findUser.setPassword(dto.password());
+        String email = dto.email();
+        String password = dto.password();
+        findUser.changeEmailAndPassword(email, password);
 
         return findUser;
     }

@@ -1,5 +1,7 @@
 package gift.entity;
 
+import gift.exception.userException.UserEmailException;
+import gift.exception.userException.UserPasswordException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -42,13 +44,6 @@ public class User {
         return this.password.equals(password);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public Long getId() {
         return id;
@@ -66,11 +61,17 @@ public class User {
         return role;
     }
 
-    public void changeEmail(String newEmail) {
-        this.email = newEmail;
-    }
+    public void changeEmailAndPassword(String newEmail, String newPassword) {
 
-    public void changePassword(String newPassword) {
+        if (newEmail == null) {
+            throw new UserEmailException();
+        }
+
+        if (newPassword == null) {
+            throw new UserPasswordException();
+        }
+
+        this.email = newEmail;
         this.password = newPassword;
     }
 }

@@ -14,8 +14,6 @@ public class Application {
         var connection = getConnection();
         createTable(connection);
 
-        Item item = new Item(1L, "book", 1000, "example.asdfjlasd.png");
-        insertItem(connection, item);
     }
 
     public static void insertItem(Connection connection, Item item) throws Exception {
