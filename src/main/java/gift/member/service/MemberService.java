@@ -10,10 +10,12 @@ import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.member.util.PasswordUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordUtil passwordUtil;
@@ -40,6 +42,7 @@ public class MemberService {
         return MemberResponseDto.from(memberRepository.save(member));
     }
 
+    @Transactional(readOnly = true)
     public List<MemberResponseDto> getMembers() {
         return memberRepository.findAll()
                 .stream()
@@ -47,6 +50,7 @@ public class MemberService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public MemberResponseDto getMemberById(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundByIdException(id));
@@ -54,6 +58,7 @@ public class MemberService {
         return MemberResponseDto.from(member);
     }
 
+    @Transactional(readOnly = true)
     public Member getMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundByEmailException(email));
@@ -80,18 +85,20 @@ public class MemberService {
             hashedPassword = passwordUtil.hashPassword(newPassword, salt);
         }
 
-        Member memberToUpdate = new Member(
-                id,
+        member.updateMember(
                 updateRequestDto.email(),
                 salt,
                 hashedPassword,
-                updateRequestDto.role()
-        );
+                updateRequestDto.role());
 
-        return MemberResponseDto.from(memberRepository.update(memberToUpdate));
+        return MemberResponseDto.from(member);
     }
 
     public void deleteMember(Long id) {
+        if(!memberRepository.existsById(id)) {
+            throw new MemberNotFoundByIdException(id);
+        }
+
         memberRepository.deleteById(id);
     }
 }
