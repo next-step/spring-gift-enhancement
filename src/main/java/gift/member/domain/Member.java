@@ -57,4 +57,11 @@ public class Member {
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public boolean validateMemberId(Long memberId) {
+        if (id == null) {
+            return false;
+        }
+        return id.equals(memberId);
+    }
 }

@@ -56,8 +56,13 @@ public class Wish {
     }
 
     public void validateOwner(Long memberId) {
-        if(!this.member.getId().equals(memberId)) {
+        boolean isValid = this.member.validateMemberId(memberId);
+        if (!isValid) {
             throw new WishOwnerException("해당 위시 항목을 삭제할 권한이 없습니다.");
         }
+    }
+
+    public void updateQuantity(Integer quantity){
+        this.quantity = quantity;
     }
 }
