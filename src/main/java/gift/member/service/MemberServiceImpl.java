@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public TokenResponseDto loginMember(MemberLoginRequestDto requestDto) {
-        Member member = memberRepository.findByEmail(requestDto.email()).orElseThrow(() -> new MemberNotFoundException(requestDto.email()));
+        Member member = findMemberByEmailOrElseThrow(requestDto.email());
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
@@ -70,7 +70,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public MemberResponseDto findMemberById(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
+        Member member = findMemberByIdOrElseThrow(id);
         return new MemberResponseDto(member);
     }
 
@@ -84,7 +84,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public void updateMemberById(Long id, MemberUpdateRequestDto requestDto) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
+        Member member = findMemberByIdOrElseThrow(id);
         if (!member.getEmail().equals(requestDto.email())) {
             validateMemberEmail(requestDto.email(), "admin/memberEdit");
         }
@@ -95,7 +95,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void deleteMemberById(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(()-> new MemberNotFoundException(id));
+        Member member = findMemberByIdOrElseThrow(id);
         memberRepository.deleteById(member.getId());
     }
 
@@ -110,6 +110,16 @@ public class MemberServiceImpl implements MemberService{
         if (!Role.containsIgnoreCase(role)){
             throw new InvalidMemberException("잘못된 등급입니다.", viewName, "roleErrorMessage");
         }
+    }
+
+    @Override
+    public Member findMemberByIdOrElseThrow(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
+    }
+
+    @Override
+    public Member findMemberByEmailOrElseThrow(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
     }
 
 }

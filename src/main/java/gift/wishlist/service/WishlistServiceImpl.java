@@ -1,14 +1,13 @@
 package gift.wishlist.service;
 
 import gift.entity.Member;
-import gift.member.exception.MemberNotFoundException;
-import gift.product.exception.ProductNotFoundException;
+import gift.member.service.MemberService;
+import gift.product.service.ProductServiceImpl;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
 import gift.entity.Product;
 import gift.entity.WishlistItem;
 import gift.exception.OperationFailedException;
-import gift.product.exception.ProductIsInWishlistException;
 import gift.wishlist.exception.WishlistItemNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
@@ -22,21 +21,21 @@ import java.util.Optional;
 @Service
 public class WishlistServiceImpl implements WishlistService {
 
-    private final MemberRepository memberRepository;
-    private final ProductRepository productRepository;
     private final WishlistRepository wishlistRepository;
+    private final MemberService memberService;
+    private final ProductServiceImpl productServiceImpl;
 
-    public WishlistServiceImpl(WishlistRepository wishlistRepository, MemberRepository memberRepository, ProductRepository productRepository) {
+    public WishlistServiceImpl(WishlistRepository wishlistRepository, MemberRepository memberRepository, ProductRepository productRepository, MemberService memberService, ProductServiceImpl productServiceImpl) {
         this.wishlistRepository = wishlistRepository;
-        this.memberRepository = memberRepository;
-        this.productRepository = productRepository;
+        this.memberService = memberService;
+        this.productServiceImpl = productServiceImpl;
     }
 
     @Override
     @Transactional
     public void addWishlistItem(Long memberId, WishlistItemRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
-        Product product = productRepository.findById(requestDto.productId()).orElseThrow(() -> new ProductNotFoundException(requestDto.productId()));
+        Member member = memberService.findMemberByIdOrElseThrow(memberId);
+        Product product = productServiceImpl.findProductByIdOrElseThrow(requestDto.productId());
         Optional<WishlistItem> foundItem = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId);
         if (foundItem.isPresent()) {
             updateWishlistItemById(foundItem.get().getId(), foundItem.get().getQuantity()+requestDto.quantity());
@@ -65,7 +64,11 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     @Transactional
     public void updateWishlistItemById(Long itemId, Long quantity) {
-        WishlistItem item = wishlistRepository.findById(itemId).orElseThrow(() -> new WishlistItemNotFoundException(itemId));
+        WishlistItem item = findWishlistByIdOrElseThrow(itemId);
         item.updateQuantity(quantity);
+    }
+
+    public WishlistItem findWishlistByIdOrElseThrow(Long id) {
+        return wishlistRepository.findById(id).orElseThrow(() -> new WishlistItemNotFoundException(id));
     }
 }

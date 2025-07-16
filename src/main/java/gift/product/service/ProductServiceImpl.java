@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        Product product = findProductByIdOrElseThrow(id);
         return new ProductResponseDto(product);
     }
 
@@ -48,14 +48,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        Product product = findProductByIdOrElseThrow(id);
         validateProductName(requestDto.name(), "admin/edit");
         product.update(id, requestDto);
     }
 
     @Override
     public void deleteProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        Product product = findProductByIdOrElseThrow(id);
         productRepository.deleteById(id);
     }
 
@@ -68,5 +68,10 @@ public class ProductServiceImpl implements ProductService {
         if (name.contains("카카오")) {
             throw new InvalidProductException("\"카카오\"가 포함된 상품명은 MD 협의 후 사용할 수 있습니다.",viewName);
         }
+    }
+
+    @Override
+    public Product findProductByIdOrElseThrow(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 }

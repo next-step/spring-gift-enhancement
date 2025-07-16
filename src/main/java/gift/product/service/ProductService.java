@@ -1,5 +1,6 @@
 package gift.product.service;
 
+import gift.entity.Product;
 import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.dto.ProductUpdateRequestDto;
@@ -13,4 +14,6 @@ public interface ProductService {
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto);
     public void deleteProductById(Long id);
     public void validateProductName(String name, String viewName);
+
+    Product findProductByIdOrElseThrow(Long id);
 }
