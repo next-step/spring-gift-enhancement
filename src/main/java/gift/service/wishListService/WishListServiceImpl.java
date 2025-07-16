@@ -71,7 +71,7 @@ public class WishListServiceImpl implements WishListService {
         List<WishItem> result = new ArrayList<>();
         for (WishItem wishItem : wishItems) {
             Item item = wishItem.getItem();
-            if (isValid(item, name, price)) {
+            if (item.isValid(name,price)) {
                 result.add(wishItem);
             }
         }
@@ -79,12 +79,6 @@ public class WishListServiceImpl implements WishListService {
         return result;
     }
 
-    private boolean isValid(Item item, String name, Integer price) {
-        boolean nameMatches = (name == null || item.getName().equals(name));
-        boolean priceMatches = (price == null || item.getPrice().equals(price));
-
-        return nameMatches && priceMatches;
-    }
 
     private List<WishItem> getWishItems(List<WishItem> wishItems, String name, Integer price) {
         List<WishItem> result = new ArrayList<>();
@@ -98,7 +92,7 @@ public class WishListServiceImpl implements WishListService {
                 continue;
             }
 
-            if ((name == null && price == null) || isValid(item, name, price)) {
+            if ((name == null && price == null) || item.isValid(name, price)) {
                 result.add(wishItem);
             }
         }

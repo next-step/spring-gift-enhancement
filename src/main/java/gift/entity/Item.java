@@ -74,4 +74,11 @@ public class Item {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public boolean isValid(String name, Integer price) {
+        boolean nameMatches = (name == null || this.getName().equals(name));
+        boolean priceMatches = (price == null || this.getPrice().equals(price));
+
+        return nameMatches && priceMatches;
+    }
 }
