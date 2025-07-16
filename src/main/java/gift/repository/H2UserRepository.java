@@ -1,17 +1,9 @@
 package gift.repository;
 
-import gift.entity.User;
-import gift.entity.vo.Email;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-
-@Repository
+@Deprecated
 public class H2UserRepository {
 
+    /*
     private final JdbcClient jdbcClient;
 
     public H2UserRepository(JdbcClient jdbcClient) {
@@ -42,4 +34,5 @@ public class H2UserRepository {
         user.setId(keyHolder.getKey().longValue());
         return user;
     }
+    */
 }

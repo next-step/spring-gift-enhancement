@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.ProductRequestDto;
+import gift.dto.ProductRequest;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -32,8 +32,8 @@ public class ProductViewController {
     }
 
     @PostMapping
-    public String postProduct(@Valid @ModelAttribute ProductRequestDto productRequestDto) {
-        productService.createProduct(productRequestDto);
+    public String postProduct(@Valid @ModelAttribute ProductRequest productRequest) {
+        productService.createProduct(productRequest);
         return "redirect:/admin/products";
     }
 
@@ -50,8 +50,8 @@ public class ProductViewController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@Valid @PathVariable Long id, @Valid @ModelAttribute ProductRequestDto productRequestDto) {
-        productService.updateProduct(id, productRequestDto);
+    public String updateProduct(@Valid @PathVariable Long id, @Valid @ModelAttribute ProductRequest productRequest) {
+        productService.updateProduct(id, productRequest);
         return "redirect:/admin/products";
     }
 

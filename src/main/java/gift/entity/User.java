@@ -2,16 +2,25 @@ package gift.entity;
 
 import gift.entity.vo.Email;
 import gift.entity.vo.Password;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(name = "uk_user", columnNames = "email")})
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private final Email email;
-    private final Password password;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "email", nullable = false))
+    private Email email;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "password", nullable = false))
+    private Password password;
 
     protected User() {
-        this.email = null;
-        this.password = null;
     }
 
     public User(Email email, Password password) {
@@ -21,10 +30,6 @@ public class User {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Email email() {

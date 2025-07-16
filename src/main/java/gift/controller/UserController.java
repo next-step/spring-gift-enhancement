@@ -1,9 +1,8 @@
 package gift.controller;
 
-import gift.dto.TokenResponseDto;
-import gift.dto.UserRequestDto;
+import gift.dto.TokenResponse;
+import gift.dto.UserRequest;
 import gift.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,14 +21,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> register(@RequestBody UserRequestDto userRequestDto) {
-        String token = userService.register(userRequestDto);
-        return new ResponseEntity<>(new TokenResponseDto(token), HttpStatus.CREATED);
+    public ResponseEntity<TokenResponse> register(@RequestBody UserRequest userRequest) {
+        String token = userService.register(userRequest);
+        return new ResponseEntity<>(new TokenResponse(token), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> login(@RequestBody UserRequestDto userRequestDto) {
-        String token = userService.login(userRequestDto);
-        return new ResponseEntity<>(new TokenResponseDto(token), HttpStatus.OK);
+    public ResponseEntity<TokenResponse> login(@RequestBody UserRequest userRequest) {
+        String token = userService.login(userRequest);
+        return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
     }
 }

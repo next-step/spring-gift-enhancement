@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.ProductRequestDto;
+import gift.dto.ProductRequest;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -40,20 +41,21 @@ public class ProductController {
 
     // 상품 등록
     @PostMapping
-    public ResponseEntity<Product> postProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.createProduct(productRequestDto), HttpStatus.CREATED);
+    public ResponseEntity<Product> postProduct(@Valid @RequestBody ProductRequest productRequest) {
+        return new ResponseEntity<>(productService.createProduct(productRequest), HttpStatus.CREATED);
     }
 
     // 상품 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@Valid @PathVariable Long id, @Valid @RequestBody ProductRequestDto productRequestDto) {
-        Optional<Product> updated = productService.updateProduct(id, productRequestDto);
-        return updated.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(updated.get());
+    public ResponseEntity<Product> updateProduct(@Valid @PathVariable Long id, @Valid @RequestBody ProductRequest productRequest) {
+        Product updated = productService.updateProduct(id, productRequest);
+        return ResponseEntity.ok(updated);
     }
 
     // 상품 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        return productService.deleteProduct(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,74 +1,52 @@
 package gift.entity;
 
-import gift.dto.ProductRequestDto;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "product")
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 15, nullable = false)
     private String name;
-    private int price;
+
+    @Column(nullable = false)
+    private Integer price;
+
+    @Column(name = "imageUrl", length = 512, nullable = false)
     private String imageUrl;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(Long id, String name, int price, String imageUrl) {
-        this.id = id;
+    public Product(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
     }
 
-    public Product(String name, int price, String imageUrl) {
+    public void update(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-    }
-
-    public Product(ProductRequestDto productRequestDto) {
-        this.name = productRequestDto.getName();
-        this.price = productRequestDto.getPrice();
-        this.imageUrl = productRequestDto.getImageUrl();
-    }
-
-    public static Product createWithId(Product productWithoutId, Long newId) {
-        return new Product(
-                newId,
-                productWithoutId.getName(),
-                productWithoutId.getPrice(),
-                productWithoutId.getImageUrl()
-        );
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }
