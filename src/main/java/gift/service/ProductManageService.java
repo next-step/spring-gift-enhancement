@@ -6,10 +6,12 @@ import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductManageResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,14 +19,15 @@ import java.util.Optional;
 public class ProductManageService {
 
     private final ProductRepository productRepository;
+    private static final int PAGE_SIZE = 10;
 
     public ProductManageService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Transactional(readOnly = true)
-    public List<ProductManageResponse> getAllProducts() {
-        return productRepository.findAll().stream().map(ProductManageResponse::from).toList();
+    public Page<ProductManageResponse> getAllProductsByOffset(int page) {
+        return productRepository.findAll(PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending())).map(ProductManageResponse::from);
     }
 
     public Product saveProduct(CreateProductRequest request) {
