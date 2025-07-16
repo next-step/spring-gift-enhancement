@@ -26,10 +26,7 @@ public class ProductServiceImpl implements ProductService {
     public void addProduct(ProductAddRequestDto requestDto) {
         validateProductName(requestDto.name(), "admin/add");
         Product product = new Product(null, requestDto.name(), requestDto.price(), requestDto.url());
-        Product saved = productRepository.save(product);
-        if (saved.getId() == null) {
-            throw new OperationFailedException("저장 실패");
-        }
+        productRepository.save(product);
     }
 
     @Override

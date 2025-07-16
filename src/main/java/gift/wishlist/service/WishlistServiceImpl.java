@@ -25,7 +25,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final MemberService memberService;
     private final ProductServiceImpl productServiceImpl;
 
-    public WishlistServiceImpl(WishlistRepository wishlistRepository, MemberRepository memberRepository, ProductRepository productRepository, MemberService memberService, ProductServiceImpl productServiceImpl) {
+    public WishlistServiceImpl(WishlistRepository wishlistRepository, MemberService memberService, ProductServiceImpl productServiceImpl) {
         this.wishlistRepository = wishlistRepository;
         this.memberService = memberService;
         this.productServiceImpl = productServiceImpl;
@@ -38,13 +38,10 @@ public class WishlistServiceImpl implements WishlistService {
         Product product = productServiceImpl.findProductByIdOrElseThrow(requestDto.productId());
         Optional<Wishlist> foundItem = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId);
         if (foundItem.isPresent()) {
-            updateWishlistItemById(foundItem.get().getId(), foundItem.get().getQuantity()+requestDto.quantity());
-        } else{
+            updateWishlistItemById(foundItem.get().getId(), foundItem.get().getQuantity() + requestDto.quantity());
+        } else {
             Wishlist item = new Wishlist(null, member, product, requestDto.quantity());
-            Wishlist saved = wishlistRepository.save(item);
-            if (saved.getId() == null) {
-                throw new OperationFailedException("저장 실패");
-            }
+            wishlistRepository.save(item);
         }
     }
 

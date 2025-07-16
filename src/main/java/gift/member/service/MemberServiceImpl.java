@@ -34,10 +34,7 @@ public class MemberServiceImpl implements MemberService{
         validateMemberRole(requestDto.role(), "admin/memberAdd");
         String hashedPassword = hashWithSHA256(requestDto.password());
         Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
-        Member saved = memberRepository.save(member);
-        if (saved.getId() == null) {
-            throw new OperationFailedException("저장 실패");
-        }
+        memberRepository.save(member);
     }
 
     @Override
@@ -48,9 +45,6 @@ public class MemberServiceImpl implements MemberService{
 
         Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), "USER");
         Member savedMember = memberRepository.save(member);
-        if (savedMember.getId() == null) {
-            throw new OperationFailedException("저장 실패");
-        }
 
         return new TokenResponseDto(jwtProvider.createToken(savedMember.getId(), savedMember.getName(), savedMember.getEmail(), savedMember.getRole()));
     }
