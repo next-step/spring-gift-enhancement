@@ -23,16 +23,11 @@ public class Member{
 
     protected Member(){}
 
-    public Member(Long id, String email, String password, String name, String role) {
-        this.id = id;
+    public Member(String email, String password, String name, String role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = role;
-    }
-
-    public Member(Long id, MemberUpdateRequestDto requestDto) {
-        this(id, requestDto.email(), null, requestDto.name(), requestDto.role());
     }
 
     public void update(Long id, MemberUpdateRequestDto requestDto) {

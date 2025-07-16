@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService{
         validateMemberEmail(requestDto.email(), "admin/memberAdd");
         validateMemberRole(requestDto.role(), "admin/memberAdd");
         String hashedPassword = hashWithSHA256(requestDto.password());
-        Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
+        Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
         memberRepository.save(member);
     }
 
@@ -43,7 +43,7 @@ public class MemberServiceImpl implements MemberService{
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
-        Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), "USER");
+        Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), "USER");
         Member savedMember = memberRepository.save(member);
 
         return new TokenResponseDto(jwtProvider.createToken(savedMember.getId(), savedMember.getName(), savedMember.getEmail(), savedMember.getRole()));
@@ -84,7 +84,6 @@ public class MemberServiceImpl implements MemberService{
         }
         validateMemberRole(requestDto.role(), "admin/memberEdit");
         member.update(id, requestDto);
-        Member newMember = new Member(id, requestDto);
     }
 
     @Override

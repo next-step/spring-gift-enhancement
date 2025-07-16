@@ -19,7 +19,7 @@ public class Product {
     protected Product() {
     }
 
-    public Product(Long id, String name, Long price, String url) {
+    public Product(String name, Long price, String url) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -30,8 +30,7 @@ public class Product {
         return new ProductResponseDto(this);
     }
 
-    public void update(Long id, ProductUpdateRequestDto requestDto) {
-        this.id = id;
+    public void update(ProductUpdateRequestDto requestDto) {
         this.name = requestDto.name();
         this.price = requestDto.price();
         this.url = requestDto.url();

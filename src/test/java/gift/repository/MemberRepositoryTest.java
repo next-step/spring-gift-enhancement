@@ -18,7 +18,7 @@ public class MemberRepositoryTest {
 
     @Test
     void 회원저장_그리고_조회() {
-        Member member = new Member(null,"rusy@kakao.com", "1234", "rusy", "USER");
+        Member member = new Member("rusy@kakao.com", "1234", "rusy", "USER");
         memberRepository.save(member);
 
         Optional<Member> foundMember = memberRepository.findByEmail("rusy@kakao.com");
@@ -29,7 +29,7 @@ public class MemberRepositoryTest {
 
     @Test
     void 회원삭제() {
-        Member member = new Member(null,"rusy@kakao.com", "1234", "rusy", "USER");
+        Member member = new Member("rusy@kakao.com", "1234", "rusy", "USER");
         memberRepository.save(member);
 
         Optional<Member> foundMember = memberRepository.findByEmail("rusy@kakao.com");

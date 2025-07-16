@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(ProductAddRequestDto requestDto) {
         validateProductName(requestDto.name(), "admin/add");
-        Product product = new Product(null, requestDto.name(), requestDto.price(), requestDto.url());
+        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.url());
         productRepository.save(product);
     }
 
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
         Product product = findProductByIdOrElseThrow(id);
         validateProductName(requestDto.name(), "admin/edit");
-        product.update(id, requestDto);
+        product.update(requestDto);
     }
 
     @Override

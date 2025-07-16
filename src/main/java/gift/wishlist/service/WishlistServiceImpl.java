@@ -40,7 +40,7 @@ public class WishlistServiceImpl implements WishlistService {
         if (foundItem.isPresent()) {
             updateWishlistItemById(foundItem.get().getId(), foundItem.get().getQuantity() + requestDto.quantity());
         } else {
-            Wishlist item = new Wishlist(null, member, product, requestDto.quantity());
+            Wishlist item = new Wishlist(member, product, requestDto.quantity());
             wishlistRepository.save(item);
         }
     }

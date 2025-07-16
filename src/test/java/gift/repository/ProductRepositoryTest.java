@@ -18,7 +18,7 @@ public class ProductRepositoryTest {
 
     @Test
     public void 상품추가_그리고_조회(){
-        Product product = new Product(1L, "과자", 200L, "snack.png");
+        Product product = new Product("과자", 200L, "snack.png");
         productRepository.save(product);
 
         Optional<Product> foundProduct = productRepository.findById(product.getId());
@@ -29,7 +29,7 @@ public class ProductRepositoryTest {
 
     @Test
     public void 상품_삭제(){
-        Product product = new Product(1L, "과자", 200L, "snack.png");
+        Product product = new Product("과자", 200L, "snack.png");
         productRepository.save(product);
 
         Product foundProduct = productRepository.findById(product.getId()).get();

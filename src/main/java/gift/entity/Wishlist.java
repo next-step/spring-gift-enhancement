@@ -19,8 +19,7 @@ public class Wishlist {
     protected Wishlist() {
     }
 
-    public Wishlist(Long id, Member member, Product product, Long quantity) {
-        this.id = id;
+    public Wishlist(Member member, Product product, Long quantity) {
         this.member = member;
         this.product = product;
         this.quantity = quantity;
