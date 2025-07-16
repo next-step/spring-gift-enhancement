@@ -1,7 +1,10 @@
 package gift.exception.wishList;
 
-public class AlreadyInWishListException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class AlreadyInWishListException extends WishException {
     public AlreadyInWishListException(String message) {
-        super(message);
+
+        super(message, HttpStatus.CONFLICT);
     }
 }

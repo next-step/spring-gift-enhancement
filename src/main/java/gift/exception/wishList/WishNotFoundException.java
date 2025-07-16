@@ -1,7 +1,10 @@
 package gift.exception.wishList;
 
-public class WishNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class WishNotFoundException extends WishException {
     public WishNotFoundException(String message) {
-        super(message);
+
+        super(message, HttpStatus.NOT_FOUND);
     }
 }
