@@ -31,11 +31,11 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAllProductsByCursor(Long lastId) {
-        if (lastId == null) {
+    public List<ProductResponse> getAllProductsByCursor(Long cursor) {
+        if (cursor == null) {
             return productRepository.findAll(PageRequest.of(0, PAGE_SIZE, Sort.by("id").descending())).map(ProductResponse::from).stream().toList();
         }
-        return productRepository.findAllWithCursor(lastId, PageRequest.ofSize(PAGE_SIZE));
+        return productRepository.findAllWithCursor(cursor, PageRequest.ofSize(PAGE_SIZE));
     }
 
     @Transactional(readOnly = true)

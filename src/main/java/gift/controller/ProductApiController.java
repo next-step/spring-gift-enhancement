@@ -32,8 +32,8 @@ public class ProductApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getProducts(@RequestParam(required = false) Long lastId) {
-        List<ProductResponse> products = productService.getAllProductsByCursor(lastId);
+    public ResponseEntity<List<ProductResponse>> getProducts(@RequestParam(required = false) Long cursor) {
+        List<ProductResponse> products = productService.getAllProductsByCursor(cursor);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
