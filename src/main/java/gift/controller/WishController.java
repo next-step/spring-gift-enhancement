@@ -25,7 +25,7 @@ public class WishController {
     public ResponseEntity<Void> addWish(
             @Valid @RequestBody WishRequestDto request,
             @LoginMember Member member) {
-        wishService.addWish(member, request.getProductId());
+        wishService.addWish(member.getId(), request.getProductId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

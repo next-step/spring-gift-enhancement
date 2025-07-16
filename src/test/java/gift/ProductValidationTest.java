@@ -1,6 +1,5 @@
 package gift;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.domain.member.Email;
 import gift.domain.member.Password;
 import gift.domain.member.Role;
@@ -51,7 +50,7 @@ class ProductValidationTest {
         Email email = new Email("admin_" + UUID.randomUUID() + "@email.com");
         Password password = new Password("encodedPasswordHere");
         Member adminMember = new Member(email, password, Role.ADMIN);
-        Member savedAdmin = memberRepository.saveMember(adminMember);
+        Member savedAdmin = memberRepository.save(adminMember);
 
         token = jwtUtil.generateToken(
                 savedAdmin.getEmail().getValue(),
@@ -114,7 +113,7 @@ class ProductValidationTest {
                 "image.jpg",
                 MdApprovalStatus.approved()
         );
-        Product savedProduct = productRepository.saveProduct(approvedProduct);
+        Product savedProduct = productRepository.save(approvedProduct);
 
         mockMvc.perform(post("/admin/" + savedProduct.getId())
                         .header("Authorization", "Bearer " + token)
