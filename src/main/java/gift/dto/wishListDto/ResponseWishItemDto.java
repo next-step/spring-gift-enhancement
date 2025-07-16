@@ -7,8 +7,4 @@ public record ResponseWishItemDto(Long id, Long userId, Long itemId, Integer qua
     public static ResponseWishItemDto from(WishItem wishItem) {
         return new ResponseWishItemDto(wishItem.getId(), wishItem.getUser().getId(), wishItem.getItem().getId(), wishItem.getQuantity());
     }
-
-    public static ResponseWishItemDto delete(WishItem wishItem) {
-        return new ResponseWishItemDto(wishItem.getId(), wishItem.getUser().getId(), wishItem.getItem().getId(), 0);
-    }
 }
