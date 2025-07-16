@@ -23,31 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class WishRestController {
 
     private final WishService wishService;
-    private final ProductRepository productRepository;
 
-    public WishRestController(WishService wishService, ProductRepository productRepository) {
+    public WishRestController(WishService wishService) {
         this.wishService = wishService;
-        this.productRepository = productRepository;
     }
 
     @PostMapping
     public ResponseEntity<CreateWishResponse> addWish(@Authenticated Member member,
             @RequestBody CreateWishRequest request) {
-        Product product = productRepository.findById(request.getProductId())
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-
-        wishService.addWish(member, product);
+        wishService.addWish(member, request.getProductId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteWish(@Authenticated Member member,
             @RequestParam Long productId) {
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-
-        wishService.removeWish(member, product);
+        wishService.removeWish(member, productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -56,5 +47,4 @@ public class WishRestController {
         List<Product> wishes = wishService.getAllWish(member);
         return ResponseEntity.ok(wishes);
     }
-
 }

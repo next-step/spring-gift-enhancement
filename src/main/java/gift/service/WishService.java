@@ -19,18 +19,21 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    public void addWish(Member member, Product product) {
+    public void addWish(Member member, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
         if (wishRepository.existsByMemberAndProduct(member, product)) {
             throw new IllegalArgumentException("이미 위시리스트에 추가된 상품입니다.");
         }
 
         Wish wish = Wish.createWish(member, product);
-
         wishRepository.save(wish);
     }
 
-    public void removeWish(Member member, Product product) {
+    public void removeWish(Member member, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
         wishRepository.deleteByMemberAndProduct(member, product);
     }
