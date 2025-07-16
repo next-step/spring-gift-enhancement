@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
         }
 
-        Product product = Product.of(dto.getName(), dto.getImageUrl());
+        Product product = Product.of(dto.getName(), dto.getImageUrl(), dto.getPrice());
         Product saved = productRepository.save(product);
 
         return new ResponseDto(saved);
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NO_CONTENT));
 
-        product.update(dto);
+        product.update(dto.getName(), dto.getImageUrl(), dto.getPrice());
         productRepository.save(product);
         return new ResponseDto(product);
     }

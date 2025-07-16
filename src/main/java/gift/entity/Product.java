@@ -22,17 +22,21 @@ public class Product {
     @Column(name = "image_url", nullable = false, length = 255)
     private String imageUrl;
 
+    @Column(name = "price", nullable = false)
+    private int price;
+
     public Product() {
     }
 
-    public static Product of(String name, String imageUrl) {
-        return new Product(null, name, imageUrl);
+    public static Product of(String name, String imageUrl, int price) {
+        return new Product(null, name, imageUrl, price);
     }
 
-    private Product(Long id, String name, String imageUrl) {
+    private Product(Long id, String name, String imageUrl, int price) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.price = price;
     }
 
     public Long getId() {
@@ -47,6 +51,10 @@ public class Product {
         return imageUrl;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -59,13 +67,9 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-
-    public void update(RequestDto dto) {
-        if (dto.getName() != null) {
-            this.name = dto.getName();
-        }
-        if (dto.getImageUrl() != null) {
-            this.imageUrl = dto.getImageUrl();
-        }
+    public void update(String name, String imageUrl, int price) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.price = price;
     }
 }

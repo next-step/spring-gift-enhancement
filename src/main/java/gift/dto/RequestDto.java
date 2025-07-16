@@ -10,15 +10,13 @@ public class RequestDto {
 
     @NotNull
     @Size(max = 15, message = "공백 포함 최대 15자까지만 입력 가능합니다.")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$",
-            message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다."
-    )
+    @Pattern(regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$", message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다.")
 
-    //@WarningKakao
     private String name;
 
     private String imageUrl;
+
+    private int price;
 
     public Long getId() {
         return id;
@@ -32,6 +30,10 @@ public class RequestDto {
         return imageUrl;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -42,5 +44,9 @@ public class RequestDto {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }
