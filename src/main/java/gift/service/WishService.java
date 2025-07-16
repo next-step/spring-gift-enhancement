@@ -21,7 +21,7 @@ public class WishService {
 
     public void addWish(Member member, Product product) {
 
-        if (wishRepository.exists(member, product)) {
+        if (wishRepository.existsByMemberAndProduct(member, product)) {
             throw new IllegalArgumentException("이미 위시리스트에 추가된 상품입니다.");
         }
 
@@ -32,7 +32,7 @@ public class WishService {
 
     public void removeWish(Member member, Product product) {
 
-        wishRepository.delete(member, product);
+        wishRepository.deleteByMemberAndProduct(member, product);
     }
 
     public List<Product> getAllWish(Member member) {
