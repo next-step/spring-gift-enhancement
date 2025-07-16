@@ -16,7 +16,7 @@ public class RequestDto {
 
     private String imageUrl;
 
-    private int price;
+    private Long price;
 
     public Long getId() {
         return id;
@@ -30,7 +30,7 @@ public class RequestDto {
         return imageUrl;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
@@ -46,7 +46,7 @@ public class RequestDto {
         this.imageUrl = imageUrl;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 }

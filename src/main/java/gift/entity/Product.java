@@ -23,16 +23,16 @@ public class Product {
     private String imageUrl;
 
     @Column(name = "price", nullable = false)
-    private int price;
+    private Long price;
 
     public Product() {
     }
 
-    public static Product of(String name, String imageUrl, int price) {
+    public static Product of(String name, String imageUrl, Long price) {
         return new Product(null, name, imageUrl, price);
     }
 
-    private Product(Long id, String name, String imageUrl, int price) {
+    private Product(Long id, String name, String imageUrl, Long price) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -51,7 +51,7 @@ public class Product {
         return imageUrl;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
@@ -67,7 +67,19 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void update(String name, String imageUrl, int price) {
+    public void update(String name, String imageUrl, Long price) {
+        if(name == null) {
+            throw new IllegalArgumentException("상품 이름은 필수입니다.");
+        }
+
+        if(price == null || price <= 0) {
+            throw new IllegalArgumentException("상품 가격은 0보다 커야 합니다.");
+        }
+
+        if(imageUrl == null) {
+            throw new IllegalArgumentException("이미지 URL은 필수입니다.");
+        }
+
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;

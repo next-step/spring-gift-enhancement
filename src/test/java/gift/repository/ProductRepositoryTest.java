@@ -16,7 +16,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 저장 테스트")
     void save() {
-        var product = Product.of("감자2", "gamja.com", 1800);
+        var product = Product.of("감자2", "gamja.com", 1800L);
 
         // 저장 전 id가 null인지 검증 ( == 객체가 없다)
         assertThat(product.getId()).isNull();

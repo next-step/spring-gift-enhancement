@@ -105,7 +105,7 @@ public class WishRestControllerTest {
                 Optional.of(testMember));
 
         // WishService가 반환할 상품 리스트 생성
-        List<Product> wishList = Collections.singletonList(Product.of("gamja", "gam.com"));
+        List<Product> wishList = Collections.singletonList(Product.of("gamja", "gam.com", 2000L));
         when(wishService.getAllWish(testMember)).thenReturn(wishList);
 
         // when
