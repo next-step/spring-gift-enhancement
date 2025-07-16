@@ -206,7 +206,7 @@ class ProductControllerTest {
     client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request1).retrieve().toBodilessEntity();
     client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request2).retrieve().toBodilessEntity();
 
-    ResponseEntity<List<Product>> response = client.get()
+    ResponseEntity<List<ProductResponseDTO>> response = client.get()
         .uri("")
         .retrieve()
         .toEntity(new ParameterizedTypeReference<>() {});
@@ -214,6 +214,85 @@ class ProductControllerTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().size()).isGreaterThanOrEqualTo(2);
+  }
+
+  @Test
+  @DisplayName("상품 조회 - 페이지네이션 테스트")
+  void getAllProductsWithPagination() {
+    // 여러 상품 생성
+    for (int i = 1; i <= 15; i++) {
+      ProductRequestDTO request = new ProductRequestDTO();
+      request.setName("상품" + i);
+      request.setPrice(1000L * i);
+      request.setImageUrl("https://test" + i + ".jpg");
+      client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request).retrieve().toBodilessEntity();
+    }
+
+    // 첫 번째 페이지 조회 (page=0, size=10)
+    ResponseEntity<List<ProductResponseDTO>> response = client.get()
+        .uri("?page=0&size=10")
+        .retrieve()
+        .toEntity(new ParameterizedTypeReference<>() {});
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().size()).isEqualTo(10);
+  }
+
+  @Test
+  @DisplayName("상품 조회 - 정렬 테스트 (이름 오름차순)")
+  void getAllProductsWithNameSort() {
+    ProductRequestDTO request1 = new ProductRequestDTO();
+    request1.setName("B상품");
+    request1.setPrice(1000L);
+    request1.setImageUrl("https://test1.jpg");
+
+    ProductRequestDTO request2 = new ProductRequestDTO();
+    request2.setName("A상품");
+    request2.setPrice(2000L);
+    request2.setImageUrl("https://test2.jpg");
+
+    client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request1).retrieve().toBodilessEntity();
+    client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request2).retrieve().toBodilessEntity();
+
+    ResponseEntity<List<ProductResponseDTO>> response = client.get()
+        .uri("?sort=name,asc")
+        .retrieve()
+        .toEntity(new ParameterizedTypeReference<>() {});
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().size()).isGreaterThanOrEqualTo(2);
+    // 첫 번째 상품이 A상품이어야 함 (이름 오름차순)
+    assertThat(response.getBody().get(0).getName()).isEqualTo("A상품");
+  }
+
+  @Test
+  @DisplayName("상품 조회 - 정렬 테스트 (가격 내림차순)")
+  void getAllProductsWithPriceSort() {
+    ProductRequestDTO request1 = new ProductRequestDTO();
+    request1.setName("저가상품");
+    request1.setPrice(1000L);
+    request1.setImageUrl("https://test1.jpg");
+
+    ProductRequestDTO request2 = new ProductRequestDTO();
+    request2.setName("고가상품");
+    request2.setPrice(5000L);
+    request2.setImageUrl("https://test2.jpg");
+
+    client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request1).retrieve().toBodilessEntity();
+    client.post().uri("").contentType(MediaType.APPLICATION_JSON).body(request2).retrieve().toBodilessEntity();
+
+    ResponseEntity<List<ProductResponseDTO>> response = client.get()
+        .uri("?sort=price,desc")
+        .retrieve()
+        .toEntity(new ParameterizedTypeReference<>() {});
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().size()).isGreaterThanOrEqualTo(2);
+    // 첫 번째 상품이 고가상품이어야 함 (가격 내림차순)
+    assertThat(response.getBody().get(0).getPrice()).isGreaterThan(response.getBody().get(1).getPrice());
   }
 
   @Test
