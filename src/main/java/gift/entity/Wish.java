@@ -1,23 +1,32 @@
 package gift.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "wish", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"member_id", "product_id"})
+})
 public class Wish {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long memberId;
-    private Long productId;
 
-    public Wish(Long id, Long memberId, Long productId) {
-        this.id = id;
-        this.memberId = memberId;
-        this.productId = productId;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    public Wish(Long memberId, Long productId) {
-        this.memberId = memberId;
-        this.productId = productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    protected Wish() {}
+
+    public Wish(Member member, Product product) {
+        this.member = member;
+        this.product = product;
     }
 
     public Long getId() { return id; }
-    public Long getMemberId() { return memberId; }
-    public Long getProductId() { return productId; }
-    public void setId(Long id) { this.id = id; }
+    public Member getMember() { return member; }
+    public Product getProduct() { return product; }
 }
