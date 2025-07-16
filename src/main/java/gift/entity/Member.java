@@ -37,16 +37,16 @@ public class Member{
         this.role = requestDto.role();
     }
 
+    public boolean checkCorrectPssword(String hashedPassword) {
+        return this.password.equals(hashedPassword);
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getName() {

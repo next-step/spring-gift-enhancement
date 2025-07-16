@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService{
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
-        if (!member.getPassword().equals(hashedPassword)) {
+        if (!member.checkCorrectPssword(hashedPassword)) {
             throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
         }
 
