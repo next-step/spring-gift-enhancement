@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class MemberJdbcRepository implements MemberRepository{
+public class MemberJdbcRepository implements MemberRepository {
 
     private final JdbcClient client;
 

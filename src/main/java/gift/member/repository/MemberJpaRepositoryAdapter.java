@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @Primary
-public class MemberJpaRepositoryAdapter implements MemberRepository{
+public class MemberJpaRepositoryAdapter implements MemberRepository {
     private final MemberJpaRepository repository;
     public MemberJpaRepositoryAdapter(MemberJpaRepository repository) {
         this.repository = repository;
@@ -31,7 +31,8 @@ public class MemberJpaRepositoryAdapter implements MemberRepository{
         repository.findById(id).ifPresent(member -> member.updatePassword(newPassword));
     }
 
-    @Override public void deleteById(Long id) {
+    @Override
+    public void deleteById(Long id) {
         repository.deleteById(id);
     }
 }

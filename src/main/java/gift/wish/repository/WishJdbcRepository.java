@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class WishJdbcRepository implements WishRepository{
+public class WishJdbcRepository implements WishRepository {
     private final JdbcClient client;
 
     public WishJdbcRepository(JdbcClient client) {

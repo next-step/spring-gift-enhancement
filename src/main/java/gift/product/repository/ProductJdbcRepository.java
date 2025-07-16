@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository
-public class ProductJdbcRepository implements ProductRepository{
+public class ProductJdbcRepository implements ProductRepository {
 
     private final JdbcClient client;
 
