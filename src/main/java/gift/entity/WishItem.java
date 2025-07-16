@@ -58,15 +58,11 @@ public class WishItem {
         return quantity;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void changeQuantity(Integer quantity) {
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public void setQuantity(Integer quantity) {
+        if (quantity == null || quantity < 1) {
+            throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
         this.quantity = quantity;
     }
 }

@@ -1,8 +1,12 @@
 package gift.entity;
 
+import gift.exception.itemException.ItemImageurlException;
+import gift.exception.itemException.ItemNameException;
+import gift.exception.itemException.ItemPriceException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "items") // 테이블명이 items인 경우 명시
@@ -80,5 +84,24 @@ public class Item {
         boolean priceMatches = (price == null || this.getPrice().equals(price));
 
         return nameMatches && priceMatches;
+    }
+
+    public void update(String name, Integer price, String imageUrl) {
+
+        if (name == null) {
+            throw new ItemNameException();
+        }
+
+        if (price == null) {
+            throw new ItemPriceException();
+        }
+
+        if (imageUrl == null) {
+            throw new ItemImageurlException();
+        }
+
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 }

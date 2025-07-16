@@ -125,11 +125,9 @@ public class WishListServiceImpl implements WishListService {
         }
 
         WishItem wishItem = toUpdatedWishItem.get();
-        wishItem.setQuantity(quantity);
+        wishItem.changeQuantity(quantity);
 
-        WishItem upatedWishItem = wishListRepository.save(wishItem);
-
-        return upatedWishItem;
+        return wishItem;
     }
 
 }

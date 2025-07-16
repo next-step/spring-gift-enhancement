@@ -49,13 +49,14 @@ public class ItemServiceImpl implements ItemService {
         Optional<Item> targetItem = findItemById(id);
 
         Item item = targetItem.get();
-        item.setName(dto.name());
-        item.setPrice(dto.price());
-        item.setImageUrl(dto.imageUrl());
 
-        Item updatedItem = itemRepository.save(item);
+        String name = dto.name();
+        Integer price = dto.price();
+        String imageUrl = dto.imageUrl();
 
-        return updatedItem;
+        item.update(name,price,imageUrl);
+
+        return item;
     }
 
     @Override
