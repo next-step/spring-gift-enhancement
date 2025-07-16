@@ -28,7 +28,6 @@ public class MemberService {
                 memberRequestDto.getRole());
 
         member = memberRepository.save(member);
-        System.out.println(member.getId());
         return new MemberResponseDto(jwtProvider.generateToken(member));
 
     }
