@@ -65,7 +65,22 @@
 - [x] domain 모델 JPA entity로 전환하기
 - [x] repository interface 추가
 - [x] JdbcClient -> JPA 전환하기
-- [ ] @DataJpaTest를 활용한 테스트 코드 작성해보기
+- [x] @DataJpaTest를 활용한 테스트 코드 작성해보기
+
+### 1단계 - 코드 리뷰 반영
+
+- [ ] import 시 와일드 카드 사용 제거
+- [ ] 코드 포매팅 개선
+- [ ] @ManyToOne optional 설정
+- [ ] 외래 키 제약조건 명시적으로 설정하기
+- [ ] member repository 인터페이스 파라미터 참조형으로 변경
+- [ ] member repository 불필요한 Adapter 코드 제거
+- [ ] product repository 인터페이스 파라미터 참조형으로 변경
+- [ ] product repository 불필요한 Adapter 코드 제거
+- [ ] wish repository 인터페이스 파라미터 참조형으로 변경
+- [ ] wish repository 불필요한 Adapter 코드 제거
+- [ ] wish repository Response 의존성 제거
+- [ ] wish repository 메소드에서 JPA 변경 감지 활용하기
 
 # spring-gift-product (Mission 1)
 
