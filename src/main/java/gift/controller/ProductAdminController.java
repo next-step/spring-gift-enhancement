@@ -3,16 +3,11 @@ package gift.controller;
 import gift.dto.product.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
-import org.springframework.stereotype.Controller;
 import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -35,19 +30,17 @@ public class ProductAdminController {
     @GetMapping("/create")
     public String createForm(Model model) {
         model.addAttribute("productRequestDto", new ProductRequestDto("", 0L, ""));
-
-        return "";
+        return "admin/create";
     }
 
     // 상품 추가
     @PostMapping("/create")
-    public String create(@Valid @ModelAttribute("productRequestDto") ProductRequestDto dto, BindingResult bindingResult ) {
-
-        if(bindingResult.hasErrors()){
+    public String create(@Valid @ModelAttribute("productRequestDto") ProductRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "admin/create";
         }
 
-        Product product = new Product(null, dto.name(), dto.price(), dto.imageUrl());
+        Product product = new Product(dto.name(), dto.price(), dto.imageUrl());
         service.createProduct(product);
         return "redirect:/admin/products";
     }
@@ -64,26 +57,23 @@ public class ProductAdminController {
         );
         model.addAttribute("product", dto);
         model.addAttribute("productId", id);
-
         return "admin/update";
     }
 
     // 상품 수정
     @PostMapping("/{id}/update")
     public String update(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequestDto dto, BindingResult bindingResult, Model model) {
-
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             model.addAttribute("productRequestDto", dto);
             model.addAttribute("productId", id);
             return "admin/update";
         }
-        Product product = new Product(id, dto.name(), dto.price(), dto.imageUrl());
+
+        Product product = new Product(dto.name(), dto.price(), dto.imageUrl());
         service.update(id, product)
                 .orElseThrow(() -> new IllegalArgumentException("수정 실패"));
         return "redirect:/admin/products";
     }
-
-
 
     // 상품 삭제
     @PostMapping("/{id}/delete")
