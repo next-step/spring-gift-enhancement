@@ -31,7 +31,7 @@ public class AdminProductController {
         List<ProductResponseDto> products = productService.getProductList(page, size);
 
         // 총 페이지 계산용
-        int total = productService.getProductCount();
+        long total = productService.getProductCount();
         int totalPages = (int) Math.ceil((double) total / size);
 
         // 뷰로 전달

@@ -10,6 +10,7 @@ import gift.exception.ForbiddenAccessException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class WishService {
     }
 
     // 위시리스트 추가
+    @Transactional
     public WishResponseDto addWish(Member member, WishRequestDto requestDto) {
         // 상품 존재 여부 확인
         Product product = productRepository.findById(requestDto.getProductId())
@@ -37,53 +39,47 @@ public class WishService {
         }
 
         // 위시리스트에 상품 추가
-        Wish wish = new Wish(member.getId(), requestDto.getProductId(), requestDto.getQuantity());
+        Wish wish = new Wish(member,product, requestDto.getQuantity());
         Wish savedWish = wishRepository.save(wish);
 
         return new WishResponseDto(savedWish, new ProductResponseDto(product));
     }
 
     // 위시리스트 조회
+    @Transactional(readOnly = true)
     public List<WishResponseDto> getWishesByMember(Member member) {
-        List<Wish> wishes = wishRepository.findByMemberId(member.getId());
+        List<Wish> wishes = wishRepository.findByMemberOrderByIdDesc(member);
         
         return wishes.stream()
-                .map(wish -> {
-                    Product product = productRepository.findById(wish.getProductId())
-                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-                    return new WishResponseDto(wish, new ProductResponseDto(product));
-                })
+                .map(wish -> new WishResponseDto(wish, new ProductResponseDto(wish.getProduct())))
                 .collect(Collectors.toList());
     }
 
     // 위시리스트 수량 변경
+    @Transactional
     public WishResponseDto updateWishQuantity(Member member, Long wishId, Integer quantity) {
         // 위시리스트 항목 조회
         Wish wish = wishRepository.findById(wishId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
         // 해당 ID의 상품이 현재 로그인한 사용자 건지 검증 
-        if (!wish.getMemberId().equals(member.getId())) {
+        if (!wish.getMember().getId().equals(member.getId())) {
             throw new ForbiddenAccessException("권한이 없습니다."); 
         }
 
-        // 요청된 수량으로 Wish.quantity 필드 업데이트
-        wishRepository.updateQuantity(wishId, quantity);
+        // Dirty Checking으로 수량 업데이트
         wish.setQuantity(quantity);
 
-        // 상품 정보 조회
-        Product product = productRepository.findById(wish.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-
-        return new WishResponseDto(wish, new ProductResponseDto(product));
+        return new WishResponseDto(wish, new ProductResponseDto(wish.getProduct()));
     }
 
     // 위시리스트 삭제
+    @Transactional
     public void deleteWish(Member member, Long wishId) {
         Wish wish = wishRepository.findById(wishId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-        if (!wish.getMemberId().equals(member.getId())) {
+        if (!wish.getMember().getId().equals(member.getId())) {
             throw new ForbiddenAccessException("권한이 없습니다.");
         }
 

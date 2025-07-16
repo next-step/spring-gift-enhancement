@@ -4,8 +4,12 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -24,27 +28,33 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    @Transactional // JPA가 자동으로 변경된 엔티티를 저장!
     public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        Product product = new Product(null, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+        Product product = new Product(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
         Product saved = productRepository.save(product);
         return new ProductResponseDto(saved);
     }
 
+    @Transactional
     public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
         Product product = findProductOrThrow(id);
 
-        product.update(requestDto);
-        product = productRepository.update(product);
+        product.setName(requestDto.getName());
+        product.setPrice(requestDto.getPrice());
+        product.setImageUrl(requestDto.getImageUrl());
+
         return new ProductResponseDto(product);
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
         findProductOrThrow(id);
         productRepository.deleteById(id);
     }
 
     public List<ProductResponseDto> getProductList(int page, int size) {
-        return productRepository.findPage(page, size).stream()
+        Page<Product> productPage = productRepository.findAll(PageRequest.of(page, size));
+        return productPage.getContent().stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -54,7 +64,7 @@ public class ProductService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
     }
 
-    public int getProductCount() {
+    public long getProductCount() {
         return productRepository.count();
     }
 }
