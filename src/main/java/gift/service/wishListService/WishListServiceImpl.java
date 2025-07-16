@@ -1,12 +1,11 @@
 package gift.service.wishListService;
 
-import gift.dto.wishListDto.AddWishItemDto;
+import gift.dto.wishListDto.CreateWishItemRequestDto;
 import gift.entity.Item;
 import gift.entity.User;
 import gift.entity.WishItem;
 import gift.exception.itemException.ItemDuplicatedException;
 import gift.exception.itemException.ItemNotFoundException;
-import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
@@ -31,7 +30,7 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishItem addWishItem(AddWishItemDto dto, String userEmail) {
+    public WishItem addWishItem(CreateWishItemRequestDto dto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();

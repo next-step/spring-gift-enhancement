@@ -25,14 +25,14 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDto> addItems(
+    public ResponseEntity<ResponseItems> addItem(
             @RequestBody @Valid ItemCreateDto dto
     ) {
         Item item = itemService.saveItem(dto);
+        ItemResponseDto responseDto = ItemResponseDto.from(item);
 
-        return new ResponseEntity<>(ItemResponseDto.from(item), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponseItems(List.of(responseDto)), HttpStatus.CREATED);
     }
-
     @GetMapping
     public ResponseEntity<ResponseItems> getItems(@RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
         List<Item> items = itemService.getItems(name, price);

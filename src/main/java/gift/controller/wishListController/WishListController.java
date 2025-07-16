@@ -1,7 +1,7 @@
 package gift.controller.wishListController;
 
 import gift.config.LoginUser;
-import gift.dto.wishListDto.AddWishItemDto;
+import gift.dto.wishListDto.CreateWishItemRequestDto;
 import gift.dto.wishListDto.ResponseWishItem;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.WishItem;
@@ -25,7 +25,7 @@ public class WishListController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid AddWishItemDto dto, @LoginUser String userEmail) {
+    public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid CreateWishItemRequestDto dto, @LoginUser String userEmail) {
 
         WishItem addedWishItem = wishListService.addWishItem(dto, userEmail);
 
