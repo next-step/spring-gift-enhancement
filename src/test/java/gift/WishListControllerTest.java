@@ -119,14 +119,14 @@ public class WishListControllerTest {
         Long memberId = 1L;
         String email = "example@naver.com";
         String encryptedPassword = sha256Util.encrypt("qwer");
-        
+
         given(jwtUtil.getMemberIdFromToken(token))
             .willReturn(memberId);
         given(memberService.findById(memberId))
             .willReturn(new MemberCredentialDto(memberId, email, encryptedPassword));
-        
+
         mockmvc.perform(delete("/api/wishes/1")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent());
     }

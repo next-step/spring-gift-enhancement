@@ -60,25 +60,24 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        int changeRow = memberRepository.changePassword(
-            requestDto.email(),
-            sha256Util.encrypt(requestDto.beforePassword()),
-            sha256Util.encrypt(requestDto.afterPassword()));
+        boolean matchesCheck = member.matchesPassword(
+            sha256Util.encrypt(requestDto.beforePassword()));
 
-        if (changeRow <= 0) {
+        if (!matchesCheck) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+        member.changePassword(sha256Util.encrypt(requestDto.afterPassword()));
     }
 
     @Override
     public void resetPassword(MemberRequestDto requestDto) {
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        String newPassword = sha256Util.encrypt(requestDto.password());
 
         // TODO: 주어진 이메일에 대해 전송 후, 사용자에게 인증받는 절차는 거쳤다고 가정
 
-        memberRepository.resetPassword(
-            requestDto.email(), sha256Util.encrypt(requestDto.password()));
+        member.changePassword(newPassword);
     }
 
     @Override

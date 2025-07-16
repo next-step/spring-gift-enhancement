@@ -6,7 +6,6 @@ import gift.entity.Product;
 import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,7 +33,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto create(ProductRequestDto requestDto) {
-        Long id = productRepository.save(new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl())).getId();
+        Long id = productRepository.save(
+            new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl())).getId();
 
         return new ProductResponseDto(id, requestDto.name(), requestDto.price(),
             requestDto.imageUrl());
@@ -52,9 +52,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto update(Long id, ProductRequestDto requestDto) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        productRepository.update(id, new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
+        product.change(requestDto.name(), requestDto.price(), requestDto.imageUrl());
 
         Product updatedProduct = productRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

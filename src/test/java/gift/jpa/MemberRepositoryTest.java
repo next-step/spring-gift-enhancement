@@ -53,11 +53,11 @@ public class MemberRepositoryTest {
         Member expected = new Member("test@naver.com", "qwer");
         String newPassword = sha256Util.encrypt("qwer1234");
 
-        memberRepository.save(expected);
-        memberRepository.changePassword(expected.getEmail(), expected.getPassword(), newPassword);
-        Member member = memberRepository.findByEmail(expected.getEmail()).get();
+        Member beforeMember = memberRepository.save(expected);
+        beforeMember.changePassword(newPassword);
+        Member afterMember = memberRepository.findByEmail(expected.getEmail()).get();
 
-        assertThat(member.getPassword()).isEqualTo(newPassword);
+        assertThat(afterMember.getPassword()).isEqualTo(newPassword);
     }
 
     @Test
@@ -65,10 +65,10 @@ public class MemberRepositoryTest {
         Member expected = new Member("test@naver.com", "qwer");
         String newPassword = sha256Util.encrypt("qwer1234");
 
-        memberRepository.save(expected);
-        memberRepository.resetPassword(expected.getEmail(), newPassword);
-        Member member = memberRepository.findByEmail(expected.getEmail()).get();
+        Member beforeMember = memberRepository.save(expected);
+        beforeMember.changePassword(newPassword);
+        Member afterMember = memberRepository.findByEmail(expected.getEmail()).get();
 
-        assertThat(member.getPassword()).isEqualTo(newPassword);
+        assertThat(afterMember.getPassword()).isEqualTo(newPassword);
     }
 }

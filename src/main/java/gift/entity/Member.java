@@ -41,4 +41,16 @@ public class Member {
     public String getPassword() {
         return this.password;
     }
+
+    public boolean matchesPassword(String password) {
+        if (!this.password.equals(password)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void changePassword(String afterPassword) {
+        this.password = afterPassword;
+    }
 }

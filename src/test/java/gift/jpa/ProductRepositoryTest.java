@@ -2,7 +2,6 @@ package gift.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import gift.entity.Product;
 import gift.repository.product.ProductRepository;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 public class ProductRepositoryTest {
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -45,7 +45,7 @@ public class ProductRepositoryTest {
         Product expected = new Product("test2", 2, "test2");
 
         Product beforeProduct = productRepository.save(origin);
-        productRepository.update(beforeProduct.getId(), expected);
+        beforeProduct.change(expected.getName(), expected.getPrice(), expected.getImageUrl());
 
         Product actual = productRepository.findById(4L).get();
         assertAll(

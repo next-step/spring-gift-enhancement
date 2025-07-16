@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 public class WishListRepositoryTest {
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -53,7 +54,8 @@ public class WishListRepositoryTest {
         Member member = memberRepository.getReferenceById(1L);
 
         wishListRepository.save(new Wish(product, member));
-        int deleteRow = wishListRepository.deleteByProductIdAndMemberId(product.getId(), member.getId());
+        int deleteRow = wishListRepository.deleteByProductIdAndMemberId(product.getId(),
+            member.getId());
         assertThat(deleteRow).isEqualTo(1);
     }
 

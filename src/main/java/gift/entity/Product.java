@@ -55,7 +55,6 @@ public class Product {
         this(null, name, price, imageUrl);
     }
 
-    // getter
     public Long getId() {
         return this.id;
     }
@@ -72,20 +71,9 @@ public class Product {
         return this.imageUrl;
     }
 
-    //setter
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
+    public void change(String name, int price, String imageUrl) {
         this.name = name;
-    }
-
-    public void setPrice(int price) {
         this.price = price;
-    }
-
-    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 }
