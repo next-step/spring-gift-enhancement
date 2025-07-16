@@ -3,7 +3,6 @@ package gift.repository;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
