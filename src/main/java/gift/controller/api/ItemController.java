@@ -70,8 +70,11 @@ public class ItemController {
 
     @Authenticated
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteItem(@PathVariable("productId") Long id) {
-        itemService.deleteItem(id);
+    public ResponseEntity<Void> deleteItem(
+        @PathVariable("productId") Long id,
+        @Login Member loginMember
+    ) {
+        itemService.deleteItem(id, loginMember);
         return ResponseEntity.noContent().build();
     }
 }

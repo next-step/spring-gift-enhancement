@@ -13,7 +13,7 @@ class ItemTest {
 
         Item item = new Item(1L, "기존 상품", 1000, "old.jpg");
 
-        item.updateItemInfo("새로운 상품", 2000, "new.jpg");
+        item.updateInfo("새로운 상품", 2000, "new.jpg");
 
         assertThat(item.getName()).isEqualTo("새로운 상품");
         assertThat(item.getPrice()).isEqualTo(2000);
