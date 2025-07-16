@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Test;
 
 
 public class Sha256UtilTest {
+
     @Test
     @DisplayName("SHA-256 예외 테스트")
     void throw_unsupportedShaAlgorithmException() {
         Sha256Util sha256Util = new Sha256Util();
 
-        Exception exception = Assertions.assertThrows(UnsupportedShaAlgorithmException.class, () -> {
-            sha256Util.encryptWithAlgorithm("test", "test-256");
-        });
+        Exception exception = Assertions.assertThrows(UnsupportedShaAlgorithmException.class,
+            () -> {
+                sha256Util.encryptWithAlgorithm("test", "test-256");
+            });
     }
 }

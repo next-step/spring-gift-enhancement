@@ -90,7 +90,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("비밀번호 변경 - 성공")
     void changePassword_success() {
-        var requestDto = new MemberPasswordChangeDto("example1@naver.com", "qwer", "qwer1234");
+        var requestDto = new MemberPasswordChangeDto("example@naver.com", "qwer", "qwer1234");
 
         var response = client.put()
             .uri(BASE_URL + "/password/change")

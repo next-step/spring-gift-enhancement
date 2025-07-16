@@ -1,5 +1,9 @@
 # spring-gift-enhancement
 
+- JdbcTemplate/JdbcClient 기반 코드를 JPA로 Refactoring
+- Entity(Member/Product/Wish) 객체와 테이블을 매핑
+- JPA Test Code 작성
+
 # spring-gift-product
 
 #### 위시리스트 기능 추가

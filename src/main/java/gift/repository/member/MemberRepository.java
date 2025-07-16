@@ -2,18 +2,12 @@ package gift.repository.member;
 
 import gift.entity.Member;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 
-public interface MemberRepository {
-
-    public Member create(Member member);
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     public Optional<Member> findByEmail(String email);
 
-    public int changePassword(Member member, String afterPassword);
-
-    public boolean existsByEmail(String email);
-
-    void resetPassword(Member member);
-
-    public Optional<Member> findById(Long id);
+    public boolean existsByEmail(@Param("email") String email);
 }

@@ -1,9 +1,9 @@
 package gift.service.member;
 
+import gift.dto.member.MemberCredentialDto;
 import gift.dto.member.MemberPasswordChangeDto;
 import gift.dto.member.MemberRequestDto;
 import gift.dto.member.MemberResponseDto;
-import gift.dto.member.MemberCredentialDto;
 import gift.entity.Member;
 import gift.repository.member.MemberRepository;
 import gift.util.JwtUtil;
@@ -32,8 +32,8 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        Member member = memberRepository.create(
-            new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
+        Member member = memberRepository.save(
+            new Member(null, requestDto.email(), sha256Util.encrypt(requestDto.password())));
 
         String accessToken = jwtUtil.createToken(member.getId(), member.getEmail());
 
@@ -60,24 +60,24 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        int changeRow = memberRepository.changePassword(
-            new Member(requestDto.email(), sha256Util.encrypt(requestDto.beforePassword())),
-            sha256Util.encrypt(requestDto.afterPassword()));
+        boolean matchesCheck = member.matchesPassword(
+            sha256Util.encrypt(requestDto.beforePassword()));
 
-        if (changeRow <= 0) {
+        if (!matchesCheck) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+        member.changePassword(sha256Util.encrypt(requestDto.afterPassword()));
     }
 
     @Override
     public void resetPassword(MemberRequestDto requestDto) {
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        String newPassword = sha256Util.encrypt(requestDto.password());
 
         // TODO: 주어진 이메일에 대해 전송 후, 사용자에게 인증받는 절차는 거쳤다고 가정
 
-        memberRepository.resetPassword(
-            new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
+        member.changePassword(newPassword);
     }
 
     @Override
