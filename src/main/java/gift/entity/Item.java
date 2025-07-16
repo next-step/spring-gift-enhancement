@@ -23,7 +23,7 @@ public class Item {
     @Column(name = "image_url", length = 255, nullable = true)
     private String imageUrl;
 
-    public Item() {
+    protected Item() {
 
     }
 
