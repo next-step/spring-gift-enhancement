@@ -22,7 +22,7 @@ public class WishController {
 
     @GetMapping
     public List<Product> getMyWishes(@LoginMember Member member) {
-        return wishService.getWishlist(member.getId());
+        return wishService.getWishList(member.getId());
     }
 
     @PostMapping
@@ -39,9 +39,9 @@ public class WishController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{wishId}")
-    public ResponseEntity<Void> updateWishQuantity(@PathVariable Long wishId, @RequestBody WishRequest request, @LoginMember Member member) {
-        wishService.updateWishQuantity(member.getId(), wishId, request.getQuantity());
+    @PatchMapping("/{productId}")
+    public ResponseEntity<Void> updateWishQuantity(@PathVariable Long productId, @RequestBody WishRequest request, @LoginMember Member member) {
+        wishService.updateWishQuantity(member.getId(), productId, request.getQuantity());
         return ResponseEntity.ok().build();
     }
 }
