@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUserList(String email,boolean isAdmin) {
+    public List<User> getUserList(String email, boolean isAdmin) {
 
         if (!isAdmin) {
             throw new UserAuthorizationException();
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUserById(Long id,boolean isAdmin) {
+    public void deleteUserById(Long id, boolean isAdmin) {
         if (!isAdmin) {
             System.out.println("권한이 없습니다.");
             throw new UserAuthorizationException();

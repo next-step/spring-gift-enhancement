@@ -3,7 +3,6 @@ package gift.service.itemService;
 import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
-
 import gift.repository.itemRepository.ItemRepositoryJPA;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     public Item saveItem(ItemCreateDto dto) {
-        Item item = new Item(dto.name(), dto.price(),dto.imageUrl());
+        Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
 
         return itemRepository.save(item);
     }

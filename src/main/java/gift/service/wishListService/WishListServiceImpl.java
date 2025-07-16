@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class WishListServiceImpl implements WishListService{
+public class WishListServiceImpl implements WishListService {
 
     private final WishListRepositoryJPA wishListRepository;
     private final UserService userService;

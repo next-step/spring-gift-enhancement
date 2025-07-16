@@ -43,6 +43,7 @@ public class WishListController {
 
         return ResponseEntity.ok(new ResponseWishItem(wishItemDtoList));
     }
+
     @DeleteMapping
     public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {
 

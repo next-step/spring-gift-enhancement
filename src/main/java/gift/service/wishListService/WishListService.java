@@ -1,7 +1,6 @@
 package gift.service.wishListService;
 
 import gift.dto.wishListDto.AddWishItemDto;
-import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.WishItem;
 import jakarta.validation.Valid;
 

@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @ItemFieldValid
-public record ItemCreateDto(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl, boolean useKakaoName) {
+public record ItemCreateDto(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl,
+                            boolean useKakaoName) {
 
 
     public ItemCreateDto(Item saveditem) {

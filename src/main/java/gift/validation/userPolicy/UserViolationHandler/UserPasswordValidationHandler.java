@@ -4,7 +4,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserPasswordValidationHandler implements ViolationHandler{
+public class UserPasswordValidationHandler implements ViolationHandler {
     @Override
     public void addViolation(ConstraintValidatorContext context, String message) {
         context.disableDefaultConstraintViolation();

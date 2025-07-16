@@ -5,7 +5,6 @@ import gift.exception.userException.ExpiredTokenException;
 import gift.exception.userException.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -36,7 +35,6 @@ public class JwtUtil {
                 .signWith(key)
                 .compact();
     }
-
 
 
     public boolean validate(String token) {

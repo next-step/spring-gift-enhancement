@@ -1,7 +1,10 @@
 package gift.controller.itemController;
 
 
-import gift.dto.itemDto.*;
+import gift.dto.itemDto.ItemCreateDto;
+import gift.dto.itemDto.ItemResponseDto;
+import gift.dto.itemDto.ItemUpdateDto;
+import gift.dto.itemDto.ResponseItems;
 import gift.entity.Item;
 import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;

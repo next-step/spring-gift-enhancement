@@ -6,10 +6,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.Optional;
-
 @ItemFieldValid
-public record ItemUpdateDto(@NotNull Long id, String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl, boolean useKakaoName) {
+public record ItemUpdateDto(@NotNull Long id, String name, @Min(0) Integer price,
+                            @NotNull @Size(max = 255) String imageUrl, boolean useKakaoName) {
     public static ItemUpdateDto from(Item item) {
         return new ItemUpdateDto(item.getId(), item.getName(), item.getPrice(), item.getImageUrl(), false);
     }

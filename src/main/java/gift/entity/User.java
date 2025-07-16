@@ -22,7 +22,8 @@ public class User {
     @Column(nullable = false, length = 50)
     private UserRole role;
 
-    protected User() {}
+    protected User() {
+    }
 
     public User(String email, String password, UserRole role) {
         this.email = email;

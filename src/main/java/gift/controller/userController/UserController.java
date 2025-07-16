@@ -4,7 +4,6 @@ package gift.controller.userController;
 import gift.Jwt.TokenUtils;
 import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
-import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.service.userService.UserService;
@@ -25,7 +24,7 @@ public class UserController {
     private final UserService userService;
     private final TokenUtils tokenUtils;
 
-    public UserController(UserService userService,TokenUtils tokenUtils) {
+    public UserController(UserService userService, TokenUtils tokenUtils) {
         this.userService = userService;
         this.tokenUtils = tokenUtils;
     }
@@ -73,7 +72,7 @@ public class UserController {
         tokenUtils.validateToken(token);
         boolean isAdmin = tokenUtils.requireAdmin(token);
 
-        User updatedUser = userService.updateUser(id, dto,isAdmin);
+        User updatedUser = userService.updateUser(id, dto, isAdmin);
 
         return ResponseEntity.ok(updatedUser);
     }
