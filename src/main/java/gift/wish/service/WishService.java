@@ -1,6 +1,5 @@
 package gift.wish.service;
 
-import gift.member.domain.Member;
 import gift.member.dto.MemberTokenRequest;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;

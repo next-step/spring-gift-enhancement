@@ -75,8 +75,8 @@
 - [x] 외래 키 제약조건 명시적으로 설정하기
 - [x] member repository 인터페이스 파라미터 참조형으로 변경
 - [x] member repository 불필요한 Adapter 코드 제거
-- [ ] product repository 인터페이스 파라미터 참조형으로 변경
-- [ ] product repository 불필요한 Adapter 코드 제거
+- [x] product repository 인터페이스 파라미터 참조형으로 변경
+- [x] product repository 불필요한 Adapter 코드 제거
 - [ ] wish repository 인터페이스 파라미터 참조형으로 변경
 - [ ] wish repository 불필요한 Adapter 코드 제거
 - [ ] wish repository Response 의존성 제거

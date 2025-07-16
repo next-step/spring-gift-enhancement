@@ -16,16 +16,13 @@ import java.util.List;
 @Transactional
 public class ProductService {
     private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
 
-    public ProductService(ProductRepository productRepository, MemberRepository memberRespository){
+    public ProductService(ProductRepository productRepository){
         this.productRepository = productRepository;
-        this.memberRepository = memberRespository;
     }
 
     public Product saveProduct(ProductRequestDto requestDto){
-
-        return productRepository.save(requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        return productRepository.save(new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
     }
 
     public List<Product> getProducts(){
@@ -39,9 +36,9 @@ public class ProductService {
     }
 
     public void update(Long id, ProductRequestDto requestDto){
-        productRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다. ID: " + id));
-        productRepository.update(id, requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        product.updateProduct(requestDto.name(), requestDto.price(), requestDto.imageUrl());
     }
 
     public void delete(Long id){

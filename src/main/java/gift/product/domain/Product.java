@@ -28,6 +28,10 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public Product(String name, int price, String imageUrl) {
+        this(null, name, price, imageUrl);
+    }
+
     public Product(Long id){
         this(id, null, 0, null);
     }
@@ -46,5 +50,11 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void updateProduct(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 }
