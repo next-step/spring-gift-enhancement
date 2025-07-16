@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public String registerUser(UserRegisterDto dto) {
         String email = dto.email();
         String password = dto.password();
@@ -116,6 +117,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
         if (!isAdmin) {
             throw new UserAuthorizationException();
@@ -134,11 +136,11 @@ public class UserServiceImpl implements UserService {
         return findUser;
     }
 
-    @Transactional
+
     @Override
+    @Transactional
     public void deleteUserById(Long id, boolean isAdmin) {
         if (!isAdmin) {
-
             throw new UserAuthorizationException();
         }
 

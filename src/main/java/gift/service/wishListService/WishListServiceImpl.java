@@ -10,6 +10,7 @@ import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +30,9 @@ public class WishListServiceImpl implements WishListService {
         this.itemService = itemService;
     }
 
+
     @Override
+    @Transactional
     public WishItem addWishItem(CreateWishItemRequestDto dto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
@@ -78,7 +81,9 @@ public class WishListServiceImpl implements WishListService {
         return result;
     }
 
+
     @Override
+    @Transactional
     public WishItem deleteWishItem(String name, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
@@ -104,6 +109,7 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
+    @Transactional
     public WishItem updateWishItem(Integer quantity, String name, String userEmail) {
 
         User user = userService.findUserByEmail(userEmail);

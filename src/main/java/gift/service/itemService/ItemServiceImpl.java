@@ -4,6 +4,7 @@ import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
 import gift.repository.itemRepository.ItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item saveItem(ItemCreateDto dto) {
         Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
 
@@ -39,12 +41,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public void delete(String name) {
         Item targetItem = itemRepository.findByName(name);
         itemRepository.delete(targetItem);
     }
 
     @Override
+    @Transactional
     public Item updateItem(Long id, ItemUpdateDto dto) {
         Optional<Item> targetItem = findItemById(id);
 
@@ -65,6 +69,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         itemRepository.deleteById(id);
     }
