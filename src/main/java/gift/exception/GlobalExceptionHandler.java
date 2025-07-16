@@ -1,5 +1,8 @@
 package gift.exception;
 
+import gift.exception.member.MemberException;
+import gift.exception.product.ProductException;
+import gift.exception.wishList.WishException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,6 +34,33 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<Map<String, String>>
+    handlerValidationError(ProductException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(errors);
+    }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<Map<String, String>>
+    handlerValidationError(MemberException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(errors);
+    }
+
+    @ExceptionHandler(WishException.class)
+    public ResponseEntity<Map<String, String>>
+    handlerValidationError(WishException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(errors);
     }
 
 }
