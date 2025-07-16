@@ -1,6 +1,6 @@
+drop table wish if exists;
 drop table product if exists;
 drop table member if exists;
-drop table wish if exists;
 
 create table product
 (
