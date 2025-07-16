@@ -1,8 +1,11 @@
 package gift.member.controller;
 
 import gift.auth.Login;
-import gift.member.domain.Member;
-import gift.member.dto.*;
+import gift.member.dto.MemberLoginRequest;
+import gift.member.dto.MemberRegisterRequest;
+import gift.member.dto.MemberTokenRequest;
+import gift.member.dto.MemberTokenResponse;
+import gift.member.dto.MemberUpdateRequest;
 import gift.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +13,11 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/members")

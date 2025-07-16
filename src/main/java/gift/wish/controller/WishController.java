@@ -1,7 +1,6 @@
 package gift.wish.controller;
 
 import gift.auth.Login;
-import gift.member.domain.Member;
 import gift.member.dto.MemberTokenRequest;
 import gift.wish.dto.WishListResponse;
 import gift.wish.dto.WishRequest;
@@ -9,7 +8,12 @@ import gift.wish.dto.WishUpdateRequest;
 import gift.wish.service.WishService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.List;
 
 @Controller
