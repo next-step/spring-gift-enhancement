@@ -23,6 +23,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @Transactional(readOnly = true)
     public ProductResponseDto getProduct(Long id) {
         Product product = findProductOrThrow(id);
         return new ProductResponseDto(product);
@@ -52,6 +53,7 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> getProductList(int page, int size) {
         Page<Product> productPage = productRepository.findAll(PageRequest.of(page, size));
         return productPage.getContent().stream()

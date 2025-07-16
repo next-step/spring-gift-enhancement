@@ -61,7 +61,7 @@ public class MemberService {
     }
 
     // 회원 조회 (ID로)
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
@@ -70,7 +70,7 @@ public class MemberService {
     }
 
     // 회원 조회 (이메일로)
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberResponseDto getMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
@@ -79,7 +79,7 @@ public class MemberService {
     }
 
     // 전체 회원 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public List<MemberResponseDto> getAllMembers() {
         return memberRepository.findAll().stream()
                 .map(MemberResponseDto::new)
