@@ -1,7 +1,6 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.domain.ProductStatus;
 import gift.dto.ProductRequest;
 import gift.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +30,7 @@ class ProductControllerValidationTest {
     @DisplayName("유효하지 않은 상품명 입력 시 JSON 형식의 에러 메시지를 반환한다")
     void invalidProductName_shouldReturnJsonError() throws Exception {
         // given: 유효하지 않은 상품 이름
-        ProductRequest request = new ProductRequest("카카오@테스트입니다$$$$$$$$", 1000,   "http://example.com", ProductStatus.ACTIVE);
+        ProductRequest request = new ProductRequest("카카오@테스트입니다$$$$$$$$", 1000,   "http://example.com");
         String json = objectMapper.writeValueAsString(request);
 
         // when & then

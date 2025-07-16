@@ -28,13 +28,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
+        http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/members/register", "/api/members/login").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/api/members/register",
+                                "/api/members/login",
+                                "/h2-console/**",
+                                "/admin/**",
+                                "/css/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .headers(headers -> headers
+                        .disable()
+                )
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
+
 }

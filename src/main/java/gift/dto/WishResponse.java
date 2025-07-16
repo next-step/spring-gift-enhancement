@@ -1,6 +1,5 @@
 package gift.dto;
 
-import gift.domain.ProductStatus;
 import gift.domain.Wish;
 
 public class WishResponse {
@@ -10,27 +9,24 @@ public class WishResponse {
     private final String name;
     private final int price;
     private final String imageUrl;
-    private final ProductStatus status;
 
-    public WishResponse(Long id, Long productId, int quantity, String name, int price, String imageUrl, ProductStatus status) {
+    public WishResponse(Long id, Long productId, int quantity, String name, int price, String imageUrl) {
         this.id = id;
         this.productId = productId;
         this.quantity = quantity;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.status = status;
     }
 
     public static WishResponse from(Wish wish) {
         return new WishResponse(
                 wish.getId(),
-                wish.getProductId(),
+                wish.getProduct().getId(),
                 wish.getQuantity(),
                 wish.getProduct().getName(),
                 wish.getProduct().getPrice(),
-                wish.getProduct().getImageUrl(),
-                wish.getProduct().getStatus()
+                wish.getProduct().getImageUrl()
         );
     }
 
@@ -58,9 +54,6 @@ public class WishResponse {
         return imageUrl;
     }
 
-    public ProductStatus getStatus() {
-        return status;
-    }
 }
 
 

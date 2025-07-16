@@ -1,35 +1,43 @@
 package gift.domain;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 255)
     private String name;
+
+    @Column(nullable = false)
     private int price;
+
+    @Column(name = "image_url", length = 2048)
     private String imageUrl;
-    private ProductStatus status;
-    private boolean isDeleted;
 
     public Product() {
     }
 
-    public Product(Long id, String name, int price, String imageUrl, ProductStatus status, boolean isDeleted) {
+    public Product(Long id, String name, int price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.status = status;
-        this.isDeleted = isDeleted;
     }
 
-    public Product(String name, int price, String imageUrl, ProductStatus status) {
+    public Product(String name, int price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.status = status;
     }
 
-    public Product(String name, int price, String imageUrl, ProductStatus status, boolean isDeleted) {
-        this(null, name, price, imageUrl,status, false);
-    }
+    public Product(Long id) { this.id = id; }
 
     public Long getId() {
         return id;
@@ -45,14 +53,6 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public ProductStatus getStatus() {
-        return status;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
     }
 
     public void setId(Long id){

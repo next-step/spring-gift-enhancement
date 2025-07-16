@@ -9,10 +9,7 @@ CREATE TABLE products (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     price INT NOT NULL,
-    image_url VARCHAR(2048),
-    status VARCHAR(20) DEFAULT 'ACTIVE',
-    is_deleted BOOLEAN DEFAULT FALSE,
-    CONSTRAINT chk_status CHECK (status IN ('ACTIVE', 'INACTIVE', 'DISCONTINUED'))
+    image_url VARCHAR(2048)
 );
 
 CREATE TABLE wishes(
@@ -20,7 +17,7 @@ CREATE TABLE wishes(
     member_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
-    UNIQUE (member_id, product_id),
-    FOREIGN KEY (member_id) REFERENCES members(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
+    CONSTRAINT uk_wishes_members_products UNIQUE (member_id, product_id),
+    CONSTRAINT fk_wishes_members FOREIGN KEY (member_id) REFERENCES members(id),
+    CONSTRAINT fk_wishes_products FOREIGN KEY (product_id) REFERENCES products(id)
 )

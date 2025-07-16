@@ -1,5 +1,7 @@
 package gift.service;
 
+import gift.domain.Member;
+import gift.domain.Product;
 import gift.domain.Wish;
 import gift.dto.WishResponse;
 import gift.repository.WishRepository;
@@ -18,8 +20,9 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<WishResponse> getWishes(Long memberId) {
-        List<Wish> wishes = wishRepository.findWishByMemberId(memberId);
+        List<Wish> wishes = wishRepository.findAllByMemberId(memberId);
         return wishes.stream()
                 .map(WishResponse::from)
                 .collect(Collectors.toList());
@@ -27,23 +30,25 @@ public class WishService {
 
     @Transactional
     public void addWish(Long memberId, Long productId, int quantity) {
-        if (wishRepository.exists(memberId, productId)) {
-            wishRepository.updateQuantity(memberId, productId,quantity);
+        if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
+            wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId,quantity);
         } else {
-            wishRepository.save(memberId, productId, quantity);
+            Wish wish = new Wish(new Member(memberId), new Product(productId), quantity);
+            wishRepository.save(wish);
         }
     }
 
     @Transactional
     public void updateWish(Long memberId, Long productId, int quantity) {
         if (quantity <= 0) {
-            wishRepository.deleteByMemberAndProduct(memberId, productId);
+            wishRepository.deleteByMemberIdAndProductId(memberId, productId);
         } else {
-            wishRepository.updateQuantity(memberId, productId, quantity);
+            wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId, quantity);
         }
     }
 
+    @Transactional
     public void deleteWish(Long memberId, Long productId) {
-        wishRepository.deleteByMemberAndProduct(memberId, productId);
+        wishRepository.deleteByMemberIdAndProductId(memberId, productId);
     }
 }
