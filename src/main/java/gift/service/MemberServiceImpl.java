@@ -145,7 +145,7 @@ public class MemberServiceImpl implements MemberService {
                         "해당 ID의 멤버는 존재하지 않습니다."
                 ));
 
-        member.changeRole(dto.getRole());
+        member.setRole(dto.getRole());
 
         return new MemberResponseDto(
                 member.getId(),

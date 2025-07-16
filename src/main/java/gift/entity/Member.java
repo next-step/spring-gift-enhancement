@@ -28,10 +28,6 @@ public class Member {
         this.role = role;
     }
 
-    public void changeRole(RoleType role) {
-        this.role = role;
-    }
-
     public Long getId() {
         return id;
     }

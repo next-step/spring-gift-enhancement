@@ -70,7 +70,7 @@ public class MemberRepositoryTest {
                 )
         );
 
-        expectedMember.changeRole(RoleType.ADMIN);
+        expectedMember.setRole(RoleType.ADMIN);
 
         Member actualMember = memberRepository.findByEmail(expectedMember.getEmail()).get();
 
