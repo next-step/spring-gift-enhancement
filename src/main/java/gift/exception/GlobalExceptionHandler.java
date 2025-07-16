@@ -1,6 +1,5 @@
 package gift.exception;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // NOT_FOUND 응답하는 예외처리 핸들러
-    @ExceptionHandler({ProductNotFoundException.class, EmptyResultDataAccessException.class, UserNotFoundException.class})
+    @ExceptionHandler({NotFoundException.class, EmptyResultDataAccessException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();
@@ -35,9 +34,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(IllegalArgumentException e) { return e.getMessage(); }
-    @ExceptionHandler(DuplicateRequestException.class)
+    @ExceptionHandler(DuplicateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequest(DuplicateRequestException e) { return e.getMessage(); }
+    public String handleBadRequest(DuplicateKeyException e) { return e.getMessage(); }
 
     // CONFLICT 응답하는 예외처리 핸들러
     @ExceptionHandler(DuplicateKeyException.class)
