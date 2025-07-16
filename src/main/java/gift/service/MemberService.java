@@ -26,8 +26,6 @@ public class MemberService {
         if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
-        Long id = memberRepository.save(member);
-        member.setId(id);
-        return member;
+        return memberRepository.save(member);
     }
 }

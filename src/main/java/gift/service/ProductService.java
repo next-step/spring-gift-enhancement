@@ -28,16 +28,19 @@ public class ProductService {
         return repo.findById(id);
     }
 
-    public void save(Product product) {
-        long id = repo.save(product);
-        product.setId(id);
+    public Product save(Product product) {
+        return repo.save(product);
     }
 
-    public boolean update(Long id, Product product) {
-        return repo.update(id, product);
+    public Product update(Long id, Product product) {
+        Product target = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
+        target.setName(product.getName());
+        target.setPrice(product.getPrice());
+        target.setImageUrl(product.getImageUrl());
+        return target;
     }
 
-    public boolean delete(Long id) {
-        return repo.delete(id);
+    public void delete(Long id) {
+        repo.deleteById(id);
     }
 }
