@@ -27,7 +27,7 @@ public class WishService {
             throw new IllegalArgumentException("이미 위시리스트에 추가된 상품입니다.");
         }
 
-        Wish wish = Wish.createWish(member, product);
+        Wish wish = Wish.of(member, product);
         wishRepository.save(wish);
     }
 

@@ -28,7 +28,7 @@ public class Wish {
     public Wish() {
     }
 
-    public static Wish createWish(Member member, Product product) {
+    public static Wish of(Member member, Product product) {
         return new Wish(null, member, product);
     }
 

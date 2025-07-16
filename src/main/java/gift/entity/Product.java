@@ -25,7 +25,7 @@ public class Product {
     public Product() {
     }
 
-    public static Product createProduct(String name, String imageUrl) {
+    public static Product of(String name, String imageUrl) {
         return new Product(null, name, imageUrl);
     }
 
@@ -33,11 +33,6 @@ public class Product {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
-    }
-
-    public Product(Long id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     public Long getId() {
