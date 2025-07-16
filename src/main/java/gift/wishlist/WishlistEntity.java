@@ -38,13 +38,6 @@ public class WishlistEntity {
     protected WishlistEntity() {
     }
 
-    public WishlistEntity(Long id, MemberEntity member, ItemEntity item, LocalDateTime createdAt) {
-        this.id = id;
-        this.member = member;
-        this.item = item;
-        this.createdAt = createdAt;
-    }
-
     public WishlistEntity(MemberEntity member, ItemEntity item) {
         this.member = member;
         this.item = item;
@@ -65,20 +58,5 @@ public class WishlistEntity {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setMember(MemberEntity member) {
-        this.member = member;
-    }
-
-    public void setItem(ItemEntity item) {
-        this.item = item;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    
 }
