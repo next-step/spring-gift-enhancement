@@ -5,6 +5,7 @@ import gift.user.domain.User;
 import gift.user.dto.UserPatchRequestDto;
 import gift.user.dto.UserSaveRequestDto;
 import gift.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +16,11 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final EntityManager entityManager;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EntityManager entityManager) {
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -51,13 +54,13 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
 
-        user.changeEmail(userPatchRequestDto.getEmail());
-
         byte[] salt = Base64.getDecoder().decode(user.getSalt());
         String hashedPassword = PasswordUtil.encryptPassword(userPatchRequestDto.getPassword(), salt);
-        user.changePassword(hashedPassword);
 
-        return user;
+        User updateUser = new User(user.getId(), userPatchRequestDto.getEmail(), hashedPassword, user.getSalt());
+        entityManager.merge(updateUser);
+
+        return updateUser;
     }
 
     @Transactional

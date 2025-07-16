@@ -4,7 +4,7 @@ import gift.product.domain.Product;
 import gift.product.dto.ProductPatchRequestDto;
 import gift.product.dto.ProductSaveRequestDto;
 import gift.product.repository.ProductRepository;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +14,11 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    private final EntityManager entityManager;
+
+    public ProductService(ProductRepository productRepository, EntityManager entityManager) {
         this.productRepository = productRepository;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -40,11 +43,9 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
 
-        product.changeName(productPatchRequestDto.getName());
-        product.changePrice(productPatchRequestDto.getPrice());
-        product.changeImageUrl(productPatchRequestDto.getImageUrl());
-
-        return product;
+        Product updateProduct = new Product(product.getId(), productPatchRequestDto.getName(), productPatchRequestDto.getPrice(), productPatchRequestDto.getImageUrl());
+        entityManager.merge(updateProduct);
+        return updateProduct;
     }
 
     @Transactional
