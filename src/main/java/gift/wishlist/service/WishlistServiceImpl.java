@@ -6,7 +6,7 @@ import gift.product.service.ProductServiceImpl;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
 import gift.entity.Product;
-import gift.entity.WishlistItem;
+import gift.entity.Wishlist;
 import gift.exception.OperationFailedException;
 import gift.wishlist.exception.WishlistItemNotFoundException;
 import gift.member.repository.MemberRepository;
@@ -36,12 +36,12 @@ public class WishlistServiceImpl implements WishlistService {
     public void addWishlistItem(Long memberId, WishlistItemRequestDto requestDto) {
         Member member = memberService.findMemberByIdOrElseThrow(memberId);
         Product product = productServiceImpl.findProductByIdOrElseThrow(requestDto.productId());
-        Optional<WishlistItem> foundItem = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId);
+        Optional<Wishlist> foundItem = wishlistRepository.findByProductIdAndMemberId(requestDto.productId(), memberId);
         if (foundItem.isPresent()) {
             updateWishlistItemById(foundItem.get().getId(), foundItem.get().getQuantity()+requestDto.quantity());
         } else{
-            WishlistItem item = new WishlistItem(null, member, product, requestDto.quantity());
-            WishlistItem saved = wishlistRepository.save(item);
+            Wishlist item = new Wishlist(null, member, product, requestDto.quantity());
+            Wishlist saved = wishlistRepository.save(item);
             if (saved.getId() == null) {
                 throw new OperationFailedException("저장 실패");
             }
@@ -55,7 +55,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public List<WishlistItemResponseDto> findAllWishlistItemsByMemberId(Long memberId) {
-        List<WishlistItem> items = wishlistRepository.findAllByMemberId(memberId);
+        List<Wishlist> items = wishlistRepository.findAllByMemberId(memberId);
         return items.stream()
                 .map(item -> new WishlistItemResponseDto(item.getId(), item.getProduct().getId(), item.getQuantity()))
                 .toList();
@@ -64,11 +64,11 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     @Transactional
     public void updateWishlistItemById(Long itemId, Long quantity) {
-        WishlistItem item = findWishlistByIdOrElseThrow(itemId);
+        Wishlist item = findWishlistByIdOrElseThrow(itemId);
         item.updateQuantity(quantity);
     }
 
-    public WishlistItem findWishlistByIdOrElseThrow(Long id) {
+    public Wishlist findWishlistByIdOrElseThrow(Long id) {
         return wishlistRepository.findById(id).orElseThrow(() -> new WishlistItemNotFoundException(id));
     }
 }
