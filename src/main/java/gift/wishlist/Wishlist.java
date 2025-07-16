@@ -17,7 +17,7 @@ public class Wishlist {
     @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
 
-    public Wishlist() {}
+    protected Wishlist() {}
 
     public Wishlist(Long id, User user, Product product) {
         this.id = id;

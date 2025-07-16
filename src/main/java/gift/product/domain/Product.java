@@ -18,7 +18,7 @@ public class Product {
 
     private String imageUrl;
 
-    public Product() {}
+    protected Product() {}
 
     public Product(Long id, String name, Integer price, String imageUrl) {
         this.id = id;

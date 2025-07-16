@@ -20,7 +20,7 @@ public class User {
 
     private String salt;
 
-    public User() {
+    protected User() {
 
     }
 
