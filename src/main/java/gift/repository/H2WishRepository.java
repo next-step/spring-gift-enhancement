@@ -1,16 +1,9 @@
 package gift.repository;
 
-import gift.entity.Wish;
-import gift.repository.record.WishProductView;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
-
-@Repository
+@Deprecated
 public class H2WishRepository {
 
+    /*
     private final JdbcClient jdbcClient;
 
     public H2WishRepository(JdbcClient jdbcClient) {
@@ -63,4 +56,5 @@ public class H2WishRepository {
                 .query(Integer.class)
                 .optional().isPresent();
     }
+     */
 }

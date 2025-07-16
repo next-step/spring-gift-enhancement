@@ -1,8 +1,8 @@
 package gift.controller;
 
 import gift.annotation.LoginUser;
-import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
+import gift.dto.WishRequest;
+import gift.dto.WishResponse;
 import gift.entity.User;
 import gift.service.WishService;
 import org.springframework.http.HttpStatus;
@@ -22,22 +22,22 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getAllWishes(@LoginUser User user) {
+    public ResponseEntity<List<WishResponse>> getAllWishes(@LoginUser User user) {
         return new ResponseEntity<>(wishService.getAllWishes(user.getId()), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<WishResponseDto> postWish(
-            @RequestBody WishRequestDto wishRequestDto,
+    public ResponseEntity<WishResponse> postWish(
+            @RequestBody WishRequest wishRequest,
             @LoginUser User user) {
-        return new ResponseEntity<>(wishService.createWish(user.getId(), wishRequestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(wishService.createWish(user.getId(), wishRequest), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<WishResponseDto> updateWish(
-            @RequestBody WishRequestDto wishRequestDto,
+    public ResponseEntity<WishResponse> updateWish(
+            @RequestBody WishRequest wishRequest,
             @LoginUser User user) {
-        return new ResponseEntity<>(wishService.updateWish(user.getId(), wishRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(wishService.updateWish(user.getId(), wishRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{productId}")
@@ -45,6 +45,6 @@ public class WishController {
             @PathVariable Long productId,
             @LoginUser User user) {
         wishService.deleteWish(user.getId(), productId);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }

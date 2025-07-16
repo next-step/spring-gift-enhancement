@@ -1,76 +1,80 @@
 package gift.service;
 
-import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
+import gift.dto.ProductResponse;
+import gift.dto.WishRequest;
+import gift.dto.WishResponse;
 import gift.entity.Product;
+import gift.entity.User;
 import gift.entity.Wish;
 import gift.exception.DuplicateWishException;
-import gift.exception.UpdateFailedException;
-import gift.repository.H2ProductRepository;
-import gift.repository.H2WishRepository;
+import gift.repository.ProductRepository;
+import gift.repository.UserRepository;
+import gift.repository.WishRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class WishService {
 
-    private final H2WishRepository wishRepository;
-    private final H2ProductRepository productRepository;
+    private final WishRepository wishRepository;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public WishService(H2WishRepository wishRepository, H2ProductRepository productRepository) {
+    public WishService(WishRepository wishRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<WishResponseDto> getAllWishes(Long userId) {
+    public List<WishResponse> getAllWishes(Long userId) {
         return wishRepository.findAllByUserId(userId)
                 .stream()
-                .map(row -> new WishResponseDto(row.productId(), row.productName(), row.quantity()))
+                .map(row -> new WishResponse(ProductResponse.of(row.getProduct()), row.getQuantity()))
                 .toList();
     }
 
-    public WishResponseDto createWish(Long userId, WishRequestDto wishRequestDto) {
-        Wish wish = wishRequestDto.toEntity();
-        wish.setUserId(userId);
+    public WishResponse createWish(Long userId, WishRequest wishRequest) {
+        Long productId = wishRequest.getProductId();
+        Integer quantity = wishRequest.getQuantity();
 
-        // 이미 wish가 있을 경우
-        if (wishRepository.isWishExist(wish.getUserId(), wish.getProductId())) {
+        if (wishRepository.existsByUserIdAndProductId(userId, productId)) {
             throw new DuplicateWishException("이미 동일한 상품이 존재합니다.");
         }
 
-        Product product = productRepository.findById(wish.getProductId())
-                .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다. " +
-                                                              "productId = " + wish.getProductId()));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다. " +
+                                                              "productId = " + productId));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자가 없습니다."));
+
+        Wish wish = new Wish(user, product, quantity);
         wishRepository.save(wish);
 
-        return new WishResponseDto(product.getId(), product.getName(), wish.getQuantity());
+        return new WishResponse(ProductResponse.of(product), quantity);
     }
 
-    public WishResponseDto updateWish(Long userId, WishRequestDto wishRequestDto) {
-        Wish wish = wishRequestDto.toEntity();
-        wish.setUserId(userId);
+    public WishResponse updateWish(Long userId, WishRequest wishRequest) {
+        Long productId = wishRequest.getProductId();
+        Integer quantity = wishRequest.getQuantity();
 
-        if (!wishRepository.isWishExist(userId, wish.getProductId())) {
-            throw new UpdateFailedException("수정 요청한 위시가 존재하지 않습니다.");
-        }
+        Wish wish = wishRepository.findByUserIdAndProductId(userId, productId)
+                .orElseThrow(() -> new EntityNotFoundException("수정 요청한 위시가 존재하지 않습니다."));
 
-        Product product = productRepository.findById(wish.getProductId())
-                .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다. " +
-                        "productId = " + wish.getProductId()));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다. " +
+                                                               "productId = " + productId));
+        wish.updateQuantity(quantity);
 
-        wishRepository.update(wish);
-
-        return new WishResponseDto(product.getId(), product.getName(), wish.getQuantity());
+        return new WishResponse(ProductResponse.of(product), quantity);
     }
 
     public void deleteWish(Long userId, Long productId) {
-        if (!wishRepository.isWishExist(userId, productId)) {
-            throw new NoSuchElementException("삭제 요청한 위시가 존재하지 않습니다.");
-        }
+        Wish wish = wishRepository.findByUserIdAndProductId(userId, productId)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 상품이 없습니다."));
 
-        wishRepository.deleteById(userId, productId);
+        wishRepository.delete(wish);
     }
 }
