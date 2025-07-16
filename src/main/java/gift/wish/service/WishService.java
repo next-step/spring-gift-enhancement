@@ -30,11 +30,7 @@ public class WishService {
 
     public List<WishResponseDto> getWishlist(WishRequestDto dto) {
 
-        Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
-
-        Wish wish = new Wish(null, member, null, null);
-
-        return wishRepository.findByMemberId(wish.getMember().getId())
+        return wishRepository.findByMemberId(dto.getMemberId())
                 .stream().map(WishResponseDto::fromEntity).toList();
     }
 
