@@ -27,8 +27,7 @@ public class Wish {
     protected Wish() { }
 
     public Wish(Product product, Member member) {
-        this.product = product;
-        this.member = member;
+        this(null, product, member);
     }
 
     public Wish(Long id, Product product, Member member) {

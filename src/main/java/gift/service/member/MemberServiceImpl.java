@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = memberRepository.save(
-            new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
+            new Member(null, requestDto.email(), sha256Util.encrypt(requestDto.password())));
 
         String accessToken = jwtUtil.createToken(member.getId(), member.getEmail());
 
