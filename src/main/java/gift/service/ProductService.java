@@ -6,7 +6,6 @@ import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
