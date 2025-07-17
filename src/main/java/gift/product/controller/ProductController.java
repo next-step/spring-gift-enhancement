@@ -4,11 +4,13 @@ import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -31,8 +33,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getProducts(){
-        List<ProductResponseDto> responseDtos = productService.getProducts();
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(
+            @PageableDefault(sort = "id")
+            Pageable pageable)
+    {
+        Page<ProductResponseDto> responseDtos = productService.getProducts(pageable);
         return ResponseEntity.ok(responseDtos);
     }
 

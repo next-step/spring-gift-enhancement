@@ -6,12 +6,14 @@ import gift.product.dto.response.ProductResponseDto;
 import gift.product.dto.view.ProductFormDto;
 import gift.product.dto.view.ProductView;
 import gift.product.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -24,12 +26,11 @@ public class ProductAdminController {
     }
 
     @GetMapping
-    public String listProducts(Model model){
-        List<ProductResponseDto> productDtos = productService.getProducts();
-
-        List<ProductView> productViews = productDtos.stream()
-                .map(ProductView::from)
-                .toList();
+    public String listProducts(Model model,
+                               @PageableDefault(sort = "id")
+                               Pageable pageable) {
+        Page<ProductView> productViews = productService.getProducts(pageable)
+                        .map(ProductView::from);
 
         model.addAttribute("products", productViews);
 
