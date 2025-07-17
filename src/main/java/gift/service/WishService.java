@@ -3,8 +3,11 @@ package gift.service;
 import gift.domain.Member;
 import gift.domain.Product;
 import gift.domain.Wish;
+import gift.dto.PageResponse;
 import gift.dto.WishResponse;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,15 @@ public class WishService {
         return wishRepository.findAllByMemberId(memberId).stream()
                 .map(WishResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<WishResponse> getWishesPage(Long memberId, Pageable pageable) {
+        Page<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
+        List<WishResponse> content = wishes.stream()
+                .map(WishResponse::from)
+                .toList();
+        return PageResponse.of(wishes, content);
     }
 
     @Transactional
