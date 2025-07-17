@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +38,11 @@ class ItemRepositoryTest {
         itemRepository.save(new Item("초콜릿", 1500, "/img/choco.png"));
         itemRepository.save(new Item("케이크", 3000, "/img/cake.png"));
 
-        List<Item> items = itemRepository.findByNameAndPrice("케이크", 3000);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> items = itemRepository.findByNameContainingAndPrice("케이크", 3000, pageable);
 
         assertThat(items).hasSize(1);
-        assertThat(items.get(0).getName()).isEqualTo("케이크");
+        assertThat(items.getContent().get(0).getName()).isEqualTo("케이크");
     }
 
     @Test
@@ -53,12 +57,12 @@ class ItemRepositoryTest {
 
     @Test
     void 아이템수정() {
-
         Item saved = itemRepository.save(new Item("마카롱", 2000, "/img/macaron.png"));
 
-        saved.update("업데이트", 2500, "/img/update.png");
+        Item updated = saved.update(new Item("업데이트", 2500, "/img/update.png"));
+        Item result = itemRepository.save(updated);
 
-        Optional<Item> found = itemRepository.findById(saved.getId());
+        Optional<Item> found = itemRepository.findById(result.getId());
         assertThat(found).isPresent();
         assertThat(found.get().getName()).isEqualTo("업데이트");
         assertThat(found.get().getPrice()).isEqualTo(2500);
@@ -66,7 +70,7 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void ID로아이템조회 () {
+    void ID로아이템조회() {
         Item saved = itemRepository.save(new Item("롤케이크", 4000, "/img/roll.png"));
 
         Optional<Item> found = itemRepository.findById(saved.getId());

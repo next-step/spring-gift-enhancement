@@ -82,6 +82,6 @@ public class Item {
             throw new ItemImageurlException();
         }
 
-        return new Item(this.id,item.getName(),item.getPrice(),item.getImageUrl())
+        return new Item(this.id, item.getName(), item.getPrice(), item.getImageUrl());
     }
 }
