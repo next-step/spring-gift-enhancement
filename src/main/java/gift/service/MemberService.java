@@ -10,8 +10,10 @@ import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -22,6 +24,7 @@ public class MemberService {
         this.jwtUtil = jwtUtil;
     }
 
+    @Transactional
     public LoginResponse register(MemberRegisterRequest request) {
         String hashedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
         Member newMember = new Member(null, request.email(), hashedPassword, Role.USER);
