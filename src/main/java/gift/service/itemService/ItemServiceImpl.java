@@ -5,6 +5,8 @@ import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
 import gift.repository.itemRepository.ItemRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,17 +29,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getItems(String name, Integer price) {
+    public Page<Item> getItems(String name, Integer price, Pageable pageable) {
         if (name == null && price == null) {
-            return getAllItems();
+            return getAllItems(pageable);
         }
         if (name == null) {
-            return itemRepository.findByPrice(price);
+            return itemRepository.findByPrice(price, pageable);
         }
         if (price == null) {
-            itemRepository.findByName(name);
+            return itemRepository.findByNameContaining(name, pageable);
         }
-        return itemRepository.findByNameAndPrice(name, price);
+        return itemRepository.findByNameContainingAndPrice(name, price, pageable);
     }
 
     @Override
@@ -75,8 +77,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAllItems() {
-        return itemRepository.findAll();
+    public Page<Item> getAllItems(Pageable pageable) {
+        return itemRepository.findAll(pageable);
     }
 
     @Override
