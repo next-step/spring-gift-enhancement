@@ -113,13 +113,13 @@ class WishlistApiControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].productName").value("연필"))
-                .andExpect(jsonPath("$[0].productPrice").value(10000))
-                .andExpect(jsonPath("$[0].productImageUrl").value("image"))
-                .andExpect(jsonPath("$[1].productName").value("가방"))
-                .andExpect(jsonPath("$[1].productPrice").value(30000))
-                .andExpect(jsonPath("$[1].productImageUrl").value("image2"));
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.content[0].productName").value("가방"))
+                .andExpect(jsonPath("$.content[0].productPrice").value(30000))
+                .andExpect(jsonPath("$.content[0].productImageUrl").value("image2"))
+                .andExpect(jsonPath("$.content[1].productName").value("연필"))
+                .andExpect(jsonPath("$.content[1].productPrice").value(10000))
+                .andExpect(jsonPath("$.content[1].productImageUrl").value("image"));
     }
 
     @Test

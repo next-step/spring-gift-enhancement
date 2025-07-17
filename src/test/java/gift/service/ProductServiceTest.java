@@ -3,6 +3,7 @@ package gift.service;
 import gift.common.exception.ProductNotFoundException;
 import gift.domain.Product;
 import gift.dto.product.CreateProductRequest;
+import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,7 +68,7 @@ class ProductServiceTest {
         productService.saveProduct(createProductRequest);
 
         //beforeEach에서 생성한 것 까지 총 2건의 데이터 있음
-        List<Product> products = productService.getAllProducts();
+        List<ProductResponse> products = productService.getAllProducts(null);
         assertThat(products).isNotEmpty();
         assertThat(products.size()).isEqualTo(2);
     }

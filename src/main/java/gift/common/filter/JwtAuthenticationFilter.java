@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String COOKIE_NAME = "accessToken";
     private static final AntPathMatcher MATCHER = new AntPathMatcher();
 
-    private static final Map<String, Set<HttpMethod>> BLACKLIST = Map.of(
+    private static final Map<String, Set<HttpMethod>> EXCLUDED_PATHS = Map.of(
             "/api/users/register", Set.of(HttpMethod.POST),
             "/api/users/login", Set.of(HttpMethod.POST),
             "/admin/login", Set.of(HttpMethod.GET, HttpMethod.POST),
@@ -56,9 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
         String requestURI = request.getRequestURI();
 
-        Optional<String> match = BLACKLIST.keySet().stream().filter(pattern -> MATCHER.match(pattern, requestURI)).findFirst();
+        Optional<String> match = EXCLUDED_PATHS.keySet().stream().filter(pattern -> MATCHER.match(pattern, requestURI)).findFirst();
         if (match.isPresent()) {
-            Set<HttpMethod> methods = BLACKLIST.get(match.get());
+            Set<HttpMethod> methods = EXCLUDED_PATHS.get(match.get());
             if (methods.contains(method)) {
                 filterChain.doFilter(request, response);
                 return;

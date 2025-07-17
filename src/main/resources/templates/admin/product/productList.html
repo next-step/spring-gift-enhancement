@@ -6,32 +6,53 @@
     <link rel="stylesheet" th:href="@{/product-list.css}">
 </head>
 <body>
-    <h2>상품 목록</h2>
-    <div class="action-bar">
-        <a class="add-button" th:href="@{/admin/products/new}">상품 추가</a>
-    </div>
-    <table th:border="1">
-        <tr>
-            <th>아이디</th>
-            <th>이름</th>
-            <th>가격</th>
-            <th>수량</th>
-            <th>이미지</th>
-            <th>관리</th>
-        </tr>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.id()}"></td>
-            <td th:text="${product.name()}"></td>
-            <td th:text="${product.price()}"></td>
-            <td th:text="${product.quantity()}"></td>
-            <td th:text="${product.imageUrl()}"></td>
-            <td>
-                <a th:href="@{'/admin/products/' + ${product.id()} +'/edit'}">수정</a>
-                <form th:action="@{'/admin/products/' + ${product.id()} +'/delete'}" th:method="post">
-                    <input type="submit" th:value="삭제">
-                </form>
-            </td>
-        </tr>
-    </table>
+<h2>상품 목록</h2>
+<div class="action-bar">
+    <a class="add-button" th:href="@{/admin/products/new}">상품 추가</a>
+</div>
+
+<table th:border="1">
+    <tr>
+        <th>아이디</th>
+        <th>이름</th>
+        <th>가격</th>
+        <th>수량</th>
+        <th>이미지</th>
+        <th>관리</th>
+    </tr>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.id()}"></td>
+        <td th:text="${product.name()}"></td>
+        <td th:text="${product.price()}"></td>
+        <td th:text="${product.quantity()}"></td>
+        <td th:text="${product.imageUrl()}"></td>
+        <td>
+            <a th:href="@{'/admin/products/' + ${product.id()} +'/edit'}">수정</a>
+            <form th:action="@{'/admin/products/' + ${product.id()} +'/delete'}" th:method="post">
+                <input type="submit" th:value="삭제">
+            </form>
+        </td>
+    </tr>
+</table>
+
+<div class="pagination">
+    <span th:if="${products.hasPrevious()}">
+        <a th:href="@{'/admin/products?page=' + ${products.number}}">이전</a>
+    </span>
+
+    <span th:if="${products.totalPages > 0}"
+          th:each="pageNum : ${#numbers.sequence(1, products.totalPages)}">
+        <a th:href="@{'/admin/products?page=' + ${pageNum}}"
+           th:text="${pageNum}"
+           th:classappend="${pageNum == products.number + 1} ? 'active' : ''">
+        </a>
+    </span>
+
+    <span th:if="${products.hasNext()}">
+        <a th:href="@{'/admin/products?page=' + ${products.number + 2}}">다음</a>
+    </span>
+</div>
+
+
 </body>
 </html>

@@ -6,12 +6,11 @@ import gift.dto.product.ProductManageResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.service.ProductManageService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -25,8 +24,8 @@ public class ProductManageController {
     }
 
     @GetMapping
-    public String getProductsForm(Model model) {
-        List<ProductManageResponse> products = productManageService.getAllProducts();
+    public String getProductsForm(@RequestParam(required = false, defaultValue = "1") int page, Model model) {
+        Page<ProductManageResponse> products = productManageService.getAllProducts(page);
         model.addAttribute("products", products);
         return "/admin/product/productList";
     }

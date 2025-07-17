@@ -32,8 +32,8 @@ public class ProductApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getProducts() {
-        List<ProductResponse> products = productService.getAllProducts().stream().map(ProductResponse::from).toList();
+    public ResponseEntity<List<ProductResponse>> getProducts(@RequestParam(required = false) Long cursor) {
+        List<ProductResponse> products = productService.getAllProducts(cursor);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
