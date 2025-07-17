@@ -1,5 +1,6 @@
 package gift.entity.vo;
 
+import gift.exception.InvalidRegisterException;
 import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
@@ -19,10 +20,10 @@ public class Email {
 
     private void check(String email) {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("이메일은 필수입니다.");
+            throw new InvalidRegisterException("이메일은 필수입니다.");
         }
         if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            throw new IllegalArgumentException("올바른 이메일 형식이 아닙니다.");
+            throw new InvalidRegisterException("올바른 이메일 형식이 아닙니다.");
         }
     }
 

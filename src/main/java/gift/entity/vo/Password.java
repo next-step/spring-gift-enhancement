@@ -1,5 +1,6 @@
 package gift.entity.vo;
 
+import gift.exception.InvalidRegisterException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -17,7 +18,7 @@ public class Password {
 
     private void check(String password) {
         if (password == null || password.length() < 8) {
-            throw new IllegalArgumentException("비밀번호는 8자 이상이어야 합니다.");
+            throw new InvalidRegisterException("비밀번호는 8자 이상이어야 합니다.");
         }
     }
 
