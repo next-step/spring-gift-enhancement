@@ -89,20 +89,19 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void deleteMemberById(Long id) {
-        existsByIdOrElseThrow(id);
         memberRepository.deleteById(id);
     }
 
     private void validateDuplicateEmail(String email, String viewName) {
-        Optional<Member> existing = memberRepository.findByEmail(email);
-        if (existing.isPresent()) {
+        boolean existing = memberRepository.existsByEmail(email);
+        if (existing) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }
 
     private void validateDuplicateEmail(Long memberId, String email, String viewName) {
-        Optional<Member> existing = memberRepository.findByEmailAndIdNotIn(email, memberId);
-        if (existing.isPresent()) {
+        boolean existing = memberRepository.existsByEmailAndIdNotIn(email, memberId);
+        if (existing) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }

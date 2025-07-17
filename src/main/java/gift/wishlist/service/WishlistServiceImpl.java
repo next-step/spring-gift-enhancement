@@ -46,7 +46,6 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public void deleteWishlistItemById(Long itemId) {
-        existsByIdOrElseThrow(itemId);
         wishlistRepository.deleteById(itemId);
     }
 
