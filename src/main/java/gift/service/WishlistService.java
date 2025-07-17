@@ -7,11 +7,11 @@ import gift.entity.Wishlist;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class WishlistService {
@@ -28,17 +28,15 @@ public class WishlistService {
     }
 
     @Transactional(readOnly = true)
-    public List<WishlistResponseDto> getWishlists(String userEmail) {
+    public Page<WishlistResponseDto> getWishlists(String userEmail, Pageable pageable) {
         Member member = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        List<Wishlist> wishlists = wishlistRepository.findByMember(member);
+        Page<Wishlist> wishlists = wishlistRepository.findByMember(member, pageable);
 
-        return wishlists.stream()
-                .map(wishlist -> new WishlistResponseDto(wishlist.getId(), wishlist.getProduct()))
-                .collect(Collectors.toList());
+        return wishlists.map(
+                wishlist -> new WishlistResponseDto(wishlist.getId(), wishlist.getProduct()));
     }
-
     @Transactional
     public void addWishlist(String userEmail, Long productId) {
         Member member = memberRepository.findByEmail(userEmail)
