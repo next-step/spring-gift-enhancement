@@ -7,12 +7,3 @@ values ('example3', 5900, 'https://www.starbucks.co.kr/index.do');
 
 insert into member(email, password)
 values ('example@naver.com', 'f6f2ea8f45d8a057c9566a33f99474da2e5c6a6604d736121650e2730c6fb0a3');
-
-insert into wish (product_id, member_id)
-values(1, 1);
-
-insert into wish (product_id, member_id)
-values(2, 1);
-
-insert into wish (product_id, member_id)
-values(3, 1);
