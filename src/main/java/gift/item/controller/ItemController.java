@@ -29,7 +29,7 @@ public class ItemController {
     private final ItemService itemService;
 
     private static final Set<String> ALLOWED_SORT_FIELDS =
-        Set.of("createdAt", "name", "price", "id");
+        Set.of("name", "price", "id");
 
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
@@ -45,7 +45,7 @@ public class ItemController {
     public ResponseEntity<PageResponseDto<ItemResponseDto>> findAll(
         @RequestParam(defaultValue = "1") @Positive int page,
         @RequestParam(defaultValue = "10") @Positive int size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "desc") String direction
     ) {
         if (!direction.equalsIgnoreCase("asc") &&
