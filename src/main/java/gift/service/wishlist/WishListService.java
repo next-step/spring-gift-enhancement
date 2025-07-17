@@ -13,6 +13,8 @@ import gift.repository.wishlist.WishListJpaRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +33,17 @@ public class WishListService {
         this.productRepository = productRepository;
     }
 
-    // wishList 조회
+    // wishList 전체 조회
     public List<WishListResponse> findAllByMemberId(Long memberId) {
         List<WishList> list = wishListRepository.findAllByMemberId(memberId);
 
         return list.stream()
             .map(WishListResponse::from).toList();
+    }
+
+    // wishList 페이지 조회
+    public Page<WishList> findAllPageByMemberId(Long memberId, Pageable pageable){
+        return wishListRepository.findAllPageByMemberId(memberId, pageable);
     }
 
     // wishlist 단건 조회

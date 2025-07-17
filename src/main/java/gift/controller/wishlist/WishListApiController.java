@@ -1,11 +1,16 @@
 package gift.controller.wishlist;
 
+import gift.domain.WishList;
 import gift.dto.IdResponse;
 import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
 import gift.global.util.RequestAttributes;
 import gift.service.wishlist.WishListService;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,14 +34,23 @@ public class WishListApiController {
 
     // wishlist 조회
     // 특정 유저의 위시리스트를 전부 조회한다.(API를 요청한 유저의 위시리스트를 조회)
+    // Todo 위시리스트 목록 페이지네이션
     @GetMapping
     public ResponseEntity<?> getWishList(
-        @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId
+        @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
+        @RequestParam(name="page", defaultValue = "0") int page,
+        @RequestParam(name="size", defaultValue = "10") int size,
+        @RequestParam(name="sort", defaultValue = "id, asc") String[] sort
     ) {
-        List<WishListResponse> list = wishListService.findAllByMemberId(memberId);
+        Sort sorting = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
+        Pageable pageable = PageRequest.of(page, size, sorting);
+        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId, pageable)
+            .map(WishListResponse::from);
+
+        //List<WishListResponse> list = wishListService.findAllByMemberId(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(list);
+            .body(wishListsPage);
     }
 
     // wishList 단건 조회: memberId, productId로 조회
