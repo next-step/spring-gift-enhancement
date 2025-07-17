@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService{
             validateMemberEmail(requestDto.email(), "admin/memberEdit");
         }
         validateMemberRole(requestDto.role(), "admin/memberEdit");
-        member.update(id, requestDto);
+        member.update(requestDto);
     }
 
     @Override

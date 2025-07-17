@@ -30,8 +30,7 @@ public class Member{
         this.role = role;
     }
 
-    public void update(Long id, MemberUpdateRequestDto requestDto) {
-        this.id = id;
+    public void update(MemberUpdateRequestDto requestDto) {
         this.email = requestDto.email();
         this.name = requestDto.name();
         this.role = requestDto.role();
