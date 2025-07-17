@@ -18,13 +18,13 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
     }
 
-    public String generateToken(String email, Long userId) {
+    public String generateToken(String email, Long memberId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
             .subject(email)
-            .claim("userId", userId)
+            .claim("memberId", memberId)
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(secretKey)

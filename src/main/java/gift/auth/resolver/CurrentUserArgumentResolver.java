@@ -3,7 +3,7 @@ package gift.auth.resolver;
 import gift.common.annotation.CurrentUser;
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
-import gift.entity.User;
+import gift.entity.Member;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -25,12 +25,12 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        User user = (User) request.getAttribute("user");
+        Member member = (Member) request.getAttribute("member");
 
-        if (user == null) {
+        if (member == null) {
             throw new CustomException(CustomResponseCode.UNAUTHORIZED);
         }
 
-        return user;
+        return member;
     }
 }

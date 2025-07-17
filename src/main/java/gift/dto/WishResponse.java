@@ -1,6 +1,5 @@
 package gift.dto;
 
-import gift.entity.Product;
 import gift.entity.Wish;
 
 public record WishResponse(
@@ -12,14 +11,14 @@ public record WishResponse(
     String imageUrl
 ) {
 
-    public static WishResponse from(Wish wish, Product product) {
+    public static WishResponse from(Wish wish) {
         return new WishResponse(
             wish.getId(),
-            product.getId(),
+            wish.getProduct().getId(),
             wish.getQuantity(),
-            product.getName(),
-            product.getPrice(),
-            product.getImageUrl()
+            wish.getProduct().getName(),
+            wish.getProduct().getPrice(),
+            wish.getProduct().getImageUrl()
         );
     }
 }
