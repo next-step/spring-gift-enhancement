@@ -45,17 +45,19 @@ class WishRepositoryTest {
         Wish wish = new Wish(null, testMember, testProduct, 1);
         Wish savedWish = wishRepository.save(wish);
 
+        Wish testWish = wishRepository.findById(savedWish.getId()).orElseThrow();
+
         assertAll("유저 필드 검증",
-            () -> assertThat(savedWish.getMember().getId()).isNotNull(),
-            () -> assertThat(savedWish.getMember().getEmail()).isEqualTo("test@domain.com")
+            () -> assertThat(testWish.getMember().getId()).isNotNull(),
+            () -> assertThat(testWish.getMember().getEmail()).isEqualTo("test@domain.com")
         );
 
         assertAll("상품 필드 검증",
-            () -> assertThat(savedWish.getProduct().getId()).isNotNull(),
-            () -> assertThat(savedWish.getProduct().getName()).isEqualTo("테스트 상품"),
-            () -> assertThat(savedWish.getProduct().getPrice()).isEqualTo(4500),
-            () -> assertThat(savedWish.getProduct().getImageUrl()).isEqualTo("https://test.jpg"),
-            () -> assertThat(savedWish.getQuantity()).isEqualTo(1)
+            () -> assertThat(testWish.getProduct().getId()).isNotNull(),
+            () -> assertThat(testWish.getProduct().getName()).isEqualTo("테스트 상품"),
+            () -> assertThat(testWish.getProduct().getPrice()).isEqualTo(4500),
+            () -> assertThat(testWish.getProduct().getImageUrl()).isEqualTo("https://test.jpg"),
+            () -> assertThat(testWish.getQuantity()).isEqualTo(1)
         );
     }
 
