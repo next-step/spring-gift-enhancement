@@ -9,9 +9,9 @@ import gift.exception.AuthorizationException;
 import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
 import gift.repository.WishRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +28,9 @@ public class WishService {
         this.itemRepository = itemRepository;
     }
 
-    public List<WishResponse> getWishes(Member member) {
-        List<Wish> wishes = wishRepository.findAllByMemberWithProduct(member);
-        return wishes.stream()
-            .map(wish -> WishResponse.from(wish, wish.getProduct()))
-            .collect(Collectors.toList());
+    public Page<WishResponse> getWishes(Member member, Pageable pageable) {
+        Page<Wish> wishesPage = wishRepository.findAllByMemberWithProduct(member, pageable);
+        return wishesPage.map(wish -> WishResponse.from(wish, wish.getProduct()));
     }
 
     @Transactional
