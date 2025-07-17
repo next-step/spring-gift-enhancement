@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -24,9 +23,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseItem> addItem(
-            @RequestBody @Valid ItemCreateDto dto
-    ) {
+    public ResponseEntity<ResponseItem> addItem(@RequestBody @Valid ItemCreateDto dto) {
         Item item = itemService.saveItem(dto);
         ItemResponseDto responseDto = ItemResponseDto.from(item);
 
@@ -41,18 +38,13 @@ public class ItemController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteItem(
-            @RequestParam(required = false) String name
-    ) {
+    public ResponseEntity<Void> deleteItem(@RequestParam(required = false) String name) {
         itemService.delete(name);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseItem> updateItem(
-            @PathVariable Long id,
-            @RequestBody @Valid ItemUpdateDto dto
-    ) {
+    public ResponseEntity<ResponseItem> updateItem(@PathVariable Long id, @RequestBody @Valid ItemUpdateDto dto) {
         Item updatedItem = itemService.updateItem(id, dto);
         ItemResponseDto responseDto = ItemResponseDto.from(updatedItem);
 

@@ -32,15 +32,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String registerUser(UserRegisterDto dto) {
-        String email = dto.email();
-        String password = dto.password();
-        UserRole role = dto.role();
+        User user = dto.dtoToUser();
 
-        if (isEmailExist(email)) {
+        if (isEmailExist(user.getEmail())) {
             throw new UserDuplicatedException();
         }
-
-        User user = new User(null, email, password, role);
         User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser);
 
@@ -130,11 +126,9 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
         }
 
-        String email = dto.email();
-        String password = dto.password();
-        findUser.changeEmailAndPassword(email, password);
+        User updatedUser = findUser.updateFrom(dto);
 
-        return findUser;
+        return userRepository.save(updatedUser);
     }
 
 
