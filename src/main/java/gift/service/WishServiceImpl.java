@@ -1,10 +1,8 @@
 package gift.service;
 
-import gift.dto.WishListResponseDto;
 import gift.exception.member.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import gift.dto.WishResponseDto;
-import gift.dto.WishWithProductDto;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -13,11 +11,10 @@ import gift.exception.wish.WishAlreadyExistsException;
 import gift.exception.wish.WishNotFoundException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class WishServiceImpl implements WishService {
@@ -50,36 +47,19 @@ public class WishServiceImpl implements WishService {
 
     @Override
     @Transactional(readOnly = true)
-    public WishListResponseDto getWishList(Member member) {
-        List<Wish> wishes = wishRepository
-                .findAllByMember_Id(member.getId());
-
-        List<WishWithProductDto> wishesWithProduct = wishes.stream()
-                .map(wish -> new WishWithProductDto(
-                        wish.getId(),
-                        wish.getMemberId(),
-                        wish.getProductId(),
-                        wish.getCreatedAt(),
-                        wish.getProduct()
-                ))
-                .collect(Collectors.toList());
-
-        List<WishResponseDto> wishResponses = wishesWithProduct.stream()
-                .map(this::mapToWishResponseDto)
-                .collect(Collectors.toList());
-
-        return new WishListResponseDto(wishResponses, wishResponses.size());
+    public Page<WishResponseDto> getWishList(Member member, Pageable pageable) {
+        Page<Wish> wishPage = wishRepository.findAllByMember_Id(member.getId(), pageable);
+        return wishPage.map(this::mapToWishResponseDto);
     }
 
-    private WishResponseDto mapToWishResponseDto(WishWithProductDto wishWithProduct) {
-        Product product = wishWithProduct.getProduct();
+    private WishResponseDto mapToWishResponseDto(Wish wish) {
         return new WishResponseDto(
-                wishWithProduct.getWishId(),
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl(),
-                wishWithProduct.getCreatedAt()
+                wish.getId(),
+                wish.getProductId(),
+                wish.getProduct().getName(),
+                wish.getProduct().getPrice(),
+                wish.getProduct().getImageUrl(),
+                wish.getCreatedAt()
         );
     }
 
