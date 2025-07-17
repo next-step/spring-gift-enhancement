@@ -1,11 +1,11 @@
 package gift.admin;
 
+import gift.common.dto.PageResponseDto;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.service.ItemService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin/items")
@@ -29,9 +30,19 @@ public class AdminItemController {
     // 페이지 뷰 반환
 
     @GetMapping()
-    public String adminItemPage(Model model) {
-        List<ItemResponseDto> items = itemService.findAll();
-        model.addAttribute("items", items);
+    public String adminItemPage(
+        Model model,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction
+    ) {
+        PageResponseDto<ItemResponseDto> pageResponse = itemService.findAll(page, size, sortBy,
+            direction);
+        model.addAttribute("items", pageResponse.contents());
+        model.addAttribute("page", pageResponse);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("direction", direction);
         return "admin-item";
     }
 

@@ -9,6 +9,26 @@
   <h1>상품 관리자 페이지</h1>
   <div>
     <a href="/admin/items/new">새 상품 추가</a>
+
+    <form method="get" action="/admin/items">
+      <input type="hidden" name="page" th:value="${page != null ? page.pageNumber : 1}"/>
+      <input type="hidden" name="size" th:value="${page != null ? page.pageSize : 10}"/>
+      <label>정렬 기준:
+        <select name="sortBy">
+          <option value="id" th:selected="${sortBy == 'id'}">ID</option>
+          <option value="name" th:selected="${sortBy == 'name'}">상품명</option>
+          <option value="price" th:selected="${sortBy == 'price'}">가격</option>
+        </select>
+      </label>
+      <label>정렬 방향:
+        <select name="direction">
+          <option value="asc" th:selected="${direction == 'asc'}">오름차순</option>
+          <option value="desc" th:selected="${direction == 'desc'}">내림차순</option>
+        </select>
+      </label>
+      <button type="submit">정렬</button>
+    </form>
+
     <h2>상품 목록</h2>
     <table>
       <thead>
@@ -17,6 +37,8 @@
         <th>상품명</th>
         <th>가격</th>
         <th>이미지 URL</th>
+        <th>수정</th>
+        <th>삭제</th>
       </tr>
       </thead>
       <tbody th:if="${items != null and !items.isEmpty()}">
@@ -38,6 +60,20 @@
       </tr>
       </tbody>
     </table>
+
+    <div th:if="${page != null}">
+                <span th:if="${page.pageNumber > 1}">
+                    <a
+                        th:href="@{/admin/items(page=${page.pageNumber - 1}, size=${page.pageSize}, sortBy=${sortBy}, direction=${direction})}">이전</a>
+                </span>
+      <span>페이지 [[${page.pageNumber}]] / [[${page.totalPages}]]</span>
+      <span th:if="${page.pageNumber < page.totalPages}">
+                    <a
+                        th:href="@{/admin/items(page=${page.pageNumber + 1}, size=${page.pageSize}, sortBy=${sortBy}, direction=${direction})}">다음</a>
+                </span>
+      <br/>
+      <span>총 [[${page.totalElements}]]개 항목</span>
+    </div>
   </div>
 </div>
 </body>
