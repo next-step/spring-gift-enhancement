@@ -4,7 +4,8 @@ import gift.dto.wishlist.WishlistRequestDto;
 import gift.dto.wishlist.WishlistResponseDto;
 import gift.service.WishlistService;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,9 +28,10 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistResponseDto>> getWishlists(
-            @RequestAttribute("userEmail") String userEmail) {
-        return ResponseEntity.ok(wishlistService.getWishlists(userEmail));
+    public ResponseEntity<Page<WishlistResponseDto>> getWishlists(
+            @RequestAttribute("userEmail") String userEmail, Pageable pageable) {
+        Page<WishlistResponseDto> wishlists = wishlistService.getWishlists(userEmail, pageable);
+        return ResponseEntity.ok(wishlists);
     }
 
     @PostMapping

@@ -4,6 +4,9 @@ import gift.dto.product.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,8 +24,9 @@ public class ProductAdminController {
 
     // 전체 목록 조회
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("products", service.getAll());
+    public String list(Pageable pageable, Model model) {
+        Page<Product> productPage = service.getAll(pageable);
+        model.addAttribute("products", service.getAll(pageable).getContent());
         return "admin/list";
     }
 
