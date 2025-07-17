@@ -7,11 +7,13 @@ import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -37,6 +39,22 @@ public class ProductAdminViewController {
         return "products";
     }
 
+    @GetMapping("/page")
+    public String findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            Model model
+    ) {
+        Page<Product> products = productService.findAllByPage(page, size, sortBy, sortOrder);
+        model.addAttribute("products", products.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("size", size);
+        return "productsPage";
+    }
+
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("productSaveRequestDto", new ProductSaveRequestDto());
@@ -44,12 +62,16 @@ public class ProductAdminViewController {
     }
 
     @PostMapping("/add")
-    public String createProduct(@Valid @ModelAttribute ProductSaveRequestDto productSaveRequestDto, BindingResult bindingResult) {
+    public String createProduct(@Valid @ModelAttribute ProductSaveRequestDto productSaveRequestDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "productAddForm";
         }
         productService.createProduct(productSaveRequestDto);
-        return "redirect:/api/admin/product/list";
+        redirectAttributes.addAttribute("page", 0);
+        redirectAttributes.addAttribute("size", 10);
+        redirectAttributes.addAttribute("sortBy", "id");
+        redirectAttributes.addAttribute("sortOrder", "asc");
+        return "redirect:/api/admin/product/page";
     }
 
     @GetMapping("/{id}/update")
@@ -61,17 +83,26 @@ public class ProductAdminViewController {
     }
 
     @PatchMapping("/{id}/update")
-    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute ProductPatchRequestDto productPatchRequestDto, BindingResult bindingResult) {
+    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute ProductPatchRequestDto productPatchRequestDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "productUpdateForm";
         }
         productService.updateProduct(id, productPatchRequestDto);
-        return "redirect:/api/admin/product/list";
+        redirectAttributes.addAttribute("page", 0);
+        redirectAttributes.addAttribute("size", 10);
+        redirectAttributes.addAttribute("sortBy", "id");
+        redirectAttributes.addAttribute("sortOrder", "asc");
+        return "redirect:/api/admin/product/page";
     }
 
     @DeleteMapping("/{id}/delete")
-    public String deleteById(@PathVariable Long id) {
+    public String deleteById(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         productService.deleteProduct(id);
-        return "redirect:/api/admin/product/list";
+
+        redirectAttributes.addAttribute("page", 0);
+        redirectAttributes.addAttribute("size", 10);
+        redirectAttributes.addAttribute("sortBy", "id");
+        redirectAttributes.addAttribute("sortOrder", "asc");
+        return "redirect:/api/admin/product/page";
     }
 }

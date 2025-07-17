@@ -5,6 +5,10 @@ import gift.product.dto.ProductPatchRequestDto;
 import gift.product.dto.ProductSaveRequestDto;
 import gift.product.repository.ProductRepository;
 import jakarta.persistence.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,13 @@ public class ProductService {
     public Product createProduct(ProductSaveRequestDto productSaveRequestDto) {
         Product product = new Product(productSaveRequestDto.getName(), productSaveRequestDto.getPrice(), productSaveRequestDto.getImageUrl());
         return productRepository.save(product);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Product> findAllByPage(int page, int size, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return productRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)

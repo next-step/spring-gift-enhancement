@@ -30,6 +30,20 @@ public class ProductController {
         return ResponseEntity.ok(responseDtoList);
     }
 
+    @GetMapping("/product/page")
+    public ResponseEntity<List<ResponseDto>> findAllByPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+    ) {
+        List<ResponseDto> responseDtoList = productService.findAllByPage(page, size, sortBy, sortOrder)
+                .stream()
+                .map(ResponseDto::new)
+                .toList();
+        return ResponseEntity.ok(responseDtoList);
+    }
+
     @PostMapping("/product/add")
     public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid ProductSaveRequestDto productSaveRequestDto) {
         Product product =  productService.createProduct(productSaveRequestDto);
