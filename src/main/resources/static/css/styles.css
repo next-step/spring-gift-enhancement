@@ -276,3 +276,24 @@ h1 {
 .form-footer a:hover {
   text-decoration: underline;
 }
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+.pagination a, .pagination span {
+  display: inline-block;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid #ddd;
+  margin: 0 4px;
+}
+.pagination span {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.pagination a:hover {
+  background-color: #f1f1f1;
+}

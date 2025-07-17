@@ -7,7 +7,10 @@ import gift.service.ItemService;
 import gift.entity.Member;
 import gift.login.Login;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,8 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -32,14 +33,11 @@ public class AdminItemController {
 
     @GetMapping
     public String listItems(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "id") String sortProperty,
-        @RequestParam(defaultValue = "asc") String sortDirection,
+        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
         Model model
     ) {
-        List<ItemResponse> items = itemService.getAllItems(page, size, sortProperty, sortDirection);
-        model.addAttribute("items", items);
+        Page<ItemResponse> itemPage = itemService.getAllItems(pageable);
+        model.addAttribute("itemPage", itemPage);
         return "admin/items/list";
     }
 
