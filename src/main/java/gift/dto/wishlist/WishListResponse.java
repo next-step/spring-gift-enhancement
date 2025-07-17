@@ -1,6 +1,8 @@
 package gift.dto.wishlist;
 
 
+import gift.domain.Member;
+import gift.domain.Product;
 import gift.domain.WishList;
 
 public record WishListResponse(
@@ -15,14 +17,17 @@ public record WishListResponse(
 ) {
 
     public static WishListResponse from(WishList entity){
+        Member member = entity.getMember();
+        Product product = entity.getProduct();
+
         return new WishListResponse(
-            entity.getMember().getId(),
-            entity.getMember().getEmail(),
-            entity.getProduct().getId(),
-            entity.getProduct().getName(),
-            entity.getProduct().getPrice(),
+            member.getId(),
+            member.getEmail(),
+            product.getId(),
+            product.getName(),
+            product.getPrice(),
             entity.getQuantity(),
-            entity.getQuantity() * entity.getProduct().getPrice()
+            entity.getQuantity() * product.getPrice()
         );
     }
 
