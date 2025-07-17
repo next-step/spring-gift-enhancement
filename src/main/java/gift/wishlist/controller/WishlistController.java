@@ -1,12 +1,16 @@
 package gift.wishlist.controller;
 
+import gift.common.dto.PageResponseDto;
+import gift.common.exception.InvalidSortByException;
+import gift.common.exception.InvalidSortDirectionException;
 import gift.common.security.AuthenticatedMember;
 import gift.common.security.LoginMember;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.service.WishlistService;
 import jakarta.validation.Valid;
-import java.util.List;
+import jakarta.validation.constraints.Positive;
+import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,6 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class WishlistController {
 
     private final WishlistService wishlistService;
+
+    private static final Set<String> ALLOWED_SORT_FIELDS =
+        Set.of("member_id", "item_id", "id", "created_at");
 
     public WishlistController(WishlistService wishlistService) {
         this.wishlistService = wishlistService;
@@ -49,11 +57,29 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistResponseDto>> findAllWishlists(
+    public ResponseEntity<PageResponseDto<WishlistResponseDto>> findAll(
+        @RequestParam(defaultValue = "1") @Positive int page,
+        @RequestParam(defaultValue = "10") @Positive int size,
+        @RequestParam(defaultValue = "created_at") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction,
         @LoginMember AuthenticatedMember member
     ) {
-        List<WishlistResponseDto> wishlistResponseDtos = wishlistService.findAll(member.id());
-        return ResponseEntity.status(HttpStatus.OK).body(wishlistResponseDtos);
+        if (!direction.equalsIgnoreCase("asc") &&
+            !direction.equalsIgnoreCase("desc")) {
+            throw new InvalidSortDirectionException(direction);
+        }
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortByException(sortBy);
+        }
+
+        PageResponseDto<WishlistResponseDto> pagedDtos = wishlistService.findAll(
+            member.id(),
+            page,
+            size,
+            sortBy,
+            direction
+        );
+        return ResponseEntity.ok(pagedDtos);
     }
 
     @DeleteMapping("/{wishlistId}")

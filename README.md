@@ -17,7 +17,7 @@
 
 - [x] 공통 페이지네이션 응답 dto 구현
 - [x] Item 페이지네이션 구현
-- [ ] Wishlist 페이지네이션 구현
+- [x] Wishlist 페이지네이션 구현
 - [ ] 페이지네이션 테스트 작성
 
 # spring-gift-wishlist
