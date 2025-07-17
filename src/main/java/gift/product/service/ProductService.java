@@ -5,10 +5,10 @@ import gift.product.dto.response.ProductResponseDto;
 import gift.product.entity.Product;
 import gift.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -31,11 +31,9 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> getProducts(){
-        return productRepository.findAll()
-                .stream()
-                .map(ProductResponseDto::from)
-                .toList();
+    public Page<ProductResponseDto> getProducts(Pageable pageable){
+
+        return productRepository.findAll(pageable).map(ProductResponseDto::from);
     }
 
     @Transactional(readOnly = true)
