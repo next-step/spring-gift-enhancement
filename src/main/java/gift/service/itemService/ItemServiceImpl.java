@@ -23,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item saveItem(ItemCreateDto dto) {
-        Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
+        Item item = dto.dtoToItem();
 
         return itemRepository.save(item);
     }
@@ -56,13 +56,11 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = targetItem.get();
 
-        String name = dto.name();
-        Integer price = dto.price();
-        String imageUrl = dto.imageUrl();
+        Item changeItem = dto.dtoToItem();
 
-        item.update(name, price, imageUrl);
+        Item updatedItem = item.update(changeItem);
 
-        return item;
+        return updatedItem;
     }
 
     @Override
