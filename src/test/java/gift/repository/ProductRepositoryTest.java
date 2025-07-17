@@ -5,6 +5,9 @@ import gift.product.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -37,6 +40,22 @@ public class ProductRepositoryTest {
         Optional<Product> deletedProduct = productRepository.findById(product.getId());
 
         assertThat(deletedProduct).isNotPresent();
+    }
+
+    @Test
+    public void 상품_페이지네이션_조회() {
+        for (int i = 1; i <= 30; i++) {
+            productRepository.save(new Product("상품 " + i, (long) i * 100, "url" + i));
+        }
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<Product> page = productRepository.findAll(pageable);
+
+        assertThat(page.getContent().size()).isEqualTo(10);
+        assertThat(page.getTotalElements()).isEqualTo(34);
+        assertThat(page.getTotalPages()).isEqualTo(4);
+        assertThat(page.getNumber()).isEqualTo(0);
     }
 
 }

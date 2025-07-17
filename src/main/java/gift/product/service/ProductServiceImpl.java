@@ -7,6 +7,8 @@ import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.exception.InvalidProductException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +37,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseDto> findAllProduct() {
+    public List<ProductResponseDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
         List<ProductResponseDto> responseDtos = products.stream().map(Product::toProductResponseDto).toList();
         return responseDtos;
+    }
+
+    @Override
+    public Page<ProductResponseDto> findAllProductsWithPageable(Pageable pageable) {
+        return productRepository.findAll(pageable).map(Product::toProductResponseDto);
     }
 
     @Override
