@@ -6,10 +6,11 @@ import gift.entity.Member;
 import gift.resolver.LoginMember;
 import gift.service.WishService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -22,9 +23,9 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getWishes(@LoginMember Member member) {
-        List<ProductResponse> wishes = wishService.getWishes(member);
-        return ResponseEntity.ok(wishes);
+    public ResponseEntity<Page<ProductResponse>> getWishes(@LoginMember Member member, Pageable pageable) {
+        Page<ProductResponse> wishesPage = wishService.getWishes(member, pageable);
+        return ResponseEntity.ok(wishesPage);
     }
 
     @PostMapping

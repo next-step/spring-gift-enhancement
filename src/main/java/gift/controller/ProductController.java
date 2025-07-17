@@ -9,6 +9,8 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -44,12 +46,10 @@ public class ProductController {
         ProductResponse response = productService.addProduct(request);
         return ResponseEntity.created(URI.create("/api/products/" + response.id())).body(response);
     }
-
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> findAllProducts(@LoginMember Member member) {
-        log.info("전체 상품 조회 요청 - 사용자: {}", member.getEmail());
-        List<ProductResponse> productResponses = productService.findAllProducts();
-        return ResponseEntity.ok(productResponses);
+    public ResponseEntity<Page<ProductResponse>> findAllProducts(@LoginMember Member member, Pageable pageable) {
+        Page<ProductResponse> productPage = productService.findAllProducts(pageable);
+        return ResponseEntity.ok(productPage);
     }
 
     @GetMapping("/{id}")
