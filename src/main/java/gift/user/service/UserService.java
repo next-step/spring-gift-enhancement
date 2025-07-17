@@ -57,10 +57,7 @@ public class UserService {
         byte[] salt = Base64.getDecoder().decode(user.getSalt());
         String hashedPassword = PasswordUtil.encryptPassword(userPatchRequestDto.getPassword(), salt);
 
-        User updateUser = new User(user.getId(), userPatchRequestDto.getEmail(), hashedPassword, user.getSalt());
-        entityManager.merge(updateUser);
-
-        return updateUser;
+        return userRepository.save(new User(user.getId(), userPatchRequestDto.getEmail(), hashedPassword, user.getSalt()));
     }
 
     @Transactional

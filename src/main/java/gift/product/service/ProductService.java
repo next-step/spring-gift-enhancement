@@ -42,10 +42,7 @@ public class ProductService {
     public Product updateProduct(Long id, ProductPatchRequestDto productPatchRequestDto) {
         Product product = productRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-
-        Product updateProduct = new Product(product.getId(), productPatchRequestDto.getName(), productPatchRequestDto.getPrice(), productPatchRequestDto.getImageUrl());
-        entityManager.merge(updateProduct);
-        return updateProduct;
+        return productRepository.save(new Product(product.getId(), productPatchRequestDto.getName(), productPatchRequestDto.getPrice(), productPatchRequestDto.getImageUrl()));
     }
 
     @Transactional
