@@ -31,7 +31,7 @@
             <tr th:if="${wishes.isEmpty()}">
                 <td colspan="5" style="text-align: center;">위시 리스트에 담긴 상품이 없습니다.</td>
             </tr>
-            <tr th:each="wish : ${wishes}">
+            <tr th:each="wish : ${wishes.content}">
                 <td><img th:src="${wish.productImageUrl}" th:alt="${wish.productName}" width="100"></td>
                 <td th:text="${wish.productName}">상품명</td>
                 <td th:text="${wish.productPrice}">상품 가격</td>
