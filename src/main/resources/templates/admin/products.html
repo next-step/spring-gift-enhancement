@@ -25,7 +25,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="product : ${products}">
+    <tr th:each="product : ${products.content}">
         <td th:text="${product.name}">상품 이름</td>
         <td th:text="${product.price}">상품 가격</td>
         <td th:text="${product.imageUrl}">상품 이미지 URL</td>

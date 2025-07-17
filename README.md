@@ -84,7 +84,7 @@
 
 ### 2단계 - 페이지네이션
 
-- [ ] Pageable 객체를 활용해서 product pagination 적용하기
+- [x] Pageable 객체를 활용해서 product pagination 적용하기
 - [ ] product Thymeleaf 페이지 기반으로 수정하기
 - [ ] Pageable 객체를 활용해서 wish pagination 적용하기
 - [ ] wish Thymeleaf 페이지 기반으로 수정하기

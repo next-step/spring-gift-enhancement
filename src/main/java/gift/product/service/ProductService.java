@@ -7,6 +7,8 @@ import gift.product.domain.Product;
 import gift.product.dto.ProductRequestDto;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +27,8 @@ public class ProductService {
         return productRepository.save(new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
     }
 
-    public List<Product> getProducts(){
-        // 전체 조회 (page 등 추후 구현 필요)
-        return productRepository.findAll();
+    public Page<Product> getProducts(Pageable pageable){
+        return productRepository.findAll(pageable);
     }
 
     public Product getProduct(Long id){

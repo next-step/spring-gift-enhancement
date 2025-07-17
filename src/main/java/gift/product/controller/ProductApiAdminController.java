@@ -5,6 +5,10 @@ import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,11 +40,11 @@ public class ProductApiAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getProducts(){
-        List<ProductResponseDto> responses = productService.getProducts()
-                .stream()
-                .map(product -> ProductResponseDto.productFrom(product))
-                .toList();
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        Page<ProductResponseDto> responses = productService.getProducts(pageable)
+                .map(product -> ProductResponseDto.productFrom(product));
 
         return ResponseEntity.ok(responses);
     }
