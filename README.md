@@ -30,3 +30,5 @@
   - [x] WishlistRepository의 findAllByMember 메서드 반환 타입 변경
   - [x] WishlistService의 getWishesByMember 메서드 로직 변경
   - [x] WishlistController의 getWishlist 메서드 로직 변경
+  
+- [x] 기존 테스트 코드 복구 및 리팩토링
