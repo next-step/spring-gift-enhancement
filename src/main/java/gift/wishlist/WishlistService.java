@@ -4,6 +4,10 @@ import gift.product.domain.Product;
 import gift.product.repository.ProductRepository;
 import gift.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +23,16 @@ public class WishlistService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Wishlist> getWishlistById(Long userId) {
         return wishRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Wishlist> getWishlistByIdAndPage(Long userId, int page, int size, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return wishRepository.findByUserId(userId, pageable);
     }
 
     @Transactional
