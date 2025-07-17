@@ -1,5 +1,22 @@
 # spring-gift-enhancement
 
+## 1단계 구현
+
+### 요구사항
+- 지금까지 작성한 JdbcTemplate 기반 코드를 JPA로 리팩터링하고 실제 도메인 모델을 어떻게 구성하고 객체와 테이블을 어떻게 매핑해야 하는지 알아본다.
+
+1. 아래의 DDL(Data Definition Language)을 보고 유추하여 엔티티 클래스와 리포지토리 클래스를 작성해 본다.
+2. 객체의 참조와 테이블의 외래 키를 매핑해서 객체에서는 참조를 사용하고 테이블에서는 외래 키를 사용할 수 있도록 한다.
+3. @DataJpaTest를 사용하여 학습 테스트를 해 본다.
+
+### 파일 추가
+- MemberRepositoryTest - 회원 저장, 조회 test
+- WishRepositoryTest - 찜 저장, 조회 test
+- WishServiceTest - 찜 상품 추가 test
+
+
+# spring-gift-product
+
 
 ## 1단계 구현
 
