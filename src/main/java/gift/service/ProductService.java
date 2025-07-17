@@ -42,7 +42,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ProductResponse> getProducts(Pageable pageable) {
+    public PageResponse<ProductResponse> getProductPage(Pageable pageable) {
         Page<Product> products = productRepository.findAll(pageable);
         List<ProductResponse> content = products.stream()
                 .map(ProductResponse::from)

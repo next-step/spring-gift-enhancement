@@ -32,6 +32,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<PageResponse<ProductResponse>> getProducts(
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(productService.getProductPage(pageable));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
         try {
@@ -60,12 +66,6 @@ public class ProductController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<PageResponse<ProductResponse>> getProducts(
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(productService.getProducts(pageable));
     }
 
 }
