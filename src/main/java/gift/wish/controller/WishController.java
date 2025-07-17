@@ -7,6 +7,10 @@ import gift.wish.dto.WishResponseDto;
 import gift.wish.entity.Wish;
 import gift.wish.service.WishService;
 import gift.exception.GlobalExceptionHandler.ApiResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +27,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<WishResponseDto>>> getWishlist(@LoginMember Member member) {
+    public ResponseEntity<ApiResponse<Page<WishResponseDto>>> getWishlist(@LoginMember Member member ,
+                                                                          @PageableDefault(size = 5, sort = "quantity", direction = Sort.Direction.DESC) Pageable pageable) {
         WishRequestDto wishRequestDto = new WishRequestDto();
         wishRequestDto.setMemberId(member.getId());
-        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", wishService.getWishlist(wishRequestDto)));
+        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", wishService.getWishlist(wishRequestDto,pageable)));
     }
 
     @PostMapping
