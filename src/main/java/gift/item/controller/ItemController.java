@@ -43,8 +43,12 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<PageResponseDto<ItemResponseDto>> findAll(
-        @RequestParam(defaultValue = "1") @Positive int page,
-        @RequestParam(defaultValue = "10") @Positive int size,
+        @RequestParam(defaultValue = "1")
+        @Positive(message = "페이지 인덱스는 양수이어야 합니다.")
+        int page,
+        @RequestParam(defaultValue = "10")
+        @Positive(message = "페이지 사이즈는 양수이어야 합니다.")
+        int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "desc") String direction
     ) {
