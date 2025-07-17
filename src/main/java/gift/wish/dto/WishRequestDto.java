@@ -9,7 +9,7 @@ public class WishRequestDto {
     private Long productId;
     private Integer quantity;
 
-    public WishRequestDto() {};
+    public WishRequestDto() {}
     private WishRequestDto(Long id ,Long memberId, Long productId, Integer quantity) {
         this.id = id;
         this.memberId = memberId;
