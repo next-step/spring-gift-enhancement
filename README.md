@@ -10,12 +10,12 @@
 # 구현 내용
 
 - Service 수정
-  - [ ] 기존 List 반환 메서드를 Page로 변경
-  - [ ] DTO 변환 시 Page.map() 사용
+  - [x] 기존 List 반환 메서드를 Page로 변경
+  - [x] DTO 변환 시 Page.map() 사용
   
 - Controller 수정
-  - [ ] 기존 List 반환 메서드를 Page로 변경
-  - [ ] Pageable 파라미터 추가
+  - [x] 기존 List 반환 메서드를 Page로 변경
+  - [x] Pageable 파라미터 추가
 
 - 테스트 케이스
   - [ ] 페이지 크기 적용 확인

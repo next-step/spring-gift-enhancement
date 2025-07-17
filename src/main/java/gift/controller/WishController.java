@@ -6,6 +6,8 @@ import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +35,10 @@ public class WishController {
 
     // 위시리스트 조회
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishes(@LoginMember Member member) {
-        List<WishResponseDto> wishes = wishService.getWishesByMember(member);
+    public ResponseEntity<Page<WishResponseDto>> getWishes(
+            @LoginMember Member member,
+            Pageable pageable) {
+        Page<WishResponseDto> wishes = wishService.getWishesByMember(member, pageable);
         return ResponseEntity.ok(wishes);
     }
 

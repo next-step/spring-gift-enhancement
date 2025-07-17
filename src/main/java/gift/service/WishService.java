@@ -50,7 +50,7 @@ public class WishService {
     // 위시리스트 조회
     @Transactional(readOnly = true)
     public Page<WishResponseDto> getWishesByMember(Member member, Pageable pageable) {
-        Page<Wish> wishes = wishRepository.findByMemberOrderByIdDesc(member, pageable);
+        Page<Wish> wishes = wishRepository.findByMember(member, pageable);
         return wishes.map(wish -> new WishResponseDto(wish, new ProductResponseDto(wish.getProduct())));
     }
 

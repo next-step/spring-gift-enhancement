@@ -4,6 +4,8 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +46,9 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        if (size == 0) {
-            List<ProductResponseDto> all = productService.getProductList(0, Integer.MAX_VALUE);
-            return ResponseEntity.ok(all); // 전체 반환
-        }
-        return ResponseEntity.ok(productService.getProductList(page, size));
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(Pageable pageable) {
+        Page<ProductResponseDto> products = productService.getProducts(pageable);
+        return ResponseEntity.ok(products);
     }
 
 }
