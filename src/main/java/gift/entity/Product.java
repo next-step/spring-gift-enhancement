@@ -1,25 +1,42 @@
 package gift.entity;
 
 import gift.dto.RequestDto;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "product")
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
+
+    @Column(name = "image_url", nullable = false, length = 255)
     private String imageUrl;
+
+    @Column(name = "price", nullable = false)
+    private Long price;
 
     public Product() {
     }
 
-    public Product(Long id, String name, String imageUrl) {
+    public static Product of(String name, String imageUrl, Long price) {
+        return new Product(null, name, imageUrl, price);
+    }
+
+    private Product(Long id, String name, String imageUrl, Long price) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
-    }
-
-    public Product(Long id, String name) {
-        this.id = id;
-        this.name = name;
+        this.price = price;
     }
 
     public Long getId() {
@@ -34,6 +51,10 @@ public class Product {
         return imageUrl;
     }
 
+    public Long getPrice() {
+        return price;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -46,13 +67,21 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public void update(String name, String imageUrl, Long price) {
+        if(name == null) {
+            throw new IllegalArgumentException("상품 이름은 필수입니다.");
+        }
 
-    public void update(RequestDto dto) {
-        if (dto.getName() != null) {
-            this.name = dto.getName();
+        if(price == null || price <= 0) {
+            throw new IllegalArgumentException("상품 가격은 0보다 커야 합니다.");
         }
-        if (dto.getImageUrl() != null) {
-            this.imageUrl = dto.getImageUrl();
+
+        if(imageUrl == null) {
+            throw new IllegalArgumentException("이미지 URL은 필수입니다.");
         }
+
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.price = price;
     }
 }

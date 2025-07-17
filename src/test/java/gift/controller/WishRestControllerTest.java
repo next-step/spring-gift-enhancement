@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class WishRestControllerTest {
+public class WishRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,7 +58,7 @@ class WishRestControllerTest {
         when(memberRepository.findByEmail(testMember.getEmail())).thenReturn(
                 Optional.of(testMember));
 
-        CreateWishRequest request = new CreateWishRequest(1L, 10L);
+        CreateWishRequest request = new CreateWishRequest(1L);
 
         // when
         MvcResult result = mockMvc.perform(post("/api/wishes")
@@ -75,7 +75,7 @@ class WishRestControllerTest {
     @DisplayName("위시 추가 실패")
     void addWishFail() throws Exception {
         // given
-        CreateWishRequest request = new CreateWishRequest(1L, 10L);
+        CreateWishRequest request = new CreateWishRequest(1L);
         String invalidToken = "invalid_token";
 
         when(jwtTokenProvider.validateToken(invalidToken)).thenReturn(false);
@@ -105,8 +105,8 @@ class WishRestControllerTest {
                 Optional.of(testMember));
 
         // WishService가 반환할 상품 리스트 생성
-        List<Product> wishList = Collections.singletonList(new Product(10L, "gamja", "gam.com"));
-        when(wishService.getAllWish(testMember.getId())).thenReturn(wishList);
+        List<Product> wishList = Collections.singletonList(Product.of("gamja", "gam.com", 2000L));
+        when(wishService.getAllWish(testMember)).thenReturn(wishList);
 
         // when
         MvcResult result = mockMvc.perform(get("/api/wishes")
@@ -149,10 +149,13 @@ class WishRestControllerTest {
         when(memberRepository.findByEmail(testMember.getEmail())).thenReturn(
                 Optional.of(testMember));
 
+        Long productId = 10L;
+
         // 삭제는 반환값 없음
 
         // when
-        MvcResult result = mockMvc.perform(delete("/api/wishes/{productId}", 10L)
+        MvcResult result = mockMvc.perform(delete("/api/wishes")
+                        .param("productId", String.valueOf(productId))
                         .header("Authorization", "Bearer " + token))
                 .andReturn();
 
@@ -169,12 +172,10 @@ class WishRestControllerTest {
         when(jwtTokenProvider.validateToken(invalidToken)).thenReturn(false);
 
         // when
-        MvcResult result = mockMvc.perform(delete("/api/wishes/{productId}", 10L)
+        MvcResult result = mockMvc.perform(delete("/api/wishes", 10L)
                         .header("Authorization", "Bearer " + invalidToken))
                 .andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
-
-
 }

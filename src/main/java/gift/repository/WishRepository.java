@@ -1,41 +1,16 @@
 package gift.repository;
 
+import gift.entity.Member;
+import gift.entity.Product;
 import gift.entity.Wish;
 import java.util.List;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class WishRepository {
+public interface WishRepository extends JpaRepository<Wish, Long> {
 
-    private final JdbcTemplate jdbcTemplate;
+    List<Wish> findAllByMember(Member member);
 
-    public WishRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    boolean existsByMemberAndProduct(Member member, Product product);
 
-    public void insert(Long memberId, Long productId) {
-        String sql = "INSERT INTO wish (member_id, product_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, memberId, productId);
-    }
-
-    public void delete(Long memberId, Long productId) {
-        String sql = "DELETE FROM wish WHERE member_id = ? AND product_id = ?";
-        jdbcTemplate.update(sql, memberId, productId);
-    }
-
-    public boolean exists(Long memberId, Long productId) {
-        String sql = "SELECT COUNT(*) FROM wish WHERE member_id = ? AND product_id = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, memberId, productId);
-        return count != null && count > 0;
-    }
-
-    public List<Wish> findAllByMemberId(Long memberId) {
-        String sql = "SELECT * FROM wish WHERE member_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> Wish.of(
-                rs.getLong("id"),
-                rs.getLong("product_id"),
-                rs.getLong("member_id")
-        ), memberId);
-    }
+    void deleteByMemberAndProduct(Member member, Product product);
 }

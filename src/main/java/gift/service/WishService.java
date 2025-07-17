@@ -1,10 +1,10 @@
 package gift.service;
 
+import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
-import gift.repository.ProductRepositoryImpl;
+import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -12,37 +12,35 @@ import org.springframework.stereotype.Service;
 public class WishService {
 
     private final WishRepository wishRepository;
-    private final ProductRepositoryImpl productRepositoryImpl;
+    private final ProductRepository productRepository;
 
-    public WishService(WishRepository wishRepository, ProductRepositoryImpl productRepositoryImpl) {
+    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
         this.wishRepository = wishRepository;
-        this.productRepositoryImpl = productRepositoryImpl;
+        this.productRepository = productRepository;
     }
 
-    public void addWish(Long memberId, Long productId) {
+    public void addWish(Member member, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-        if (wishRepository.exists(memberId, productId)) {
+        if (wishRepository.existsByMemberAndProduct(member, product)) {
             throw new IllegalArgumentException("이미 위시리스트에 추가된 상품입니다.");
         }
 
-        wishRepository.insert(memberId, productId);
+        Wish wish = Wish.of(member, product);
+        wishRepository.save(wish);
     }
 
-    public void removeWish(Long memberId, Long productId) {
-        wishRepository.delete(memberId, productId);
+    public void removeWish(Member member, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        wishRepository.deleteByMemberAndProduct(member, product);
     }
 
-    public List<Product> getAllWish(Long memberId) {
-
-        List<Wish> wishlist = wishRepository.findAllByMemberId(memberId);
-
-        List<Product> products = new ArrayList<>();
-
-        for(Wish wish : wishlist) {
-            productRepositoryImpl.findById(wish.getProductId())
-                    .ifPresent(products::add);
-        }
-
-        return products;
+    public List<Product> getAllWish(Member member) {
+        return wishRepository.findAllByMember(member).stream()
+                .map(Wish::getProduct)
+                .toList();
     }
 }

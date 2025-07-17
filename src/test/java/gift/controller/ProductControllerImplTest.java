@@ -3,6 +3,7 @@ package gift.controller;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import gift.entity.Product;
+import gift.repository.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,9 @@ public class ProductControllerImplTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ProductRepository products;
+
     @LocalServerPort
     private int port;
 
@@ -30,6 +34,9 @@ public class ProductControllerImplTest {
     @Test
     @DisplayName("아이디로 조회가 되는지를 테스트")
     void findByIdTest() {
+        Product product = Product.of("단호박", "donhobak.com", 500L);
+        products.save(product);
+
         var url = "http://localhost:" + port + "/api/products/1";
 
         var response = client.get().uri(url).retrieve().toEntity(Product.class);
@@ -37,7 +44,7 @@ public class ProductControllerImplTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         var actual = response.getBody();
-        assertThat(actual.getName()).isEqualTo("hehe");
+        assertThat(actual.getName()).isEqualTo("단호박");
     }
 
     @Test
