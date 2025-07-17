@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.dto.RequestDto;
 import gift.dto.ResponseDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ProductService {
 
@@ -10,7 +10,7 @@ public interface ProductService {
     public ResponseDto create(RequestDto dto);
 
     // 2-1. 전체 상품 조회
-    public List<ResponseDto> findAll();
+    public Page<ResponseDto> findAll(int page, int size);
 
     // 2-2. 특정 상품 조회
     public ResponseDto findById(Long id);
