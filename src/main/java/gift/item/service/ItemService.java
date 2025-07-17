@@ -1,13 +1,16 @@
 package gift.item.service;
 
+import gift.common.dto.PageResponseDto;
 import gift.item.ItemEntity;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,22 +35,34 @@ public class ItemService {
         );
     }
 
-    public List<ItemResponseDto> findAll() {
-        List<ItemEntity> itemEntities = itemRepository.findAll();
+    public PageResponseDto<ItemResponseDto> findAll(
+        int page,
+        int size,
+        String sortBy,
+        String direction
+    ) {
+        Sort sort = direction.equalsIgnoreCase("asc") ?
+            Sort.by(sortBy).ascending() :
+            Sort.by(sortBy).descending();
 
-        List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        for (ItemEntity itemEntity : itemEntities) {
-            ItemResponseDto dto = new ItemResponseDto(
-                itemEntity.getId(),
-                itemEntity.getName(),
-                itemEntity.getPrice(),
-                itemEntity.getImageUrl()
-            );
-            itemResponseDtos.add(dto);
-        }
+        Page<ItemEntity> itemEntities = itemRepository.findAll(pageable);
+        Page<ItemResponseDto> pagedDtos = itemEntities.map(entity -> new ItemResponseDto(
+            entity.getId(),
+            entity.getName(),
+            entity.getPrice(),
+            entity.getImageUrl()
+        ));
 
-        return itemResponseDtos;
+        return new PageResponseDto<>(
+            pagedDtos.getContent(),
+            pagedDtos.getNumber() + 1,
+            pagedDtos.getSize(),
+            pagedDtos.getTotalElements(),
+            pagedDtos.getTotalPages()
+        );
+
     }
 
     @Transactional

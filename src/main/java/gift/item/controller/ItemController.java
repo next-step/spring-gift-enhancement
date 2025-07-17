@@ -1,11 +1,12 @@
 package gift.item.controller;
 
+import gift.common.dto.PageResponseDto;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.service.ItemService;
 import jakarta.validation.Valid;
-import java.util.List;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,13 +36,24 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemResponseDto>> findAll() {
-        List<ItemResponseDto> dtos = itemService.findAll();
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<PageResponseDto<ItemResponseDto>> findAll(
+        @RequestParam(defaultValue = "1") @Positive int page,
+        @RequestParam(defaultValue = "10") @Positive int size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction
+    ) {
+        PageResponseDto<ItemResponseDto> pagedDtos = itemService.findAll(
+            page,
+            size,
+            sortBy,
+            direction
+        );
+        return ResponseEntity.ok(pagedDtos);
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDto> createItem(@RequestBody @Valid ItemCreateDto itemCreateDto) {
+    public ResponseEntity<ItemResponseDto> createItem(
+        @RequestBody @Valid ItemCreateDto itemCreateDto) {
         ItemResponseDto dto = itemService.createItem(itemCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
