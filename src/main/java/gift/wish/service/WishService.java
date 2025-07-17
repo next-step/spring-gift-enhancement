@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static gift.wish.dto.WishResponseDto.fromEntity;
 
@@ -40,11 +41,10 @@ public class WishService {
 
         Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new IllegalArgumentException("member를 찾을 수 없습니다"));
         Product product = productRepository.findById(dto.getProductId()).orElseThrow(() -> new IllegalArgumentException("product를 찾을 수 없습니다"));
-        List<Wish> list = wishRepository.findByMemberId(dto.getMemberId());
+        Optional<Wish> OpWish = wishRepository.findByMemberIdAndProductId(dto.getMemberId(),dto.getProductId());
 
-        List<Long> productIds = list.stream().map(Wish::getProduct).map(Product::getId).toList();
-        if (productIds.stream().anyMatch(dto.getProductId()::equals)) {
-            throw new IllegalArgumentException("이미 추가 되어있습니다!");
+        if(OpWish.isPresent()) {
+           throw new IllegalArgumentException("이미 wishlist에 상품이 존재합니다");
         }
 
         Wish wish = new Wish(null, member, product, dto.getQuantity());

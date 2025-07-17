@@ -1,5 +1,6 @@
 package gift.wish.repository;
 
+import gift.product.entity.Product;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.entity.Wish;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public interface WishRepository extends JpaRepository<Wish,Long> {
 
     List<Wish> findByMemberId(Long memberId);
+    Optional<Wish> findByMemberIdAndProductId(Long memberId, Long productId);
     void deleteByMemberIdAndProductId(Long memberId, Long productId);
 
 }
