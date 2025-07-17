@@ -8,7 +8,6 @@ import gift.product.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static gift.product.dto.ProductResponseDto.fromEntity;
 
@@ -46,7 +45,7 @@ public class ProductService {
             product.setName(productRequestDto.getName());
             product.setPrice(productRequestDto.getPrice());
             product.setImageUrl(productRequestDto.getImageUrl());
-            return productRepository.save(product);
+            return fromEntity(productRepository.save(product));
         }
         return null;
     }
@@ -60,14 +59,14 @@ public class ProductService {
             product.setPrice(productRequestDto.getPrice());
             product.setImageUrl(productRequestDto.getImageUrl());
 
-            return fromEntity(productRepository.update(product));
+            return fromEntity(productRepository.save(product));
         }
         return null;
     }
 
     //삭제
     public void deleteProduct(Long id) {
-        productRepository.delete(id);
+        productRepository.deleteById(id);
     }
 
     //상품 이름 검사

@@ -21,19 +21,13 @@ public class MemberService {
 
     //회원가입 기능
     public MemberResponseDto register(MemberRequestDto memberRequestDto){
-        Long id = memberRepository.registerMember(memberRequestDto).getId();
 
-        if(id == null){
-            throw new RuntimeException("회원가입에 실패하였습니다");
-        }
-
-        Member member = new Member(
-                id,
+        Member member = new Member(null,
                 memberRequestDto.getEmail(),
                 memberRequestDto.getPassword(),
-                memberRequestDto.getRole()
-        );
+                memberRequestDto.getRole());
 
+        member = memberRepository.save(member);
         return new MemberResponseDto(jwtProvider.generateToken(member));
 
     }
@@ -41,15 +35,19 @@ public class MemberService {
     //로그인 기능
     public MemberResponseDto login(MemberRequestDto memberRequestDto){
 
-        Member member = memberRepository.findMember(memberRequestDto).orElseThrow(
-                () -> new RuntimeException("멤버를 찾지 못했습니다")
+        Member member = memberRepository.findMemberByEmail(memberRequestDto.getEmail()).orElseThrow(
+                () -> new IllegalArgumentException  ("이메일이 일치하지 않습니다")
         );
+
+        if(!member.getPassword().equals(memberRequestDto.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+        }
 
         return new MemberResponseDto(jwtProvider.generateToken(member));
 
     }
 
     public Member findMemberById(Long id){
-        return memberRepository.findMemberById(id).orElseThrow();
+        return memberRepository.findById(id).orElseThrow();
     }
 }

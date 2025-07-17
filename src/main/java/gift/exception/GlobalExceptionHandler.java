@@ -1,6 +1,5 @@
 package gift.exception;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

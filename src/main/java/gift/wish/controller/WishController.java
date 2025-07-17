@@ -24,8 +24,8 @@ public class WishController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<WishResponseDto>>> getWishlist(@LoginMember Member member) {
-        Wish wish = new Wish(null, member.getId(),null,null);
-        WishRequestDto wishRequestDto = WishRequestDto.fromEntity(wish);
+        WishRequestDto wishRequestDto = new WishRequestDto();
+        wishRequestDto.setMemberId(member.getId());
         return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", wishService.getWishlist(wishRequestDto)));
     }
 
@@ -40,8 +40,9 @@ public class WishController {
     @DeleteMapping("{productId}")
     public ResponseEntity<ApiResponse<Void>> deleteWish(@PathVariable Long productId,
                                                         @LoginMember Member member) {
-        Wish wish = new Wish(null, member.getId(),productId,null);
-        WishRequestDto dto = WishRequestDto.fromEntity(wish);
+        WishRequestDto dto = new WishRequestDto();
+        dto.setMemberId(member.getId());
+        dto.setProductId(productId);
         wishService.deleteWish(dto);
         return ResponseEntity.ok(new ApiResponse<>(200,"삭제에 성공했습니다", null));
     }
