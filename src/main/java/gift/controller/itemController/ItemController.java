@@ -4,6 +4,8 @@ package gift.controller.itemController;
 import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
+import gift.dto.itemDto.ResponseItems;
+import gift.entity.Item;
 import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,20 +25,20 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemCreateDto> addItems(
+    public ResponseEntity<ResponseItems> addItem(
             @RequestBody @Valid ItemCreateDto dto
     ) {
-        ItemCreateDto item = itemService.saveItem(dto);
-        return new ResponseEntity<>(item, HttpStatus.CREATED);
-    }
+        Item item = itemService.saveItem(dto);
+        ItemResponseDto responseDto = ItemResponseDto.from(item);
 
+        return new ResponseEntity<>(new ResponseItems(List.of(responseDto)), HttpStatus.CREATED);
+    }
     @GetMapping
-    public ResponseEntity<List<ItemResponseDto>> getItems(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer price
-    ) {
-        List<ItemResponseDto> items = itemService.getItems(name, price);
-        return ResponseEntity.ok(items);
+    public ResponseEntity<ResponseItems> getItems(@RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
+        List<Item> items = itemService.getItems(name, price);
+        List<ItemResponseDto> itemList = ItemResponseDto.from(items);
+
+        return ResponseEntity.ok(new ResponseItems(itemList));
     }
 
     @DeleteMapping
@@ -48,11 +50,13 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemUpdateDto> updateItems(
+    public ResponseEntity<ResponseItems> updateItems(
             @PathVariable Long id,
             @RequestBody @Valid ItemUpdateDto dto
     ) {
-        ItemUpdateDto item = itemService.updateItem(id, dto);
-        return ResponseEntity.ok(item);
+        Item updatedItem = itemService.updateItem(id, dto);
+        ItemResponseDto responseDto = ItemResponseDto.from(updatedItem);
+
+        return ResponseEntity.ok(new ResponseItems(List.of(responseDto)));
     }
 }

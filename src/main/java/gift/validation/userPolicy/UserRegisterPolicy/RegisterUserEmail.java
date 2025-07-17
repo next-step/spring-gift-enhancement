@@ -6,6 +6,7 @@ import gift.validation.userPolicy.UserViolationHandler.ViolationHandler;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import java.util.regex.Pattern;
 
 @Component
@@ -21,8 +22,8 @@ public class RegisterUserEmail implements UserPolicy<UserRegisterDto> {
 
     @Override
     public boolean isValid(UserRegisterDto dto, ConstraintValidatorContext context) {
-        if (dto.email()==null || !EMAIL_PATTERN.matcher(dto.email()).matches()) {
-            violationHandler.addViolation(context,"이메일 형식과 맞지 않습니다.");
+        if (dto.email() == null || !EMAIL_PATTERN.matcher(dto.email()).matches()) {
+            violationHandler.addViolation(context, "이메일 형식과 맞지 않습니다.");
             return false;
         }
         return true;

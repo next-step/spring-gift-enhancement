@@ -31,7 +31,7 @@ class AdminItemControllerTest {
         ItemCreateDto dto = new ItemCreateDto("카카오", 1500, "juice.png", true);
         itemService.saveItem(dto);
         assertThat(itemService.getAllItems())
-                .anyMatch(item -> item.name().equals("카카오"));
+                .anyMatch(item -> item.getName().equals("카카오"));
     }
 
     @Test
@@ -39,7 +39,7 @@ class AdminItemControllerTest {
         ItemCreateDto dto = new ItemCreateDto("카카오", 1500, "juice.png", false);
         itemService.saveItem(dto);
         assertThat(itemService.getAllItems())
-                .anyMatch(item -> item.name().equals("카카오"));
+                .anyMatch(item -> item.getName().equals("카카오"));
     }
 
     @Test

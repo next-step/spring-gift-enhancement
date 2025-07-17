@@ -1,28 +1,17 @@
 package gift.repository.itemRepository;
 
-import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.Item;
-import gift.entity.WishItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ItemRepository {
+@Repository
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Item saveItem(Item item);
+    Item findByName(String name);
 
-    List<Item> getItems(String name, Integer price);
+    List<Item> findByPrice(Integer price);
 
-    Item deleteItems(String name);
-
-    Item findById(Long id);
-
-    List<Item> getAllItems();
-
-    Item deleteById(Long id);
-
-    Item updateItem(Long id, String name, int price, String imageUrl);
-
-    Item findItemByName(String name);
-
-    Item findItemById(Long itemId);
+    List<Item> findByNameAndPrice(String name, Integer price);
 }

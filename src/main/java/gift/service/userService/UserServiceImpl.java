@@ -3,18 +3,17 @@ package gift.service.userService;
 import gift.Jwt.JwtUtil;
 import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
-import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.entity.UserRole;
 import gift.exception.userException.UserAuthorizationException;
 import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
-import gift.exception.userException.UserPasswordException;
+import gift.exception.userException.UserPasswordInputException;
 import gift.repository.userRepository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,31 +28,39 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public String registerUser(UserRegisterDto dto) {
         String email = dto.email();
         String password = dto.password();
         UserRole role = dto.role();
 
-        if (userRepository.findUserByEmail(email) != null) {
+        if (isEmailExist(email)) {
             throw new UserDuplicatedException();
         }
 
-        User savedUser = userRepository.save(email, password, role);
+        User user = new User(null, email, password, role);
+        User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser);
 
         return token;
     }
 
+    private boolean isEmailExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+
     @Override
     public String loginUser(UserLoginDto dto) {
         String targetEmail = dto.email();
 
-        User findUser = userRepository.findUserByEmail(targetEmail);
+        User findUser = findUserByEmail(targetEmail);
+
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
         if (!findUser.checkPassword(dto.password())) {
-            throw new UserPasswordException();
+            throw new UserPasswordInputException();
         }
         return jwtUtil.generateToken(findUser);
 
@@ -71,28 +78,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getUserList(String email,boolean isAdmin) {
+    public List<User> getUserList(String email, boolean isAdmin) {
 
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
-        List<User> users = getUsersByEmail(email);
-        return addResponseDto(users);
-    }
 
-    private List<UserResponseDto> addResponseDto(List<User> users) {
-        List<UserResponseDto> result = new ArrayList<>();
-        for (User user : users) {
-            result.add(new UserResponseDto(user.email(), user.password()));
-        }
-        return result;
+        List<User> users = getUsersByEmail(email);
+
+        return users;
     }
 
     private List<User> getUsersByEmail(String email) {
         if (email == null) {
-            return userRepository.getAllUsers();
+            return userRepository.findAll();
         } else {
-            User findUser = userRepository.findUserByEmail(email);
+            User findUser = findUserByEmail(email);
             if (findUser == null) {
                 throw new UserNotFoundException();
             } else {
@@ -102,42 +103,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto finUserById(Long id) {
-        User user = userRepository.findUserById(id);
+    public User finUserById(Long id) {
+        User user = findUserById(id);
         if (user == null) {
             throw new UserNotFoundException();
         }
-        return new UserResponseDto(user.email(), user.password());
+        return user;
+    }
+
+    private User findUserById(Long id) {
+        User user = userRepository.findUserById(id);
+        return user;
     }
 
     @Override
-    public UserResponseDto updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
+    @Transactional
+    public User updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
         if (!isAdmin) {
-            System.out.println("권한이 없습니다.");
             throw new UserAuthorizationException();
         }
 
-        User findUser = userRepository.findUserById(id);
+        User findUser = userRepository.findById(id).orElse(null);
+
         if (findUser == null) {
             throw new UserNotFoundException();
         }
-        String changeEmail = dto.email();
-        String changePassword = dto.password();
-        User updatedUser = userRepository.updateUser(findUser, changeEmail, changePassword);
 
+        String email = dto.email();
+        String password = dto.password();
+        findUser.changeEmailAndPassword(email, password);
 
-        return new UserResponseDto(updatedUser.email(), updatedUser.password());
+        return findUser;
     }
 
+
     @Override
-    public void deleteUserById(Long id,boolean isAdmin) {
+    @Transactional
+    public void deleteUserById(Long id, boolean isAdmin) {
         if (!isAdmin) {
-            System.out.println("권한이 없습니다.");
             throw new UserAuthorizationException();
         }
 
-        User findUser = userRepository.findUserById(id);
-        userRepository.deleteUser(findUser);
+        userRepository.deleteUserById(id);
     }
 
 }

@@ -1,21 +1,17 @@
 package gift.service.itemService;
 
-
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemDto;
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
-import gift.exception.itemException.ItemNotFoundException;
 import gift.repository.itemRepository.ItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
-
     private final ItemRepository itemRepository;
 
     public ItemServiceImpl(ItemRepository itemRepository) {
@@ -23,105 +19,73 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemCreateDto saveItem(ItemCreateDto dto) {
+    @Transactional
+    public Item saveItem(ItemCreateDto dto) {
         Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
-        Item saveditem = itemRepository.saveItem(item);
 
-        return new ItemCreateDto(saveditem);
+        return itemRepository.save(item);
     }
 
     @Override
-    public List<ItemResponseDto> getItems(String name, Integer price) {
-        List<Item> items;
-        List<ItemResponseDto> result = new ArrayList<>();
+    public List<Item> getItems(String name, Integer price) {
         if (name == null && price == null) {
-            items = itemRepository.getAllItems();
-        } else {
-            items = itemRepository.getItems(name, price);
+            return getAllItems();
         }
-        if (items.isEmpty()) {
-            throw new ItemNotFoundException();
+        if (name == null) {
+            return itemRepository.findByPrice(price);
         }
-
-        for (Item item : items) {
-            result.add(ItemResponseDto.from(item));
-
+        if (price == null) {
+            itemRepository.findByName(name);
         }
-        return result;
+        return itemRepository.findByNameAndPrice(name, price);
     }
 
     @Override
+    @Transactional
     public void delete(String name) {
-        Item item = itemRepository.deleteItems(name);
-        if (item == null) {
-            throw new ItemNotFoundException(name);
-        }
+        Item targetItem = itemRepository.findByName(name);
+        itemRepository.delete(targetItem);
     }
 
     @Override
-    public ItemUpdateDto updateItem(Long id, ItemUpdateDto dto) {
-        Item item = itemRepository.findById(id);
-        if (item != null) {
-            if (dto.id().equals(item.getId())) {
-                Item updatedItem = itemRepository.updateItem(id, dto.name(), dto.price(), dto.imageUrl());
-                return new ItemUpdateDto(updatedItem);
-            } else
-                throw new ItemNotFoundException();
-        } else
-            throw new ItemNotFoundException();
+    @Transactional
+    public Item updateItem(Long id, ItemUpdateDto dto) {
+        Optional<Item> targetItem = findItemById(id);
+
+        Item item = targetItem.get();
+
+        String name = dto.name();
+        Integer price = dto.price();
+        String imageUrl = dto.imageUrl();
+
+        item.update(name,price,imageUrl);
+
+        return item;
     }
 
     @Override
-    public ItemDto findById(Long id) {
-        List<Item> items = itemRepository.getAllItems();
-
-        for (Item item : items) {
-            if (item.getId().equals(id)) {
-                return new ItemDto(item);
-            }
-        }
-        return null;
+    public Optional<Item> findById(Long id) {
+        return itemRepository.findById(id);
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        Item item = itemRepository.deleteById(id);
-        if (item == null) {
-            throw new ItemNotFoundException();
-        }
+        itemRepository.deleteById(id);
     }
 
     @Override
-    public List<ItemResponseDto> getAllItems() {
-        List<Item> items = itemRepository.getAllItems();
-        List<ItemResponseDto> result = new ArrayList<>();
-
-        for (Item item : items) {
-            result.add(ItemResponseDto.from(item));
-        }
-
-        return result;
+    public List<Item> getAllItems() {
+        return itemRepository.findAll();
     }
 
     @Override
-    public ItemResponseDto findItemByName(String name) {
-        Item item = itemRepository.findItemByName(name);
-
-        if (item == null) {
-            throw new ItemNotFoundException();
-        }
-
-        return ItemResponseDto.from(item);
+    public Optional<Item> findItemByName(String name) {
+        return Optional.ofNullable(itemRepository.findByName(name));
     }
 
     @Override
-    public ItemResponseDto findItemById(Long itemId) {
-        Item item = itemRepository.findItemById(itemId);
-
-        if (item == null) {
-            throw new ItemNotFoundException();
-        }
-
-        return ItemResponseDto.from(item);
+    public Optional<Item> findItemById(Long itemId) {
+        return itemRepository.findById(itemId);
     }
 }

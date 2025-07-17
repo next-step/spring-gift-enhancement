@@ -1,33 +1,29 @@
 package gift.service.itemService;
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemDto;
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
-import gift.dto.wishListDto.AddWishItemDto;
-import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.Item;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemService {
-    ItemCreateDto saveItem(ItemCreateDto dto);
+    Item saveItem(ItemCreateDto dto);
 
-    List<ItemResponseDto> getItems(String name, Integer price);
+    List<Item> getItems(String name, Integer price);
 
     void delete(String name);
 
-    ItemUpdateDto updateItem(Long id, ItemUpdateDto dto);
+    Item updateItem(Long id, ItemUpdateDto dto);
 
-    ItemDto findById(Long id);
+    Optional<Item> findById(Long id);
 
     void deleteById(Long id);
 
-    List<ItemResponseDto> getAllItems();
+    List<Item> getAllItems();
 
-    ItemResponseDto findItemByName(@NotNull String name);
+    Optional<Item> findItemByName(@NotNull String name);
 
-    ItemResponseDto findItemById(Long itemId);
+    Optional<Item> findItemById(Long itemId);
 }

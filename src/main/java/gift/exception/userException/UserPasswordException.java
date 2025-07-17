@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class UserPasswordException extends ApplicationException {
     public UserPasswordException() {
-        super(HttpStatus.NOT_FOUND, "비밀번호가 틀렸습니다.");
+        super(HttpStatus.BAD_REQUEST, "비밀번호는 필수 입력값입니다.");
     }
 }

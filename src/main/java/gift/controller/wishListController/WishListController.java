@@ -1,15 +1,17 @@
 package gift.controller.wishListController;
 
 import gift.config.LoginUser;
-import gift.dto.wishListDto.AddWishItemDto;
+import gift.dto.wishListDto.CreateWishItemRequestDto;
 import gift.dto.wishListDto.ResponseWishItem;
 import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.entity.WishItem;
 import gift.service.wishListService.WishListService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,34 +25,39 @@ public class WishListController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid AddWishItemDto dto, @LoginUser String userEmail) {
+    public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid CreateWishItemRequestDto dto, @LoginUser String userEmail) {
 
-        ResponseWishItemDto addedWishItem = wishListService.addWishItem(dto, userEmail);
+        WishItem addedWishItem = wishListService.addWishItem(dto, userEmail);
 
-        return new ResponseEntity<>(addedWishItem, HttpStatus.CREATED);
+        return new ResponseEntity<>(ResponseWishItemDto.from(addedWishItem), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<ResponseWishItem> getWishItemList(@LoginUser String userEmail, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
-        List<ResponseWishItemDto> wishItemList = wishListService.getItemList(name, price, userEmail);
-        ResponseWishItem response = new ResponseWishItem(wishItemList);
+        List<WishItem> wishItemList = wishListService.getItemList(name, price, userEmail);
 
-        return ResponseEntity.ok(response);
+        List<ResponseWishItemDto> wishItemDtoList = new ArrayList<>();
+        for (WishItem wishItem : wishItemList) {
+            wishItemDtoList.add(ResponseWishItemDto.from(wishItem));
+        }
+
+        return ResponseEntity.ok(new ResponseWishItem(wishItemDtoList));
     }
 
     @DeleteMapping
     public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {
 
-        ResponseWishItemDto deletedWishItem = wishListService.deleteWishItem(name, userEmail);
+        WishItem targetWishItem = wishListService.deleteWishItem(name, userEmail);
 
-        return new ResponseEntity<>(deletedWishItem, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseWishItemDto.from(targetWishItem), HttpStatus.NO_CONTENT);
     }
 
     @PutMapping
     public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestParam Integer quantity, @RequestParam String name) {
 
-        ResponseWishItemDto updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
+        WishItem updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
 
-        return new ResponseEntity<>(updatedWishItem, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(ResponseWishItemDto.from(updatedWishItem), HttpStatus.ACCEPTED);
     }
+
 }

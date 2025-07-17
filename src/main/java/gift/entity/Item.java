@@ -1,18 +1,37 @@
 package gift.entity;
 
+import gift.exception.itemException.ItemImageurlException;
+import gift.exception.itemException.ItemNameException;
+import gift.exception.itemException.ItemPriceException;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@Entity
+@Table(name = "items") // 테이블명이 items인 경우 명시
 public class Item {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(nullable = false, length = 255)
     private String name;
+
+    @Column(nullable = false)
+    @Min(0)
     private Integer price;
+
+    @Column(name = "image_url", length = 255, nullable = true)
     private String imageUrl;
 
+    protected Item() {
 
-    public Item(Long id, String name, Integer price, String imageUrl) {
-        this.id = id;
+    }
+
+    public Item(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
@@ -25,12 +44,6 @@ public class Item {
         this.imageUrl = item.getImageUrl();
     }
 
-    public Item(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
-
     public Long getId() {
         return id;
     }
@@ -39,23 +52,39 @@ public class Item {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+
+    public boolean isValid(String name, Integer price) {
+        boolean nameMatches = (name == null || this.getName().equals(name));
+        boolean priceMatches = (price == null || this.getPrice().equals(price));
+
+        return nameMatches && priceMatches;
+    }
+
+    public void update(String name, Integer price, String imageUrl) {
+
+        if (name == null) {
+            throw new ItemNameException();
+        }
+
+        if (price == null) {
+            throw new ItemPriceException();
+        }
+
+        if (imageUrl == null) {
+            throw new ItemImageurlException();
+        }
+
+        this.name = name;
+        this.price = price;
         this.imageUrl = imageUrl;
     }
 }

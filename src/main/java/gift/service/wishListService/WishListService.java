@@ -1,18 +1,18 @@
 package gift.service.wishListService;
 
-import gift.dto.wishListDto.AddWishItemDto;
-import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.dto.wishListDto.CreateWishItemRequestDto;
+import gift.entity.WishItem;
 import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface WishListService {
 
-    ResponseWishItemDto addWishItem(@Valid AddWishItemDto dto, String userEmail);
+    WishItem addWishItem(@Valid CreateWishItemRequestDto dto, String userEmail);
 
-    List<ResponseWishItemDto> getItemList(String name, Integer price, String userEmail);
+    List<WishItem> getItemList(String name, Integer price, String userEmail);
 
-    ResponseWishItemDto deleteWishItem(String name, String userEmail);
+    WishItem deleteWishItem(String name, String userEmail);
 
-    ResponseWishItemDto updateWishItem(Integer quantity, String name, String userEmail);
+    WishItem updateWishItem(Integer quantity, String name, String userEmail);
 }

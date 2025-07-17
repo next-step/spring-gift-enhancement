@@ -1,24 +1,24 @@
 package gift.service.wishListService;
 
-import gift.dto.itemDto.ItemResponseDto;
-import gift.dto.wishListDto.AddWishItemDto;
-import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.dto.wishListDto.CreateWishItemRequestDto;
 import gift.entity.Item;
 import gift.entity.User;
 import gift.entity.WishItem;
+import gift.exception.itemException.ItemDuplicatedException;
 import gift.exception.itemException.ItemNotFoundException;
-import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class WishListServiceImpl implements WishListService{
+public class WishListServiceImpl implements WishListService {
 
     private final WishListRepository wishListRepository;
     private final UserService userService;
@@ -30,107 +30,109 @@ public class WishListServiceImpl implements WishListService{
         this.itemService = itemService;
     }
 
+
     @Override
-    public ResponseWishItemDto addWishItem(AddWishItemDto dto, String userEmail) {
+    @Transactional
+    public WishItem addWishItem(CreateWishItemRequestDto dto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        ItemResponseDto item = itemService.findItemByName(dto.name());
-        if (item == null) {
+        Optional<Item> findItem = itemService.findItemByName(dto.name());
+        if (findItem.isEmpty()) {
             throw new ItemNotFoundException(dto.name());
         }
 
+        Item item = findItem.get();
         Integer quantity = dto.quantity();
-        WishItem addedWishItem = wishListRepository.addWishItem(user.id(), item.id(), quantity);
 
+        WishItem wishItem = new WishItem(user, item, quantity);
 
-        return ResponseWishItemDto.from(addedWishItem);
+        if (wishListRepository.existsByItem(item)) {
+            throw new ItemDuplicatedException();
+        }
+
+        WishItem savedWishItem = wishListRepository.save(wishItem);
+
+        return savedWishItem;
     }
 
     @Override
-    public List<ResponseWishItemDto> getItemList(String name, Integer price, String userEmail) {
+    public List<WishItem> getItemList(String name, Integer price, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        List<WishItem> wishItems = wishListRepository.getAllWishItems(user.id());
+        List<WishItem> wishItems = wishListRepository.findAllByUser(user);
         if (wishItems.isEmpty()) {
-            throw new ItemNotFoundException();
+            return wishItems;
         }
 
-        List<ResponseWishItemDto> result = getWishItems(wishItems, name, price);
-
-        return result;
-    }
-    private boolean isValid(ItemResponseDto item, String name, Integer price) {
-        boolean nameMatches = (name == null || item.name().equals(name));
-        boolean priceMatches = (price == null || item.price().equals(price));
-
-        return nameMatches && priceMatches;
-    }
-
-    private List<ResponseWishItemDto> getWishItems(List<WishItem> wishItems, String name, Integer price) {
-        List<ResponseWishItemDto> result = new ArrayList<>();
-
+        List<WishItem> result = new ArrayList<>();
         for (WishItem wishItem : wishItems) {
-            ItemResponseDto item = itemService.findItemById(wishItem.itemId());
-            if (item == null) {
-                if (name == null && price == null) {
-                    throw new UserInputException();
-                }
-                continue;
-            }
-
-            if (name == null && price == null || isValid(item, name, price)) {
-                result.add(ResponseWishItemDto.from(wishItem));
+            Item item = wishItem.getItem();
+            if (item.isValid(name,price)) {
+                result.add(wishItem);
             }
         }
 
         return result;
     }
 
+
     @Override
-    public ResponseWishItemDto deleteWishItem(String name, String userEmail) {
+    @Transactional
+    public WishItem deleteWishItem(String name, String userEmail) {
+        User user = userService.findUserByEmail(userEmail);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        Optional<Item> targetItem = itemService.findItemByName(name);
+        if (targetItem.isEmpty()) {
+            throw new ItemNotFoundException(name);
+        }
+
+        Item item = targetItem.get();
+
+        Optional<WishItem> deletedWishItem = wishListRepository.findByUserAndItem(user, item);
+        if (deletedWishItem.isEmpty()) {
+            throw new ItemNotFoundException();
+        }
+
+        WishItem wishItem = deletedWishItem.get();
+        wishListRepository.delete(wishItem);
+
+        return wishItem;
+    }
+
+    @Override
+    @Transactional
+    public WishItem updateWishItem(Integer quantity, String name, String userEmail) {
+
         User user = userService.findUserByEmail(userEmail);
 
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        ItemResponseDto item = itemService.findItemByName(name);
+        Optional<Item> targetWishItem = itemService.findItemByName(name);
+        if (targetWishItem.isEmpty()) {
+            throw new ItemNotFoundException(name);
+        }
+        Item item = targetWishItem.get();
 
-        if (item == null) {
+        Optional<WishItem> toUpdatedWishItem = wishListRepository.findByUserAndItem(user, item);
+        if (toUpdatedWishItem.isEmpty()) {
             throw new ItemNotFoundException();
         }
 
-        WishItem deletedWishItem = wishListRepository.deleteWishItem(user.id(), item.id());
+        WishItem wishItem = toUpdatedWishItem.get();
+        wishItem.changeQuantity(quantity);
 
-        return ResponseWishItemDto.delete(deletedWishItem);
+        return wishItem;
     }
 
-    @Override
-    public ResponseWishItemDto updateWishItem(Integer quantity, String name, String userEmail) {
-        User user = userService.findUserByEmail(userEmail);
-
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
-
-        ItemResponseDto item = itemService.findItemByName(name);
-
-        if (item == null) {
-            throw new ItemNotFoundException();
-        }
-
-        WishItem updateItem = wishListRepository.updateWishItem(quantity, item.id(), user.id());
-
-        if (updateItem == null) {
-            throw new ItemNotFoundException();
-        }
-
-        return ResponseWishItemDto.from(updateItem);
-    }
 }

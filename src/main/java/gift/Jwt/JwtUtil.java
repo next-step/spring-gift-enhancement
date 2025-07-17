@@ -5,7 +5,6 @@ import gift.exception.userException.ExpiredTokenException;
 import gift.exception.userException.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -28,15 +27,14 @@ public class JwtUtil {
         Date expiry = new Date(now.getTime() + EXPIRATION.toMillis());
 
         return Jwts.builder()
-                .subject(user.id().toString())
-                .claim("email", user.email())
-                .claim("role", user.role().name())
+                .subject(user.getId().toString())
+                .claim("email", user.getEmail())
+                .claim("role", user.getRole().name())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
                 .compact();
     }
-
 
 
     public boolean validate(String token) {

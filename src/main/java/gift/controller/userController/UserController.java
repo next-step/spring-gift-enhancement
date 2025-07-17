@@ -4,8 +4,8 @@ package gift.controller.userController;
 import gift.Jwt.TokenUtils;
 import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
-import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
+import gift.entity.User;
 import gift.service.userService.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
     private final TokenUtils tokenUtils;
 
-    public UserController(UserService userService,TokenUtils tokenUtils) {
+    public UserController(UserService userService, TokenUtils tokenUtils) {
         this.userService = userService;
         this.tokenUtils = tokenUtils;
     }
@@ -51,7 +51,7 @@ public class UserController {
         tokenUtils.validateToken(token);
         boolean isAdmin = tokenUtils.requireAdmin(token);
 
-        List<UserResponseDto> users = userService.getUserList(email, isAdmin);
+        List<User> users = userService.getUserList(email, isAdmin);
         return ResponseEntity.ok(users);
     }
 
@@ -67,12 +67,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<UserResponseDto> updateUser(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody @Valid UserUpdateDto dto) {
+    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String authHeader, @PathVariable Long id, @RequestBody @Valid UserUpdateDto dto) {
         String token = tokenUtils.extractToken(authHeader);
         tokenUtils.validateToken(token);
         boolean isAdmin = tokenUtils.requireAdmin(token);
 
-        UserResponseDto updatedUser = userService.updateUser(id, dto,isAdmin);
+        User updatedUser = userService.updateUser(id, dto, isAdmin);
 
         return ResponseEntity.ok(updatedUser);
     }
