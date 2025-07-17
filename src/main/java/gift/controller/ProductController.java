@@ -50,7 +50,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
         try {
-            productService.update(id, request.toEntity());
+            productService.update(id, request);
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

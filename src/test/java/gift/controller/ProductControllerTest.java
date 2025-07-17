@@ -2,6 +2,7 @@ package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.domain.Product;
+import gift.dto.ProductRequest;
 import gift.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ class ProductControllerTest {
     @DisplayName("상품 수정 성공")
     void updateProductSuccess() throws Exception {
         Product updated = new Product(1L, "업데이트커피", 4700, "http://image.url");
-        doNothing().when(productService).update(eq(1L), any(Product.class));
+        doNothing().when(productService).update(eq(1L), any(ProductRequest.class));
 
         mockMvc.perform(put("/api/products/1")
                         .contentType(MediaType.APPLICATION_JSON)

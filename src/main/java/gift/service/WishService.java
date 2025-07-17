@@ -22,28 +22,32 @@ public class WishService {
 
     @Transactional(readOnly = true)
     public List<WishResponse> getWishes(Long memberId) {
-        List<Wish> wishes = wishRepository.findAllByMemberId(memberId);
-        return wishes.stream()
+        return wishRepository.findAllByMemberId(memberId).stream()
                 .map(WishResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public void addWish(Long memberId, Long productId, int quantity) {
-        if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
-            wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId,quantity);
-        } else {
-            Wish wish = new Wish(new Member(memberId), new Product(productId), quantity);
-            wishRepository.save(wish);
-        }
+        wishRepository.findByMemberIdAndProductId(memberId, productId)
+                .ifPresentOrElse(
+                        wish -> wish.updateQuantity(quantity),
+                        () -> {
+                            Wish wish = new Wish(new Member(memberId), new Product(productId), quantity);
+                            wishRepository.save(wish);
+                        }
+                );
     }
 
     @Transactional
     public void updateWish(Long memberId, Long productId, int quantity) {
+        Wish wish = wishRepository.findByMemberIdAndProductId(memberId, productId)
+                .orElseThrow(() -> new IllegalArgumentException("위시가 존재하지 않습니다."));
+
         if (quantity <= 0) {
             wishRepository.deleteByMemberIdAndProductId(memberId, productId);
         } else {
-            wishRepository.updateQuantityByMemberIdAndProductId(memberId, productId, quantity);
+            wish.updateQuantity(quantity);
         }
     }
 

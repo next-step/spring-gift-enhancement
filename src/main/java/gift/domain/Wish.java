@@ -34,6 +34,10 @@ public class Wish {
         this.quantity = quantity;
     }
 
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public Long getId() {
         return id;
     }

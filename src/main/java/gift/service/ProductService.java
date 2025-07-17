@@ -1,7 +1,9 @@
 package gift.service;
 
 import gift.domain.Product;
+import gift.dto.ProductRequest;
 import gift.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,17 +38,15 @@ public class ProductService {
     }
 
     @Transactional
-    public void update(Long id, Product product) {
-        boolean updated = productRepository.updateById(
-                id,
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
-        ) > 0;
+    public void update(Long id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found: " + id));
 
-        if (!updated) {
-            throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
-        }
+        product.update(
+                request.getName(),
+                request.getPrice(),
+                request.getImageUrl()
+        );
     }
 
     @Transactional
