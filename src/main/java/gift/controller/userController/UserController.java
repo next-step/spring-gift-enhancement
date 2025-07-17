@@ -8,6 +8,8 @@ import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.service.userService.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -46,12 +48,12 @@ public class UserController {
 
 
     @GetMapping()
-    public ResponseEntity<?> getUserList(@RequestHeader("Authorization") String authHeader, @RequestParam(required = false) String email, Model model) {
+    public ResponseEntity<?> getUserList(@RequestHeader("Authorization") String authHeader, @RequestParam(required = false) String email, Pageable pageable, Model model) {
         String token = tokenUtils.extractToken(authHeader);
         tokenUtils.validateToken(token);
         boolean isAdmin = tokenUtils.requireAdmin(token);
 
-        List<User> users = userService.getUserList(email, isAdmin);
+        Page<User> users = userService.getUserList(email, isAdmin, pageable);
         return ResponseEntity.ok(users);
     }
 

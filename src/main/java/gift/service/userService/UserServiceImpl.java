@@ -12,6 +12,8 @@ import gift.exception.userException.UserNotFoundException;
 import gift.exception.userException.UserPasswordInputException;
 import gift.repository.userRepository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,27 +80,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUserList(String email, boolean isAdmin) {
+    public Page<User> getUserList(String email, boolean isAdmin, Pageable pageable) {
 
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
 
-        List<User> users = getUsersByEmail(email);
+        Page<User> users = getUsersByEmail(email, pageable);
 
         return users;
     }
 
-    private List<User> getUsersByEmail(String email) {
+    private Page<User> getUsersByEmail(String email, Pageable pageable) {
         if (email == null) {
-            return userRepository.findAll();
+            return userRepository.findAll(pageable);
         } else {
-            User findUser = findUserByEmail(email);
-            if (findUser == null) {
+            Page<User> users = userRepository.findByEmailContaining(email, pageable);
+            if (users.isEmpty()) {
                 throw new UserNotFoundException();
-            } else {
-                return List.of(findUser);
             }
+            return users;
         }
     }
 

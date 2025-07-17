@@ -5,13 +5,15 @@ import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface UserService {
     String registerUser(UserRegisterDto dto);
 
-    List<User> getUserList(String email, boolean isAdmin);
+    Page<User> getUserList(String email, boolean isAdmin, Pageable pageable);
 
     User finUserById(Long id);
 
