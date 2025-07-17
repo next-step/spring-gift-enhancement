@@ -1,5 +1,7 @@
 package gift.product.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
@@ -8,6 +10,7 @@ import gift.product.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static gift.product.dto.ProductResponseDto.fromEntity;
 
@@ -28,13 +31,8 @@ public class ProductService {
     }
 
     //전체 조회
-    public List<ProductResponseDto> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
-        for (Product product : products) {
-            productResponseDtos.add(fromEntity(product));
-        }
-        return productResponseDtos;
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(ProductResponseDto::fromEntity);
     }
 
     //추가
