@@ -52,11 +52,11 @@ public class WishController {
         return ResponseEntity.created(location).body(wishResponseDto);
     }
 
-    @DeleteMapping("/{wishlistId}")
+    @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> removeProductFromWishlist(
             @RequestAttribute("userEmail") String email,
-            @PathVariable Long wishlistId) {
-        wishService.removeProductFromWishlist(email, wishlistId);
+            @PathVariable Long wishId) {
+        wishService.removeProductFromWishlist(email, wishId);
 
         return ResponseEntity.noContent().build();
     }

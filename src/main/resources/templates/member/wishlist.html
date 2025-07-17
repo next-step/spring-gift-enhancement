@@ -19,6 +19,25 @@
     </tr>
     </thead>
     <tbody id="wishlist-body">
+    <tr th:if="${wishlistPage.empty}">
+      <td colspan="4">위시리스트에 담긴 상품이 없습니다.</td>
+    </tr>
+    <tr th:each="wish : ${wishlistPage.content}">
+      <td class="clickable-row" th:data-link="@{/members/products/{id}(id=${wish.product.id})}"
+          th:text="${wish.product.name}">상품명</td>
+      <td class="clickable-row" th:data-link="@{/members/products/{id}(id=${wish.product.id})}"
+          th:text="${wish.product.price} + '원'">가격</td>
+      <td class="clickable-row" th:data-link="@{/members/products/{id}(id=${wish.product.id})}">
+        <img th:src="${wish.product.imageUrl}" alt="이미지 없음"/>
+      </td>
+      <td>
+        <form th:action="@{/members/wishes/{id}(id=${wish.id})}" method="post"
+              class="delete-form">
+          <input type="hidden" name="_method" value="delete"/>
+          <button type="submit">삭제</button>
+        </form>
+      </td>
+    </tr>
     </tbody>
   </table>
 
