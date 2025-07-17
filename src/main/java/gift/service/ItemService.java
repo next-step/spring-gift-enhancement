@@ -8,12 +8,8 @@ import gift.entity.Role;
 import gift.exception.AuthorizationException;
 import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +23,9 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public List<ItemResponse> getAllItems(int page, int size, String sortProperty, String sortDirection) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortProperty);
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public Page<ItemResponse> getAllItems(Pageable pageable) {
         Page<Item> itemPage = itemRepository.findAll(pageable);
-
-        return itemPage.getContent().stream()
-            .map(ItemResponse::from)
-            .collect(Collectors.toList());
+        return itemPage.map(ItemResponse::from);
     }
 
     public ItemResponse getItemById(Long id) {
