@@ -1,6 +1,6 @@
 package gift.resolver;
 
-import gift.entity.Member;
+import gift.member.Member;
 import gift.authorization.exception.UnauthorizedException;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;

@@ -1,6 +1,6 @@
 package gift.product.dto;
 
-import gift.entity.Product;
+import gift.product.Product;
 
 public record ProductResponseDto (Long id, String name, Long price, String url){
     public ProductResponseDto(Product product) {

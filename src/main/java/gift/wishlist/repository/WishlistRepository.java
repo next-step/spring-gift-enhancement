@@ -1,6 +1,6 @@
 package gift.wishlist.repository;
 
-import gift.entity.Wishlist;
+import gift.wishlist.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

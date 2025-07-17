@@ -1,5 +1,7 @@
-package gift.entity;
+package gift.wishlist;
 
+import gift.member.Member;
+import gift.product.Product;
 import jakarta.persistence.*;
 
 @Entity

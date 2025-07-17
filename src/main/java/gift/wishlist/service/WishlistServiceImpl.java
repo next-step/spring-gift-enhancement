@@ -1,16 +1,13 @@
 package gift.wishlist.service;
 
-import gift.entity.Member;
+import gift.member.Member;
 import gift.member.service.MemberService;
 import gift.product.service.ProductServiceImpl;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
-import gift.entity.Product;
-import gift.entity.Wishlist;
-import gift.exception.OperationFailedException;
+import gift.product.Product;
+import gift.wishlist.Wishlist;
 import gift.wishlist.exception.WishlistItemNotFoundException;
-import gift.member.repository.MemberRepository;
-import gift.product.repository.ProductRepository;
 import gift.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

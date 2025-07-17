@@ -1,4 +1,4 @@
-package gift.entity;
+package gift.member;
 
 public enum Role {
     ADMIN,

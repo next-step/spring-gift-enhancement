@@ -1,6 +1,6 @@
 package gift.wishlist.controller;
 
-import gift.entity.Member;
+import gift.member.Member;
 import gift.resolver.LoginMember;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
