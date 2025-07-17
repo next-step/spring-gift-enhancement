@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -60,6 +61,35 @@ public class ProductControllerTest {
         assertThat(dtoBody.getImageUrl()).isEqualTo("http://example.png");
         assertThat(dtoBody.getApproved()).isEqualTo(true);
     }
+
+    @DisplayName("상품 전체 조회 시, 정상적으로 모든 상품을 가져오는지 테스트")
+    @Test
+    void 정상적인_전체상품_조회() {
+
+        var response = client.get()
+                .uri(url + "/all")
+                .retrieve()
+                .toEntity(ProductResponseDto[].class);
+
+        ProductResponseDto[] allProducts = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    // 컨트롤러에서 페이지네이션 테스트 코드 작성 실패
+//    @DisplayName("상품 페이지네이션 조회 시, 정상적으로 모든 상품을 가져오는지 테스트")
+//    @Test
+//    void 정상적인_페이지네이션_상품_조회() {
+//
+//        var response = client.get()
+//                .uri(url)
+//                .retrieve()
+//                .toEntity();
+//
+//        Page<ProductResponseDto> page = response.getBody();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    }
 
     @DisplayName("이름이 15자를 초과하는 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test

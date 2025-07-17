@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 @Service
 public class MemberServiceImpl implements MemberService {
 
@@ -144,7 +145,7 @@ public class MemberServiceImpl implements MemberService {
                         "해당 ID의 멤버는 존재하지 않습니다."
                 ));
 
-        member.changeRole(dto.getRole());
+        member.setRole(dto.getRole());
 
         return new MemberResponseDto(
                 member.getId(),

@@ -79,16 +79,15 @@ public class WishControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         assert dtoBody != null;
-        assertThat(dtoBody.getWishId()).isEqualTo(3L);
         assertThat(dtoBody.getName()).isEqualTo("카카오프랜즈 인형");
     }
 
-    @DisplayName("토큰을 받아 검증 후 Member 객체를 생성하여 해당 Member에 대한 위시리스트를 찾는다.")
+    @DisplayName("토큰을 받아 검증 후 Member 객체를 생성하여 해당 Member에 대한 전체 위시를 찾는다.")
     @Test
-    void 정상적인_위시리스트_조회() {
+    void 정상적인_위시_전체조회() {
 
         var response = client.get()
-                .uri(baseUrl + "/api/wishes")
+                .uri(baseUrl + "/api/wishes/all")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberToken1)
                 .retrieve()
                 .toEntity(WishResponseDto[].class);

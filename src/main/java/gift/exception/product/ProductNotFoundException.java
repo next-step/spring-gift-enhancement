@@ -1,7 +1,10 @@
 package gift.exception.product;
 
-public class ProductNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class ProductNotFoundException extends ProductException{
     public ProductNotFoundException(String message) {
-        super(message);
+
+        super(message, HttpStatus.NOT_FOUND);
     }
 }

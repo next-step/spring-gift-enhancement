@@ -6,6 +6,10 @@ import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,10 +27,18 @@ public class WishController {
         this.wishService = wishService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<WishResponseDto>> findWishList(@CurrentMember Member member) {
 
         return ResponseEntity.ok(wishService.findWishList(member.getId()));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<WishResponseDto>> findPageWishes(
+            @CurrentMember Member member,
+            @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return ResponseEntity.ok(wishService.findPageWishes(member.getId(), pageable));
     }
 
     @PostMapping

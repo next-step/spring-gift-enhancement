@@ -1,7 +1,10 @@
 package gift.exception.member;
 
-public class MemberAlreadyExistsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class MemberAlreadyExistsException extends MemberException {
     public MemberAlreadyExistsException(String message) {
-        super(message);
+
+        super(message, HttpStatus.CONFLICT);
     }
 }

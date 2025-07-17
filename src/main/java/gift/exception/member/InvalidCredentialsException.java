@@ -1,7 +1,12 @@
 package gift.exception.member;
 
-public class InvalidCredentialsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class InvalidCredentialsException extends MemberException{
+
     public InvalidCredentialsException(String message) {
-        super(message);
+
+        super(message, HttpStatus.UNAUTHORIZED);
     }
+
 }

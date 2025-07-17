@@ -5,11 +5,14 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.product.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class ProductServiceImpl implements ProductService{
 
@@ -36,6 +39,25 @@ public class ProductServiceImpl implements ProductService{
                 .toList();
 
         return dtoList;
+    }
+
+    @Override
+    public Page<ProductResponseDto> findProducts(Pageable pageable) {
+
+        Page<Product> products = productRepository.findAll(pageable);
+
+        Page<ProductResponseDto> page = products
+                .map(product -> new ProductResponseDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getImageUrl(),
+                        product.getApproved(),
+                        product.getDescription()
+                        )
+                );
+
+        return page;
     }
 
     @Override

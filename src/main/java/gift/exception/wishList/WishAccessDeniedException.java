@@ -1,7 +1,10 @@
 package gift.exception.wishList;
 
-public class WishAccessDeniedException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class WishAccessDeniedException extends WishException {
     public WishAccessDeniedException(String message) {
-        super(message);
+
+        super(message, HttpStatus.FORBIDDEN);
     }
 }
