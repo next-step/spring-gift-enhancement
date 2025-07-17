@@ -1,15 +1,17 @@
 # spring-gift-enhancement
 
-# 상품 고도화 과제 - step1 JPA 도입
-각 엔티티의 연관관계를 매핑하고, 기존 코드에 JPA를 도입해 리팩토링합니다.
+# 상품 고도화 과제 - step2 페이지네이션 구현
+
+Product, WishList 도메인에 대해 전체 목록 조회 메서드에 페이지네이션 기능을 추가합니다.
 
 ## 구현 기능
-[x] 각 엔티티 매핑
-[x] Member 도메인 Jpa 리팩토링
-[x] Product 도메인 Jpa 리팩토링
-[x] WishList 도메인 Jpa 리팩토링
-[x] DataJpaTest 코드 작성
+
+[x] Product 목록 조회 페이지네이션 추가
+[x] WishList 목록 조회 페이지네이션 추가
+[x] Product 페이지네이션 테스트코드 작성
+[x] WishList 페이지네이션 테스트코드 작성
 
 ## 참고사항
-- 이전에 사용하던 Jdbc기반의 repository들은 주석처리했습니다. Jpa 버전의 repository들의 이름은 {domain}JpaRepository입니다.
-- schema.sql 파일에서 테이블 정의 및 생성을 모두 담당합니다.
+
+- 이전에 주석처리되어있던 jdbc 기반의 repository 파일들은 모두 삭제했습니다.
+- 관리자용 상품 목록 조회 페이지에도 페이지네이션 기능을 곧 추가할 예정입니다 ! HTML 리팩토링도 함께 진행해야 할 것 같아 피드백을 반영하며 구현해보겠습니다 !
