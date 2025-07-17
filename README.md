@@ -2,9 +2,17 @@
 
 ## 구현 기능 목록
 
+### Step1
+
 ### 1. JPA로 리팩터링
 
 ### 2. @DataJpaTest
+
+### Step2
+
+### 1. 상품 페이지네이션
+
+### 2. 위시리스트 페이지네이션
 
 # spring-gift-wishlist
 
