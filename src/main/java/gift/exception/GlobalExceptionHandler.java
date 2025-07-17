@@ -51,4 +51,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleWishAlreadyExists(WishAlreadyExistsException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
     }
+
+    @ExceptionHandler({InvalidProductNameException.class, InvalidMoneyException.class})
+    public ResponseEntity<ErrorResponse> handleValueObjectException(RuntimeException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
 }

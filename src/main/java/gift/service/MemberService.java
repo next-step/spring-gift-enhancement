@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class MemberService {
 
@@ -73,20 +72,21 @@ public class MemberService {
     @Transactional
     public void updateMember(Long id, MemberRequest request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다: " + id));
 
         String newEmail = request.email();
         if (newEmail != null && !newEmail.isBlank() && !newEmail.equals(member.getEmail())) {
             memberRepository.findByEmail(newEmail).ifPresent(m -> {
                 throw new MemberAlreadyExistsException("이미 사용 중인 이메일입니다.");
             });
-            member.setEmail(newEmail);
         }
 
         String newPassword = request.password();
-        if (newPassword != null && !newPassword.isBlank()) {
-            member.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
-        }
+        String encodedPassword = (newPassword != null && !newPassword.isBlank())
+                ? BCrypt.hashpw(newPassword, BCrypt.gensalt())
+                : null;
+
+        member.update(newEmail, encodedPassword);
     }
 
     @Transactional
