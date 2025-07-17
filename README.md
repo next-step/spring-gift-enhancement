@@ -302,23 +302,54 @@ HTTP/1.1 204 No Content
 
 ### 로그인
 
+<img src="./src/main/resources/static/image/login.png" width="800" alt="login">
+
 [GET] http://localhost:8080/members/login  
 → 로그인 화면으로 이동합니다.
 
-### 특정 상품 조회
+### 회원가입
+
+<img src="./src/main/resources/static/image/register.png" width="800" alt="register">
 
 [GET] http://localhost:8080/members/register  
-→ 회원 가입 화면으로 이동합니다.
+→ 회원가입 화면으로 이동합니다.
 </details>
 <details>
 <summary>🔎 상품 조회</summary>
 
 ### 전체 상품 목록
 
+<table>
+    <tr>
+        <td style="text-align: center">
+            <div>오래된순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/product-list-1.png" width="400" alt="product-list-1">
+            <img src="./src/main/resources/static/image/product-list-2.png" width="400" alt="product-list-2">
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center">
+            <div>가격 내림차순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/product-list-3.png" width="400" alt="product-list-3">
+            <img src="./src/main/resources/static/image/product-list-4.png" width="400" alt="product-list-4">
+        </td>
+    </tr>
+</table>
+
 [GET] http://localhost:8080/members/products  
 → 등록된 모든 상품을 목록으로 확인할 수 있는 화면입니다.
 
 ### 특정 상품 조회
+
+<img src="./src/main/resources/static/image/product-detail.png" width="800" alt="product-detail">
 
 [GET] http://localhost:8080/members/products/{productId}  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
@@ -327,6 +358,31 @@ HTTP/1.1 204 No Content
 <summary>🔎 위시 리스트 조회</summary>
 
 ### 위시 리스트 조회
+
+<table>
+    <tr>
+        <td style="text-align: center">
+            <div>최신순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/wish-list-1.png" width="400" alt="wish-list-1">
+            <img src="./src/main/resources/static/image/wish-list-2.png" width="400" alt="wish-list-2">
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center">
+            <div>가격 오름차순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/wish-list-3.png" width="400" alt="wish-list-3">
+            <img src="./src/main/resources/static/image/wish-list-4.png" width="400" alt="wish-list-4">
+        </td>
+    </tr>
+</table>
 
 [GET] http://localhost:8080/members/wishes  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
@@ -362,6 +418,8 @@ HTTP/1.1 204 No Content
 
 ### 상품 추가 화면
 
+<img src="./src/main/resources/static/image/product-new.png" width="800" alt="product-new">
+
 [GET] http://localhost:8080/admin/products/new  
 → 새 상품을 입력하는 폼으로 이동합니다.
 
@@ -374,6 +432,8 @@ HTTP/1.1 204 No Content
 <summary>✏️ 상품 수정</summary>
 
 ### 상품 수정 화면
+
+<img src="./src/main/resources/static/image/product-edit.png" width="800" alt="product-edit">
 
 [GET] http://localhost:8080/admin/products/edit/{productId}  
 → 선택한 상품의 정보를 수정할 수 있는 화면입니다.
