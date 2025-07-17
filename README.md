@@ -13,6 +13,13 @@
     - [x] WishlistRepository JPA로 변환
 - [x] @DataJpaTest 사용해서 테스트 작성
 
+### step2 구현 기능
+
+- [ ] 공통 페이지네이션 응답 dto 구현
+- [ ] Item 페이지네이션 구현
+- [ ] Wishlist 페이지네이션 구현
+- [ ] 페이지네이션 테스트 작성
+
 # spring-gift-wishlist
 
 ## 구현 기능
