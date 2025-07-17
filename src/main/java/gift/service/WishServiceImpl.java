@@ -13,6 +13,8 @@ import gift.exception.wishList.WishNotFoundException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +52,23 @@ public class WishServiceImpl implements WishService{
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<WishResponseDto> findPageWishes(Long memberId, Pageable pageable) {
+        Page<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
+
+        return wishes.map(wish -> {
+            Product product = wish.getProduct();
+
+            return new WishResponseDto(
+                    wish.getId(),
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getImageUrl()
+            );
+        });
     }
 
     @Transactional
