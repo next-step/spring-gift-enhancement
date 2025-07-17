@@ -2,7 +2,6 @@ package gift.controller.itemController;
 
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.dto.itemDto.ResponseItems;
 import gift.entity.Item;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -41,7 +39,7 @@ public class AdminItemController {
         if (name == null && price == null) {
             items = itemService.getAllItems(pageable);
         } else {
-            items = itemService.getItems(name, price,pageable);
+            items = itemService.getItems(name, price, pageable);
         }
 
         return ResponseItems.from(items);

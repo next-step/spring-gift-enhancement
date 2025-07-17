@@ -75,6 +75,7 @@ public class User {
         this.email = newEmail;
         this.password = newPassword;
     }
+
     public User updateFrom(UserUpdateDto dto) {
         return new User(this.getId(), dto.email(), dto.password(), this.role);
     }

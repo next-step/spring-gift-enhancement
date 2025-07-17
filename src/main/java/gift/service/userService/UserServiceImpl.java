@@ -5,7 +5,6 @@ import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
-import gift.entity.UserRole;
 import gift.exception.userException.UserAuthorizationException;
 import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
@@ -15,8 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
