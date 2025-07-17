@@ -20,3 +20,7 @@
   - [x] MemberService 로직 변경으로 인한 WishlistController 리팩토링
   - [x] DataJpaTest를 이용한 WishlistRepository 테스트 코드 추가
 - [x] JPA의 데이터베이스 스키마 자동 생성을 위한 설정 추가 및 data.sql 사용을 위한 설정 추가
+
+## 2단계 - 페이지네이션
+- [ ] 상품에 페이지네이션 구현
+  - [x] ProductService의 getProducts 메서드 로직 변경(페이지 반환)
