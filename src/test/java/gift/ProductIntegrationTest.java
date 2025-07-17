@@ -80,6 +80,20 @@ public class ProductIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @DisplayName("상품명 15자 이하로 생성 성공")
+    @Test
+    void createProduct_nameWithinLimit() throws Exception {
+        ProductRequestDto dto = new ProductRequestDto("이것은열다섯글자상품이름입니다", 1000L, "image.jpg");
+        mockMvc.perform(post("/api/products")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("이것은열다섯글자상품이름입니다"))
+                .andExpect(jsonPath("$.price").value(1000))
+                .andExpect(jsonPath("$.imageUrl").value("image.jpg"));
+    }
+
     @DisplayName("상품명에 특수문자 포함 시 실패")
     @Test
     void createProduct_specialCharInName() throws Exception {
@@ -90,6 +104,21 @@ public class ProductIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("상품명에 허용된 특수문자 포함 시 성공")
+    @Test
+    void createProduct_allowedSpecialChars() throws Exception {
+        ProductRequestDto dto = new ProductRequestDto("()[]+-&/_", 1000L, "image.jpg");
+
+        mockMvc.perform(post("/api/products")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("()[]+-&/_"))
+                .andExpect(jsonPath("$.price").value(1000))
+                .andExpect(jsonPath("$.imageUrl").value("image.jpg"));
     }
 
     @DisplayName("상품 전체 조회")
