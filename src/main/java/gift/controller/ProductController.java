@@ -1,9 +1,14 @@
 package gift.controller;
 
 import gift.domain.Product;
+import gift.dto.PageResponse;
 import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,5 +61,12 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<PageResponse<ProductResponse>> getProducts(
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(productService.getProducts(pageable));
+    }
+
 }
 
