@@ -42,7 +42,8 @@ public class WishListServiceImpl implements WishListService {
             throw new UserNotFoundException();
         }
 
-        Optional<Item> findItem = itemService.findItemByName(dto.name());
+        String itemName = dto.name();
+        Optional<Item> findItem = itemService.findItemByName(itemName);
         if (findItem.isEmpty()) {
             throw new ItemNotFoundException(dto.name());
         }
@@ -56,9 +57,7 @@ public class WishListServiceImpl implements WishListService {
             throw new ItemDuplicatedException();
         }
 
-        WishItem savedWishItem = wishListRepository.save(wishItem);
-
-        return savedWishItem;
+        return wishListRepository.save(wishItem);
     }
 
     @Override
@@ -133,9 +132,9 @@ public class WishListServiceImpl implements WishListService {
         }
 
         WishItem wishItem = toUpdatedWishItem.get();
-        wishItem.changeQuantity(quantity);
+        WishItem updatedWishItem = wishItem.changeQuantity(quantity);
 
-        return wishItem;
+        return wishListRepository.save(updatedWishItem);
     }
 
 }
