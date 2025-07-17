@@ -1,56 +1,54 @@
 package gift.controller;
 
 import gift.domain.Product;
-import gift.repository.ProductRepository;
+import gift.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-
 public class ProductController {
-    private final ProductRepository products;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository products) { this.products = products; }
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping
     public List<Product> getProducts() {
-        return new ArrayList<>(products.getProducts());
+        return productService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Product>> getProducts(@PathVariable Long id) {
-        Optional<Product> storedProduct = products.findById(id);
-        if (storedProduct.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(storedProduct);
+    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+        return productService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Product addProducts(@RequestBody Product product) {
-        return products.save(product);
+    public Product addProduct(@RequestBody Product product) {
+        return productService.create(product);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProducts(@PathVariable Long id, @RequestBody Product update) {
-        if (products.findById(id).isEmpty()) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product update) {
+        if (productService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        update.setId(id);
-        products.update(id, update);
+        productService.update(id, update);
         return ResponseEntity.ok(update);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
-        if (products.findById(id).isPresent()) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        if (productService.findById(id).isPresent()) {
+            productService.delete(id);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-
 }

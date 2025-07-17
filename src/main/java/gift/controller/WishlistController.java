@@ -20,7 +20,7 @@ public class WishlistController {
 
     @PostMapping
     public void add(@RequestBody Wish request, @LoginMember Member member) {
-        wishService.addWish(member, request.getProductId());
+        wishService.addWish(member, request.getId());
     }
 
     @GetMapping
@@ -30,6 +30,6 @@ public class WishlistController {
 
     @DeleteMapping
     public void delete(@RequestBody Wish request, @LoginMember Member member) {
-        wishService.deleteWish(member, request.getProductId());
+        wishService.deleteWish(member, request.getId());
     }
 }
