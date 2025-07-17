@@ -42,8 +42,9 @@ public class WishListService {
     }
 
     // wishList 페이지 조회
-    public Page<WishList> findAllPageByMemberId(Long memberId, Pageable pageable){
-        return wishListRepository.findAllPageByMemberId(memberId, pageable);
+    public Page<WishListResponse> findAllPageByMemberId(Long memberId, Pageable pageable){
+        return wishListRepository.findAllPageByMemberId(memberId, pageable)
+            .map(WishListResponse::from);
     }
 
     // wishlist 단건 조회

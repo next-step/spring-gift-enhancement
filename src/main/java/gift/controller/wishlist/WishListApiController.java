@@ -34,7 +34,6 @@ public class WishListApiController {
 
     // wishlist 조회
     // 특정 유저의 위시리스트를 전부 조회한다.(API를 요청한 유저의 위시리스트를 조회)
-    // Todo 위시리스트 목록 페이지네이션
     @GetMapping
     public ResponseEntity<?> getWishList(
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
@@ -44,10 +43,7 @@ public class WishListApiController {
     ) {
         Sort sorting = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
         Pageable pageable = PageRequest.of(page, size, sorting);
-        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId, pageable)
-            .map(WishListResponse::from);
-
-        //List<WishListResponse> list = wishListService.findAllByMemberId(memberId);
+        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(wishListsPage);
