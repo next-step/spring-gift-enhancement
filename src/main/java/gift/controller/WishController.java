@@ -4,6 +4,7 @@ import gift.annotation.LoginUser;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.User;
+import gift.enums.WishSortKey;
 import gift.service.WishService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,17 @@ public class WishController {
     @GetMapping
     public ResponseEntity<List<WishResponse>> getAllWishes(@LoginUser User user) {
         return new ResponseEntity<>(wishService.getAllWishes(user.getId()), HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<List<WishResponse>> getWishPage(@LoginUser User user,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size,
+                                                          @RequestParam(defaultValue = "ID_ASC") WishSortKey sortKey)
+    {
+        List<WishResponse> wishPage = wishService.getWishPage(user.getId(), page, size, sortKey);
+
+        return new ResponseEntity<>(wishPage, HttpStatus.OK);
     }
 
     @PostMapping
