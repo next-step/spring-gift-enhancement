@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProductById(Long id) {
-        Product product = findProductByIdOrElseThrow(id);
+        existsByIdOrElseThrow(id);
         productRepository.deleteById(id);
     }
 
@@ -69,5 +69,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+    }
+
+    @Override
+    public void existsByIdOrElseThrow(Long id) {
+        boolean isProduct = productRepository.existsById(id);
+        if (!isProduct) {
+            throw new ProductNotFoundException(id);
+        }
     }
 }

@@ -2,6 +2,7 @@ package gift.wishlist.service;
 
 import gift.member.Member;
 import gift.member.service.MemberService;
+import gift.product.exception.ProductNotFoundException;
 import gift.product.service.ProductServiceImpl;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
@@ -44,6 +45,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public void deleteWishlistItemById(Long itemId) {
+        existsByIdOrElseThrow(itemId);
         wishlistRepository.deleteById(itemId);
     }
 
@@ -65,4 +67,13 @@ public class WishlistServiceImpl implements WishlistService {
     public Wishlist findWishlistByIdOrElseThrow(Long id) {
         return wishlistRepository.findById(id).orElseThrow(() -> new WishlistItemNotFoundException(id));
     }
+
+    @Override
+    public void existsByIdOrElseThrow(Long id) {
+        boolean isWishlist = wishlistRepository.existsById(id);
+        if (!isWishlist) {
+            throw new WishlistItemNotFoundException(id);
+        }
+    }
+
 }

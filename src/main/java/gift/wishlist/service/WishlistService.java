@@ -14,4 +14,6 @@ public interface WishlistService {
 
     List<WishlistItemResponseDto> findAllWishlistItemsByMemberId(Long memberId);
     void updateWishlistItemById(Long itemId, Long quantity);
+
+    void existsByIdOrElseThrow(Long id);
 }

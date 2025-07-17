@@ -91,8 +91,8 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void deleteMemberById(Long id) {
-        Member member = findMemberByIdOrElseThrow(id);
-        memberRepository.deleteById(member.getId());
+        existsByIdOrElseThrow(id);
+        memberRepository.deleteById(id);
     }
 
     public void validateMemberEmail(String email, String viewName) {
@@ -116,6 +116,14 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
+    }
+
+    @Override
+    public void existsByIdOrElseThrow(Long id) {
+        boolean isMember = memberRepository.existsById(id);
+        if (!isMember) {
+            throw new MemberNotFoundException(id);
+        }
     }
 
 }
