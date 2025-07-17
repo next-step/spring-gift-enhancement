@@ -3,9 +3,9 @@ package gift.service;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class ProductService {
     public ProductResponse findProductById(Long id) {
         return productRepository.findById(id)
                 .map(ProductResponse::new)
-                .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new ProductNotFoundException("해당 상품이 존재하지 않습니다."));
     }
 
     @Transactional
@@ -44,7 +44,8 @@ public class ProductService {
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(
-                        () -> new NoSuchElementException("해당 ID의 상품이 존재하지 않아 업데이트할 수 없습니다: " + id));
+                        () -> new ProductNotFoundException(
+                                "해당 ID의 상품이 존재하지 않아 업데이트할 수 없습니다: " + id));
 
         product.update(request.name(), request.price(), request.imageUrl());
 
@@ -54,7 +55,7 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
-            throw new NoSuchElementException("해당 ID의 상품이 존재하지 않아 삭제할 수 없습니다: " + id);
+            throw new ProductNotFoundException("해당 ID의 상품이 존재하지 않아 삭제할 수 없습니다: " + id);
         }
         productRepository.deleteById(id);
     }

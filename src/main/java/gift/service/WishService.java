@@ -5,11 +5,12 @@ import gift.dto.WishRequest;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.exception.MemberNotFoundException;
+import gift.exception.ProductNotFoundException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +32,11 @@ public class WishService {
     @Transactional
     public void addWish(Long memberId, WishRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
+                .orElseThrow(
+                        () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
 
         Product product = productRepository.findById(request.productId())
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new ProductNotFoundException(
                         "해당 ID의 상품이 존재하지 않습니다: " + request.productId()));
 
         Wish wish = new Wish(member, product);
@@ -44,7 +46,8 @@ public class WishService {
     @Transactional(readOnly = true)
     public List<ProductResponse> getWishes(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
+                .orElseThrow(
+                        () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
 
         List<Wish> wishes = wishRepository.findByMember(member);
         return wishes.stream()
@@ -55,7 +58,8 @@ public class WishService {
     @Transactional
     public void deleteWish(Long memberId, Long productId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
+                .orElseThrow(
+                        () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
 
         wishRepository.deleteByMemberAndProductId(member, productId);
     }
