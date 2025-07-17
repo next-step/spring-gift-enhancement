@@ -41,6 +41,10 @@ public class User {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public UserRole getRole() {
         return role;
     }
