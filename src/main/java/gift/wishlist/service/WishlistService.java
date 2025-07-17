@@ -11,9 +11,10 @@ import gift.wishlist.dto.WishRequestDto;
 import gift.wishlist.dto.WishResponseDto;
 import gift.wishlist.entity.Wishlist;
 import gift.wishlist.repository.WishlistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 
 @Service
@@ -44,12 +45,9 @@ public class WishlistService {
     }
 
     @Transactional(readOnly = true)
-    public List<WishResponseDto> getWishesByMember(Member member) {
-        List<Wishlist> wishes = wishlistRepository.findAllByMember(member);
-
-        return wishes.stream()
-                .map(WishResponseDto::from)
-                .toList();
+    public Page<WishResponseDto> getWishesByMember(Member member, Pageable pageable) {
+        return wishlistRepository.findAllByMember(member, pageable)
+                .map(WishResponseDto::from);
     }
 
     public void deleteWish(Member member, Long wishId) {

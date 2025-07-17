@@ -28,3 +28,4 @@
   
 - [ ] 위시리스트에 페이지네이션 구현
   - [x] WishlistRepository의 findAllByMember 메서드 반환 타입 변경
+  - [x] WishlistService의 
