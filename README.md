@@ -327,8 +327,9 @@ HTTP/1.1 204 No Content
     </tr>
     <tr>
         <td>
-            <img src="./src/main/resources/static/image/product-list-1.png" width="400" alt="product-list-1">
-            <img src="./src/main/resources/static/image/product-list-2.png" width="400" alt="product-list-2">
+            <img src="./src/main/resources/static/image/product-list-1.png" width="800" alt="product-list-1">
+            <br>
+            <img src="./src/main/resources/static/image/product-list-2.png" width="800" alt="product-list-2">
         </td>
     </tr>
     <tr>
@@ -338,8 +339,9 @@ HTTP/1.1 204 No Content
     </tr>
     <tr>
         <td>
-            <img src="./src/main/resources/static/image/product-list-3.png" width="400" alt="product-list-3">
-            <img src="./src/main/resources/static/image/product-list-4.png" width="400" alt="product-list-4">
+            <img src="./src/main/resources/static/image/product-list-3.png" width="800" alt="product-list-3">
+            <br>
+            <img src="./src/main/resources/static/image/product-list-4.png" width="800" alt="product-list-4">
         </td>
     </tr>
 </table>
@@ -367,8 +369,9 @@ HTTP/1.1 204 No Content
     </tr>
     <tr>
         <td>
-            <img src="./src/main/resources/static/image/wish-list-1.png" width="400" alt="wish-list-1">
-            <img src="./src/main/resources/static/image/wish-list-2.png" width="400" alt="wish-list-2">
+            <img src="./src/main/resources/static/image/wish-list-1.png" width="800" alt="wish-list-1">
+            <br>
+            <img src="./src/main/resources/static/image/wish-list-2.png" width="800" alt="wish-list-2">
         </td>
     </tr>
     <tr>
@@ -378,8 +381,9 @@ HTTP/1.1 204 No Content
     </tr>
     <tr>
         <td>
-            <img src="./src/main/resources/static/image/wish-list-3.png" width="400" alt="wish-list-3">
-            <img src="./src/main/resources/static/image/wish-list-4.png" width="400" alt="wish-list-4">
+            <img src="./src/main/resources/static/image/wish-list-3.png" width="800" alt="wish-list-3">
+            <br>
+            <img src="./src/main/resources/static/image/wish-list-4.png" width="800" alt="wish-list-4">
         </td>
     </tr>
 </table>
