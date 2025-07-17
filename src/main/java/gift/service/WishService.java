@@ -5,7 +5,8 @@ import gift.entity.Product;
 import gift.entity.Wish;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,9 +39,9 @@ public class WishService {
         wishRepository.deleteByMemberAndProduct(member, product);
     }
 
-    public List<Product> getAllWish(Member member) {
-        return wishRepository.findAllByMember(member).stream()
+    public Page<Product> getAllWish(Member member, Pageable pageable) {
+        return wishRepository.findAllByMember(member, pageable)
                 .map(Wish::getProduct)
-                .toList();
+                ;
     }
 }
