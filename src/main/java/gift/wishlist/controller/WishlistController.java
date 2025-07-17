@@ -29,7 +29,7 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     private static final Set<String> ALLOWED_SORT_FIELDS =
-        Set.of("member_id", "item_id", "id", "created_at");
+        Set.of("member", "item", "id", "createdAt");
 
     public WishlistController(WishlistService wishlistService) {
         this.wishlistService = wishlistService;
@@ -60,7 +60,7 @@ public class WishlistController {
     public ResponseEntity<PageResponseDto<WishlistResponseDto>> findAll(
         @RequestParam(defaultValue = "1") @Positive int page,
         @RequestParam(defaultValue = "10") @Positive int size,
-        @RequestParam(defaultValue = "created_at") String sortBy,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "desc") String direction,
         @LoginMember AuthenticatedMember member
     ) {
