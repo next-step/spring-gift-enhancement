@@ -98,8 +98,8 @@ class WishIntegrationTest {
         mockMvc.perform(get("/api/wishes")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalCount").value(1))
-                .andExpect(jsonPath("$.wishes[0].productId").value(productId));
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].productId").value(productId));
     }
 
     @Test
@@ -119,7 +119,8 @@ class WishIntegrationTest {
         mockMvc.perform(get("/api/wishes")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalCount").value(0));
+                .andExpect(jsonPath("$.totalElements").value(0))  // totalCount → totalElements 로 변경
+                .andExpect(jsonPath("$.content").isArray());
     }
 }
 
