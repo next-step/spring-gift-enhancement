@@ -5,6 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,6 +62,20 @@ public class ProductRepositoryTest {
                 () -> assertThat(actualProduct.getImageUrl()).isEqualTo(expectedProduct.getImageUrl()),
                 () -> assertThat(actualProduct.getApproved()).isEqualTo(expectedProduct.getApproved()),
                 () -> assertThat(actualProduct.getDescription()).isEqualTo(expectedProduct.getDescription())
+        );
+    }
+
+    @Test
+    @DisplayName("상품 레퍼지토리에 상품들이 페이지네이션을 통해 정상적으로 조회되는지 테스트")
+    void findAll() {
+        Pageable pageable = PageRequest.of(0, 4);
+        Page<Product> products = productRepository.findAll(pageable);
+
+        assertAll(
+                () -> assertThat(products).isNotNull(),
+                () -> assertThat(products.getContent().size()).isEqualTo(4),
+                () -> assertThat(products.getTotalElements()).isEqualTo(6L),
+                () -> assertThat(products.getTotalPages()).isEqualTo(2)
         );
     }
 
