@@ -6,6 +6,10 @@ import gift.entity.Product;
 import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,8 +23,12 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+    private Pageable createPageRequestUsing(int page, int size) {
+        return PageRequest.of(page, size);
+    }
+
     @Override
-    public List<ProductResponseDto> findAll() {
+    public Page<ProductResponseDto> findAll(int page, int size) {
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
         List<Product> productList = productRepository.findAll();
 
@@ -28,7 +36,17 @@ public class ProductServiceImpl implements ProductService {
             productResponseDtoList.add(ProductResponseDto.from(product));
         }
 
-        return productResponseDtoList;
+        Pageable pageRequest = createPageRequestUsing(page, size);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), productResponseDtoList.size());
+
+        if (start >= productResponseDtoList.size()) {
+            return new PageImpl<>(List.of(), pageRequest, productResponseDtoList.size());
+        }
+
+        List<ProductResponseDto> pageContent = productResponseDtoList.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageRequest, productResponseDtoList.size());
     }
 
     @Override

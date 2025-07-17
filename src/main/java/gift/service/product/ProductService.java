@@ -2,11 +2,11 @@ package gift.service.product;
 
 import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ProductService {
 
-    List<ProductResponseDto> findAll();
+    Page<ProductResponseDto> findAll(int page, int size);
 
     ProductResponseDto create(ProductRequestDto requestDto);
 
