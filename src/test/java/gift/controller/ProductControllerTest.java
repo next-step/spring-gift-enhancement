@@ -61,6 +61,20 @@ public class ProductControllerTest {
         assertThat(dtoBody.getApproved()).isEqualTo(true);
     }
 
+    @DisplayName("상품 전체 조회 시, 정상적으로 모든 상품을 가져오는지 테스트")
+    @Test
+    void 정상적인_전체상품_조회() {
+
+        var response = client.get()
+                .uri(url + "/all")
+                .retrieve()
+                .toEntity(ProductResponseDto[].class);
+
+        ProductResponseDto[] allProducts = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     @DisplayName("이름이 15자를 초과하는 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test
     void 상품길이가_15자를_초과하는_경우의_상품저장() {
