@@ -36,8 +36,8 @@ public class Member{
         this.role = requestDto.role();
     }
 
-    public boolean checkCorrectPssword(String hashedPassword) {
-        return this.password.equals(hashedPassword);
+    public boolean isPasswordCorrect(String password) {
+        return this.password.equals(password);
     }
 
     public Long getId() {
