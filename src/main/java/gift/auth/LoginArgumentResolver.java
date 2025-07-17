@@ -11,8 +11,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.Optional;
-
 @Component
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 

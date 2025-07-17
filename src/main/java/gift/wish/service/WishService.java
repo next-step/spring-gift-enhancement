@@ -2,6 +2,8 @@ package gift.wish.service;
 
 import gift.member.domain.Member;
 import gift.member.dto.MemberTokenRequest;
+import gift.member.repository.MemberRepository;
+import gift.product.domain.Product;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import gift.wish.domain.Wish;
@@ -19,33 +21,41 @@ public class WishService {
 
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
 
-    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
+    public WishService(WishRepository wishRepository, ProductRepository productRepository, MemberRepository memberRepository) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
+        this.memberRepository = memberRepository;
     }
 
     public WishResponse addWish(MemberTokenRequest memberTokenRequest, Long productId) {
-        productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다. ID: " + productId));
+        Member member = memberRepository.findById(memberTokenRequest.id())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (wishRepository.isExist(memberTokenRequest.id(), productId)) {
+        if (wishRepository.existsByMemberIdAndProductId(memberTokenRequest.id(), productId)) {
             throw new IllegalArgumentException("이미 위시 리스트에 추가된 상품입니다.");
         }
+        Wish wish = wishRepository.save(new Wish(member, product, 1));
 
-        Wish wish = wishRepository.save(memberTokenRequest.id(), productId);
-
-        return new WishResponse(wish.getMemberId(), wish.getProductId(), 1);
+        return new WishResponse(wish.getMember().getId(), wish.getProduct().getId(), 1);
     }
 
     public List<WishListResponse> getWishes(MemberTokenRequest memberTokenRequest) {
-        return wishRepository.findWishes(memberTokenRequest.id());
+        return wishRepository.findWishesByMemberId(memberTokenRequest.id())
+                .stream()
+                .map(WishListResponse::getWishListResponse)
+                .toList();
     }
 
     public void updateQuantity(MemberTokenRequest memberTokenRequest, Long wishId, Integer quantity){
         checkValidWishAndMember(memberTokenRequest,wishId);
 
-        wishRepository.updateByIdAndQuantity(wishId, quantity);
+        Wish wish = wishRepository.findById(wishId)
+                .orElseThrow(() -> new NoSuchElementException("해당 위시 항목을 찾을 수 없습니다."));
+        wish.updateQuantity(quantity);
     }
 
     public void deleteWish(MemberTokenRequest memberTokenRequest, Long wishId){

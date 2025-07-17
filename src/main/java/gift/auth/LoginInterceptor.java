@@ -1,17 +1,9 @@
 package gift.auth;
 
-import gift.member.domain.Member;
-import gift.member.repository.MemberRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
