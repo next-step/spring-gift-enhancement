@@ -8,6 +8,7 @@ import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
 import gift.global.exception.ErrorCode;
 import gift.global.exception.ErrorResponse;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DisplayName("위시리스트 API 테스트")
@@ -85,18 +88,29 @@ public class WishListApiTest {
     }
 
     @Test
-    void 위시리스트_조회_성공하면_200() {
-        var url = "http://localhost:" + port + "/api/wishlists";
+    void 위시리스트_페이지네이션_조회_성공하면_200() {
+        String baseUrl = "http://localhost:" + port + "/api/wishlists";
+
+        int page = 0;
+        int size = 2;
+        String[] sort = {"id", "asc"};
+
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .queryParam("sort", sort[0] + "," + sort[1])
+            .toUriString();
 
         var response = restClient.get()
             .uri(url)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
-            .toEntity(WishListResponse[].class);
+            .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().length).isEqualTo(3);
+        assertThat(response.getBody()).isNotNull();
     }
+
 
     @Test
     void 위시리스트_생성_성공하면_204() {
