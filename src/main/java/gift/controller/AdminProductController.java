@@ -4,6 +4,8 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,23 +25,9 @@ public class AdminProductController {
 
     //목록 화면
     @GetMapping
-    public String list(@RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       Model model) {
-
-        // 서비스 호출
-        List<ProductResponseDto> products = productService.getProductList(page, size);
-
-        // 총 페이지 계산용
-        long total = productService.getProductCount();
-        int totalPages = (int) Math.ceil((double) total / size);
-
-        // 뷰로 전달
+    public String getProducts(Pageable pageable, Model model) {
+        Page<ProductResponseDto> products = productService.getProducts(pageable);
         model.addAttribute("products", products);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("size", size);
-        model.addAttribute("totalPages", totalPages);
-
         return "admin/products";            // templates/admin/products.html
     }
 
