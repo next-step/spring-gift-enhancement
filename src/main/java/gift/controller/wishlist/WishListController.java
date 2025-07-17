@@ -4,7 +4,6 @@ import gift.dto.product.ProductResponseDto;
 import gift.dto.wishlist.WishListResponseDto;
 import gift.entity.LoginMember;
 import gift.entity.Member;
-import gift.entity.Wish;
 import gift.service.wishlist.WishListService;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -41,8 +40,8 @@ public class WishListController {
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> findAll(
         @LoginMember Member member,
-        @RequestParam int page,
-        @RequestParam int size
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
     ) {
         Page<ProductResponseDto> productPage = wishListService.findAll(member.getId(), page, size);
         HttpHeaders headers = new HttpHeaders();

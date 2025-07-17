@@ -173,7 +173,7 @@ public class ProductControllerTest {
         var response = client.get()
             .uri(BASE_URL)
             .retrieve()
-            .toEntity(new ParameterizedTypeReference<PageImpl<ProductResponseDto>>() {
+            .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {
             });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
