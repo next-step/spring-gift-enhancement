@@ -1,0 +1,87 @@
+package gift.product.controller;
+
+import gift.shared.annotation.AuthUser;
+import gift.product.dto.request.ProductCreateRequest;
+import gift.product.dto.request.ProductModifyRequest;
+import gift.product.dto.response.ProductResponse;
+import gift.user.dto.response.UserResponse;
+import gift.shared.exception.product.InValidSpecialCharException;
+import gift.shared.exception.product.NeedAcceptException;
+import gift.shared.exception.product.NoProductException;
+import gift.shared.exception.product.NoValueException;
+import gift.product.service.ProductService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static gift.product.status.ProductStatus.*;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    @PostMapping()
+    public ResponseEntity<ProductResponse> addGift(
+            @Valid @RequestBody ProductCreateRequest productCreateRequest,
+            @AuthUser UserResponse user
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productService.addGift(productCreateRequest));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getGiftById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(productService.getGiftById(id));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ProductResponse>> getAllGifts(){
+        return ResponseEntity.ok().body(productService.getAllGifts());
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateGift(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductModifyRequest productModifyRequest,
+            @AuthUser UserResponse user
+    ) {
+        return ResponseEntity.ok().body(productService.updateGift(id, productModifyRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGift(
+            @PathVariable Long id,
+            @AuthUser UserResponse user
+    ) {
+        productService.deleteGift(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(value = NoProductException.class)
+    public ResponseEntity<?> handleException(NoProductException e) {
+        return ResponseEntity.status(NO_GIFT.getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = NoValueException.class)
+    public ResponseEntity<?> handleException(NoValueException e) {
+        return ResponseEntity.status(NO_VALUE.getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = InValidSpecialCharException.class)
+    public ResponseEntity<?> handleException(InValidSpecialCharException e) {
+        return ResponseEntity.status(WRONG_CHARACTER.getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = NeedAcceptException.class)
+    public ResponseEntity<?> handleException(NeedAcceptException e) {
+        return ResponseEntity.status(NOT_ACCEPTED.getStatus()).body(e.getMessage());
+    }
+}
