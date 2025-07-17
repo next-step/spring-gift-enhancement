@@ -49,6 +49,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    // 잘못된 파라미터 예외 400
+    @ExceptionHandler({
+        InvalidSortDirectionException.class,
+        InvalidSortByException.class
+    })
+    public ResponseEntity<ErrorResponseDto> handleInvalidParameterException(
+        RuntimeException e,
+        HttpServletRequest request
+    ) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+            HttpStatus.BAD_REQUEST,
+            e.getMessage(),
+            URI.create(request.getRequestURI())
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<ErrorResponseDto> handleDuplicateEmailException(
         DuplicateEmailException e,
