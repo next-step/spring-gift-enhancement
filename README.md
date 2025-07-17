@@ -1,8 +1,13 @@
 # spring-gift-enhancement
 
+#### JPA 리팩토링
 - JdbcTemplate/JdbcClient 기반 코드를 JPA로 Refactoring
 - Entity(Member/Product/Wish) 객체와 테이블을 매핑
 - JPA Test Code 작성
+
+#### 페이지네이션
+- 상품 목록 조회에 페이지네이션 추가
+- 위시리스트 목록 조회에 페이지네이션 추가
 
 # spring-gift-product
 
