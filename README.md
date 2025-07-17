@@ -274,13 +274,13 @@ host: localhost:8080
     
 </details>
 <details>
-<summary>❌ 위시 리스트 삭제</summary>
+<summary>❌ 위시 삭제</summary>
 
 ### Request
 - Header: Authorization: Bearer {JWT}
 
 ```json
-DELETE /api/wishes/{wishlistId} HTTP/1.1
+DELETE /api/wishes/{wishId} HTTP/1.1
 host: localhost:8080
 
 ```
@@ -322,11 +322,22 @@ HTTP/1.1 204 No Content
 
 [GET] http://localhost:8080/members/products/{productId}  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+</details>
+<details>
+<summary>🔎 위시 리스트 조회</summary>
 
 ### 위시 리스트 조회
 
 [GET] http://localhost:8080/members/wishes  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+</details>
+<details>
+<summary>❌ 위시 삭제</summary>
+
+[DELETE] http://localhost:8080/members/wishes/{wishId}  
+→ HTML `<form>`에서 `_method=delete`로 전송됩니다.  
+→ 실제 HTTP 메서드는 `POST`이며,  
+→ MemberFrontController에서 `@DeleteMapping`으로 처리합니다.
 </details>
 
 # 🧑‍💻 관리자 화면

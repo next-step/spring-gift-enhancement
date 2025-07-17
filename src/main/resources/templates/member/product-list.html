@@ -5,7 +5,16 @@
     <div class="user-info">
       <span th:text="${userEmail}">user@example.com</span>님, 환영합니다!
     </div>
-
+    <form th:action="@{/members/products}" method="get" class="sort-form">
+      <select name="sort" onchange="this.form.submit()">
+        <option value="id,asc" th:selected="${sort == 'id,asc'}">오래된순</option>
+        <option value="id,desc" th:selected="${sort == 'id,desc'}">최신순</option>
+        <option value="name,asc" th:selected="${sort == 'name,asc'}">이름 오름차순</option>
+        <option value="name,desc" th:selected="${sort == 'name,desc'}">이름 내림차순</option>
+        <option value="price,asc" th:selected="${sort == 'price,asc'}">가격 오름차순</option>
+        <option value="price,desc" th:selected="${sort == 'price,desc'}">가격 내림차순</option>
+      </select>
+    </form>
     <a href="/members/wishes" class="button">🎁 내 위시리스트</a>
     <a href="/admin/products" class="button admin-button"
        th:if="${#strings.equals(userRole, 'ADMIN')}">관리자 페이지</a>
@@ -45,14 +54,14 @@
   </table>
 
   <div class="pagination" th:if="${!products.empty}">
-    <span th:if="${products.hasPrevious()}">
-        <a th:href="@{/members/products(page=${products.number - 1})}">&laquo; 이전</a>
-    </span>
+        <span th:if="${products.hasPrevious()}">
+            <a th:href="@{/members/products(page=${products.number - 1}, sort=${sort})}">&laquo; 이전</a>
+        </span>
     <span>페이지 <b th:text="${products.number + 1}"></b> / <b
         th:text="${products.totalPages}"></b></span>
     <span th:if="${products.hasNext()}">
-        <a th:href="@{/members/products(page=${products.number + 1})}">다음 &raquo;</a>
-    </span>
+            <a th:href="@{/members/products(page=${products.number + 1}, sort=${sort})}">다음 &raquo;</a>
+        </span>
   </div>
 </div>
 </html>

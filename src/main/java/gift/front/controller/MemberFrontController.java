@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/members")
@@ -51,6 +52,7 @@ public class MemberFrontController {
     @GetMapping("/products")
     public String allProducts(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(name = "sort", defaultValue = "id,asc") String sort,
             Model model,
             HttpServletRequest request
     ) {
@@ -66,7 +68,7 @@ public class MemberFrontController {
         }
 
         model.addAttribute("products", productService.findAllProducts(pageable));
-        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("sort", sort);
 
         return "member/product-list";
     }
@@ -82,6 +84,7 @@ public class MemberFrontController {
     @GetMapping("/wishes")
     public String wishlist(
             @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(name = "sort", defaultValue = "createdDate,desc") String sort,
             Model model,
             HttpServletRequest request
     ) {
@@ -90,6 +93,7 @@ public class MemberFrontController {
         model.addAttribute("userRole", request.getAttribute("userRole"));
 
         model.addAttribute("wishlistPage", wishService.getWishlist(userEmail, pageable));
+        model.addAttribute("sort", sort);
 
         return "member/wishlist";
     }

@@ -5,6 +5,16 @@
     <div class="user-info">
       <span th:text="${userEmail}">user@example.com</span>님, 환영합니다!
     </div>
+    <form th:action="@{/members/wishes}" method="get" class="sort-form">
+      <select name="sort" onchange="this.form.submit()">
+        <option value="createdDate,desc" th:selected="${sort == 'createdDate,desc'}">최신순</option>
+        <option value="createdDate,asc" th:selected="${sort == 'createdDate,asc'}">오래된순</option>
+        <option value="product.name,asc" th:selected="${sort == 'product.name,asc'}">이름 오름차순</option>
+        <option value="product.name,desc" th:selected="${sort == 'product.name,desc'}">이름 내림차순</option>
+        <option value="product.price,asc" th:selected="${sort == 'product.price,asc'}">가격 오름차순</option>
+        <option value="product.price,desc" th:selected="${sort == 'product.price,desc'}">가격 내림차순</option>
+      </select>
+    </form>
     <a href="/members/products" class="button">상품 목록으로</a>
     <a href="/members/logout" class="button">로그아웃</a>
   </div>
@@ -43,12 +53,12 @@
 
   <div class="pagination" th:if="${!wishlistPage.empty}">
     <span th:if="${wishlistPage.hasPrevious()}">
-        <a th:href="@{/members/wishes(page=${wishlistPage.number - 1})}">&laquo; 이전</a>
+        <a th:href="@{/members/wishes(page=${wishlistPage.number - 1}, sort=${sort})}">&laquo; 이전</a>
     </span>
     <span>페이지 <b th:text="${wishlistPage.number + 1}"></b> / <b
         th:text="${wishlistPage.totalPages}"></b></span>
     <span th:if="${wishlistPage.hasNext()}">
-        <a th:href="@{/members/wishes(page=${wishlistPage.number + 1})}">다음 &raquo;</a>
+        <a th:href="@{/members/wishes(page=${wishlistPage.number + 1}, sort=${sort})}">다음 &raquo;</a>
     </span>
   </div>
 </div>
