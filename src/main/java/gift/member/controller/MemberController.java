@@ -1,9 +1,11 @@
 package gift.member.controller;
 
 import gift.authorization.dto.TokenResponseDto;
+import gift.member.Member;
 import gift.member.dto.*;
 import gift.member.exception.InvalidMemberException;
 import gift.member.service.MemberService;
+import gift.resolver.LoginMember;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
