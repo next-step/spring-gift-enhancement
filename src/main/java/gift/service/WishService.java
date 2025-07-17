@@ -11,7 +11,6 @@ import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +51,7 @@ public class WishService {
         List<Wish> wishes = wishRepository.findByMember(member);
         return wishes.stream()
                 .map(wish -> new ProductResponse(wish.getProduct()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
