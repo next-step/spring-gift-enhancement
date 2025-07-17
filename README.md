@@ -87,7 +87,8 @@
 - [x] Pageable 객체를 활용해서 product pagination 적용하기
 - [x] product Thymeleaf 페이지 기반으로 수정하기
 - [x] Pageable 객체를 활용해서 wish pagination 적용하기
-- [ ] wish Thymeleaf 페이지 기반으로 수정하기
+- [x] wish Thymeleaf 페이지 기반으로 수정하기
+- [x] 페이지네이션 기능 확인용 DB에 테스트 데이터 추가하기
 
 # spring-gift-product (Mission 1)
 

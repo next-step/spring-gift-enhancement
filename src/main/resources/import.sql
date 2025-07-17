@@ -1,0 +1,35 @@
+INSERT INTO Member (email, password, role) VALUES ('admin@example.com', 'l2h5', 'ADMIN');
+INSERT INTO Member (email, password, role) VALUES ('test@example.com', 'l2h5', 'USER');
+INSERT INTO Member (email, password, role) VALUES ('user2@example.com', 'user2_password', 'USER');
+
+-- Product
+INSERT INTO Product (name, price, image_url) VALUES ('고급 초콜릿 세트', 25000, 'https://via.placeholder.com/150/chocolate');
+INSERT INTO Product (name, price, image_url) VALUES ('프리미엄 무선 이어폰', 159000, 'https://via.placeholder.com/150/earphone');
+INSERT INTO Product (name, price, image_url) VALUES ('시그니처 향수', 78000, 'https://via.placeholder.com/150/perfume');
+INSERT INTO Product (name, price, image_url) VALUES ('기계식 게이밍 키보드', 120000, 'https://via.placeholder.com/150/keyboard');
+INSERT INTO Product (name, price, image_url) VALUES ('보온보냉 텀블러', 18000, 'https://via.placeholder.com/150/tumbler');
+INSERT INTO Product (name, price, image_url) VALUES ('아로마 캔들', 32000, 'https://via.placeholder.com/150/candle');
+INSERT INTO Product (name, price, image_url) VALUES ('가죽 지갑', 89000, 'https://via.placeholder.com/150/wallet');
+INSERT INTO Product (name, price, image_url) VALUES ('스마트 워치', 349000, 'https://via.placeholder.com/150/smartwatch');
+INSERT INTO Product (name, price, image_url) VALUES ('블루투스 스피커', 75000, 'https://via.placeholder.com/150/speaker');
+INSERT INTO Product (name, price, image_url) VALUES ('에스프레소 머신', 220000, 'https://via.placeholder.com/150/coffee');
+INSERT INTO Product (name, price, image_url) VALUES ('요가 매트', 28000, 'https://via.placeholder.com/150/yoga');
+INSERT INTO Product (name, price, image_url) VALUES ('디퓨저 세트', 45000, 'https://via.placeholder.com/150/diffuser');
+INSERT INTO Product (name, price, image_url) VALUES ('전기 면도기', 99000, 'https://via.placeholder.com/150/shaver');
+INSERT INTO Product (name, price, image_url) VALUES ('캐주얼 백팩', 110000, 'https://via.placeholder.com/150/backpack');
+INSERT INTO Product (name, price, image_url) VALUES ('핸드크림 선물 세트', 19000, 'https://via.placeholder.com/150/handcream');
+INSERT INTO Product (name, price, image_url) VALUES ('캡슐 커피 30개입', 21000, 'https://via.placeholder.com/150/capsule');
+INSERT INTO Product (name, price, image_url) VALUES ('LED 무드등', 38000, 'https://via.placeholder.com/150/lamp');
+INSERT INTO Product (name, price, image_url) VALUES ('고급 만년필', 135000, 'https://via.placeholder.com/150/pen');
+INSERT INTO Product (name, price, image_url) VALUES ('보드게임', 42000, 'https://via.placeholder.com/150/boardgame');
+INSERT INTO Product (name, price, image_url) VALUES ('넥밴드 선풍기', 23000, 'https://via.placeholder.com/150/fan');
+INSERT INTO Product (name, price, image_url) VALUES ('와인 오프너 세트', 31000, 'https://via.placeholder.com/150/wine');
+INSERT INTO Product (name, price, image_url) VALUES ('패션 선글라스', 170000, 'https://via.placeholder.com/150/sunglasses');
+INSERT INTO Product (name, price, image_url) VALUES ('캠핑 의자', 55000, 'https://via.placeholder.com/150/chair');
+INSERT INTO Product (name, price, image_url) VALUES ('스마트 체중계', 39000, 'https://via.placeholder.com/150/scale');
+INSERT INTO Product (name, price, image_url) VALUES ('전동칫솔', 68000, 'https://via.placeholder.com/150/toothbrush');
+INSERT INTO Product (name, price, image_url) VALUES ('목 마사지기', 85000, 'https://via.placeholder.com/150/massage');
+INSERT INTO Product (name, price, image_url) VALUES ('극세사 담요', 29000, 'https://via.placeholder.com/150/blanket');
+INSERT INTO Product (name, price, image_url) VALUES ('멀티 비타민', 33000, 'https://via.placeholder.com/150/vitamin');
+INSERT INTO Product (name, price, image_url) VALUES ('메탈 책갈피', 9000, 'https://via.placeholder.com/150/bookmark');
+INSERT INTO Product (name, price, image_url) VALUES ('여행용 캐리어 24인치', 180000, 'https://via.placeholder.com/150/carrier');
