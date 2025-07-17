@@ -6,7 +6,8 @@ import gift.dto.product.ProductResponse;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
 import gift.repository.product.ProductJpaRepository;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,12 @@ public class ProductService {
             .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
 
         return ProductResponse.from(product);
+    }
+
+    // 페이지네이션: product 목록 조회
+    public Page<ProductResponse> getProductPage(Pageable pageable) {
+        return productRepository.findAll(pageable)
+            .map(ProductResponse::from);
     }
 
     public Long insert(ProductRequest request) {
@@ -53,11 +60,4 @@ public class ProductService {
 
         productRepository.deleteById(productId);
     }
-
-    public List<ProductResponse> getProductList() {
-        return productRepository.findAll().stream()
-            .map(ProductResponse::from)
-            .toList();
-    }
-
 }
