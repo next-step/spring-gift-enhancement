@@ -11,6 +11,9 @@ import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,26 +62,26 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public List<WishItem> getItemList(String name, Integer price, String userEmail) {
+    public Page<WishItem> getItemList(String name, Integer price, String userEmail, Pageable pageable) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        List<WishItem> wishItems = wishListRepository.findAllByUser(user);
+        Page<WishItem> wishItems = wishListRepository.findAllByUser(user, pageable);
         if (wishItems.isEmpty()) {
             return wishItems;
         }
+        List<WishItem> filtered = new ArrayList<>();
 
-        List<WishItem> result = new ArrayList<>();
         for (WishItem wishItem : wishItems) {
             Item item = wishItem.getItem();
             if (item.isValid(name, price)) {
-                result.add(wishItem);
+                filtered.add(wishItem);
             }
         }
 
-        return result;
+        return new PageImpl<>(filtered, pageable, filtered.size());
     }
 
 
