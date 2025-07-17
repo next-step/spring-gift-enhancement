@@ -9,6 +9,7 @@ import gift.dto.product.ProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.global.exception.ErrorCode;
 import gift.global.exception.ErrorResponse;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DisplayName("일반 사용자용 Product API 테스트")
@@ -91,21 +94,27 @@ public class ProductApiTest {
     }
 
     @Test
-    @DisplayName("상품 전체 조회")
-    void 상품_전체_조회() {
-        var url = "http://localhost:" + port + "/api/products/all";
+    void 상품목록_페이지네이션_조회_성공하면_200() {
+        String baseUrl = "http://localhost:" + port + "/api/products/all";
+
+        int page = 0;
+        int size = 2;
+        String[] sort = {"id", "asc"};
+
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .queryParam("sort", sort[0] + "," + sort[1])
+            .toUriString();
 
         var response = restClient.get()
             .uri(url)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
-            // List로 변환하지 않고 배열로 간단하게 처리
-            .toEntity(ProductResponse[].class);
+            .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody())
-            .isNotNull()
-            .hasSize(5);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
