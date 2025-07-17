@@ -1,9 +1,10 @@
 package gift.resolver;
 
-import gift.entity.Member;
-import gift.exception.UnauthorizedException;
-import gift.repository.MemberRepository;
-import gift.service.JwtProvider;
+import gift.member.Member;
+import gift.authorization.exception.UnauthorizedException;
+import gift.member.exception.MemberNotFoundException;
+import gift.member.repository.MemberRepository;
+import gift.authorization.service.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -40,7 +41,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         Long memberId = jwtProvider.getMemberId(token);
 
-        Member member = memberRepository.findMemberByIdOrElseThrow(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
 
         return member;
     }

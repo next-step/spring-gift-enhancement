@@ -1,19 +1,28 @@
 package gift.exception;
 
-import gift.dto.ErrorResponseDto;
-import gift.dto.WishlistItemRequestDto;
+import gift.authorization.exception.ForbiddenException;
+import gift.authorization.exception.UnauthorizedException;
+import gift.member.exception.InvalidMemberException;
+import gift.member.exception.MemberNotFoundException;
+import gift.product.exception.InvalidProductException;
+import gift.product.exception.ProductIsInWishlistException;
+import gift.product.exception.ProductNotFoundException;
+import gift.wishlist.exception.WishlistItemNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Void> handleProductNotFound(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ErrorResponseDto> handleProductNotFound(ProductNotFoundException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
     @ExceptionHandler(OperationFailedException.class)
@@ -37,8 +46,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<Void> handleMemberNotFound(MemberNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND.value(),
+                "NotFound",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
     @ExceptionHandler(InvalidMemberException.class)
@@ -72,7 +86,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(WishlistItemNotFoundException.class)
-    public ResponseEntity<Void> handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ErrorResponseDto> handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND.value(),
+                "NotFound",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
+
+    @ExceptionHandler(ProductIsInWishlistException.class)
+    public ResponseEntity<ErrorResponseDto> handleProductIsInWishlist(ProductIsInWishlistException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDto);
     }
 }

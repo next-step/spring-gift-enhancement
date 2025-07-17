@@ -1,0 +1,21 @@
+package gift.product.service;
+
+import gift.product.Product;
+import gift.product.dto.ProductAddRequestDto;
+import gift.product.dto.ProductResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
+
+import java.util.List;
+
+public interface ProductService {
+    void addProduct(ProductAddRequestDto requestDto);
+    ProductResponseDto findProductById(Long id);
+    List<ProductResponseDto> findAllProduct();
+    void updateProductById(Long id, ProductUpdateRequestDto requestDto);
+    void deleteProductById(Long id);
+    void validateProductName(String name, String viewName);
+
+    Product findProductByIdOrElseThrow(Long id);
+
+    void existsByIdOrElseThrow(Long id);
+}
