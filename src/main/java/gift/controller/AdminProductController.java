@@ -4,7 +4,7 @@ import gift.dto.RequestDto;
 import gift.dto.ResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller // @RestController는 Json 데이터 반환, @Controller는 html 화면 반환
 @RequestMapping("/admin/products")
@@ -55,9 +56,12 @@ public class AdminProductController {
 
     // 2. 상품 목록
     @GetMapping
-    public String list(Model model) {
-        List<ResponseDto> products = productService.findAll();
+    public String list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
+
+        Page<ResponseDto> products = productService.findAll(page, size);
+
         model.addAttribute("products", products);
+
         return "admin/list";
     }
 
