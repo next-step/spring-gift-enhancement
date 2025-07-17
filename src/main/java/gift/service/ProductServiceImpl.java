@@ -49,12 +49,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
-        Product product = productRepository.findById(id)
+        boolean updated = productRepository.updateProduct(id, request.name(),
+            request.price(), request.imageUrl()) > 0;
+
+        if (!updated) {
+            throw new CustomException(CustomResponseCode.NOT_FOUND);
+        }
+
+        Product updatedProduct = productRepository.findById(id)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        product.update(request.name(), request.price(), request.imageUrl());
-
-        return ProductResponse.from(product);
+        return ProductResponse.from(updatedProduct);
     }
 
     @Override
