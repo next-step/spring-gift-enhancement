@@ -1,15 +1,19 @@
 package gift.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 /* TODO: Product annotation 검증 연동 */
 
@@ -41,6 +45,13 @@ public class Product {
     @NotBlank(message = "이미지 URL은 필수입니다.")
     @Column(name = "imageUrl", nullable = false)
     private String imageUrl;
+
+    @OneToMany(
+        mappedBy = "product",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<Wish> wishes = new ArrayList<>();
 
     protected Product() { }
 
@@ -75,5 +86,14 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public Wish addWish(Wish wish) {
+        wishes.add(wish);
+        return wish;
+    }
+
+    public void removeWish(Wish wish) {
+        wishes.remove(wish);
     }
 }

@@ -39,6 +39,8 @@ public class WishListServiceImpl implements WishListService {
         Wish wish = wishListRepository.save(
             new Wish(product, member));
 
+        product.addWish(wish);
+
         return new WishListResponseDto(wish.getProduct().getId(), wish.getMember().getId());
     }
 
@@ -73,6 +75,14 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public void delete(Long productId, Long memberId) {
+        Product product = productRepository.getReferenceById(productId);
+        Member member = memberRepository.getReferenceById(memberId);
+
+        Wish wish = wishListRepository.findByProductIdAndMemberId(productId, memberId);
+
+        product.removeWish(wish);
+        member.removeWish(wish);
+
         int deleteRow = wishListRepository.deleteByProductIdAndMemberId(productId, memberId);
 
         if (deleteRow <= 0) {

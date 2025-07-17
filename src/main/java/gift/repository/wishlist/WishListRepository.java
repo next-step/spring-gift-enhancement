@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface WishListRepository extends JpaRepository<Wish, Long> {
+    Wish findByProductIdAndMemberId(Long productId, Long memberId);
+
     List<Wish> findAllByMemberId(Long memberId);
 
     @Transactional
