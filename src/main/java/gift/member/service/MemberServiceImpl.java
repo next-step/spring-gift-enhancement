@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void addMember(MemberAddRequestDto requestDto) {
-        validateDuplicateEmail(requestDto.email(), "admin/memberAdd");
+        validateUniqueEmail(requestDto.email(), "admin/memberAdd");
         validateMemberRole(requestDto.role(), "admin/memberAdd");
         String hashedPassword = hashWithSHA256(requestDto.password());
         Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public TokenResponseDto registerMember(MemberRegisterRequestDto requestDto) {
-        validateDuplicateEmail(requestDto.email(), "admin/memberAdd");
+        validateUniqueEmail(requestDto.email(), "admin/memberAdd");
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
@@ -82,7 +82,7 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public void updateMemberById(Long id, MemberUpdateRequestDto requestDto) {
         validateMemberRole(requestDto.role(), "admin/memberEdit");
-        validateDuplicateEmail(id,requestDto.email(), "admin/memberEdit");
+        validateUniqueEmail(id,requestDto.email(), "admin/memberEdit");
         Member member = findMemberByIdOrElseThrow(id);
         member.update(requestDto);
     }
@@ -92,16 +92,16 @@ public class MemberServiceImpl implements MemberService{
         memberRepository.deleteById(id);
     }
 
-    private void validateDuplicateEmail(String email, String viewName) {
-        boolean existing = memberRepository.existsByEmail(email);
-        if (existing) {
+    private void validateUniqueEmail(String email, String viewName) {
+        boolean isNotUniqueEmail = memberRepository.existsByEmail(email);
+        if (isNotUniqueEmail) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }
 
-    private void validateDuplicateEmail(Long memberId, String email, String viewName) {
-        boolean existing = memberRepository.existsByEmailAndIdNotIn(email, memberId);
-        if (existing) {
+    private void validateUniqueEmail(Long memberId, String email, String viewName) {
+        boolean isNotUniqueEmail = memberRepository.existsByEmailAndIdNot(email, memberId);
+        if (isNotUniqueEmail) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }
