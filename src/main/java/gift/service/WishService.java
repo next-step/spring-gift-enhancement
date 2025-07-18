@@ -8,6 +8,8 @@ import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +60,10 @@ public class WishService {
         Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new NoSuchElementException("위시 항목이 존재하지 않습니다"));
 
         wish.setQuantity(quantity);
+    }
+
+    public Page<WishResponseDto> getWishes(Long memberId, Pageable pageable) {
+        return wishRepository.findByMemberId(memberId, pageable)
+                .map(WishResponseDto::new); // from → new
     }
 }

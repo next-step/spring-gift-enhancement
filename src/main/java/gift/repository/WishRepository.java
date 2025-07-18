@@ -3,6 +3,8 @@ package gift.repository;
 
 import gift.dto.response.WishResponseDto;
 import gift.entity.Wish;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +20,5 @@ import java.util.Optional;
 @Repository
 public interface WishRepository extends JpaRepository<Wish, Long> {
     List<Wish> findAllByMemberId(Long memberId);
-
+    Page<Wish> findByMemberId(Long memberId, Pageable pageable);
 }
