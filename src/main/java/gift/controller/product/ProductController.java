@@ -48,8 +48,9 @@ class ProductController {
     ) {
         Page<ProductResponseDto> productPage = productService.findAll(page, size);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Page-Number", String.valueOf(productPage.getNumber()));
-        headers.add("X-Page-Size", String.valueOf(productPage.getSize()));
+        headers.add("Page-Number", String.valueOf(productPage.getNumber()));
+        headers.add("Page-Size", String.valueOf(productPage.getSize()));
+        headers.add("Total-Count", String.valueOf(productPage.getTotalElements()));
 
         return ResponseEntity.ok()
             .headers(headers)
