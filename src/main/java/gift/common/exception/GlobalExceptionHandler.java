@@ -8,8 +8,10 @@ import gift.member.exception.InvalidLoginException;
 import gift.member.exception.MemberNotFoundException;
 import gift.wishlist.exception.WishlistNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -55,9 +57,13 @@ public class GlobalExceptionHandler {
         ConstraintViolationException e,
         HttpServletRequest request
     ) {
+        String message = e.getConstraintViolations().stream()
+            .map(ConstraintViolation::getMessage)
+            .collect(Collectors.joining(" "));
+
         ErrorResponseDto errorResponse = new ErrorResponseDto(
             HttpStatus.BAD_REQUEST,
-            e.getMessage(),
+            message,
             URI.create(request.getRequestURI())
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
