@@ -27,4 +27,10 @@ public interface ItemService {
     Optional<Item> findItemByName(@NotNull String name);
 
     Optional<Item> findItemById(Long itemId);
+
+    Page<Item> findItemsByName(String name, Pageable pageable);
+
+    Page<Item> findItemsByPrice(Integer price, Pageable pageable);
+
+    Page<Item> findItemsByNameAndPrice(String name, Integer price, Pageable pageable);
 }

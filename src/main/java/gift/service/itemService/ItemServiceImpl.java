@@ -27,18 +27,19 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(item);
     }
 
+    /***
+     * 메서드 분리의 방향성을 잘 잡혀서, 일단 no usages 여도 임시 keep
+     */
     @Override
     public Page<Item> getItems(String name, Integer price, Pageable pageable) {
-        if (name == null && price == null) {
-            return getAllItems(pageable);
-        }
+
         if (name == null) {
-            return itemRepository.findByPrice(price, pageable);
+            return findItemsByPrice(price, pageable);
         }
         if (price == null) {
-            return itemRepository.findByNameContaining(name, pageable);
+            return findItemsByName(name,pageable);
         }
-        return itemRepository.findByNameContainingAndPrice(name, price, pageable);
+        return findItemsByNameAndPrice(name, price, pageable);
     }
 
     @Override
@@ -87,4 +88,21 @@ public class ItemServiceImpl implements ItemService {
     public Optional<Item> findItemById(Long itemId) {
         return itemRepository.findById(itemId);
     }
+
+    @Override
+    public Page<Item> findItemsByName(String name, Pageable pageable) {
+        return itemRepository.findByNameContaining(name, pageable);
+    }
+
+    @Override
+    public Page<Item> findItemsByPrice(Integer price, Pageable pageable) {
+        return itemRepository.findByPrice(price, pageable);
+    }
+
+    @Override
+    public Page<Item> findItemsByNameAndPrice(String name, Integer price, Pageable pageable) {
+        return itemRepository.findByNameContainingAndPrice(name, price, pageable);
+    }
+
+
 }

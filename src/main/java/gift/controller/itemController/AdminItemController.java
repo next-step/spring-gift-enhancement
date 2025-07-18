@@ -38,8 +38,12 @@ public class AdminItemController {
 
         if (name == null && price == null) {
             items = itemService.getAllItems(pageable);
+        } else if (name != null && price == null) {
+            items = itemService.findItemsByName(name, pageable);
+        } else if (name == null && price != null) {
+            items = itemService.findItemsByPrice(price, pageable);
         } else {
-            items = itemService.getItems(name, price, pageable);
+            items = itemService.findItemsByNameAndPrice(name, price, pageable);
         }
 
         return ResponseItems.from(items);

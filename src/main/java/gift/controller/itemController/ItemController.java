@@ -32,8 +32,18 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<ResponseItems> getItems(@RequestParam(required = false) String name, @RequestParam(required = false) Integer price, Pageable pageable) {
+        Page<Item> items;
 
-        Page<Item> items = itemService.getItems(name, price, pageable);
+        if (name == null && price == null) {
+            items = itemService.getAllItems(pageable);
+        } else if (name != null && price == null) {
+            items = itemService.findItemsByName(name, pageable);
+        } else if (name == null && price != null) {
+            items = itemService.findItemsByPrice(price, pageable);
+        } else {
+            items = itemService.findItemsByNameAndPrice(name, price, pageable);
+        }
+
         return ResponseEntity.ok(ResponseItems.from(items));
     }
 
