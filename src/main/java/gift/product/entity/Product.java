@@ -34,7 +34,7 @@ public class Product {
         this.giftPhotoUrl = giftPhotoUrl;
     }
 
-    public Product() {}
+    protected Product() {}
 
     public Long getId() {
         return id;
@@ -73,17 +73,21 @@ public class Product {
     }
 
     public void modifyProduct(ProductModifyRequest productModifyRequest) {
-        if(productModifyRequest.giftId() != null && !Objects.equals(giftId, productModifyRequest.giftId())){
-            this.giftId = productModifyRequest.giftId();
+        Long giftId = productModifyRequest.giftId();
+        if(giftId != null && !Objects.equals(this.giftId, giftId)){
+            this.giftId = giftId;
         }
-        if(productModifyRequest.giftName() != null && !Objects.equals(giftName, productModifyRequest.giftName())){
-            this.giftName = productModifyRequest.giftName();
+        String giftName = productModifyRequest.giftName();
+        if(giftName != null && !Objects.equals(this.giftName, giftName)){
+            this.giftName = giftName;
         }
-        if(productModifyRequest.giftPrice() != null && !Objects.equals(giftPrice, productModifyRequest.giftPrice())){
-            this.giftPrice = productModifyRequest.giftPrice();
+        Integer giftPrice = productModifyRequest.giftPrice();
+        if(giftPrice != null && !Objects.equals(this.giftPrice, giftPrice)){
+            this.giftPrice = giftPrice;
         }
-        if(productModifyRequest.giftPhotoUrl() != null && !Objects.equals(giftPhotoUrl, productModifyRequest.giftPhotoUrl())){
-            this.giftPhotoUrl = productModifyRequest.giftPhotoUrl();
+        String giftPhotoUrl = productModifyRequest.giftPhotoUrl();
+        if(giftPhotoUrl != null && !Objects.equals(this.giftPhotoUrl, giftPhotoUrl)){
+            this.giftPhotoUrl = giftPhotoUrl;
         }
     }
 }
