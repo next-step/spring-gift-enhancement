@@ -26,7 +26,8 @@ public class ProductPageController {
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("product", new Product());
+        Model product = model.addAttribute("product",
+                new Product());
         return "Productform";
     }
 
