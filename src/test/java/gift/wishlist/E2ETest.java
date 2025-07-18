@@ -4,11 +4,11 @@ package gift.wishlist;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import gift.common.dto.PageResponseDto;
 import gift.member.dto.LoginResponseDto;
 import gift.member.dto.MemberCreateDto;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -100,19 +100,22 @@ public class E2ETest {
 
         // when
         String url = "http://localhost:" + port + "/api/wishlists";
-        ResponseEntity<List<WishlistResponseDto>> response = client.get()
+        ResponseEntity<PageResponseDto<WishlistResponseDto>> response = client.get()
             .uri(url)
             .header(HttpHeaders.AUTHORIZATION, authToken)
             .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<WishlistResponseDto>>() {
+            .toEntity(new ParameterizedTypeReference<PageResponseDto<WishlistResponseDto>>() {
             });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).hasSize(2);
-        assertThat(response.getBody().get(0).itemName()).isEqualTo("아디다스 저지");
-        assertThat(response.getBody().get(1).itemName()).isEqualTo("나이키 모자");
+        assertThat(response.getBody().contents()).hasSize(2);
+        assertThat(response.getBody().totalElements()).isEqualTo(2L);
+
+        var contents = response.getBody().contents();
+        assertThat(contents.get(0).itemName()).isEqualTo("아디다스 저지");
+        assertThat(contents.get(1).itemPrice()).isEqualTo(22000);
     }
 
     @Test
