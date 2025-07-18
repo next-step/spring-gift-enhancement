@@ -14,12 +14,13 @@ public class PageableUtil {
     private static final String SORT_DELIMITER = ";";
     private static final String DIRECTION_ASC = "asc";
     private static final String DIRECTION_DESC = "desc";
+    private static final String DEFAULT_SORT_FIELD = "id";
 
     public static Sort createSort(List<String> sortParams, Set<String> allowedFields) {
         Map<String, String> sortMap = getSortMap(sortParams, allowedFields);
 
         if (sortMap.isEmpty()) {
-            return Sort.unsorted();
+            return Sort.by(Sort.Order.desc(DEFAULT_SORT_FIELD));
         }
 
         List<Sort.Order> orders = new ArrayList<>();
