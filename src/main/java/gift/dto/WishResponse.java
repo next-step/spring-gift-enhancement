@@ -7,7 +7,7 @@ public record WishResponse(
     Long productId,
     Integer quantity,
     String productName,
-    Integer price,
+    Integer productPrice,
     String imageUrl
 ) {
 
