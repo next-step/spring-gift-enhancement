@@ -32,9 +32,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Product> findAllByPage(int page, int size, String sortBy, String sortOrder) {
-        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public Page<Product> findAllByPage(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
 

@@ -3,6 +3,9 @@ package gift.wishlist;
 import gift.auth.LoginUser;
 import gift.product.dto.ResponseDto;
 import gift.user.domain.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +30,9 @@ public class WishlistController {
     @GetMapping("/page")
     public ResponseEntity<List<Wishlist>> findAllByPage(
             @LoginUser User user,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortOrder
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        List<Wishlist> responseDtoList = wishlistService.getWishlistByIdAndPage(user.getId(), page, size, sortBy, sortOrder)
+        List<Wishlist> responseDtoList = wishlistService.getWishlistByIdAndPage(user.getId(), pageable)
                 .stream()
                 .toList();
         return ResponseEntity.ok(responseDtoList);

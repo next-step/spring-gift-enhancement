@@ -29,9 +29,7 @@ public class WishlistService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Wishlist> getWishlistByIdAndPage(Long userId, int page, int size, String sortBy, String sortOrder) {
-        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public Page<Wishlist> getWishlistByIdAndPage(Long userId, Pageable pageable) {
         return wishRepository.findByUserId(userId, pageable);
     }
 

@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,17 +44,14 @@ public class ProductAdminViewController {
 
     @GetMapping("/page")
     public String findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortOrder,
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             Model model
     ) {
-        Page<Product> products = productService.findAllByPage(page, size, sortBy, sortOrder);
+        Page<Product> products = productService.findAllByPage(pageable);
         model.addAttribute("products", products.getContent());
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", pageable.getPageNumber());
         model.addAttribute("totalPages", products.getTotalPages());
-        model.addAttribute("size", size);
+        model.addAttribute("size", pageable.getPageSize());
         return "productsPage";
     }
 
