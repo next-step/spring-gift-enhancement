@@ -5,7 +5,8 @@ import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,8 +31,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getProducts() {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProducts());
+    public ResponseEntity<Page<ProductResponse>> getProducts(Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProducts(pageable));
     }
 
     @GetMapping("/{productId}")

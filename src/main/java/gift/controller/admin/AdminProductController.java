@@ -4,7 +4,8 @@ import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,9 +26,9 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String showProductList(Model model) {
-        List<ProductResponse> products = productService.getAllProducts();
-        model.addAttribute("products", products);
+    public String showProductList(Model model, Pageable pageable) {
+        Page<ProductResponse> productsPage = productService.getAllProducts(pageable);
+        model.addAttribute("productsPage", productsPage);
         return "admin/product/list";
     }
 
@@ -38,7 +39,8 @@ public class AdminProductController {
     }
 
     @PostMapping
-    public String createProduct(@Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
+    public String createProduct(@Valid @ModelAttribute("product") ProductRequest request,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product/new-form";
         }
@@ -54,7 +56,8 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
+    public String updateProduct(@PathVariable Long id,
+            @Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product/edit-form";
         }
