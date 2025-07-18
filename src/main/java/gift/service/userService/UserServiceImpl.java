@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String registerUser(UserRegisterDto dto) {
-        User user = dto.dtoToUser();
+    public String registerUser(UserRegisterDto userRegisterDto) {
+        User user = userRegisterDto.dtoToUser();
 
         if (isEmailExist(user.getEmail())) {
             throw new UserDuplicatedException();
@@ -46,15 +46,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String loginUser(UserLoginDto dto) {
-        String targetEmail = dto.email();
+    public String loginUser(UserLoginDto userLoginDto) {
+        String targetEmail = userLoginDto.email();
 
         User findUser = findUserByEmail(targetEmail);
 
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
-        if (!findUser.checkPassword(dto.password())) {
+        if (!findUser.checkPassword(userLoginDto.password())) {
             throw new UserPasswordInputException();
         }
         return jwtUtil.generateToken(findUser);
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
+    public User updateUser(Long id, UserUpdateDto userUpdateDto, boolean isAdmin) {
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
         }
 
-        User updatedUser = findUser.updateFrom(dto);
+        User updatedUser = findUser.updateFrom(userUpdateDto);
 
         return userRepository.save(updatedUser);
     }

@@ -21,8 +21,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item saveItem(ItemCreateDto dto) {
-        Item item = dto.dtoToItem();
+    public Item saveItem(ItemCreateDto itemCreateDto) {
+        Item item = itemCreateDto.dtoToItem();
 
         return itemRepository.save(item);
     }
@@ -51,12 +51,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item updateItem(Long id, ItemUpdateDto dto) {
+    public Item updateItem(Long id, ItemUpdateDto itemUpdateDto) {
         Optional<Item> targetItem = findItemById(id);
 
         Item item = targetItem.get();
 
-        Item changeItem = dto.dtoToItem();
+        Item changeItem = itemUpdateDto.dtoToItem();
 
         Item updatedItem = item.update(changeItem);
 

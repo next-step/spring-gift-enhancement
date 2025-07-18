@@ -36,20 +36,20 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     @Transactional
-    public WishItem addWishItem(CreateWishItemRequestDto dto, String userEmail) {
+    public WishItem addWishItem(CreateWishItemRequestDto createWishItemRequestDto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        String itemName = dto.name();
+        String itemName = createWishItemRequestDto.name();
         Optional<Item> findItem = itemService.findItemByName(itemName);
         if (findItem.isEmpty()) {
-            throw new ItemNotFoundException(dto.name());
+            throw new ItemNotFoundException(createWishItemRequestDto.name());
         }
 
         Item item = findItem.get();
-        Integer quantity = dto.quantity();
+        Integer quantity = createWishItemRequestDto.quantity();
 
         WishItem wishItem = new WishItem(user, item, quantity);
 

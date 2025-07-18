@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface ItemService {
-    Item saveItem(ItemCreateDto dto);
+    Item saveItem(ItemCreateDto itemCreateDto);
 
     Page<Item> getItems(String name, Integer price, Pageable pageable);
 
     void delete(String name);
 
-    Item updateItem(Long id, ItemUpdateDto dto);
+    Item updateItem(Long id, ItemUpdateDto itemUpdateDto);
 
     Optional<Item> findById(Long id);
 

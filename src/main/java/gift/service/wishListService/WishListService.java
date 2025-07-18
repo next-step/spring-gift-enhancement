@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface WishListService {
 
-    WishItem addWishItem(@Valid CreateWishItemRequestDto dto, String userEmail);
+    WishItem addWishItem(@Valid CreateWishItemRequestDto createWishItemRequestDto, String userEmail);
 
     Page<WishItem> getItemList(String name, Integer price, String userEmail, Pageable pageable);
 
