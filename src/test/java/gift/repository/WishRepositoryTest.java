@@ -12,6 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -78,7 +81,11 @@ class WishRepositoryTest {
 
         wishRepository.deleteByMemberAndProduct(testMember, testProduct);
 
-        List<Wish> wishes = wishRepository.findAllByMember(testMember);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Wish> wishesPage = wishRepository.findAllByMember(testMember, pageable);
+
+        List<Wish> wishes = wishesPage.getContent();
+
         assertThat(wishes).doesNotContain(wish);
     }
 
@@ -88,7 +95,10 @@ class WishRepositoryTest {
         Wish wish1 = wishRepository.save(new Wish(null, testMember, testProduct, 1));
         Wish wish2 = wishRepository.save(new Wish(null, testMember, testProduct2, 2));
 
-        List<Wish> wishes = wishRepository.findAllByMember(testMember);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Wish> wishesPage = wishRepository.findAllByMember(testMember, pageable);
+
+        List<Wish> wishes = wishesPage.getContent();
 
         assertThat(wishes).hasSize(2);
         assertThat(wishes).contains(wish1, wish2);
