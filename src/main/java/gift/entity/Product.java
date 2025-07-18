@@ -48,7 +48,7 @@ public class Product {
 
     @OneToMany(
         mappedBy = "product",
-        cascade = CascadeType.ALL,
+        cascade = CascadeType.REMOVE,
         orphanRemoval = true
     )
     private List<Wish> wishes = new ArrayList<>();
@@ -82,6 +82,10 @@ public class Product {
         return this.imageUrl;
     }
 
+    public List<Wish> getWishes() {
+        return wishes;
+    }
+
     public void change(String name, int price, String imageUrl) {
         this.name = name;
         this.price = price;
@@ -95,5 +99,6 @@ public class Product {
 
     public void removeWish(Wish wish) {
         wishes.remove(wish);
+        wish.setProduct(null);
     }
 }

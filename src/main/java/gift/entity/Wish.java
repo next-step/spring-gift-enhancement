@@ -54,4 +54,18 @@ public class Wish {
     public Member getMember() {
         return member;
     }
+
+    public void setProduct(Product product) {
+        this.product = product;
+        if (product != null && product.getWishes().contains(this)) {
+            product.getWishes().add(this);
+        }
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+        if (member != null && member.getWishes().contains(this)) {
+            member.getWishes().add(this);
+        }
+    }
 }

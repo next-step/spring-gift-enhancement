@@ -39,6 +39,7 @@ public class WishListServiceImpl implements WishListService {
         Wish wish = wishListRepository.save(
             new Wish(product, member));
 
+        member.addWish(wish);
         product.addWish(wish);
 
         return new WishListResponseDto(wish.getProduct().getId(), wish.getMember().getId());

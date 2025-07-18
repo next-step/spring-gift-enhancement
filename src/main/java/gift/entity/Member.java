@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -26,12 +27,13 @@ public class Member {
 
     @OneToMany(
         mappedBy = "member",
-        cascade = CascadeType.ALL,
+        cascade = CascadeType.REMOVE,
         orphanRemoval = true
     )
     private List<Wish> wishes = new ArrayList<>();
 
-    protected Member() {}
+    protected Member() {
+    }
 
     public Member(String email, String password) {
         this(null, email, password);
@@ -43,7 +45,9 @@ public class Member {
         this.password = password;
     }
 
-    public Long getId() { return this.id; }
+    public Long getId() {
+        return this.id;
+    }
 
     public String getEmail() {
         return this.email;
@@ -51,6 +55,10 @@ public class Member {
 
     public String getPassword() {
         return this.password;
+    }
+
+    public List<Wish> getWishes() {
+        return wishes;
     }
 
     public boolean matchesPassword(String password) {
@@ -72,5 +80,6 @@ public class Member {
 
     public void removeWish(Wish wish) {
         wishes.remove(wish);
+        wish.setProduct(null);
     }
 }
