@@ -6,6 +6,7 @@ import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,9 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponse> getAllProducts(Long cursor, Pageable pageable) {
         if (cursor == null) {
-            return productRepository.findAll(pageable.withPage(0)).map(ProductResponse::from).stream().toList();
+            return productRepository.findAll(PageRequest.of(0, pageable.getPageSize(), pageable.getSort())).map(ProductResponse::from).stream().toList();
         }
-        return productRepository.findAllWithCursor(cursor, pageable.withPage(0));
+        return productRepository.findAllWithCursor(cursor, PageRequest.of(0, pageable.getPageSize(), pageable.getSort()));
     }
 
     @Transactional(readOnly = true)
