@@ -37,7 +37,7 @@ public class ItemServiceImpl implements ItemService {
             return findItemsByPrice(price, pageable);
         }
         if (price == null) {
-            return findItemsByName(name,pageable);
+            return findItemsByName(name, pageable);
         }
         return findItemsByNameAndPrice(name, price, pageable);
     }
