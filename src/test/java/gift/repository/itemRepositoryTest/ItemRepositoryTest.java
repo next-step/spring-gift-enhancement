@@ -1,4 +1,4 @@
-package gift.jpa;
+package gift.repository.itemRepositoryTest;
 
 import gift.entity.Item;
 import gift.repository.itemRepository.ItemRepository;
