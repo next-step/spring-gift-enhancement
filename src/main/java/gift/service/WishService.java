@@ -2,52 +2,64 @@ package gift.service;
 
 import gift.dto.ProductResponse;
 import gift.dto.WishRequest;
+import gift.entity.Member;
+import gift.entity.Product;
 import gift.entity.Wish;
+import gift.exception.MemberNotFoundException;
+import gift.exception.ProductNotFoundException;
+import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WishService {
 
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
 
-    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
+    public WishService(WishRepository wishRepository, ProductRepository productRepository,
+            MemberRepository memberRepository) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
+        this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public void addWish(Long memberId, WishRequest request) {
-        productRepository.findById(request.productId()).orElseThrow(
-                () -> new java.util.NoSuchElementException(
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(
+                        () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
+
+        Product product = productRepository.findById(request.productId())
+                .orElseThrow(() -> new ProductNotFoundException(
                         "해당 ID의 상품이 존재하지 않습니다: " + request.productId()));
 
-        Wish wish = new Wish(memberId, request.productId());
+        Wish wish = new Wish(member, product);
         wishRepository.save(wish);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getWishes(Long memberId) {
-        List<Wish> wishes = wishRepository.findByMemberId(memberId);
-        if (wishes.isEmpty()) {
-            return List.of();
-        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(
+                        () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
 
-        List<Long> productIds = wishes.stream()
-                .map(Wish::getProductId)
+        List<Wish> wishes = wishRepository.findByMember(member);
+        return wishes.stream()
+                .map(wish -> new ProductResponse(wish.getProduct()))
                 .toList();
-
-        return productRepository.findAllByIdIn(productIds).stream()
-                .map(ProductResponse::new)
-                .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteWish(Long memberId, Long productId) {
-        boolean deleted = wishRepository.deleteByMemberIdAndProductId(memberId, productId);
-        if (!deleted) {
-            throw new java.util.NoSuchElementException("해당 상품이 위시리스트에 존재하지 않습니다.");
-        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(
+                        () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
+
+        wishRepository.deleteByMemberAndProductId(member, productId);
     }
 }

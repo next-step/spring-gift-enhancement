@@ -1,23 +1,33 @@
+// src/main/java/gift/entity/Member.java
 package gift.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "member")
 public class Member {
 
-    private final Long id;
-    private final String email;
-    private final String password;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private Member(Long id, String email, String password) {
-        this.id = id;
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    protected Member() {
+    }
+
+    public Member(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public static Member from(String email, String password) {
-        return new Member(null, email, password);
-    }
-
-    public static Member of(Long id, String email, String password) {
-        return new Member(id, email, password);
     }
 
     public Long getId() {
@@ -31,5 +41,4 @@ public class Member {
     public String getPassword() {
         return password;
     }
-
 }

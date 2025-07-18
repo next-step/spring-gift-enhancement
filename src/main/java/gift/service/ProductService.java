@@ -3,46 +3,60 @@ package gift.service;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
 
-    private final ProductRepository ProductRepository;
+    private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository ProductRepository) {
-        this.ProductRepository = ProductRepository;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getAllProducts() {
-        return ProductRepository.findAll().stream()
+        return productRepository.findAll().stream()
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ProductResponse findProductById(Long id) {
-        return ProductRepository.findById(id)
+        return productRepository.findById(id)
                 .map(ProductResponse::new)
-                .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new ProductNotFoundException("해당 상품이 존재하지 않습니다."));
     }
 
+    @Transactional
     public ProductResponse addProduct(ProductRequest request) {
         Product product = new Product(request.name(), request.price(), request.imageUrl());
-        Product saved = ProductRepository.save(product);
+        Product saved = productRepository.save(product);
         return new ProductResponse(saved);
     }
 
+    @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
-        Product updated = ProductRepository.update(id, request.name(), request.price(),
-                request.imageUrl());
-        return updated != null ? new ProductResponse(updated) : null;
+        Product product = productRepository.findById(id)
+                .orElseThrow(
+                        () -> new ProductNotFoundException(
+                                "해당 ID의 상품이 존재하지 않아 업데이트할 수 없습니다: " + id));
+
+        product.update(request.name(), request.price(), request.imageUrl());
+
+        return new ProductResponse(product);
     }
 
-    public boolean deleteProduct(Long id) {
-        return ProductRepository.delete(id);
+    @Transactional
+    public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException("해당 ID의 상품이 존재하지 않아 삭제할 수 없습니다: " + id);
+        }
+        productRepository.deleteById(id);
     }
 }

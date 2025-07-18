@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.MemberRequest;
 import gift.dto.TokenResponse;
 import gift.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +22,13 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponse> register(@RequestBody MemberRequest request) {
+    public ResponseEntity<TokenResponse> register(@Valid @RequestBody MemberRequest request) {
         TokenResponse response = memberService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody MemberRequest request) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody MemberRequest request) {
         TokenResponse response = memberService.login(request);
         return ResponseEntity.ok().body(response);
     }
