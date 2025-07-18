@@ -6,6 +6,8 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
+    private static final int DEFAULT_PAGE_SIZE = 3;
+
     private final ProductService productService;
 
     public AdminProductController(ProductService productService) {
@@ -26,7 +30,8 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String showProductList(Model model, Pageable pageable) {
+    public String showProductList(Model model,
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ProductResponse> productsPage = productService.getAllProducts(pageable);
         model.addAttribute("productsPage", productsPage);
         return "admin/product/list";
