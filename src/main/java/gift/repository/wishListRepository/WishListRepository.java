@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,4 +18,7 @@ public interface WishListRepository extends JpaRepository<WishItem, Long> {
     Optional<WishItem> findByUserAndItem(User user, Item item);
 
     boolean existsByItem(Item item);
+
+    Page<WishItem> findByUserAndItemNameContainingAndItemPrice(User user, String name, Integer price, Pageable pageable);
+
 }

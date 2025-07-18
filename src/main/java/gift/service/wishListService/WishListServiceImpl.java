@@ -66,21 +66,8 @@ public class WishListServiceImpl implements WishListService {
         if (user == null) {
             throw new UserNotFoundException();
         }
+        return wishListRepository.findByUserAndItemNameContainingAndItemPrice(user, name, price, pageable);
 
-        Page<WishItem> wishItems = wishListRepository.findAllByUser(user, pageable);
-        if (wishItems.isEmpty()) {
-            return wishItems;
-        }
-        List<WishItem> filtered = new ArrayList<>();
-
-        for (WishItem wishItem : wishItems) {
-            Item item = wishItem.getItem();
-            if (item.isValid(name, price)) {
-                filtered.add(wishItem);
-            }
-        }
-
-        return new PageImpl<>(filtered, pageable, filtered.size());
     }
 
 
