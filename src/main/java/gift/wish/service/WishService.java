@@ -10,9 +10,10 @@ import gift.wish.domain.Wish;
 import gift.wish.dto.WishListResponse;
 import gift.wish.dto.WishResponse;
 import gift.wish.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -43,11 +44,9 @@ public class WishService {
         return new WishResponse(wish.getMember().getId(), wish.getProduct().getId(), 1);
     }
 
-    public List<WishListResponse> getWishes(MemberTokenRequest memberTokenRequest) {
-        return wishRepository.findWishesByMemberId(memberTokenRequest.id())
-                .stream()
-                .map(WishListResponse::getWishListResponse)
-                .toList();
+    public Page<WishListResponse> getWishes(MemberTokenRequest memberTokenRequest, Pageable pageable) {
+        return wishRepository.findWishesByMemberId(memberTokenRequest.id(), pageable)
+                .map(WishListResponse::getWishListResponse);
     }
 
     public void updateQuantity(MemberTokenRequest memberTokenRequest, Long wishId, Integer quantity){

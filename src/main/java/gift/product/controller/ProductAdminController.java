@@ -6,6 +6,10 @@ import gift.product.dto.ProductInfoDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,11 +33,12 @@ public class ProductAdminController {
     }
 
     @GetMapping
-    public String products(Model model) {
-        List<ProductInfoDto> products = productService.getProducts()
-                .stream()
-                .map(product -> ProductInfoDto.productFrom(product))
-                .toList();
+    public String products(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
+        Page<ProductInfoDto> products = productService.getProducts(pageable)
+                .map(product -> ProductInfoDto.productFrom(product));
 
         model.addAttribute("products", products);
 

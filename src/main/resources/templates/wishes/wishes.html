@@ -31,7 +31,7 @@
             <tr th:if="${wishes.isEmpty()}">
                 <td colspan="5" style="text-align: center;">위시 리스트에 담긴 상품이 없습니다.</td>
             </tr>
-            <tr th:each="wish : ${wishes}">
+            <tr th:each="wish : ${wishes.content}">
                 <td><img th:src="${wish.productImageUrl}" th:alt="${wish.productName}" width="100"></td>
                 <td th:text="${wish.productName}">상품명</td>
                 <td th:text="${wish.productPrice}">상품 가격</td>
@@ -49,6 +49,20 @@
             </tr>
             </tbody>
         </table>
+        <div th:if="${wishes.totalPages > 0}" class="pagination" th:with="page=${wishes}">
+            <a th:href="${page.first} ? '#' : @{/wishes(page=${page.number - 1})}"
+               th:classappend="${page.first} ? 'disabled' : ''">&laquo;</a>
+
+            <th:block th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+                <a th:if="${i >= page.number - 2 and i <= page.number + 2}"
+                   th:href="@{/wishes(page=${i})}"
+                   th:text="${i + 1}"
+                   th:classappend="${page.number == i} ? 'active' : ''"></a>
+            </th:block>
+
+            <a th:href="${page.last} ? '#' : @{/wishes(page=${page.number + 1})}"
+               th:classappend="${page.last} ? 'disabled' : ''">&raquo;</a>
+        </div>
     </div>
 
 
