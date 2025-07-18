@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "items") // 테이블명이 items인 경우 명시
+@Table(name = "product")
 public class Item {
 
     @Id
