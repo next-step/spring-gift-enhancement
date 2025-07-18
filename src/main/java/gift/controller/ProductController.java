@@ -39,8 +39,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> findAll() {
-        return ResponseEntity.ok(productService.findAllProducts());
+    public ResponseEntity<List<ProductResponseDTO>> findAll(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id,asc") String sort
+    ) {
+        List<ProductResponseDTO> products = productService.findAllProducts(page, size, sort);
+        return ResponseEntity.ok(products);
     }
 
     @DeleteMapping("/{id}")

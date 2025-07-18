@@ -4,6 +4,9 @@ import gift.dto.ProductRequestDTO;
 import gift.dto.ProductResponseDTO;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +45,33 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> findAllProducts() {
         return productRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponseDTO> findAllProducts(int page, int size, String sort) {
+        Sort sortBy;
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc")
+            ? Sort.Direction.DESC
+            : Sort.Direction.ASC;
+
+        switch (sortField) {
+            case "name":
+                sortBy = Sort.by(direction, "name");
+                break;
+            case "price":
+                sortBy = Sort.by(direction, "price");
+                break;
+            default:
+                sortBy = Sort.by(direction, "id");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sortBy);
+        return productRepository.findAll(pageable)
+            .stream()
+            .map(ProductResponseDTO::new)
+            .toList();
     }
 
     @Transactional
