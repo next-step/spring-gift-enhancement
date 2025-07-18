@@ -1,14 +1,15 @@
 package gift.service;
 
+import gift.dto.Pagination;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ProductService {
 
     ProductResponse create(ProductRequest request);
 
-    List<ProductResponse> getAllProducts();
+    Page<ProductResponse> getAllProducts(Pagination pagination);
 
     ProductResponse getProduct(Long id);
 

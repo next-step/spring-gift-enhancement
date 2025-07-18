@@ -2,12 +2,17 @@ package gift.service;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
+import gift.common.util.PageableUtil;
+import gift.dto.Pagination;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.dto.ProductSortField;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +36,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll().stream()
-            .map(ProductResponse::from)
-            .collect(Collectors.toList());
+    public Page<ProductResponse> getAllProducts(Pagination pagination) {
+        Sort sortCondition = PageableUtil.createSort(pagination.getSort(),
+            ProductSortField.allowedFields());
+        Pageable pageable = PageRequest.of(pagination.getPage() - 1, pagination.getSize(),
+            sortCondition);
+
+        return productRepository.findAll(pageable)
+            .map(ProductResponse::from);
     }
 
     @Override
