@@ -78,15 +78,20 @@ public class UserServiceImpl implements UserService {
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
+        if (email != null) {
+            return getUsersByEmail(email, pageable);
+        }
 
-        Page<User> users = getUsersByEmail(email, pageable);
+        return getAllUser(pageable);
+    }
 
-        return users;
+    private Page<User> getAllUser(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     private Page<User> getUsersByEmail(String email, Pageable pageable) {
         if (email == null) {
-            return userRepository.findAll(pageable);
+            throw new UserNotFoundException();
         } else {
             Page<User> users = userRepository.findByEmailContaining(email, pageable);
             if (users.isEmpty()) {
