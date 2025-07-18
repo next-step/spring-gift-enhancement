@@ -5,6 +5,7 @@ import gift.dto.product.ProductResponseDto;
 import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +29,7 @@ public class ProductViewController {
 
     @GetMapping("/products")
     public String showProducts(Model model) {
-        List<ProductResponseDto> productList = productService.findAll();
+        Page<ProductResponseDto> productList = productService.findAll(0, 10);
 
         model.addAttribute("productList", productList);
 
@@ -56,7 +57,7 @@ public class ProductViewController {
             model.addAttribute("openCreateModal", true);
             model.addAttribute("requestDto", requestDto);
             model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
-            model.addAttribute("productList", productService.findAll());
+            model.addAttribute("productList", productService.findAll(0, 10));
             return "home";
         }
         productService.create(requestDto);
@@ -75,7 +76,7 @@ public class ProductViewController {
             redirectAttributes.addFlashAttribute("openUpdateModal", true);
             redirectAttributes.addFlashAttribute("productId", id);
             redirectAttributes.addFlashAttribute("updateDto", requestDto);
-            redirectAttributes.addFlashAttribute("productList", productService.findAll());
+            redirectAttributes.addFlashAttribute("productList", productService.findAll(0, 10));
             redirectAttributes.addFlashAttribute(
                 "org.springframework.validation.BindingResult.updateDto",
                 bindingResult

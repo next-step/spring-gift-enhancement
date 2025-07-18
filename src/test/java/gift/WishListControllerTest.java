@@ -8,17 +8,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import gift.controller.wishlist.WishListController;
 import gift.dto.member.MemberCredentialDto;
+import gift.dto.product.ProductResponseDto;
+import gift.dto.wishlist.WishListResponseDto;
+import gift.entity.Product;
 import gift.exception.UnAuthenicatedException;
 import gift.resolver.LoginMemberArgumentResolver;
 import gift.service.member.MemberService;
 import gift.service.wishlist.WishListService;
 import gift.util.JwtUtil;
 import gift.util.Sha256Util;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -84,10 +93,20 @@ public class WishListControllerTest {
         String email = "example@naver.com";
         String encryptedPassword = sha256Util.encrypt("qwer");
 
+        List<ProductResponseDto> productList = new ArrayList<>();
+        productList.add(new ProductResponseDto(1L, "테스트 1", 1, "test"));
+        productList.add(new ProductResponseDto(2L, "테스트 2", 1, "test"));
+        productList.add(new ProductResponseDto(3L, "테스트 3", 1, "test"));
+
+        Pageable pageRequest = PageRequest.of(0, 10);
+        Page<ProductResponseDto> productPage = new PageImpl<>(productList, pageRequest, productList.size());
+
         given(jwtUtil.getMemberIdFromToken(token))
             .willReturn(memberId);
         given(memberService.findById(memberId))
             .willReturn(new MemberCredentialDto(memberId, email, encryptedPassword));
+        given(wishListService.findAll(memberId, 0, 10))
+            .willReturn(productPage);
 
         mockmvc.perform(get("/api/wishes")
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
