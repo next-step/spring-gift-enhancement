@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @ProductPolicy
 public record UpdateProductRequestDto (
@@ -18,7 +19,7 @@ public record UpdateProductRequestDto (
     String name,
     @Min(value = 0, message = "가격은 0원 이상이어야 합니다.")
     @Max(value = 1000000000000L, message = "가격이 비정상적으로 큰 값입니다.")
-    long price,
+    BigDecimal price,
     String imageUrl,
     boolean merchandiserApproved
 ) implements ProductPolicyProvider {

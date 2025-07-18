@@ -10,8 +10,8 @@ import gift.exception.ResourceNotFoundException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +32,11 @@ public class WishService {
     }
 
     @Transactional(readOnly = true)
-    public List<WishResponseDto> getWishes(Long memberId) {
+    public Page<WishResponseDto> getWishes(Long memberId,  Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회원을 찾을 수 없습니다. ID: " + memberId));
 
-        return wishRepository.findByMember(member).stream()
+        return wishRepository.findByMember(member, pageable)
                 .map(wish -> {
                     Product product = wish.getProduct();
                     return new WishResponseDto(
@@ -46,8 +46,7 @@ public class WishService {
                             product.getPrice(),
                             product.getImageUrl()
                     );
-                })
-                .collect(Collectors.toList());
+                });
     }
 
     @Transactional

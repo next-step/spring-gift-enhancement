@@ -1,10 +1,12 @@
 package gift.dto;
 
+import java.math.BigDecimal;
+
 public record WishResponseDto (
     Long wishlistId,
     Long productId,
     String productName,
-    long price,
+    BigDecimal price,
     String imageUrl
 ) {
 }
