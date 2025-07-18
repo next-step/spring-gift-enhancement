@@ -1,6 +1,5 @@
 package gift.controller;
 
-import gift.controller.AdminController;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UserRequestDto;
@@ -12,6 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,21 +46,29 @@ class AdminControllerTest {
     @MockitoBean
     private UserService userService;
 
+    @MockitoBean
+    private org.springframework.data.jpa.mapping.JpaMetamodelMappingContext jpaMappingContext;
+    @MockitoBean
+    private org.springframework.data.auditing.AuditingHandler jpaAuditingHandler;
+
     //////////////////////////////////////////////   Products   /////////////////////////////////////////////
 
     @Test
     @DisplayName("관리자 제품 리스트 보기 – 200 OK, 'products' 모델 속성")
     void showProductsList() throws Exception {
+        var pageable = PageRequest.of(0, 20);
         var products = List.of(
                 new ProductResponseDto(1L, "A", 1000L, "urlA"),
                 new ProductResponseDto(2L, "B", 2000L, "urlB")
         );
-        when(productService.findAllProduct()).thenReturn(products);
+        Page<ProductResponseDto> page = new PageImpl<>(products, pageable, products.size());
+
+        when(productService.findAllProduct(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/admin/products"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("products_list"))
-                .andExpect(model().attribute("products", products));
+                .andExpect(model().attribute("products", page));
     }
 
     @Test
