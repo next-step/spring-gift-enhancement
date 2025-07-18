@@ -2,7 +2,7 @@ Create table Product(
     id bigint AUTO_INCREMENT,
     name varchar(50),
     price int,
-    imageUrl varchar(512),
+    image_url varchar(512),
 
     primary key (id)
 );
@@ -26,3 +26,5 @@ CREATE TABLE Wish (
     FOREIGN KEY (member_id) REFERENCES Member(id),
     FOREIGN KEY (product_id) REFERENCES Product(id)
 );
+
+
