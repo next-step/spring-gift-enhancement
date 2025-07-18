@@ -1,5 +1,7 @@
 package gift.dto.response;
 
+import gift.entity.Wish;
+
 public class WishResponseDto {
     private Long wishId;
     private Long productId;
@@ -15,6 +17,15 @@ public class WishResponseDto {
         this.price = price;
         this.imageUrl = imageUrl;
         this.quantity = quantity;
+    }
+
+    public WishResponseDto(Wish wish) {
+        this.wishId = wish.getId();
+        this.productId = wish.getProduct().getId();
+        this.name = wish.getProduct().getName();
+        this.price = wish.getProduct().getPrice();
+        this.imageUrl = wish.getProduct().getImageUrl();
+        this.quantity = wish.getQuantity();
     }
 
     public Long getWishId() {

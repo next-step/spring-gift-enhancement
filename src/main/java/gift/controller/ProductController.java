@@ -6,6 +6,8 @@ import gift.dto.response.ProductResponseDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,5 +69,12 @@ public class ProductController {
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<ProductResponseDto>> getPagedProducts(Pageable pageable) {
+        Page<Product> productPage = productService.getAllProducts(pageable);
+        Page<ProductResponseDto> responsePage = productPage.map(ProductResponseDto::new);
+        return ResponseEntity.ok(responsePage);
     }
 }

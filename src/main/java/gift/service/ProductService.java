@@ -4,6 +4,8 @@ import gift.dto.request.ProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,6 +48,10 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id) .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다: id=" + id));
+    }
+
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
 }
