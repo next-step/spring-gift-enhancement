@@ -7,8 +7,7 @@ import gift.dto.product.ProductManageResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +18,14 @@ import java.util.Optional;
 public class ProductManageService {
 
     private final ProductRepository productRepository;
-    private static final int PAGE_SIZE = 10;
 
     public ProductManageService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductManageResponse> getAllProducts(int page) {
-        return productRepository.findAll(PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending())).map(ProductManageResponse::from);
+    public Page<ProductManageResponse> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable.withPage(Math.max(0, pageable.getPageNumber() - 1))).map(ProductManageResponse::from);
     }
 
     public Product saveProduct(CreateProductRequest request) {

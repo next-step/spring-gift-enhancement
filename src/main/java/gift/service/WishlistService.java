@@ -10,7 +10,7 @@ import gift.repository.ProductRepository;
 import gift.repository.UserRepository;
 import gift.repository.WishlistRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +44,8 @@ public class WishlistService {
     }
 
     @Transactional(readOnly = true)
-    public Page<WishlistResponse> getWishlistsByUserId(Long userId, int page) {
-        return wishlistRepository.findAllByUserId(userId, PageRequest.of(page - 1, PAGE_SIZE)).map(WishlistResponse::new);
+    public Page<WishlistResponse> getWishlistsByUserId(Long userId, Pageable pageable) {
+        return wishlistRepository.findAllByUserId(userId, pageable.withPage(Math.max(0, pageable.getPageNumber() - 1))).map(WishlistResponse::new);
     }
 
     public void deleteWishlist(Long userId, Long wishlistId) {

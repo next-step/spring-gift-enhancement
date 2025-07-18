@@ -7,6 +7,9 @@ import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +35,11 @@ public class ProductApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getProducts(@RequestParam(required = false) Long cursor) {
-        List<ProductResponse> products = productService.getAllProducts(cursor);
+    public ResponseEntity<List<ProductResponse>> getProducts(
+            @RequestParam(required = false) Long cursor,
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        List<ProductResponse> products = productService.getAllProducts(cursor, pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("select p from Product p where p.id < :cursor order by p.id desc")
+    @Query("select p from Product p where p.id < :cursor")
     List<ProductResponse> findAllWithCursor(Long cursor, Pageable pageable);
 
 }
