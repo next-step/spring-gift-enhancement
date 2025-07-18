@@ -3,6 +3,7 @@ package gift.wishlist;
 import gift.auth.LoginUser;
 import gift.product.dto.ResponseDto;
 import gift.user.domain.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -28,14 +29,12 @@ public class WishlistController {
     }
 
     @GetMapping("/page")
-    public ResponseEntity<List<Wishlist>> findAllByPage(
+    public ResponseEntity<Page<Wishlist>> findAllByPage(
             @LoginUser User user,
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        List<Wishlist> responseDtoList = wishlistService.getWishlistByIdAndPage(user.getId(), pageable)
-                .stream()
-                .toList();
-        return ResponseEntity.ok(responseDtoList);
+        Page<Wishlist> responseDtoPage = wishlistService.getWishlistByIdAndPage(user.getId(), pageable);
+        return ResponseEntity.ok(responseDtoPage);
     }
 
     @PostMapping("/add")
