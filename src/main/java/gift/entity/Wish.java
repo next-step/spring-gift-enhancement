@@ -16,9 +16,10 @@ public class Wish {
     @ManyToOne()
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+    @Column
     private int quantity;
 
-    public Wish() {
+    protected Wish() {
     }
 
     public Wish(Member member, Product product, int quantity) {
