@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -68,7 +69,7 @@ class ProductServiceTest {
         productService.saveProduct(createProductRequest);
 
         //beforeEach에서 생성한 것 까지 총 2건의 데이터 있음
-        List<ProductResponse> products = productService.getAllProducts(null);
+        List<ProductResponse> products = productService.getAllProducts(null, PageRequest.of(1, 10));
         assertThat(products).isNotEmpty();
         assertThat(products.size()).isEqualTo(2);
     }
