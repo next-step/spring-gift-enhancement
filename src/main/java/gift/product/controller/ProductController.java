@@ -43,8 +43,11 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ProductResponse>> getAllGifts(){
-        return ResponseEntity.ok().body(productService.getAllGifts());
+    public ResponseEntity<List<ProductResponse>> getAllGifts(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return ResponseEntity.ok().body(productService.getAllGifts(page, size));
     }
 
     @PatchMapping("/{id}")

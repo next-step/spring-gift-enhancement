@@ -7,8 +7,13 @@ import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
 import gift.shared.exception.product.InValidSpecialCharException;
 import gift.shared.exception.product.NoProductException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 import static gift.product.status.ProductStatus.NO_GIFT;
@@ -37,11 +42,12 @@ public class ProductService {
         );
     }
 
-    public List<ProductResponse> getAllGifts() {
-        return productRepository.findAll()
-                .stream()
+    public List<ProductResponse> getAllGifts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return productPage.hasContent() ? productPage.getContent().stream()
                 .map(ProductResponse::from)
-                .toList();
+                .toList() : Collections.emptyList();
     }
 
     public ProductResponse updateGift(Long id, ProductModifyRequest productModifyRequest) {
