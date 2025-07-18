@@ -6,7 +6,8 @@ import gift.dto.WishRequest;
 import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,10 +38,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getWishes(
-            @LoginMember Member member
+    public ResponseEntity<Page<ProductResponse>> getWishes(
+            @LoginMember Member member,
+            Pageable pageable
     ) {
-        List<ProductResponse> products = wishService.getWishes(member.getId());
+        Page<ProductResponse> products = wishService.getWishes(member.getId(), pageable);
         return ResponseEntity.ok(products);
     }
 

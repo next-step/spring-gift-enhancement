@@ -10,7 +10,8 @@ import gift.exception.ProductNotFoundException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,15 +44,13 @@ public class WishService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getWishes(Long memberId) {
+    public Page<ProductResponse> getWishes(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(
                         () -> new MemberNotFoundException("해당 ID의 회원이 존재하지 않습니다: " + memberId));
 
-        List<Wish> wishes = wishRepository.findByMember(member);
-        return wishes.stream()
-                .map(wish -> new ProductResponse(wish.getProduct()))
-                .toList();
+        Page<Wish> wishes = wishRepository.findByMember(member, pageable);
+        return wishes.map(wish -> new ProductResponse(wish.getProduct()));
     }
 
     @Transactional

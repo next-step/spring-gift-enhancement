@@ -22,6 +22,6 @@
 - [x] `ProductController`의 상품 목록 조회 API가 페이지네이션을 지원하도록 수정
 - [x] `AdminProductController`의 상품 관리 페이지가 페이지네이션을 지원하도록 수정
 - [x] `admin/product/list.html` 뷰에 페이지네이션 UI(이전, 다음, 페이지 번호) 추가
-- [ ] `WishRepository`의 `findByMember` 메소드가 `Pageable`을 인자로 받도록 수정
-- [ ] `WishService`의 `getWishes` 메소드가 `Pageable`을 인자로 받도록 수정
-- [ ] `WishController`의 위시리스트 조회 API가 페이지네이션을 지원하도록 수정
+- [x] `WishRepository`의 `findByMember` 메소드가 `Pageable`을 인자로 받도록 수정
+- [x] `WishService`의 `getWishes` 메소드가 `Pageable`을 인자로 받도록 수정
+- [x] `WishController`의 위시리스트 조회 API가 페이지네이션을 지원하도록 수정
