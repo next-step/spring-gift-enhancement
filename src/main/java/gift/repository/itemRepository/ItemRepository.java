@@ -13,8 +13,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Item findByName(String name);
 
-    List<Item> findByNameAndPrice(String name, Integer price);
-
     Page<Item> findByPrice(Integer price, Pageable pageable);
 
     Page<Item> findByNameContaining(String name, Pageable pageable);
