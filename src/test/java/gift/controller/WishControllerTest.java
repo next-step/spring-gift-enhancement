@@ -6,6 +6,7 @@ import gift.dto.request.QuantityUpdateRequestDto;
 import gift.dto.request.WishRequestDto;
 import gift.entity.Member;
 import gift.entity.Product;
+import gift.entity.Wish;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
@@ -53,7 +54,7 @@ class WishControllerTest {
         productId = product.getId();
 
         // 위시 저장
-       wishId = wishRepository.save(memberId, productId, 3);
+       wishId = wishRepository.save(new Wish(member, product, 3)).getId();
 
         // JWT 발급
         token = jwtProvider.generateToken(member);
