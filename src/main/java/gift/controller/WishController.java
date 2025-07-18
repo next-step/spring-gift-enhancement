@@ -27,18 +27,18 @@ public class WishController {
     }
 
     @PostMapping()
-    public ResponseEntity<WishResponseDto> addWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
+    public ResponseEntity<WishResponseDto> add(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
         return new ResponseEntity<>(wishService.addWish(userInfoDto, wishRequestDto), HttpStatus.CREATED);
     }
 
     @PatchMapping()
-    public ResponseEntity<Void> updateWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishrequestDto) {
+    public ResponseEntity<Void> update(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishrequestDto) {
         wishService.updateWish(wishrequestDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping()
-    public ResponseEntity<Void> deleteWish(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
+    public ResponseEntity<Void> delete(@UserValid UserInfoDto userInfoDto, @RequestBody WishRequestDto wishRequestDto) {
         wishService.deleteWish(wishRequestDto);
         return ResponseEntity.noContent().build();
     }

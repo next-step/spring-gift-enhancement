@@ -4,11 +4,13 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -32,11 +34,13 @@ public class ProductController {
 
     /*
      * 제품 모두 조회
-     * @return : List<ProductResponseDto> JSON
+     * @return : Page<ProductResponseDto> JSON
      */
     @GetMapping()
-    public ResponseEntity<List<ProductResponseDto>> findAllProducts(){
-        return new ResponseEntity<>(productService.findAllProduct(), HttpStatus.OK);
+    public ResponseEntity<Page<ProductResponseDto>> findAllProducts(
+            @SortDefault(sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable){
+        return new ResponseEntity<>(productService.findAllProduct(pageable), HttpStatus.OK);
     }
 
     /*

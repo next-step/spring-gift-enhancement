@@ -8,6 +8,9 @@ import gift.service.AuthService;
 import gift.service.UserService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -33,8 +36,11 @@ public class AdminController {
      * @return Thymeleaf template
      */
     @GetMapping("/products")
-    public String showProductsList(Model model) {
-        model.addAttribute("products", productService.findAllProduct());
+    public String showProductsList(
+            @SortDefault(sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+        model.addAttribute("products", productService.findAllProduct(pageable));
         return "products_list";
     }
 
