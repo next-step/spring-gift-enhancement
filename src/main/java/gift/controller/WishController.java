@@ -5,11 +5,12 @@ import gift.dto.UserInfoDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.service.WishService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/wish")
@@ -22,8 +23,11 @@ public class WishController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<WishResponseDto>> findUserWishes(@UserValid UserInfoDto userInfoDto) {
-        return ResponseEntity.ok(wishService.findUserWishes(userInfoDto));
+    public ResponseEntity<Page<WishResponseDto>> findUserWishes(
+            @UserValid UserInfoDto userInfoDto,
+            @SortDefault(sort = "id")
+            Pageable pageable) {
+        return ResponseEntity.ok(wishService.findUserWishes(userInfoDto, pageable));
     }
 
     @PostMapping()
