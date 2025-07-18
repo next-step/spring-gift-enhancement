@@ -42,7 +42,6 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.getGiftById(id));
     }
 
-    @GetMapping()
     public ResponseEntity<List<ProductResponse>> getAllGifts(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
