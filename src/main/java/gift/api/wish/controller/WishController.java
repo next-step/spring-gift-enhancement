@@ -32,7 +32,7 @@ public class WishController {
     @GetMapping
     public ResponseEntity<List<WishResponseDto>> getWishlist(
             @RequestAttribute("userEmail") String email,
-            @PageableDefault(size = 5, sort = "created_date", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         List<WishResponseDto> wishlist = wishService.getWishlist(email, pageable)
                 .getContent();
 
@@ -52,11 +52,11 @@ public class WishController {
         return ResponseEntity.created(location).body(wishResponseDto);
     }
 
-    @DeleteMapping("/{wishlistId}")
+    @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> removeProductFromWishlist(
             @RequestAttribute("userEmail") String email,
-            @PathVariable Long wishlistId) {
-        wishService.removeProductFromWishlist(email, wishlistId);
+            @PathVariable Long wishId) {
+        wishService.removeProductFromWishlist(email, wishId);
 
         return ResponseEntity.noContent().build();
     }

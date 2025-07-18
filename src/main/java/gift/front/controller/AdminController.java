@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -31,6 +32,7 @@ public class AdminController {
     @GetMapping
     public String allProducts(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(name = "sort", defaultValue = "id,asc") String sort,
             Model model,
             HttpServletRequest request
     ) {
@@ -41,7 +43,7 @@ public class AdminController {
         }
 
         model.addAttribute("products", productService.findAllProducts(pageable));
-        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("sort", sort);
 
         return "admin/product-list";
     }

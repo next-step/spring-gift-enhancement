@@ -4,7 +4,7 @@ import gift.api.product.domain.Product;
 import gift.api.product.dto.ProductRequestDto;
 import gift.api.product.dto.ProductResponseDto;
 import gift.api.product.repository.ProductRepository;
-import gift.exception.ProductNotFoundException;
+import gift.exception.notfound.ProductNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

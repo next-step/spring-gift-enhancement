@@ -1,13 +1,11 @@
 package gift.exception.handler;
 
 
-import gift.exception.AuthenticationException;
-import gift.exception.AuthorizationException;
-import gift.exception.LoginFailedException;
-import gift.exception.ProductNotFoundException;
-import gift.exception.WishException;
+import gift.exception.auth.AuthenticationException;
+import gift.exception.auth.AuthorizationException;
+import gift.exception.conflict.DataConflictException;
 import gift.exception.dto.ErrorResponseDto;
-import jakarta.persistence.EntityNotFoundException;
+import gift.exception.notfound.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(basePackages = "gift.api")
 public class ApiExceptionHandler {
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleProductNotFound(ProductNotFoundException ex,
-            HttpServletRequest request) {
-
-        ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException ex,
@@ -46,34 +30,18 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleValidationException(
-            MethodArgumentNotValidException ex,
+    @ExceptionHandler(DataConflictException.class)
+    public ResponseEntity<ErrorResponseDto> handleDataConflict(DataConflictException ex,
             HttpServletRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-    }
-
-    @ExceptionHandler(LoginFailedException.class)
-    public ResponseEntity<ErrorResponseDto> handleLoginFailedException(
-            LoginFailedException ex,
-            HttpServletRequest request) {
-
-        ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -106,10 +74,9 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
-    @ExceptionHandler(WishException.class)
-    public ResponseEntity<ErrorResponseDto> handleWishlistException(
-            WishException ex,
-            HttpServletRequest request) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(
+            Exception ex, HttpServletRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),

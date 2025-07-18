@@ -32,6 +32,7 @@ h1 {
 
 .top-bar {
   display: flex;
+  justify-content: space-between; /* 자식 요소들을 양쪽 끝으로 정렬 */
   align-items: center;
   gap: 10px;
   margin-bottom: 16px;
@@ -39,8 +40,21 @@ h1 {
 }
 
 .user-info {
-  margin-right: auto;
+  margin-right: auto; /* user-info를 왼쪽으로 밀어냄 */
   font-weight: bold;
+}
+
+.sort-form {
+  margin-left: auto; /* 정렬 폼을 user-info 다음으로 밀어냄 */
+  margin-right: 10px; /* 오른쪽 버튼들과의 간격 */
+}
+
+.sort-form select {
+  padding: 6px 10px;
+  border: 1px solid #d9c300;
+  border-radius: 18px;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 a.button, button {

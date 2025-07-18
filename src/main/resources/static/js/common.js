@@ -18,12 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     loginForm.addEventListener('submit', handleAuthFormSubmit);
   }
 
-  // --- 위시리스트 페이지일 경우, 데이터 로드 함수 실행 ---
-  const wishlistBody = document.getElementById('wishlist-body');
-  if (wishlistBody) {
-    fetchWishlist();
-  }
-
   // --- 이벤트 위임을 사용한 통합 이벤트 리스너 ---
   document.body.addEventListener('click', function (event) {
     // 상세 페이지 이동 로직
@@ -130,54 +124,5 @@ async function handleWishAction(event) {
   } catch (error) {
     console.error('Error:', error);
     alert('요청 중 오류가 발생했습니다. 서버 상태를 확인해주세요.');
-  }
-}
-
-// 위시리스트 데이터를 가져와 렌더링하는 함수
-async function fetchWishlist() {
-  const wishlistBody = document.getElementById('wishlist-body');
-
-  const params = new URLSearchParams(window.location.search);
-  const page = params.get('page') || 0;
-  const size = params.get('size') || 5;
-  const sort = params.get('sort') || 'createdDate,desc';
-
-  try {
-    const response = await fetch(
-        `/api/wishes?page=${page}&size=${size}&sort=${sort}`);
-
-    if (!response.ok) {
-      // fetch 자체가 실패한 것이 아니므로, 서버가 보낸 에러 메시지를 파싱합니다.
-      const errorData = await response.json();
-      const errorMessage = errorData.message || '위시리스트를 불러오는 데 실패했습니다.';
-      throw new Error(errorMessage); // 에러를 발생시켜 catch 블록으로 넘깁니다.
-    }
-
-    const items = await response.json();
-    wishlistBody.innerHTML = '';
-
-    if (items.length === 0) {
-      wishlistBody.innerHTML = '<tr><td colspan="4">위시리스트에 담긴 상품이 없습니다.</td></tr>';
-      return;
-    }
-
-    items.forEach(item => {
-      const row = `
-        <tr>
-          <td class="clickable-row" data-link="/members/products/${item.product.id}">${item.product.name}</td>
-          <td class="clickable-row" data-link="/members/products/${item.product.id}">${item.product.price}원</td>
-          <td class="clickable-row" data-link="/members/products/${item.product.id}"><img src="${item.product.imageUrl}" alt="이미지 없음"/></td>
-          <td>
-            <button class="delete-from-wishlist-btn" data-wish-id="${item.id}">삭제</button>
-          </td>
-        </tr>
-      `;
-      wishlistBody.innerHTML += row;
-    });
-
-  } catch (error) {
-    console.error('Error:', error);
-    // catch 블록에서 최종적으로 사용자에게 에러를 표시합니다.
-    wishlistBody.innerHTML = `<tr><td colspan="4">오류: ${error.message}</td></tr>`;
   }
 }

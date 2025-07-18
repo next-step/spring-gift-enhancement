@@ -274,13 +274,13 @@ host: localhost:8080
     
 </details>
 <details>
-<summary>❌ 위시 리스트 삭제</summary>
+<summary>❌ 위시 삭제</summary>
 
 ### Request
 - Header: Authorization: Bearer {JWT}
 
 ```json
-DELETE /api/wishes/{wishlistId} HTTP/1.1
+DELETE /api/wishes/{wishId} HTTP/1.1
 host: localhost:8080
 
 ```
@@ -302,31 +302,102 @@ HTTP/1.1 204 No Content
 
 ### 로그인
 
+<img src="./src/main/resources/static/image/login.png" width="800" alt="login">
+
 [GET] http://localhost:8080/members/login  
 → 로그인 화면으로 이동합니다.
 
-### 특정 상품 조회
+### 회원가입
+
+<img src="./src/main/resources/static/image/register.png" width="800" alt="register">
 
 [GET] http://localhost:8080/members/register  
-→ 회원 가입 화면으로 이동합니다.
+→ 회원가입 화면으로 이동합니다.
 </details>
 <details>
 <summary>🔎 상품 조회</summary>
 
 ### 전체 상품 목록
 
+<table>
+    <tr>
+        <td style="text-align: center">
+            <div>오래된순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/product-list-1.png" width="800" alt="product-list-1">
+            <br>
+            <img src="./src/main/resources/static/image/product-list-2.png" width="800" alt="product-list-2">
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center">
+            <div>가격 내림차순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/product-list-3.png" width="800" alt="product-list-3">
+            <br>
+            <img src="./src/main/resources/static/image/product-list-4.png" width="800" alt="product-list-4">
+        </td>
+    </tr>
+</table>
+
 [GET] http://localhost:8080/members/products  
 → 등록된 모든 상품을 목록으로 확인할 수 있는 화면입니다.
 
 ### 특정 상품 조회
 
+<img src="./src/main/resources/static/image/product-detail.png" width="800" alt="product-detail">
+
 [GET] http://localhost:8080/members/products/{productId}  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+</details>
+<details>
+<summary>🔎 위시 리스트 조회</summary>
 
 ### 위시 리스트 조회
 
+<table>
+    <tr>
+        <td style="text-align: center">
+            <div>최신순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/wish-list-1.png" width="800" alt="wish-list-1">
+            <br>
+            <img src="./src/main/resources/static/image/wish-list-2.png" width="800" alt="wish-list-2">
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center">
+            <div>가격 오름차순</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="./src/main/resources/static/image/wish-list-3.png" width="800" alt="wish-list-3">
+            <br>
+            <img src="./src/main/resources/static/image/wish-list-4.png" width="800" alt="wish-list-4">
+        </td>
+    </tr>
+</table>
+
 [GET] http://localhost:8080/members/wishes  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+</details>
+<details>
+<summary>❌ 위시 삭제</summary>
+
+[DELETE] http://localhost:8080/members/wishes/{wishId}  
+→ HTML `<form>`에서 `_method=delete`로 전송됩니다.  
+→ 실제 HTTP 메서드는 `POST`이며,  
+→ MemberFrontController에서 `@DeleteMapping`으로 처리합니다.
 </details>
 
 # 🧑‍💻 관리자 화면
@@ -351,6 +422,8 @@ HTTP/1.1 204 No Content
 
 ### 상품 추가 화면
 
+<img src="./src/main/resources/static/image/product-new.png" width="800" alt="product-new">
+
 [GET] http://localhost:8080/admin/products/new  
 → 새 상품을 입력하는 폼으로 이동합니다.
 
@@ -363,6 +436,8 @@ HTTP/1.1 204 No Content
 <summary>✏️ 상품 수정</summary>
 
 ### 상품 수정 화면
+
+<img src="./src/main/resources/static/image/product-edit.png" width="800" alt="product-edit">
 
 [GET] http://localhost:8080/admin/products/edit/{productId}  
 → 선택한 상품의 정보를 수정할 수 있는 화면입니다.
@@ -476,24 +551,33 @@ alter table wish
 <details>
 <summary>🚨 예외 처리</summary>
 
-### AuthenticationException
+### EntityNotFoundException `404 Not Found`
+- MemberNotFoundException
+  - 멤버가 존재하지 않을 경우 (조회 시)
+- ProductNotFoundException
+  - 상품이 존재하지 않을 경우 (조회, 수정, 삭제 시)
+- WishNotFoundException
+  - 위시가 존재하지 않을 경우 (삭제 시)
+
+### DataConflictException `409 Conflict`
+- DuplicateEmailException
+  - 중복된 이메일로 회원가입 할 때
+- DuplicateWishException
+  - 중복된 위시를 추가할 때
+
+### AuthenticationException `401 Unauthorized`
 - 인증되지 않은 사용자 (로그인하지 않은 경우)
 - 인증 토큰이 유효하지 않은 경우 (예: 만료된 토큰)
+- LoginFailedException `401 Unauthorized`
+  - 로그인 실패 시 (잘못된 이메일 또는 비밀번호)
 
-### AuthorizationException
+### AuthorizationException `403 Forbidden`
 - 인증된 사용자 (로그인한 경우) 권한이 없는 요청
   - 다른 사용자의 위시 리스트 삭제
   - 일반 사용자가 관리자 권한이 필요한 행위 요청
 
-### LoginFailedException
-- 로그인 실패 시 (잘못된 이메일 또는 비밀번호)
-
-### ProductNotFoundException
-- 상품이 존재하지 않을 경우 (조회, 수정, 삭제 시)
-
-### WishException
-- 위시 리스트가 존재하지 않을 경우
-- 위시 리스트 중복 저장 시
+### MethodArgumentNotValidException `400 Bad Request`
+- 상품을 생성할 때 제약조건에 맞지 않을 경우
 
 </details>
 
