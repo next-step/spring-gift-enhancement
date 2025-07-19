@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // --- 페이지 로드 시 기존 인증 정보 강제 정리 ---
-  // HttpOnly 쿠키는 JS로 직접 삭제할 수 없으므로, /logout 엔드포인트를 사용하는 것이 가장 확실합니다.
-  // 현재 코드는 localStorage만 제거하며, 토큰 방식 변경으로 사실상 불필요하지만 안전을 위해 남겨둡니다.
-  if (window.location.pathname === '/members/login' || window.location.pathname
-      === '/members/register') {
-    localStorage.removeItem('accessToken');
-  }
-
   // --- 회원가입 및 로그인 처리 ---
   const registerForm = document.getElementById('register-form');
   if (registerForm) {
@@ -20,19 +12,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // --- 이벤트 위임을 사용한 통합 이벤트 리스너 ---
   document.body.addEventListener('click', function (event) {
-    // 상세 페이지 이동 로직
     const clickableRow = event.target.closest('.clickable-row');
     if (clickableRow) {
       const link = clickableRow.dataset.link;
       if (link) {
         window.location.href = link;
       }
-      return; // 다른 클릭 이벤트와 중복되지 않도록 여기서 종료
+      return;
     }
 
-    // 위시리스트 추가 또는 삭제 버튼
-    if (event.target.classList.contains('add-to-wish-btn')
-        || event.target.classList.contains('delete-from-wish-btn')) {
+    if (event.target.classList.contains('add-to-wish-btn') || event.target.classList.contains('delete-from-wish-btn')) {
       handleWishAction(event);
     }
   });
@@ -49,6 +38,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  const addOptionForm = document.getElementById('add-option-form');
+  if (addOptionForm) {
+    addOptionForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const productId = this.dataset.productId;
+      addOption(productId, this);
+    });
+  }
 });
 
 // 로그인/회원가입 폼 제출 비동기 함수
@@ -124,5 +122,78 @@ async function handleWishAction(event) {
   } catch (error) {
     console.error('Error:', error);
     alert('요청 중 오류가 발생했습니다. 서버 상태를 확인해주세요.');
+  }
+}
+
+async function addOption(productId, form) {
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  try {
+    const response = await fetch(`/api/products/${productId}/options`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      alert('옵션이 추가되었습니다.');
+      window.location.reload();
+    } else {
+      const error = await response.json();
+      alert('오류: ' + (error.message || '알 수 없는 오류'));
+    }
+  } catch (error) {
+    alert('요청 중 오류가 발생했습니다.');
+  }
+}
+
+async function updateOption(productId, optionId) {
+  const nameInput = document.getElementById(`name-${optionId}`);
+  const quantityInput = document.getElementById(`quantity-${optionId}`);
+  const data = {
+    name: nameInput.value,
+    quantity: parseInt(quantityInput.value, 10)
+  };
+
+  try {
+    const response = await fetch(`/api/products/${productId}/options/${optionId}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      alert('옵션이 수정되었습니다.');
+      window.location.reload();
+    } else {
+      const error = await response.json();
+      alert('오류: ' + (error.message || '알 수 없는 오류'));
+    }
+  } catch (error) {
+    alert('요청 중 오류가 발생했습니다.');
+  }
+}
+
+async function deleteOption(productId, optionId) {
+  if (!confirm('정말 삭제하시겠습니까? 상품에는 최소 1개의 옵션이 있어야 합니다.')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/products/${productId}/options/${optionId}`, {
+      method: 'DELETE'
+    });
+
+    if (response.ok) {
+      alert('옵션이 삭제되었습니다.');
+      window.location.reload(); // 성공 시 페이지 새로고침
+    } else {
+      const error = await response.json();
+      alert('오류: ' + (error.message || '알 수 없는 오류가 발생했습니다.'));
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('요청 중 오류가 발생했습니다.');
   }
 }

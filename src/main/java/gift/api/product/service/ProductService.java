@@ -1,5 +1,7 @@
 package gift.api.product.service;
 
+import gift.api.option.domain.Option;
+import gift.api.option.repository.OptionRepository;
 import gift.api.product.domain.Product;
 import gift.api.product.dto.ProductRequestDto;
 import gift.api.product.dto.ProductResponseDto;
@@ -15,9 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, OptionRepository optionRepository) {
         this.productRepository = productRepository;
+        this.optionRepository = optionRepository;
     }
 
     public Page<ProductResponseDto> findAllProducts(Pageable pageable) {
@@ -40,6 +44,9 @@ public class ProductService {
         );
 
         Product savedProduct = productRepository.save(createdProduct);
+
+        Option defaultOption = new Option("기본 옵션", 1, savedProduct);
+        optionRepository.save(defaultOption);
 
         return ProductResponseDto.from(savedProduct);
     }

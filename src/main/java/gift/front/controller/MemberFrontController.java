@@ -1,5 +1,6 @@
 package gift.front.controller;
 
+import gift.api.option.service.OptionService;
 import gift.api.product.service.ProductService;
 import gift.api.wish.service.WishService;
 import jakarta.servlet.http.Cookie;
@@ -22,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MemberFrontController {
 
     private final ProductService productService;
+    private final OptionService optionService;
     private final WishService wishService;
 
-    public MemberFrontController(ProductService productService, WishService wishService) {
+    public MemberFrontController(ProductService productService, OptionService optionService,
+            WishService wishService) {
         this.productService = productService;
+        this.optionService = optionService;
         this.wishService = wishService;
     }
 
@@ -75,8 +79,11 @@ public class MemberFrontController {
 
     @GetMapping("/products/{id}")
     public String productDetail(
-            @PathVariable Long id, Model model) {
+            @PathVariable Long id,
+            Model model
+    ) {
         model.addAttribute("product", productService.findProductById(id));
+        model.addAttribute("options", optionService.getOptionsByProductId(id));
 
         return "member/product-detail";
     }
