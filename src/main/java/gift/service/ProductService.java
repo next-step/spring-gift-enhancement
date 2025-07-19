@@ -4,12 +4,12 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -23,6 +23,8 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+
+    @Transactional(readOnly = true)
     public ProductResponseDto getProduct(Long id) {
         Product product = findProductOrThrow(id);
         return new ProductResponseDto(product);
@@ -52,11 +54,10 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public List<ProductResponseDto> getProductList(int page, int size) {
-        Page<Product> productPage = productRepository.findAll(PageRequest.of(page, size));
-        return productPage.getContent().stream()
-                .map(ProductResponseDto::new)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> getProducts(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(ProductResponseDto::new);
     }
 
     private Product findProductOrThrow(Long id) {

@@ -9,6 +9,8 @@ import gift.entity.Wish;
 import gift.exception.ForbiddenAccessException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,12 +49,9 @@ public class WishService {
 
     // 위시리스트 조회
     @Transactional(readOnly = true)
-    public List<WishResponseDto> getWishesByMember(Member member) {
-        List<Wish> wishes = wishRepository.findByMemberOrderByIdDesc(member);
-        
-        return wishes.stream()
-                .map(wish -> new WishResponseDto(wish, new ProductResponseDto(wish.getProduct())))
-                .collect(Collectors.toList());
+    public Page<WishResponseDto> getWishesByMember(Member member, Pageable pageable) {
+        Page<Wish> wishes = wishRepository.findByMember(member, pageable);
+        return wishes.map(wish -> new WishResponseDto(wish, new ProductResponseDto(wish.getProduct())));
     }
 
     // 위시리스트 수량 변경
