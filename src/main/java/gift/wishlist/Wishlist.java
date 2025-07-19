@@ -2,6 +2,7 @@ package gift.wishlist;
 
 import gift.member.Member;
 import gift.product.Product;
+import gift.wishlist.dto.WishlistItemResponseDto;
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +26,10 @@ public class Wishlist {
         this.member = member;
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public WishlistItemResponseDto toWishlistItemResponseDto(){
+        return new WishlistItemResponseDto(this.id, this.product.getId(), this.quantity);
     }
 
     public void updateQuantity(Long quantity) {

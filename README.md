@@ -1,5 +1,9 @@
 # spring-gift-enhancement
 
+# 2단계 수행
+- product와 wishlist 전체 조회 시 페이지네이션 적용하기
+- 이전단계 피드백 반영
+
 # 1단계 수행
 - 엔티티와 레포지터리를 JPA로 리펙터링
 - DATAJPATEXT하기

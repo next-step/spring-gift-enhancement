@@ -7,11 +7,17 @@ import gift.product.dto.ProductResponseDto;
 import gift.product.exception.InvalidProductException;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -39,6 +45,20 @@ public class ProductController {
             @PathVariable Long id
     ) {
         ProductResponseDto responseDto = productService.findProductById(id);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> findAllProducts() {
+        List<ProductResponseDto> responseDto = productService.findAllProducts();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<ProductResponseDto>> findAllProductsWithPageable(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<ProductResponseDto> responseDto = productService.findAllProductsWithPageable(pageable);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

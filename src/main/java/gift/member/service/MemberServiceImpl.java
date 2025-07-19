@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void addMember(MemberAddRequestDto requestDto) {
-        validateMemberEmail(requestDto.email(), "admin/memberAdd");
+        validateUniqueEmail(requestDto.email(), "admin/memberAdd");
         validateMemberRole(requestDto.role(), "admin/memberAdd");
         String hashedPassword = hashWithSHA256(requestDto.password());
         Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public TokenResponseDto registerMember(MemberRegisterRequestDto requestDto) {
-        validateMemberEmail(requestDto.email(), "admin/memberAdd");
+        validateUniqueEmail(requestDto.email(), "admin/memberAdd");
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
@@ -81,28 +81,32 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public void updateMemberById(Long id, MemberUpdateRequestDto requestDto) {
-        Member member = findMemberByIdOrElseThrow(id);
-        if (!member.getEmail().equals(requestDto.email())) {
-            validateMemberEmail(requestDto.email(), "admin/memberEdit");
-        }
         validateMemberRole(requestDto.role(), "admin/memberEdit");
+        validateUniqueEmail(id,requestDto.email(), "admin/memberEdit");
+        Member member = findMemberByIdOrElseThrow(id);
         member.update(requestDto);
     }
 
     @Override
     public void deleteMemberById(Long id) {
-        existsByIdOrElseThrow(id);
         memberRepository.deleteById(id);
     }
 
-    public void validateMemberEmail(String email, String viewName) {
-        Optional<Member> existing = memberRepository.findByEmail(email);
-        if (existing.isPresent()) {
+    private void validateUniqueEmail(String email, String viewName) {
+        boolean isNotUniqueEmail = memberRepository.existsByEmail(email);
+        if (isNotUniqueEmail) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }
 
-    public void validateMemberRole(String role, String viewName) {
+    private void validateUniqueEmail(Long memberId, String email, String viewName) {
+        boolean isNotUniqueEmail = memberRepository.existsByEmailAndIdNot(email, memberId);
+        if (isNotUniqueEmail) {
+            throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
+        }
+    }
+
+    private void validateMemberRole(String role, String viewName) {
         if (!Role.containsIgnoreCase(role)){
             throw new InvalidMemberException("잘못된 등급입니다.", viewName, "roleErrorMessage");
         }

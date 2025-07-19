@@ -2,7 +2,6 @@ package gift.wishlist.service;
 
 import gift.member.Member;
 import gift.member.service.MemberService;
-import gift.product.exception.ProductNotFoundException;
 import gift.product.service.ProductServiceImpl;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
@@ -10,6 +9,8 @@ import gift.product.Product;
 import gift.wishlist.Wishlist;
 import gift.wishlist.exception.WishlistItemNotFoundException;
 import gift.wishlist.repository.WishlistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,6 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public void deleteWishlistItemById(Long itemId) {
-        existsByIdOrElseThrow(itemId);
         wishlistRepository.deleteById(itemId);
     }
 
@@ -53,8 +53,13 @@ public class WishlistServiceImpl implements WishlistService {
     public List<WishlistItemResponseDto> findAllWishlistItemsByMemberId(Long memberId) {
         List<Wishlist> items = wishlistRepository.findAllByMemberId(memberId);
         return items.stream()
-                .map(item -> new WishlistItemResponseDto(item.getId(), item.getProduct().getId(), item.getQuantity()))
+                .map(Wishlist::toWishlistItemResponseDto)
                 .toList();
+    }
+
+    @Override
+    public Page<WishlistItemResponseDto> findAllWishlistItemsByMemberIdWithPageable(Long memberId, Pageable pageable) {
+        return wishlistRepository.findAllByMemberId(memberId, pageable).map(Wishlist::toWishlistItemResponseDto);
     }
 
     @Override
