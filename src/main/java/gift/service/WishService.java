@@ -29,7 +29,7 @@ public class WishService {
             throw new DuplicateException("이미 리스트에 존재하는 제품입니다.");
         }
 
-        Wish wish = new Wish(wishRequestDto.id(), userInfoDto.id(), wishRequestDto.productId(), wishRequestDto.quantity());
+        Wish wish = new Wish(userInfoDto.id(), wishRequestDto.productId(), wishRequestDto.quantity());
         return new WishResponseDto(wishRepository.save(wish));
     }
 

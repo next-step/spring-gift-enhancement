@@ -17,8 +17,7 @@ public class Wish {
 
     protected Wish() {}
 
-    public Wish(Long id, Long userId, Long productId, Long quantity) {
-        this.id = id;
+    public Wish(Long userId, Long productId, Long quantity) {
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
