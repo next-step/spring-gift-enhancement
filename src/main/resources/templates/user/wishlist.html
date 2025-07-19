@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>나의 위시리스트</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 2em;
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      color: #343a40;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 0.5em;
+      margin-bottom: 1em;
+    }
+
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5em;
+    }
+
+    .product-table th, .product-table td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .product-table th {
+      background-color: #f2f2f2;
+      font-weight: 600;
+    }
+
+    .product-table td.image-cell {
+      text-align: center;
+    }
+
+    .product-table img {
+      max-width: 100px;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .btn-delete {
+      color: #fff;
+      background-color: #dc3545;
+      border-color: #dc3545;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🎁 나의 위시리스트</h1>
+  <a style="text-decoration: none;" th:href="@{/}">🏠 홈으로 돌아가기</a>
+
+  <table class="product-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>이미지</th>
+      <th>이름</th>
+      <th>가격</th>
+      <th>관리</th>
+    </tr>
+    </thead>
+    <tbody id="wishlist-container">
+    </tbody>
+  </table>
+</div>
+
+<script>
+  //TODO: 다음 단계에서 이 공간에 AJAX 코드를 작성할 예정
+</script>
+</body>
+</html>

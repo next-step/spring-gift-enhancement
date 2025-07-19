@@ -10,4 +10,9 @@ public class HomeController {
     public String home() {
         return "home";
     }
+
+    @GetMapping("/wishes")
+    public String wishlist() {
+        return "user/wishlist";
+    }
 }
