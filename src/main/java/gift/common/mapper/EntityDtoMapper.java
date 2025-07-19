@@ -23,21 +23,17 @@ public class EntityDtoMapper {
 
     public static Product toEntity(ProductCreateRequest request) {
         return new Product(
-            null,
             request.name(),
             request.price(),
-            request.imageUrl(),
-            null
+            request.imageUrl()
         );
     }
 
     public static Product toEntity(ProductUpdateRequest request) {
         return new Product(
-            null, // ID는 나중에 설정될 것으로 가정
             request.name(),
             request.price(),
-            request.imageUrl(),
-            null
+            request.imageUrl()
         );
     }
 
@@ -45,17 +41,18 @@ public class EntityDtoMapper {
         var mappedRoles = request.roles().stream()
                 .map(UserRole::valueOf)
                 .collect(Collectors.toSet());
-        var user = new User();
-        user.setEmail(request.email());
-        user.setPassword(request.password());
-        user.setRoles(mappedRoles);
-        return user;
+        return new User(
+                request.email(),
+                request.password(),
+                mappedRoles
+        );
     }
 
     public static User toEntity(UserUpdateRequest request) {
-        var user = new User();
-        user.setEmail(request.email());
-        user.setPassword(request.password());
+        var user = new User(
+                request.email(),
+                request.password()
+        );
         if (request.roles() != null) {
             var mappedRoles = request.roles().stream()
                     .map(UserRole::valueOf)

@@ -47,10 +47,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public String signup(String email, String password, Set<UserRole> roles) {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRoles(roles);
+        User user = new User(
+            email,
+            passwordEncoder.encode(password),
+            roles
+        );
         User savedUser = userService.create(user);
         return tokenProvider.generateToken(savedUser.getId(), savedUser.getUserRoles());
     }
