@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +38,9 @@ public class WishListApiController {
     @GetMapping
     public ResponseEntity<?> getWishList(
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
-        @RequestParam(name="page", defaultValue = "0") int page,
-        @RequestParam(name="size", defaultValue = "10") int size,
-        @RequestParam(name="sort", defaultValue = "id, asc") String[] sort
+        @PageableDefault(page=0, size=3, sort="id", direction = Sort.Direction.ASC)
+        Pageable pageable
     ) {
-        Sort sorting = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
-        Pageable pageable = PageRequest.of(page, size, sorting);
         Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
