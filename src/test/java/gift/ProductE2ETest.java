@@ -3,9 +3,9 @@ package gift;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
-import gift.api.member.domain.MemberRole;
 import gift.api.member.dto.MemberRequestDto;
 import gift.api.member.dto.TokenResponseDto;
+import gift.api.member.repository.MemberRepository;
 import gift.api.product.dto.ProductRequestDto;
 import gift.api.product.dto.ProductResponseDto;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -34,7 +33,13 @@ public class ProductE2ETest {
     @Autowired
     private JdbcClient jdbcClient;
 
+    @Autowired
+    private MemberRepository memberRepository; // MemberRepository 주입
+
     private String authToken;
+    private final String TEST_EMAIL = "test@test.com";
+    private final String TEST_PASSWORD = "password";
+
 
     @BeforeEach
     void setUp() {
@@ -42,19 +47,11 @@ public class ProductE2ETest {
                 .baseUrl("http://localhost:" + port)
                 .build();
 
-        String email = "test@test.com";
-        String password = "password";
-        jdbcClient.sql(
-                        "INSERT INTO member(email, password, role) VALUES (:email, :password, :role)")
-                .param("email", email)
-                .param("password", BCrypt.hashpw(password, BCrypt.gensalt()))
-                .param("role", MemberRole.USER.name())
-                .update();
-
+        MemberRequestDto requestDto = new MemberRequestDto(TEST_EMAIL, TEST_PASSWORD);
         TokenResponseDto tokenResponse = restClient.post()
-                .uri("/api/members/login")
+                .uri("/api/members/register") // 회원가입 엔드포인트 사용
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new MemberRequestDto(email, password))
+                .body(requestDto)
                 .retrieve()
                 .body(TokenResponseDto.class);
 
@@ -63,6 +60,8 @@ public class ProductE2ETest {
 
     @AfterEach
     void tearDown() {
+        jdbcClient.sql("delete from wish").update();
+        jdbcClient.sql("delete from option").update();
         jdbcClient.sql("delete from product").update();
         jdbcClient.sql("delete from member").update();
     }
