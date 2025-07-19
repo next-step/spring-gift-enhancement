@@ -1,7 +1,7 @@
 package gift.entity;
 
+import gift.entity.vo.WishList;
 import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,8 +20,8 @@ public class Member {
     @Column(nullable = false)
     private String role;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wish> wishes = new ArrayList<>();
+    @Embedded
+    private WishList wishList = new WishList();
 
     protected Member() {}
 
@@ -35,13 +35,25 @@ public class Member {
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public String getRole() { return role; }
-    public List<Wish> getWishes() { return wishes; }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void update(String newEmail, String newEncodedPassword) {
+        if (newEmail != null && !newEmail.isBlank()) {
+            this.email = newEmail;
+        }
+        if (newEncodedPassword != null && !newEncodedPassword.isBlank()) {
+            this.password = newEncodedPassword;
+        }
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void addWish(Product product) {
+        wishList.add(this, product);
+    }
+
+    public void removeWish(Product product) {
+        wishList.remove(product);
+    }
+
+    public List<Product> getWishes() {
+        return wishList.getProducts();
     }
 }

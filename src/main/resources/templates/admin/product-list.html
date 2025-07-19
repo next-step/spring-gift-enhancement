@@ -25,16 +25,11 @@
         .product-image { max-width: 100px; max-height: 100px; }
         .empty-list { padding: 20px; text-align: center; color: #888; }
         .action-bar { margin: 1em 0; }
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            margin: -1px;
-            padding: 0;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
+        .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+        .pagination-container { text-align: center; margin-top: 2em; }
+        .pagination-container a, .pagination-container strong { margin: 0 5px; padding: 5px 10px; border: 1px solid #ddd; text-decoration: none; color: #007bff; }
+        .pagination-container strong { font-weight: bold; background-color: #007bff; color: white; border-color: #007bff; }
+        .pagination-container a.disabled { color: #ccc; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -66,20 +61,16 @@
 <p>등록된 모든 상품의 목록입니다.</p>
 
 <form th:action="@{/admin/products/delete}" method="post" id="productListForm" onsubmit="return validateSelection();">
-
     <div class="action-bar">
         <button type="submit" class="button button-danger">선택 항목 삭제</button>
         <a th:href="@{/admin/products/add}" class="button button-secondary">새 상품 등록 페이지로 이동</a>
     </div>
 
-    <div th:if="${!products.isEmpty()}">
+    <div th:if="${!productsPage.empty}">
         <table>
             <thead>
             <tr>
-                <th>
-                    <label for="selectAll" class="visually-hidden">전체 선택</label>
-                    <input type="checkbox" id="selectAll">
-                </th>
+                <th><input type="checkbox" id="selectAll"></th>
                 <th>ID</th>
                 <th>상품명</th>
                 <th>가격</th>
@@ -88,7 +79,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product : ${products}">
+            <tr th:each="product : ${productsPage.content}">
                 <td>
                     <label th:for="'product-' + ${product.id()}" class="visually-hidden" th:text="${product.name()}"></label>
                     <input type="checkbox" name="productIds" th:value="${product.id()}" th:id="'product-' + ${product.id()}">
@@ -109,8 +100,24 @@
     </div>
 </form>
 
-<div th:if="${products.isEmpty()}">
+<div th:if="${productsPage.empty}">
     <p class="empty-list">등록된 상품이 없습니다.</p>
+</div>
+
+<div th:if="${productsPage.totalPages > 0}" class="pagination-container"
+     th:with="start=${(productsPage.number div 10) * 10 + 1},
+              end=(${start + 9 < productsPage.totalPages ? start + 9 : productsPage.totalPages})">
+
+    <a th:href="@{/admin/products(page=0)}" th:classappend="${productsPage.first} ? 'disabled' : ''"> &lt;&lt; </a>
+    <a th:href="@{/admin/products(page=${productsPage.number - 1})}" th:classappend="${productsPage.first} ? 'disabled' : ''"> &lt; </a>
+
+    <span th:each="page: ${#numbers.sequence(start, end)}">
+        <a th:if="${page != productsPage.number + 1}" th:href="@{/admin/products(page=${page - 1})}" th:text="${page}"></a>
+        <strong th:if="${page == productsPage.number + 1}" th:text="${page}"></strong>
+    </span>
+
+    <a th:href="@{/admin/products(page=${productsPage.number + 1})}" th:classappend="${productsPage.last} ? 'disabled' : ''"> &gt; </a>
+    <a th:href="@{/admin/products(page=${productsPage.totalPages - 1})}" th:classappend="${productsPage.last} ? 'disabled' : ''"> &gt;&gt; </a>
 </div>
 
 <script>

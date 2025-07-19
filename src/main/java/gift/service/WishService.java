@@ -8,11 +8,10 @@ import gift.exception.ProductNotFoundException;
 import gift.exception.WishAlreadyExistsException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class WishService {
@@ -26,17 +25,14 @@ public class WishService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getWishes(Member member) {
-        return wishRepository.findByMember(member).stream()
-                .map(Wish::getProduct)
-                .map(Product::toResponse)
-                .collect(Collectors.toList());
+    public Page<ProductResponse> getWishes(Member member, Pageable pageable) {
+        Page<Wish> wishes = wishRepository.findByMemberWithProduct(member, pageable);
+        return wishes.map(wish -> wish.getProduct().toResponse());
     }
 
     @Transactional
     public void addWish(Member member, Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
+        Product product = findProductById(productId);
 
         wishRepository.findByMemberAndProduct(member, product)
                 .ifPresent(wish -> {
@@ -49,9 +45,12 @@ public class WishService {
 
     @Transactional
     public void deleteWish(Member member, Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
-
+        Product product = findProductById(productId);
         wishRepository.deleteByMemberAndProduct(member, product);
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
     }
 }

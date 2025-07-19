@@ -4,6 +4,10 @@ import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,9 +26,10 @@ public class ProductAdminController {
     }
 
     @GetMapping
-    public String showProductList(Model model) {
-        List<ProductResponse> products = productService.findAllProducts();
-        model.addAttribute("products", products);
+    public String showProductList(Model model,
+                                  @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<ProductResponse> productsPage = productService.findAllProducts(pageable);
+        model.addAttribute("productsPage", productsPage);
         model.addAttribute("productRequest", new ProductRequest("", 0, ""));
         return "admin/product-list";
     }
@@ -39,8 +44,8 @@ public class ProductAdminController {
     public String addProduct(@Valid @ModelAttribute("productRequest") ProductRequest productRequest,
                              BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            List<ProductResponse> products = productService.findAllProducts();
-            model.addAttribute("products", products);
+            Page<ProductResponse> productsPage = productService.findAllProducts(Pageable.ofSize(10));
+            model.addAttribute("productsPage", productsPage);
             return "admin/product-list";
         }
         productService.addProduct(productRequest);
