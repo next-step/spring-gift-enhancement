@@ -8,33 +8,30 @@ import java.util.Objects;
 @Table(name = "products")
 public class Product extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String name;
     private Long price;
     private String imageUrl;
     private Long ownerId;
 
-    public Product() {
+    protected Product() {
 
     }
 
+    public Product(String name, Long price, String imageUrl) {
+        this(null, name, price, imageUrl, null);
+    }
+
+
+    public Product(String name, Long price, String imageUrl, Long ownerId) {
+        this(null, name, price, imageUrl, ownerId);
+    }
+
     public Product(Long id, String name, Long price, String imageUrl, Long ownerId) {
-        super();
-        this.id = id;
+        super(id);
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.ownerId = ownerId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -72,7 +69,7 @@ public class Product extends BaseEntity {
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", imageUrl='" + imageUrl + '\'' +
@@ -86,11 +83,11 @@ public class Product extends BaseEntity {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Product objProd)) return false;
-        return Objects.equals(id, objProd.id);
+        return Objects.equals(getId(), objProd.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), id);
+        return Objects.hash(getClass(), getId());
     }
 }

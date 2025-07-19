@@ -2,7 +2,6 @@ package gift.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,9 +13,6 @@ import java.util.stream.Collectors;
         attributeNodes = { @NamedAttributeNode("roles") }
 )
 public class User extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -28,17 +24,25 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_name")
     )
-    private List<Role> roles;
+    private Set<Role> roles;
 
-    public User() {
+    protected User() {
+
     }
 
-    public Long getId() {
-        return id;
+    public User(String email, String password) {
+        this(null, email, password, null);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User(String email, String password, Set<UserRole> roles) {
+        this(null, email, password, roles);
+    }
+
+    public User(Long id, String email, String password, Set<UserRole> roles) {
+        super(id);
+        this.email = email;
+        this.password = password;
+        setRoles(roles);
     }
 
     public String getEmail() {
@@ -57,11 +61,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -71,16 +71,20 @@ public class User extends BaseEntity {
                 .collect(Collectors.toSet());
     }
 
-    public void setRoles(Set<UserRole> userRoles) {
-        this.roles = userRoles.stream()
+    public void setRoles(Set<UserRole> roles) {
+        if (roles == null) {
+            this.roles = null;
+            return;
+        }
+        this.roles = roles.stream()
                 .map(Role::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", updatedAt=" + getUpdatedAt() +
@@ -92,11 +96,11 @@ public class User extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id);
+        return Objects.equals(getId(), user.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), id);
+        return Objects.hash(getClass(), getId());
     }
 }

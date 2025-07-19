@@ -25,10 +25,6 @@ import org.hibernate.annotations.OnDeleteAction;
 })
 public class WishedProduct extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -41,23 +37,19 @@ public class WishedProduct extends BaseEntity {
     private Integer quantity;
 
 
-    public WishedProduct() {
+    protected WishedProduct() {
 
+    }
+
+    public WishedProduct(User user, Product product, Integer quantity) {
+        this(null, user, product, quantity);
     }
 
     public WishedProduct(Long id, User user, Product product, Integer quantity) {
-        this.id = id;
+        super(id);
         this.user = user;
         this.product = product;
         this.quantity = quantity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getUser() {
