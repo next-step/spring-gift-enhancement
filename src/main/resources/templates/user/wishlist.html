@@ -91,10 +91,28 @@
   });
 
   async function loadWishes() {
+    const token = localStorage.getItem('auth_token');
+
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      window.location.href = '/login';
+      return;
+    }
+
     const container = document.getElementById('wishlist-container');
     try {
+      const response = await fetch('/api/wishes?sort=id,desc', {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        },
+      });
 
-      const response = await fetch('/api/wishes?sort=id,desc');
+      if (response.status === 401) {
+        alert('세션이 만료되었거나 유효하지 않습니다. 다시 로그인해주세요.');
+        localStorage.removeItem('auth_token'); // 만료된 토큰 삭제
+        window.location.href = '/login';
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -102,38 +120,46 @@
 
       const page = await response.json();
       const products = page.content;
-
       container.innerHTML = '';
-
       products.forEach(product => {
         const row = `
           <tr>
-              <td>${product.id}</td>
-              <td>${product.name}</td>
-              <td>${product.price.toLocaleString()}원</td>
-              <td class="image-cell"><img src="${product.imageUrl}" alt="${product.name} 이미지"></td>
-              <td>
-                <button class="btn-delete" onclick="deleteWish(${product.id})">삭제</button>
-              </td>
+            <td>${product.id}</td>
+            <td>${product.name}</td>
+            <td>${product.price.toLocaleString()}원</td>
+            <td class="image-cell"><img src="${product.imageUrl}" alt="${product.name} 이미지"></td>
+            <td>
+              <button class="btn-delete" onclick="deleteWish(${product.id})">삭제</button>
+            </td>
           </tr>
-    `;
+        `;
         container.innerHTML += row;
       });
 
     } catch (error) {
       console.error('위시리스트를 불러오는 중 오류가 발생했습니다:', error);
-      container.innerHTML = '<tr><td colspan="5">위시리스트를 불러오는 데 실패했습니다. 다시 시도해주세요.</td></tr>';
+      container.innerHTML = '<tr><td colspan="5">위시리스트를 불러오는 데 실패했습니다.</td></tr>';
     }
   }
 
   async function deleteWish(productId) {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      window.location.href = '/login';
+      return;
+    }
+
     if (!confirm(`정말로 이 상품을 위시리스트에서 삭제하시겠습니까? (ID: ${productId})`)) {
       return;
     }
 
     try {
       const response = await fetch(`/api/wishes/products/${productId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        },
       });
 
       if (response.ok) {
@@ -143,7 +169,6 @@
         const errorMessage = await response.text();
         throw new Error(errorMessage || `서버 오류! status: ${response.status}`);
       }
-
     } catch (error) {
       console.error('위시리스트 삭제 중 오류 발생:', error);
       alert(`삭제 중 오류가 발생했습니다: ${error.message}`);
