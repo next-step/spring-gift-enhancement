@@ -1,5 +1,6 @@
 package gift.controller.api;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -42,34 +43,36 @@ class ItemControllerTest {
 
     private String adminToken;
     private String userToken;
-    private Item testItem1;
 
     @BeforeEach
     void setUp() {
         LoginResponse adminLogin = memberService.login(new MemberLoginRequest("admin@example.com", "admin1234"));
         adminToken = adminLogin.token();
-
         LoginResponse userLogin = memberService.login(new MemberLoginRequest("user@example.com", "user1234"));
         userToken = userLogin.token();
     }
 
     @Test
-    @DisplayName("API - 전체 상품 목록 조회 성공 (인증 불필요)")
+    @DisplayName("API - 전체 상품 목록 조회 (페이지네이션 적용)")
     void getAllItems() throws Exception {
-        mockMvc.perform(get("/api/products"))
-            .andExpect(status().isOk());
+        mockMvc.perform(get("/api/products")
+                .param("page", "0")
+                .param("size", "2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray())
+            .andExpect(jsonPath("$.content", hasSize(2)))
+            .andExpect(jsonPath("$.totalElements").value(3));
     }
 
     @Test
-    @DisplayName("API - 상품 등록 성공 (ADMIN)")
-    void createItem_Success_By_Admin() throws Exception {
-        ItemRequest itemRequest = new ItemRequest("관리자 등록 상품", 5000, "admin_item.jpg");
-        String requestBody = objectMapper.writeValueAsString(itemRequest);
+    @DisplayName("ADMIN 권한으로 상품 등록 성공")
+    void createItem_By_Admin_Succeeds() throws Exception {
+        ItemRequest request = new ItemRequest("관리자 등록 상품", 5000, "admin_item.jpg");
 
         mockMvc.perform(post("/api/products")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isCreated())
             .andExpect(header().exists("Location"));
     }

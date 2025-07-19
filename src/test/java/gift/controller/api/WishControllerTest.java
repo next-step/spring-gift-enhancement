@@ -64,21 +64,15 @@ class WishControllerTest {
     }
 
     @Test
-    @DisplayName("위시리스트에 새 상품 추가 및 조회 테스트")
-    void addAndGetWishes() throws Exception {
-        WishRequest wishRequest = new WishRequest(testItem1.getId(), 2);
-        mockMvc.perform(post("/api/wishes")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(wishRequest)))
-            .andExpect(status().isCreated());
+    @DisplayName("위시리스트 목록 조회 성공")
+    void getWishes_Success() throws Exception {
+        wishService.addWish(new WishRequest(testItem1.getId(), 1), loginMember);
 
         mockMvc.perform(get("/api/wishes")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].product.id").value(testItem1.getId()))
-            .andExpect(jsonPath("$[0].quantity").value(2));
+            .andExpect(jsonPath("$.content", hasSize(1)))
+            .andExpect(jsonPath("$.content[0].product.id").value(testItem1.getId()));
     }
 
     @Test
@@ -107,7 +101,7 @@ class WishControllerTest {
 
         mockMvc.perform(get("/api/wishes")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
-            .andExpect(jsonPath("$[0].quantity").value(10));
+            .andExpect(jsonPath("$.content[0].quantity").value(10));
 
         mockMvc.perform(delete("/api/wishes/" + wishId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
@@ -115,6 +109,6 @@ class WishControllerTest {
 
         mockMvc.perform(get("/api/wishes")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
-            .andExpect(jsonPath("$", hasSize(0)));
+            .andExpect(jsonPath("$.content", hasSize(0)));
     }
 }

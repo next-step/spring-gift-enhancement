@@ -152,3 +152,18 @@
     - `@DataJpaTest`를 사용하여 JPA 기반의 Repository들이 올바르게 동작하는지 검증하는 테스트를 작성한다.
 - [X] **서비스 계층 리팩토링:**
     - `ItemService`, `MemberService`, `WishService`가 새로운 `JpaRepository`를 사용하도록 내부 로직을 수정한다.
+
+
+### 2단계. 페이지네이션(Pagination) 구현 (완료)
+
+- [X] **상품 목록 API 페이지네이션 적용:**
+  - `GET /api/products` API의 응답을 `List`에서 `Page` 객체로 변경한다.
+  - 응답에 총 페이지 수, 현재 페이지 번호, 총 아이템 개수 등 페이지네이션 관련 정보가 포함되도록 한다.
+- [X] **위시리스트 목록 API 페이지네이션 적용:**
+  - `GET /api/wishes` API의 응답을 `List`에서 `Page` 객체로 변경한다.
+  - 동일하게 페이지네이션 관련 정보가 포함되도록 한다.
+- [X] 관리자 페이지에 페이지네이션 UI 적용:
+  - AdminItemController가 Page 객체를 뷰에 전달하도록 수정한다.
+  - list.html 템플릿에 '이전', '다음' 페이지로 이동할 수 있는 페이지네이션 UI를 추가한다.
+- [X] **테스트 코드 수정:**
+  - 페이지네이션이 적용된 API 응답의 구조 변경에 맞춰 기존 테스트 코드를 수정한다.
