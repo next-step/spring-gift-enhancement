@@ -24,7 +24,7 @@ public class Wishlist {
         this.product = product;
     }
 
-    public Wishlist() {
+    protected Wishlist() {
     }
 
     public Long getId() {

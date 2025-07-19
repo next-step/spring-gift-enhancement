@@ -31,7 +31,7 @@ public class User {
         this.password = password;
     }
 
-    public User() {}
+    protected User() {}
 
     public Long getId(){
         return id;
@@ -54,11 +54,13 @@ public class User {
     }
 
     public void modifyUser(UserModifyRequest userModifyRequest){
-        if(userModifyRequest.email() != null && !Objects.equals(userModifyRequest.email(), this.email)){
-            this.email = userModifyRequest.email();
+        String email = userModifyRequest.email();
+        if(email != null && !Objects.equals(email, this.email)){
+            this.email = email;
         }
-        if(userModifyRequest.password() != null && !Objects.equals(userModifyRequest.password(), this.password)){
-            this.password = userModifyRequest.password();
+        String password = userModifyRequest.password();
+        if(password != null && !Objects.equals(password, this.password)){
+            this.password = password;
         }
     }
 }

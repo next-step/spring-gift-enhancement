@@ -9,8 +9,13 @@ import gift.user.repository.UserRepository;
 import gift.wishlist.dto.response.WishlistResponse;
 import gift.wishlist.entity.Wishlist;
 import gift.wishlist.repository.WishlistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,11 +34,10 @@ public class WishlistService {
         this.userRepository = userRepository;
     }
 
-    public List<WishlistResponse> getWishlists(Long userId){
-        return wishlistRepository.findAllByUserId(userId)
-                .stream()
-                .map(WishlistResponse::from)
-                .toList();
+    public List<WishlistResponse> getWishlists(Long userId, Integer page, Integer size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Wishlist> wishlists = wishlistRepository.findAllByUserId(userId, pageable);
+        return wishlists.hasContent() ? wishlists.getContent().stream().map(WishlistResponse::from).toList() : Collections.emptyList();
     }
 
     public void addWishList(Long giftId, Long userId){
