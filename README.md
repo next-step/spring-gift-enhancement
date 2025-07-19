@@ -25,3 +25,10 @@
 - [x] `WishRepository`의 `findByMember` 메소드가 `Pageable`을 인자로 받도록 수정
 - [x] `WishService`의 `getWishes` 메소드가 `Pageable`을 인자로 받도록 수정
 - [x] `WishController`의 위시리스트 조회 API가 페이지네이션을 지원하도록 수정
+
+## 개별 개선 작업 (위시리스트 조회 페이지 추가)
+
+- [ ] 위시리스트 페이지 뷰 (`wishlist.html`) 추가
+- [ ] 위시리스트 페이지에서 현재 로그인한 사용자의 위시리스트 상품 목록을 비동기(AJAX)로 조회
+- [ ] 조회된 상품 목록을 화면에 동적으로 렌더링
+- [ ] 위시리스트 상품 삭제 기능 구
