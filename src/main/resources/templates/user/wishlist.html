@@ -63,6 +63,40 @@
       cursor: pointer;
       text-decoration: none;
     }
+
+    /* 페이지네이션 UI 스타일 추가 */
+    .pagination {
+      margin-top: 2em;
+      text-align: center;
+    }
+
+    .pagination a, .pagination span {
+      display: inline-block;
+      padding: 8px 16px;
+      text-decoration: none;
+      color: #007bff;
+      border: 1px solid #dee2e6;
+      margin: 0 4px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .pagination a:hover {
+      background-color: #e9ecef;
+    }
+
+    .pagination .current {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+      cursor: default;
+    }
+
+    .pagination .disabled {
+      color: #6c757d;
+      pointer-events: none;
+      border-color: #dee2e6;
+    }
   </style>
 </head>
 <body>
@@ -83,14 +117,19 @@
     <tbody id="wishlist-container">
     </tbody>
   </table>
+
+  <div class="pagination" id="pagination-container"></div>
 </div>
 
 <script>
+  const FIRST_PAGE = 0;
+  const PAGE_SIZE = 3;
+
   document.addEventListener('DOMContentLoaded', function () {
-    loadWishes();
+    loadWishes(FIRST_PAGE);
   });
 
-  async function loadWishes() {
+  async function loadWishes(page = FIRST_PAGE) {
     const token = localStorage.getItem('auth_token');
 
     if (!token) {
@@ -101,7 +140,7 @@
 
     const container = document.getElementById('wishlist-container');
     try {
-      const response = await fetch('/api/wishes?sort=id,desc', {
+      const response = await fetch(`/api/wishes?page=${page}&size=${PAGE_SIZE}&sort=id,desc`, {
         headers: {
           'Authorization': 'Bearer ' + token,
         },
@@ -109,7 +148,7 @@
 
       if (response.status === 401) {
         alert('세션이 만료되었거나 유효하지 않습니다. 다시 로그인해주세요.');
-        localStorage.removeItem('auth_token'); // 만료된 토큰 삭제
+        localStorage.removeItem('auth_token');
         window.location.href = '/login';
         return;
       }
@@ -118,8 +157,8 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const page = await response.json();
-      const products = page.content;
+      const pageData = await response.json();
+      const products = pageData.content;
       container.innerHTML = '';
       products.forEach(product => {
         const row = `
@@ -136,9 +175,32 @@
         container.innerHTML += row;
       });
 
+      renderPagination(pageData);
+
     } catch (error) {
       console.error('위시리스트를 불러오는 중 오류가 발생했습니다:', error);
       container.innerHTML = '<tr><td colspan="5">위시리스트를 불러오는 데 실패했습니다.</td></tr>';
+    }
+  }
+
+  function renderPagination(pageData) {
+    const paginationContainer = document.getElementById('pagination-container');
+    paginationContainer.innerHTML = '';
+
+    if (!pageData.first) {
+      paginationContainer.innerHTML += `<a onclick="loadWishes(${pageData.number
+      - 1})">&laquo; 이전</a>`;
+    }
+
+    for (let i = 0; i < pageData.totalPages; i++) {
+      paginationContainer.innerHTML += (i === pageData.number)
+          ? `<span class="current">${i + 1}</span>`
+          : `<a onclick="loadWishes(${i})">${i + 1}</a>`;
+    }
+
+    if (!pageData.last) {
+      paginationContainer.innerHTML += `<a onclick="loadWishes(${pageData.number
+      + 1})">다음 &raquo;</a>`;
     }
   }
 
@@ -164,7 +226,9 @@
 
       if (response.ok) {
         alert('상품이 위시리스트에서 삭제되었습니다.');
-        loadWishes();
+        const currentPage = document.querySelector('.pagination .current');
+        const pageNum = currentPage ? parseInt(currentPage.textContent) - 1 : FIRST_PAGE;
+        loadWishes(pageNum);
       } else {
         const errorMessage = await response.text();
         throw new Error(errorMessage || `서버 오류! status: ${response.status}`);
