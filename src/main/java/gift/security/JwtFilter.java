@@ -6,10 +6,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Map;
 
 public class JwtFilter extends OncePerRequestFilter {
@@ -39,10 +42,13 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             if (jwtUtil.isValidToken(token)) {
                 Long memberId = jwtUtil.extractMemberId(token);
-                filterChain.doFilter(request, response);
-            } else {
-                setErrorResponse(response, "유효하지 않은 토큰입니다.");
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(memberId, null, Collections.emptyList());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
             setErrorResponse(response, "토큰 검증 중 오류가 발생했습니다.");
         }

@@ -1,7 +1,13 @@
 package gift.service;
 
 import gift.domain.Product;
+import gift.dto.PageResponse;
+import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,18 +41,26 @@ public class ProductService {
                 .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다."));
     }
 
-    @Transactional
-    public void update(Long id, Product product) {
-        boolean updated = productRepository.updateById(
-                id,
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
-        ) > 0;
+    @Transactional(readOnly = true)
+    public PageResponse<ProductResponse> getProductPage(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
+        List<ProductResponse> content = products.stream()
+                .map(ProductResponse::from)
+                .toList();
 
-        if (!updated) {
-            throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
-        }
+        return PageResponse.of(products, content);
+    }
+
+    @Transactional
+    public void update(Long id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found: " + id));
+
+        product.update(
+                request.getName(),
+                request.getPrice(),
+                request.getImageUrl()
+        );
     }
 
     @Transactional
@@ -56,6 +70,7 @@ public class ProductService {
         }
         productRepository.deleteById(id);
     }
+
 
 }
 

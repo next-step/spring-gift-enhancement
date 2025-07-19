@@ -72,7 +72,7 @@ public class AdminProductController {
             model.addAttribute("productId", id);
             return "admin/product-form";
         }
-        productService.update(id, request.toEntity());
+        productService.update(id, request);
         return "redirect:/admin/products";
     }
 

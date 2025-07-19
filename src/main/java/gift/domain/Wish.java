@@ -2,6 +2,8 @@ package gift.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(
         name = "wishes",
@@ -32,6 +34,18 @@ public class Wish {
         this.member = member;
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {

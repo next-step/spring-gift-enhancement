@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -21,6 +23,9 @@ public class Product {
     @Column(name = "image_url", length = 2048)
     private String imageUrl;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     public Product() {
     }
 
@@ -35,6 +40,17 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public void update(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public Product(Long id) { this.id = id; }
