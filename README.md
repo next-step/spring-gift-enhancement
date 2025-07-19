@@ -351,7 +351,7 @@ HTTP/1.1 204 No Content
 
 ### 특정 상품 조회
 
-<img src="./src/main/resources/static/image/product-detail.png" width="800" alt="product-detail">
+<img src="./src/main/resources/static/image/member-product-detail.png" width="800" alt="product-detail">
 
 [GET] http://localhost:8080/members/products/{productId}  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
@@ -414,8 +414,10 @@ HTTP/1.1 204 No Content
 
 ### 특정 상품 조회
 
+<img src="./src/main/resources/static/image/admin-product-detail.png" width="800" alt="product-detail">
+
 [GET] http://localhost:8080/admin/products/{productId}  
-→ 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+→ 선택한 상품의 상세 정보를 확인 및 옵션 수정을 할 수 있는 화면입니다.
 </details>
 <details>
 <summary>➕ 상품 추가</summary>
