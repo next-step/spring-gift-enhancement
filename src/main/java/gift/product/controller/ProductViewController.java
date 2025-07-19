@@ -45,7 +45,9 @@ public class ProductViewController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);
-        if (product == null) return "redirect:/admin/products";
+        if (product == null) {
+            return "redirect:/admin/products";
+        }
 
         ProductRequest request = new ProductRequest(product.getName(), product.getPrice(), product.getImgUrl());
         model.addAttribute("productRequest",request);

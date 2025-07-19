@@ -28,7 +28,9 @@ public class ProductApiController {
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id) {
         Product product = productService.findById(id);
-        if (product == null) return ResponseEntity.notFound().build();
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(product);
     }
 
@@ -42,15 +44,21 @@ public class ProductApiController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductRequest request) {
         Product existing = productService.findById(id);
-        if (existing == null) return ResponseEntity.notFound().build();
+        if (existing == null) {
+            return ResponseEntity.notFound().build();
+        }
         Product updated = productService.update(id, request);
-        if (updated == null) return ResponseEntity.notFound().build();
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        if (!productService.exists(id)) return ResponseEntity.notFound().build();
+        if (!productService.exists(id)) {
+            return ResponseEntity.notFound().build();
+        }
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }

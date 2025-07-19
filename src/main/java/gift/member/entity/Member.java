@@ -35,9 +35,13 @@ public class Member {
         this.role = role;
     }
 
-    public Long getId() { return id;}
+    public Long getId() {
+        return id;
+    }
 
-    public String getEmail() { return email;}
+    public String getEmail() {
+        return email;
+    }
     public void updateEmail(String newEmail) {
         if (newEmail == null || !newEmail.contains("@")) {
             throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
@@ -45,15 +49,19 @@ public class Member {
         this.email = newEmail;
     }
 
-    public String getPassword() { return password;}
-    public void updatePassword(String Password) {
-        if (Password == null || Password.length() < 8) {
+    public String getPassword() {
+        return password;
+    }
+    public void updatePassword(String password) {
+        if (password == null || password.length() < 8) {
             throw new IllegalArgumentException("비밀번호는 8자 이상이어야 합니다.");
         }
-        this.password = Password;
+        this.password = password;
     }
 
-    public String getRole() { return role;}
+    public String getRole() {
+        return role;
+    }
 
     public void addWish(Wish wish) {
         wishes.add(wish);
