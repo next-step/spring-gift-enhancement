@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
             new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl())).getId();
 
         return new ProductResponseDto(id, requestDto.name(), requestDto.price(),
-            requestDto.imageUrl());
+            requestDto.quantity(), requestDto.imageUrl());
     }
 
     @Override

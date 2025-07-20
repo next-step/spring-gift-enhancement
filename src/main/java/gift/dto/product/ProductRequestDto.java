@@ -1,5 +1,8 @@
 package gift.dto.product;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,6 +23,11 @@ public record ProductRequestDto(
 
     @PositiveOrZero(message = "0 이상 값을 가져야 합니다.")
     int price,
+
+    @Min(value = 1, message = "1 이상 1억 미만의 값을 가져야 합니다.")
+    @Max(value = 99999999, message = "1 이상 1억 미만의 값을 가져야 합니다.")
+    @Column(name="quantity", nullable = false)
+    int quantity,
 
     @NotBlank(message = "이미지 URL은 필수입니다.")
     String imageUrl

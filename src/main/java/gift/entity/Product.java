@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -42,6 +44,11 @@ public class Product {
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Min(value = 1, message = "1 이상 1억 미만의 값을 가져야 합니다.")
+    @Max(value = 99999999, message = "1 이상 1억 미만의 값을 가져야 합니다.")
+    @Column(name="quantity", nullable = false)
+    private int quantity;
+
     @NotBlank(message = "이미지 URL은 필수입니다.")
     @Column(name = "imageUrl", nullable = false)
     private String imageUrl;
@@ -55,15 +62,16 @@ public class Product {
 
     protected Product() { }
 
-    public Product(Long id, String name, int price, String imageUrl) {
+    public Product(Long id, String name, int price, int quantity, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.quantity = quantity;
         this.imageUrl = imageUrl;
     }
 
     public Product(String name, int price, String imageUrl) {
-        this(null, name, price, imageUrl);
+        this(null, name, price, 1, imageUrl);
     }
 
     public Long getId() {
@@ -77,6 +85,8 @@ public class Product {
     public int getPrice() {
         return this.price;
     }
+
+    public int getQuantity() { return this.quantity; }
 
     public String getImageUrl() {
         return this.imageUrl;
