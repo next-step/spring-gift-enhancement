@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products/{productId}/options")
@@ -73,10 +72,7 @@ public class OptionController {
             @Valid @RequestBody UpdateOptionRequest request
     ) {
         var updatedOption = optionService.update(id, productId, auth, request.name(), request.quantity());
-        if (updatedOption.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(EntityToDtoMapper.toDto(updatedOption.get()));
+        return ResponseEntity.ok(EntityToDtoMapper.toDto(updatedOption));
     }
 
     @PreAuthorize(UserRole.ROLE_USER)
@@ -87,16 +83,13 @@ public class OptionController {
             @RequestAttribute("auth") CustomAuth auth,
             @Valid @RequestBody PatchOptionRequest request
             ) {
-        Optional<Option> updatedOption;
+        Option updatedOption;
         if (request.increment()) {
             updatedOption = optionService.increaseQuantityBy(id, productId, auth, request.quantity());
         } else {
             updatedOption = optionService.decreaseQuantityBy(id, productId, auth, request.quantity());
         }
-        return updatedOption.map(option -> ResponseEntity
-                .ok(EntityToDtoMapper.toDto(option)))
-                .orElseGet(() -> ResponseEntity.noContent().build()
-                );
+        return ResponseEntity.ok(EntityToDtoMapper.toDto(updatedOption));
     }
 
     @PreAuthorize(UserRole.ROLE_USER)
@@ -109,16 +102,4 @@ public class OptionController {
         optionService.deleteBy(id, productId, auth);
         return ResponseEntity.noContent().build();
     }
-
-    @PreAuthorize(UserRole.ROLE_USER)
-    @DeleteMapping
-    public ResponseEntity<Void> deleteAllOptions(
-            @PathVariable Long productId,
-            @RequestAttribute("auth") CustomAuth auth
-    ) {
-        optionService.deleteAll(productId, auth);
-        return ResponseEntity.noContent().build();
-    }
-
-
 }

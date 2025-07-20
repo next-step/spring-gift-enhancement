@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class OptionServiceImpl implements OptionService{
@@ -43,22 +42,21 @@ public class OptionServiceImpl implements OptionService{
         }
     }
 
-    private Optional<Option> updateOrDelete(Option option, String name, Long quantity) {
+
+    private Option updateAndReturn(Option option, String name, Long quantity) {
         if (name != null) {
             if (optionRepository.existsByNameAndProductId(name, option.getProduct().getId())) {
                 throw new DuplicateKeyException("이미 존재하는 옵션 이름입니다. name: " + name + ", productId: " + option.getProduct().getId());
             }
-
             option.setName(name);
         }
         if (quantity != null) {
             if (quantity <= 0) {
-                optionRepository.deleteById(option.getId());
-                return Optional.empty();
+                throw new IllegalArgumentException("수정될 수량은 0보다 커야 합니다. 현재 수량: " + quantity);
             }
             option.setQuantity(quantity);
         }
-        return Optional.of(optionRepository.save(option));
+        return optionRepository.save(option);
     }
 
     @Override
@@ -93,61 +91,47 @@ public class OptionServiceImpl implements OptionService{
 
     @Override
     @Transactional
-    public Optional<Option> update(Long id, Long productId, CustomAuth auth, String name) {
-        return update(id, productId, auth, name, null);
-    }
-
-    @Override
-    @Transactional
-    public Optional<Option> update(Long id, Long productId, CustomAuth auth, Long quantity) {
-        return update(id, productId, auth, null, quantity);
-    }
-
-    @Override
-    @Transactional
-    public Optional<Option> update(Long id, Long productId, CustomAuth auth, String name, Long quantity) {
+    public Option update(Long id, Long productId, CustomAuth auth, String name, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
-        return updateOrDelete(existingOption, name, quantity);
+        return updateAndReturn(existingOption, name, quantity);
+
     }
 
     @Override
     @Transactional
-    public Optional<Option> increaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
+    public Option increaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
-        return updateOrDelete(existingOption, null, existingOption.getQuantity() + quantity);
+        return updateAndReturn(existingOption, null, existingOption.getQuantity() + quantity);
     }
 
     @Override
     @Transactional
-    public Optional<Option> decreaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
+    public Option decreaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
-        // 수량이 0 이하로 감소할 때 Optional.empty를 반환
-        return updateOrDelete(existingOption, null, existingOption.getQuantity() - quantity);
+        return updateAndReturn(existingOption, null, existingOption.getQuantity() - quantity);
+
     }
 
     @Override
     @Transactional
     public void deleteBy(Long id, Long productId, CustomAuth auth) {
         Product product = productService.findById(productId);
+        var productOptions = product.getOptions();
         validateAuthorization(auth, product);
-        if (!optionRepository.existsByIdAndProductId(id, productId)) {
-            log.error("존재하지 않는 옵션입니다. id: {}, productId: {}", id, productId);
+
+        if (productOptions.size() <= 1) {
+            throw new IllegalArgumentException("최소 하나 이상의 옵션이 필요합니다.");
+        }
+        if (productOptions.removeIf(option -> option.getId().equals(id))) {
+            optionRepository.deleteById(id);
+        } else {
             throw new NoSuchElementException("존재하지 않는 옵션입니다. id: " + id + ", productId: " + productId);
         }
-        optionRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional
-    public void deleteAll(Long productId, CustomAuth auth) {
-        Product product = productService.findById(productId);
-        validateAuthorization(auth, product);
-        optionRepository.deleteAllByProductId(productId);
     }
 }
