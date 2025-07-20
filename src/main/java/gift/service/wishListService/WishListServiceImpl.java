@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -117,6 +118,17 @@ public class WishListServiceImpl implements WishListService {
 
         WishItem wishItem = toUpdatedWishItem.get();
         WishItem updatedWishItem = wishItem.changeQuantity(quantity);
+
+        return wishListRepository.save(updatedWishItem);
+    }
+
+    @Transactional
+    @Override
+    public WishItem controlWishItemQuantity(String itemName, String userEmail, Integer quantity) {
+
+        WishItem targetWishItem = wishListRepository.findByUserEmailAndItemName(userEmail, itemName);
+
+        WishItem updatedWishItem = targetWishItem.changeQuantity(quantity);
 
         return wishListRepository.save(updatedWishItem);
     }

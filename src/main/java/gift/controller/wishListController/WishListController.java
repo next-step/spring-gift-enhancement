@@ -2,6 +2,7 @@ package gift.controller.wishListController;
 
 import gift.config.LoginUser;
 import gift.dto.wishListDto.CreateWishItemRequestDto;
+import gift.dto.wishListDto.QuantityWishItemDto;
 import gift.dto.wishListDto.ResponseWishItem;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.WishItem;
@@ -45,6 +46,18 @@ public class WishListController {
 
         return ResponseEntity.ok(ResponseWishItem.from(wishItemList));
     }
+
+    @PostMapping("/options")
+    public ResponseEntity<QuantityWishItemDto> controlWishItemQuantity(@LoginUser String userEmail, @RequestParam String itemName, @RequestParam Integer quantity) {
+
+        WishItem wishItem = wishListService.controlWishItemQuantity(itemName, userEmail, quantity);
+        String updatedItemName = wishItem.getItem().getName();
+
+        QuantityWishItemDto quantityWishItemDto = new QuantityWishItemDto(wishItem.getId(), updatedItemName, quantity);
+
+        return new ResponseEntity<>(quantityWishItemDto, HttpStatus.ACCEPTED);
+    }
+
 
     @DeleteMapping
     public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {

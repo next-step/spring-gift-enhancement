@@ -43,6 +43,12 @@ public class Item {
         this.imageUrl = imageUrl;
     }
 
+    public Item(Long id, String itemName, Integer quantity) {
+        this.id = id;
+        this.name = itemName;
+
+    }
+
     public Long getId() {
         return id;
     }
