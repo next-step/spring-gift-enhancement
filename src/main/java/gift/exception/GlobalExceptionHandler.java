@@ -5,6 +5,7 @@ import gift.authorization.exception.UnauthorizedException;
 import gift.member.exception.InvalidMemberException;
 import gift.member.exception.MemberNotFoundException;
 import gift.product.exception.InvalidProductException;
+import gift.product.exception.InvalidProductOptionException;
 import gift.product.exception.ProductIsInWishlistException;
 import gift.product.exception.ProductNotFoundException;
 import gift.wishlist.exception.WishlistItemNotFoundException;
@@ -40,6 +41,16 @@ public class GlobalExceptionHandler {
         ErrorResponseDto responseDto = ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid Product",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
+    @ExceptionHandler(InvalidProductOptionException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidProductOption(InvalidProductOptionException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid ProductOption",
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);

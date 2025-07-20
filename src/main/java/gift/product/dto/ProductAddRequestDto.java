@@ -3,13 +3,16 @@ package gift.product.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 public record ProductAddRequestDto(
         @NotBlank(message="상품명은 필수로 입력해야합니다.")
         @Size(max=15, message="상품명은 15자 이내로 입력해야합니다.")
         String name,
         Long price,
-        String url) {
+        String url,
+        List<ProductOptionAddRequestDto> options) {
     public ProductAddRequestDto() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 }
