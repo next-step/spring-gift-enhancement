@@ -53,4 +53,9 @@ public class Option {
     public Product getProduct() {
         return product;
     }
+
+    public void updateOption(String name, int quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
 }

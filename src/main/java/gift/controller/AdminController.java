@@ -6,6 +6,7 @@ import gift.dto.UpdateProductRequestDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.util.Collections;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,7 @@ public class AdminController {
 
   @GetMapping("/add")
   public String addForm(Model model) {
-    model.addAttribute("product", new ProductRequestDto("", BigDecimal.ZERO, "", false));
+    model.addAttribute("product", new ProductRequestDto("", BigDecimal.ZERO, "", false, Collections.emptyList()));
     model.addAttribute("mode", "add");
     return "admin/form";
   }

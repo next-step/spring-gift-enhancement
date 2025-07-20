@@ -1,5 +1,6 @@
 package gift.entity;
 
+import gift.exception.DuplicateOptionNameException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,6 +64,10 @@ public class Product {
         return imageUrl;
     }
 
+    public List<Option> getOptions() {
+        return options;
+    }
+
     public void updateProduct(String name, BigDecimal price, String imageUrl) {
         this.name = name;
         this.price = price;
@@ -70,6 +75,12 @@ public class Product {
     }
 
     public void addOption(Option option) {
+        boolean isNameDuplicate = this.options.stream()
+                .anyMatch(existingOption -> existingOption.getName().equals(option.getName()));
+
+        if (isNameDuplicate) {
+            throw new DuplicateOptionNameException("이미 존재하는 옵션 이름입니다: " + option.getName());
+        }
         this.options.add(option);
     }
 }
