@@ -37,4 +37,8 @@ public class Option {
     public String getName() {return name;}
     public int getQuantity() {return quantity;}
     public Product getProduct() {return product;}
+
+    public void decreaseQuantity(int quantity) {
+        this.quantity -= quantity;
+    }
 }
