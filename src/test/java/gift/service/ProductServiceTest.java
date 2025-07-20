@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -92,5 +93,40 @@ class ProductServiceTest {
         productService.deleteProduct(product.getId());
 
         assertThatThrownBy(() -> productService.getProduct(product.getId())).isInstanceOf(ProductNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("getProducts() 메서드 페이지네이션 테스트 1 - cursor로 페이지를 구분하기 때문에 page 값이 들어오더라도 cursor 값에 의해서만 페이지가 변경되어야 한다.")
+    void test6_1() {
+        productService.saveProduct(new CreateProductRequest("칫솔1", "image", 10000, 12));
+        Product product2 = productService.saveProduct(new CreateProductRequest("칫솔2", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔3", "image", 10000, 12));
+
+        List<ProductResponse> products1 = productService.getAllProducts(product2.getId(), PageRequest.of(2, 3, Sort.by("id").descending())); //pageNumber = 2
+        List<ProductResponse> products2 = productService.getAllProducts(product2.getId(), PageRequest.of(4, 3, Sort.by("id").descending())); //pageNumber = 4
+
+        //product1과 product2의 결과는 같아야 함
+        assertThat(products1.size()).isEqualTo(products2.size());
+        assertThat(products1).isEqualTo(products2);
+    }
+
+    @Test
+    @DisplayName("getProducts() 메서드 페이지네이션 테스트 2 - 커서를 기준으로 다음 데이터를 불러올 수 있다.")
+    void test6_2() {
+        Product product1 = productService.saveProduct(new CreateProductRequest("칫솔1", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔2", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔3", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔4", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔5", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔6", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔7", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔8", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔9", "image", 10000, 12));
+        productService.saveProduct(new CreateProductRequest("칫솔10", "image", 10000, 12));
+
+        List<ProductResponse> products = productService.getAllProducts(product1.getId(), PageRequest.of(0, 10, Sort.by("id").descending()));
+
+        assertThat(products.size()).isEqualTo(1);
+        assertThat(products.get(0).name()).isEqualTo("칫솔");
     }
 }
