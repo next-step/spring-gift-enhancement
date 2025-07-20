@@ -32,12 +32,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler(InvalidProductException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidProduct(InvalidProductException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(ErrorCode.INVALID_PRODUCT.getMessage()));
-    }
-
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -66,6 +60,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMemberNotFound(MemberNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @ExceptionHandler(WishAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleWishAlreadyExists(WishAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ErrorCode.WISH_ALREADY_EXISTS.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

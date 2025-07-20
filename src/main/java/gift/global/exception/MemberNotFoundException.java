@@ -1,7 +1,11 @@
 package gift.global.exception;
 
 public class MemberNotFoundException extends RuntimeException {
-    public MemberNotFoundException(String message) {
-        super(message);
+    public MemberNotFoundException(Long id) {
+        super("해당 회원을 찾을 수 없습니다. ID : " + id);
+    }
+
+    public MemberNotFoundException(String email) {
+        super("해당 이메일을 가진 회원을 찾을 수 없습니다. Email : " + email);
     }
 }

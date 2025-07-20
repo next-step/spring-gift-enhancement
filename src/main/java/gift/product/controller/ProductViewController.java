@@ -1,6 +1,7 @@
 package gift.product.controller;
 
 import gift.product.dto.ProductRequest;
+import gift.product.dto.ProductResponse;
 import gift.product.entity.Product;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -32,24 +33,18 @@ public class ProductViewController {
     }
 
     @PostMapping("/new")
-    public String create(@Valid @ModelAttribute("productRequest") ProductRequest request,
-                         BindingResult bindingResult) {
+    public String create(@Valid @ModelAttribute("productRequest") ProductRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "productAddEdit";
         }
-
         productService.create(request);
         return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Product product = productService.findById(id);
-        if (product == null) {
-            return "redirect:/admin/products";
-        }
-
-        ProductRequest request = new ProductRequest(product.getName(), product.getPrice(), product.getImgUrl());
+        ProductResponse response = productService.findById(id);
+        ProductRequest request = new ProductRequest(response.name(), response.price(), response.imgUrl());
         model.addAttribute("productRequest",request);
         model.addAttribute("productId", id);
         return "productAddEdit";

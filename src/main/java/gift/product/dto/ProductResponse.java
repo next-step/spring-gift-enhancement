@@ -4,13 +4,18 @@ import gift.product.entity.Product;
 
 import java.math.BigDecimal;
 
-public record ProductResponse(
+public record ProductResponse (
         Long id,
         String name,
         BigDecimal price,
         String imgUrl
 ) {
     public static ProductResponse from(Product product) {
-        return product.toResponse();
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImgUrl()
+        );
     }
 }

@@ -1,9 +1,10 @@
 package gift.product.service;
 
 import gift.product.dto.ProductRequest;
+import gift.product.dto.ProductResponse;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,35 +18,39 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public List<Product> findAllProducts() {
-        return repository.findAll();
+    public List<ProductResponse> findAllProducts() {
+        return repository.findAll().stream()
+                .map(ProductResponse::from)
+                .toList();
     }
 
-    public Product findById(Long id) {
-        return repository.findById(id).orElse(null);
+    public ProductResponse findById(Long id) {
+        Product product = repository.getByIdOrThrow(id);;
+        return ProductResponse.from(product);
     }
 
     @Transactional
-    public Product create(ProductRequest request) {
+    public ProductResponse create(ProductRequest request) {
         Product product = new Product(request.getName(), request.getPrice(), request.getImgUrl());
-        return repository.save(product);
+        Product saved = repository.save(product);
+        return ProductResponse.from(product);
     }
 
     @Transactional
-    public Product update(Long id, ProductRequest request) {
-        Product existing = repository.findById(id).orElse(null);
-        if (existing == null) return null;
+    public ProductResponse update(Long id, ProductRequest request) {
+        Product existing = repository.getByIdOrThrow(id);
 
         existing.updateName(request.getName());
         existing.updatePrice(request.getPrice());
         existing.updateImgUrl(request.getImgUrl());
 
-        return existing;
+        return ProductResponse.from(existing);
     }
 
     @Transactional
     public void delete(Long id) {
-        repository.deleteById(id);
+        Product existing = repository.getByIdOrThrow(id);
+        repository.delete(existing);
     }
 
     public boolean exists(Long id) {

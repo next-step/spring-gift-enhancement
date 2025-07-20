@@ -26,8 +26,8 @@ public class Wish {
     public Wish(Member member, Product product) {
         this.member = member;
         this.product = product;
-        member.addWish(this);
-        product.addWish(this);
+        //member.addWish(this);
+        //product.addWish(this);
     }
 
     public Long getId() {

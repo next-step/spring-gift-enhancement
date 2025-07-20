@@ -112,6 +112,4 @@ public class Product {
         validateImgUrl(imgUrl);
         this.imgUrl = imgUrl;
     }
-
-
 }

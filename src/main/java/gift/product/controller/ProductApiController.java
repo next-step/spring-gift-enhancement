@@ -1,6 +1,7 @@
 package gift.product.controller;
 
 import gift.product.dto.ProductRequest;
+import gift.product.dto.ProductResponse;
 import gift.product.entity.Product;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -21,46 +22,32 @@ public class ProductApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
+    public ResponseEntity<List<ProductResponse>> getAll() {
         return ResponseEntity.ok(productService.findAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) {
-        Product product = productService.findById(id);
-        if (product == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductResponse> get(@PathVariable Long id) {
+        ProductResponse response = productService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody @Valid ProductRequest request) {
-        Product saved = productService.create(request);
-        URI location = URI.create("/api/products/" + saved.getId());
+    public ResponseEntity<ProductResponse> add(@RequestBody @Valid ProductRequest request) {
+        ProductResponse saved = productService.create(request);
+        URI location = URI.create("/api/products/" + saved.id());
         return ResponseEntity.created(location).body(saved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductRequest request) {
-        Product existing = productService.findById(id);
-        if (existing == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Product updated = productService.update(id, request);
-        if (updated == null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @RequestBody ProductRequest request) {
+        ProductResponse updated = productService.update(id, request);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        if (!productService.exists(id)) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
-

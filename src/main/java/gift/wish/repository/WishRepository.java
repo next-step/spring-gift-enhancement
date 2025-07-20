@@ -1,5 +1,6 @@
 package gift.wish.repository;
 
+import gift.global.exception.ProductNotFoundException;
 import gift.wish.entity.Wish;
 import gift.member.entity.Member;
 import gift.product.entity.Product;

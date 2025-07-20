@@ -1,5 +1,6 @@
 package gift.wish.service;
 
+import gift.global.exception.WishAlreadyExistsException;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.product.dto.ProductResponse;
@@ -7,7 +8,7 @@ import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
 import gift.wish.entity.Wish;
 import gift.wish.repository.WishRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,21 +32,16 @@ public class WishService {
         List<Wish> wishes = wishRepository.findByMember(member);
         return wishes.stream()
                 .map(Wish::getProduct)
-                .map(product -> new ProductResponse(
-                        product.getId(),
-                        product.getName(),
-                        product.getPrice(),
-                        product.getImgUrl()))
+                .map(ProductResponse::from)
                 .toList();
     }
 
     @Transactional
     public void addWish(Member member, Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        Product product = productRepository.getByIdOrThrow(productId);
 
         if (wishRepository.existsByMemberAndProduct(member, product)) {
-            throw new IllegalStateException("이미 찜한 상품입니다.");
+            throw new WishAlreadyExistsException(product);
         }
 
         wishRepository.save(new Wish(member, product));
@@ -53,8 +49,7 @@ public class WishService {
 
     @Transactional
     public void deleteWish(Member member, Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        Product product = productRepository.getByIdOrThrow(productId);
 
         wishRepository.deleteByMemberAndProduct(member, product);
     }

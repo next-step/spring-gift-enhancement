@@ -6,7 +6,6 @@ import gift.member.dto.MemberResponse;
 import gift.member.entity.Member;
 import gift.global.exception.LoginFailedException;
 import gift.global.exception.MemberAlreadyExistsException;
-import gift.global.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.global.util.JwtUtil;
 import org.mindrot.jbcrypt.BCrypt;
@@ -29,12 +28,9 @@ public class MemberService {
 
     @Transactional
     public LoginResponse register(MemberRequest request) {
-        memberRepository.findByEmail(request.email())
-                .ifPresent(m -> {
-                    throw new MemberAlreadyExistsException("이미 가입된 이메일입니다.");
-                });
+        validateDuplicateEmail(request.email());
 
-        String encodedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
+        String encodedPassword = encodePassword(request.password());
         Member member = new Member(request.email(), encodedPassword, request.role());
         memberRepository.save(member);
 
@@ -43,10 +39,10 @@ public class MemberService {
     }
 
     public LoginResponse login(MemberRequest request) {
-        Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() -> new LoginFailedException("이메일 또는 비밀번호가 유효하지 않습니다."));
+        Member member = memberRepository.getByEmailOrThrow(request.email());
+
         if (!BCrypt.checkpw(request.password(), member.getPassword())) {
-            throw new LoginFailedException("이메일 또는 비밀번호가 유효하지 않습니다.");
+            throw new LoginFailedException();
         }
         String token = jwtUtil.generateToken(member);
         return new LoginResponse(token);
@@ -54,26 +50,23 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
+        Member member = memberRepository.getByIdOrThrow(id);
 
         if (!member.getEmail().equals(request.email())) {
-            memberRepository.findByEmail(request.email())
-                    .ifPresent(m -> {
-                        throw new MemberAlreadyExistsException("이미 사용 중인 이메일입니다.");
-                    });
+            validateDuplicateEmail(request.email());
         }
 
-        String password = request.password().isBlank() ? member.getPassword() : BCrypt.hashpw(request.password(), BCrypt.gensalt());
+        String updatedPassword = request.password().isBlank()
+                ? member.getPassword()
+                : encodePassword(request.password());
 
         member.updateEmail(request.email());
-        member.updatePassword(password);
+        member.updatePassword(updatedPassword);
     }
 
     public void deleteMember(Long id) {
-        memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
-        memberRepository.deleteById(id);
+        Member member = memberRepository.getByIdOrThrow(id);
+        memberRepository.delete(member);
     }
 
     public List<MemberResponse> findAllMembers() {
@@ -83,8 +76,17 @@ public class MemberService {
     }
 
     public MemberResponse findMemberById(Long id) {
-        return memberRepository.findById(id)
-                .map(MemberResponse::from)
-                .orElseThrow(() -> new MemberNotFoundException("해당 ID의 회원을 찾을 수 없습니다."));
+        return MemberResponse.from(memberRepository.getByIdOrThrow(id));
+    }
+
+    private void validateDuplicateEmail(String email) {
+        memberRepository.findByEmail(email)
+                .ifPresent(m -> {
+                    throw new MemberAlreadyExistsException(email);
+                });
+    }
+
+    private String encodePassword(String rawPassword) {
+        return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
     }
 }

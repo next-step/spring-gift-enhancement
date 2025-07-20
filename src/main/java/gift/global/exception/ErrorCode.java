@@ -19,10 +19,14 @@ public enum ErrorCode {
     INVALID_EMAIL("이메일 형식이 올바르지 않습니다."),
     PASSWORD_BLANK("비밀번호는 비어 있을 수 없습니다."),
     PASSWORD_TOO_SHORT("비밀번호는 최소 8자 이상이어야 합니다."),
+    EMAIL_ALREADY_EXISTS("이미 사용중인 이메일입니다"),
     MEMBER_ALREADY_EXISTS("이미 존재하는 회원입니다."),
     MEMBER_NOT_FOUND("회원을 찾을 수 없습니다."),
     LOGIN_FAILED("이메일 또는 비밀번호가 올바르지 않습니다."),
-    INVALID_TOKEN("유효하지 않은 토큰입니다.");
+    INVALID_TOKEN("유효하지 않은 토큰입니다."),
+
+    //위시관련
+    WISH_ALREADY_EXISTS("이미 위시리스트에 있습니다");
 
     private final String message;
 
