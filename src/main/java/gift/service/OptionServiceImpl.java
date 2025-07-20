@@ -46,7 +46,7 @@ public class OptionServiceImpl implements OptionService {
     public OptionResponseDto addOption(Long productId, OptionRequestDto optionRequestDto) {
         productExist(productId);
         Option option = toOption(productId, optionRequestDto);
-        if (optionRepository.existsByProductIdAndName(productId, option.getName())) {
+        if (optionRepository.existsByProduct_IdAndName(productId, option.getName())) {
             throw new OptionNameDuplicationException("이미 존재하는 옵션명입니다: " + option.getName());
         }
         Option storedOption = optionRepository.save(option);
@@ -61,7 +61,7 @@ public class OptionServiceImpl implements OptionService {
         productExist(productId);
         Option option = optionRepository.findById(optionId)
             .orElseThrow(() -> new OptionNotFoundException("옵션이 존재하지 않습니다"));
-        if (optionRepository.existsByProductIdAndNameAndIdNot(productId, option.getName(),
+        if (optionRepository.existsByProduct_IdAndNameAndIdNot(productId, option.getName(),
             optionId)) {
             throw new OptionNameDuplicationException("이미 존재하는 옵션명입니다: " + option.getName());
         }
@@ -83,7 +83,7 @@ public class OptionServiceImpl implements OptionService {
     @Override
     public List<OptionResponseDto> getOptions(Long productId) {
         productExist(productId);
-        return optionRepository.findAllByProductId(productId)
+        return optionRepository.findAllByProduct_Id(productId)
             .stream()
             .map(OptionResponseDto::new)
             .toList();

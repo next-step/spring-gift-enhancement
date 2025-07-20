@@ -74,5 +74,4 @@ public class ProductTest {
             productRepository.saveAndFlush(product);
         });
     }
-
 }
