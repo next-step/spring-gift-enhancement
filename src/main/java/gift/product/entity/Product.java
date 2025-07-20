@@ -50,11 +50,17 @@ public class Product {
     public Long getPrice(){return price;}
     public String getImageUrl(){return imageUrl;}
     public Boolean getIsKakaoApprovedByMd(){return isKakaoApprovedByMd;}
+    public List<Option> getOptions(){return options;}
 
     public void updateProduct(String name,Long price,String imageUrl,Boolean isKakaoApprovedByMd){
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.isKakaoApprovedByMd = (isKakaoApprovedByMd == null) ? false : isKakaoApprovedByMd;
+    }
+
+    public void addOption(Option option){
+        this.options.add(option);
+        option.setProduct(this);
     }
 }

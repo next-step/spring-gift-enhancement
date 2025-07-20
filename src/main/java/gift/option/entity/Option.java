@@ -41,4 +41,12 @@ public class Option {
     public void decreaseQuantity(int quantity) {
         this.quantity -= quantity;
     }
+
+    public void setProduct(Product product) {
+        if(this.product != null) {
+            this.product.getOptions().remove(this);
+        }
+
+        this.product = product;
+    }
 }
