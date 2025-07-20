@@ -16,5 +16,7 @@ public interface OptionService {
 
     void deleteOption(Long optionId);
 
+    void subtract(Long optionId, int sub);
+
     List<OptionResponseDto> getOptions(Long productId);
 }

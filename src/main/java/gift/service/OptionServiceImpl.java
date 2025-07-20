@@ -62,16 +62,28 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
+    @Transactional
     public void deleteOption(Long optionId) {
-        optionRepository.deleteById(optionId);
+        Option option = optionRepository.findById(optionId)
+            .orElseThrow(() -> new OptionNotFoundException("옵션이 존재하지 않습니다"));
+        optionRepository.delete(option);
     }
 
     @Override
     public List<OptionResponseDto> getOptions(Long productId) {
-
         return optionRepository.findAllByProductId(productId)
             .stream()
             .map(OptionResponseDto::new)
             .toList();
+    }
+
+    @Override
+    @Transactional
+    public void subtract(Long optionId, int sub) {
+        Option option = optionRepository.findById(optionId)
+            .orElseThrow(() -> new OptionNotFoundException("옵션이 존재하지 않습니다"));
+        option.setQuantity(option.getQuantity() - sub);
+
+        optionRepository.save(option);
     }
 }
