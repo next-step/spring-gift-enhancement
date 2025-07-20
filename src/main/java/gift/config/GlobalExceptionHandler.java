@@ -58,8 +58,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMethod() + " method는 지원되지 않습니다.", HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handlerException(MethodArgumentTypeMismatchException ex) {
-        return new ResponseEntity<>("유효하지 않은 정렬 기준입니다.", HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handlerException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
