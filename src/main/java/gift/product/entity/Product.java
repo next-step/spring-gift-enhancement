@@ -1,8 +1,12 @@
 package gift.product.entity;
 
 
+import gift.option.entity.Option;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -23,6 +27,9 @@ public class Product {
     @Column(name = "is_kakao_approved_by_md", nullable = false)
     @ColumnDefault(value = "FALSE")
     private Boolean isKakaoApprovedByMd;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
 
     protected Product() {}
 
