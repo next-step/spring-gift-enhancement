@@ -118,6 +118,32 @@ public class ProductApiTest {
     }
 
     @Test
+    void 상품목록_페이지네이션_정렬조건_위배시_401(){
+        String baseUrl = "http://localhost:" + port + "/api/products/all";
+
+        int page = 0;
+        int size = 2;
+        String[] sort = {"iddd", "asc"};
+
+        String url1 = UriComponentsBuilder.fromUriString(baseUrl)
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .queryParam("sort", sort[0] + "," + sort[1])
+            .toUriString();
+
+        var response1 = restClient.get()
+            .uri(url1)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+            .retrieve()
+            .onStatus(st -> st.is4xxClientError(), (req, res) -> {
+            })
+            .toEntity(ErrorResponse.class);
+
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response1.getBody().errorCode()).isEqualTo(ErrorCode.INVALID_SORT_NAMES);
+    }
+
+    @Test
     @DisplayName("상품 등록")
     void 상품_등록() {
         var url = "http://localhost:" + port + "/api/products";
