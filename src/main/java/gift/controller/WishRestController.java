@@ -2,8 +2,8 @@ package gift.controller;
 
 import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
+import gift.dto.ProductResponseDto;
 import gift.entity.Member;
-import gift.entity.Product;
 import gift.jwt.Authenticated;
 import gift.service.WishService;
 import org.springframework.data.domain.Page;
@@ -44,9 +44,9 @@ public class WishRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Product>> getMyWishes(@Authenticated Member member, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<ProductResponseDto>> getMyWishes(@Authenticated Member member, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product> wishes = wishService.getAllWish(member, pageable);
+        Page<ProductResponseDto> wishes = wishService.getAllWish(member, pageable);
         return new ResponseEntity<>(wishes, HttpStatus.OK);
     }
 }

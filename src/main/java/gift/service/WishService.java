@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.ProductResponseDto;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -39,9 +40,8 @@ public class WishService {
         wishRepository.deleteByMemberAndProduct(member, product);
     }
 
-    public Page<Product> getAllWish(Member member, Pageable pageable) {
+    public Page<ProductResponseDto> getAllWish(Member member, Pageable pageable) {
         return wishRepository.findAllByMember(member, pageable)
-                .map(Wish::getProduct)
-                ;
+                .map(wish -> new ProductResponseDto(wish.getProduct()));
     }
 }
