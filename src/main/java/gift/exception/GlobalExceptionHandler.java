@@ -31,4 +31,10 @@ public class GlobalExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto("DUPLICATE_WISHLIST", ex.getMessage());
         return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(InvalidSortOptionException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidSortOptionException(InvalidSortOptionException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto("INVALID_SORT_OPTION", ex.getMessage());
+        return ResponseEntity.badRequest().body(errorResponseDto);
+    }
 }

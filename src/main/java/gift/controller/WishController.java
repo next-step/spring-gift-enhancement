@@ -4,7 +4,9 @@ import gift.auth.Login;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Member;
+import gift.exception.InvalidSortOptionException;
 import gift.service.WishService;
+import gift.util.ProductSortOption;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +34,12 @@ public class WishController {
 
     @GetMapping
     public ResponseEntity<Page<WishResponseDto>> getWishes(@Login Member member, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        for (Sort.Order order : pageable.getSort()) {
+            if (!ProductSortOption.isValid(order.getProperty())) {
+                throw new InvalidSortOptionException("Product의 유효한 정렬 기준이 아닙니다.");
+            }
+        }
+
         Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
         return new ResponseEntity<>(wishService.getWishes(member.getId(), fixedPageable), HttpStatus.OK);
     }

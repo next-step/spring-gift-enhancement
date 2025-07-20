@@ -3,7 +3,9 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
+import gift.exception.InvalidSortOptionException;
 import gift.service.ProductService;
+import gift.util.ProductSortOption;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +39,12 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Page<ProductResponseDto>> findAllProduct(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        for (Sort.Order order : pageable.getSort()) {
+            if (!ProductSortOption.isValid(order.getProperty())) {
+                throw new InvalidSortOptionException("Product의 유효한 정렬 기준이 아닙니다.");
+            }
+        }
+
         Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
         return new ResponseEntity<>(productService.findAllProduct(fixedPageable), HttpStatus.OK);
     }
