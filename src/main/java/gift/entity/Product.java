@@ -10,8 +10,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -62,7 +60,7 @@ public class Product {
 
     @OneToMany(
         mappedBy = "product",
-        cascade = CascadeType.REMOVE,
+        cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
         orphanRemoval = true
     )
     private List<ProductOption> options = new ArrayList<>();
@@ -110,7 +108,7 @@ public class Product {
     @PrePersist
     @PreUpdate
     public void validationOptions() {
-        if (!options.isEmpty()) {
+        if (options.isEmpty()) {
             throw new IllegalArgumentException("상품에 하나 이상의 옵션이 필요합니다.");
         }
     }
@@ -123,6 +121,7 @@ public class Product {
 
     public Wish addWish(Wish wish) {
         wishes.add(wish);
+        wish.setProduct(this);
         return wish;
     }
 
@@ -133,6 +132,7 @@ public class Product {
 
     public ProductOption addOption(ProductOption option) {
         options.add(option);
+        option.setProduct(this);
         this.quantity += option.getQuantity();
         return option;
     }
@@ -140,6 +140,7 @@ public class Product {
     public void removeOption(ProductOption option) {
         options.remove(option);
         this.quantity -= option.getQuantity();
+        option.change(option.getName(), 0);
         option.setProduct(null);
     }
 }
