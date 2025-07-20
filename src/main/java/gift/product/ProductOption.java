@@ -1,6 +1,7 @@
 package gift.product;
 
 import gift.product.exception.InvalidProductOptionException;
+import gift.product.exception.NotEnoughInventoryException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -44,6 +45,18 @@ public class ProductOption {
         if (quantity == null || quantity < 1 || quantity >= 100_000_000L) {
             throw new InvalidProductOptionException("옵션 수량은 1개 이상 1억 미만이어야 합니다.");
         }
+    }
+
+    protected void decreaseQuantity(Long amount) {
+        if (amount == null || amount <= 0) {
+            throw new InvalidProductOptionException("수량이 잘못 입력되었습니다.");
+        }
+
+        if (this.quantity < amount) {
+            throw new NotEnoughInventoryException(this.quantity, amount);
+        }
+
+        this.quantity -= amount;
     }
 
     public String getName() {

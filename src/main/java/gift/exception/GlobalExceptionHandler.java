@@ -6,6 +6,7 @@ import gift.member.exception.InvalidMemberException;
 import gift.member.exception.MemberNotFoundException;
 import gift.product.exception.InvalidProductException;
 import gift.product.exception.InvalidProductOptionException;
+import gift.product.exception.NotEnoughInventoryException;
 import gift.product.exception.ProductIsInWishlistException;
 import gift.product.exception.ProductNotFoundException;
 import gift.wishlist.exception.WishlistItemNotFoundException;
@@ -55,6 +56,17 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
+
+    @ExceptionHandler(NotEnoughInventoryException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotEnoughInventory(NotEnoughInventoryException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST.value(),
+                "Not Enough Inventory",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
 
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException ex) {
