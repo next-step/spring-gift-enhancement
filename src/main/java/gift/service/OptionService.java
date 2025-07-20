@@ -105,4 +105,11 @@ public class OptionService {
         return optionRepository.findById(optionId)
                 .orElseThrow(() -> new ResourceNotFoundException("옵션을 찾을 수 없습니다. ID: " + optionId));
     }
+
+    @Transactional
+    public void subtractQuantity(Long optionId, int amount) {
+        Option option = findOptionById(optionId);
+
+        option.subtractQuantity(amount);
+    }
 }

@@ -43,4 +43,11 @@ public class GlobalExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto("DUPLICATE_OPTION_NAME", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
     }
+
+    @ExceptionHandler(OutOfQuantityException.class)
+    public ResponseEntity<ErrorResponseDto> handleOutOfStockException(OutOfQuantityException ex) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto("OUT_OF_QUANTITY", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
 }

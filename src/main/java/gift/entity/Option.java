@@ -1,5 +1,6 @@
 package gift.entity;
 
+import gift.exception.OutOfQuantityException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -57,5 +58,13 @@ public class Option {
     public void updateOption(String name, int quantity) {
         this.name = name;
         this.quantity = quantity;
+    }
+
+    public void subtractQuantity(int amount) {
+        int remainingQuantity = this.quantity - amount;
+        if (remainingQuantity < 0) {
+            throw new OutOfQuantityException("수량이 부족합니다. (남은 수량: " + this.quantity + ")");
+        }
+        this.quantity = remainingQuantity;
     }
 }
