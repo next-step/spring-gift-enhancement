@@ -26,9 +26,9 @@ public class WishController {
     public ResponseEntity<List<WishResponse>> getWishPage(@LoginUser User user,
                                                           @RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size,
-                                                          @RequestParam(defaultValue = "ID_ASC") WishSortKey sortKey)
+                                                          @RequestParam(defaultValue = "name-asc") String sortKey)
     {
-        List<WishResponse> wishPage = wishService.getWishPage(user.getId(), page, size, sortKey);
+        List<WishResponse> wishPage = wishService.getWishPage(user.getId(), page, size, WishSortKey.from(sortKey));
 
         return new ResponseEntity<>(wishPage, HttpStatus.OK);
     }

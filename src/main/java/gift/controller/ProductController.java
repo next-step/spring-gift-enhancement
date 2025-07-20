@@ -26,9 +26,10 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getProductPage(@RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "10") int size,
-                                                                @RequestParam(defaultValue = "ID_ASC") ProductSortKey sortKey)
+                                                                @RequestParam(defaultValue = "name-asc") String sortKey)
     {
-        List<ProductResponse> productPage = productService.getProductPage(page, size, sortKey);
+
+        List<ProductResponse> productPage = productService.getProductPage(page, size, ProductSortKey.from(sortKey));
         return new ResponseEntity<>(productPage, HttpStatus.OK);
     }
 
