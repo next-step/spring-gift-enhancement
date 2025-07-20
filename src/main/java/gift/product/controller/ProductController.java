@@ -1,6 +1,7 @@
 package gift.product.controller;
 
 import gift.exception.GlobalExceptionHandler.ApiResponse;
+import gift.product.dto.ProductPageDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static gift.product.dto.ProductPageDto.fromEntity;
 
 @RestController
 @RequestMapping("/api/products")
@@ -30,9 +33,9 @@ public class ProductController {
 
     //전체 조회
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDto>> getAllProducts(@PageableDefault(size = 5, sort = "name") Pageable pageable) {
+    public ResponseEntity<ProductPageDto<ProductResponseDto>> getAllProducts(@PageableDefault(size = 5, sort = "name") Pageable pageable) {
         Page<ProductResponseDto> productResponseDtos = productService.getAllProducts(pageable);
-        return  ResponseEntity.ok(productResponseDtos);
+        return  ResponseEntity.ok(fromEntity(productResponseDtos));
     }
 
     //특정 상품 추가
