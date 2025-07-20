@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto("INVALID_SORT_OPTION", ex.getMessage());
         return ResponseEntity.badRequest().body(errorResponseDto);
     }
+
+    @ExceptionHandler(DuplicateOptionNameException.class)
+    public ResponseEntity<ErrorResponseDto> handleDuplicateOptionNameException(DuplicateOptionNameException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto("DUPLICATE_OPTION_NAME", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
+    }
 }

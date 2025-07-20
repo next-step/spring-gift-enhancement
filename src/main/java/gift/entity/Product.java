@@ -1,16 +1,21 @@
 package gift.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +28,9 @@ public class Product {
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
 
     protected Product() {}
 
@@ -59,5 +67,9 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public void addOption(Option option) {
+        this.options.add(option);
     }
 }
