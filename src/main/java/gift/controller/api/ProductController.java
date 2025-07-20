@@ -1,7 +1,8 @@
 package gift.controller.api;
 
 import gift.common.aop.annotation.PreAuthorize;
-import gift.common.mapper.EntityDtoMapper;
+import gift.common.mapper.DtoToEntityMapper;
+import gift.common.mapper.EntityToDtoMapper;
 import gift.common.model.CustomAuth;
 import gift.common.validation.annotation.AllowedSortFields;
 import gift.dto.product.ProductDefaultResponse;
@@ -39,7 +40,7 @@ public class ProductController {
     ) {
         CustomPage<Product> productPage = productService.findAllBy(pageable);
         return new ResponseEntity<>(CustomPage.convert(
-                productPage, EntityDtoMapper::toDto), HttpStatus.OK
+                productPage, EntityToDtoMapper::toDto), HttpStatus.OK
         );
     }
 
@@ -48,7 +49,7 @@ public class ProductController {
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
     ) {
         Product product = productService.findById(id);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(product), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(product), HttpStatus.OK);
     }
 
     @PostMapping
@@ -57,9 +58,9 @@ public class ProductController {
             @Valid @RequestBody ProductCreateRequest dto,
             @RequestAttribute("auth") CustomAuth auth
     ) {
-        Product product = productService.create(EntityDtoMapper.toEntity(dto), auth.role(), auth.userId());
+        Product product = productService.create(DtoToEntityMapper.toEntity(dto), auth.role(), auth.userId());
         log.info("상품 생성 성공: {}", product);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(product), HttpStatus.CREATED);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(product), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -69,11 +70,11 @@ public class ProductController {
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestAttribute("auth") CustomAuth auth
     ) {
-        var product = EntityDtoMapper.toEntity(dto);
+        var product = DtoToEntityMapper.toEntity(dto);
         product.setId(id);
         Product updatedProduct = productService.update(product, auth.role(), auth.userId());
         log.info("상품 업데이트 성공: {}", updatedProduct);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(updatedProduct), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(updatedProduct), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

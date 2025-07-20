@@ -1,7 +1,7 @@
 package gift.controller.api;
 
 import gift.common.aop.annotation.PreAuthorize;
-import gift.common.mapper.EntityDtoMapper;
+import gift.common.mapper.EntityToDtoMapper;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.common.validation.annotation.AllowedSortFields;
@@ -42,7 +42,7 @@ public class WishlistController {
     ) {
         CustomPage<WishedProduct> wishlistPage = wishedProductService.findAllBy(auth.userId(), pageable);
         return new ResponseEntity<>(
-                CustomPage.convert(wishlistPage, EntityDtoMapper::toDto), HttpStatus.OK
+                CustomPage.convert(wishlistPage, EntityToDtoMapper::toDto), HttpStatus.OK
         );
     }
 
@@ -53,7 +53,7 @@ public class WishlistController {
             @RequestAttribute("auth") CustomAuth auth
     ) {
         WishedProduct wishedProduct = wishedProductService.findBy(auth.userId(), id);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(wishedProduct), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(wishedProduct), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -63,7 +63,7 @@ public class WishlistController {
             @RequestAttribute("auth") CustomAuth auth
     ) {
         WishedProduct wishedProduct = wishedProductService.create(auth.userId(), request.productId(), request.quantity());
-        return new ResponseEntity<>(EntityDtoMapper.toDto(wishedProduct), HttpStatus.CREATED);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(wishedProduct), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -77,7 +77,7 @@ public class WishlistController {
         if (wishedProduct.isEmpty()) {
             return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(EntityDtoMapper.toDto(wishedProduct.get()), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(wishedProduct.get()), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
@@ -96,7 +96,7 @@ public class WishlistController {
         if (wishedProduct.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(EntityDtoMapper.toDto(wishedProduct.get()), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(wishedProduct.get()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

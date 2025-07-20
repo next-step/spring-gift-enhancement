@@ -1,66 +1,20 @@
 package gift.common.mapper;
 
-import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductDefaultResponse;
-import gift.dto.product.ProductUpdateRequest;
 import gift.dto.user.UserAdminResponse;
-import gift.dto.user.UserCreateRequest;
 import gift.dto.user.UserDefaultResponse;
-import gift.dto.user.UserUpdateRequest;
 import gift.dto.wishlist.WishedProductResponse;
-import gift.entity.Product;
-import gift.entity.User;
-import gift.entity.UserRole;
-import gift.entity.WishedProduct;
+import gift.entity.*;
 
 import java.util.stream.Collectors;
 
-public class EntityDtoMapper {
+public class EntityToDtoMapper {
 
-    private EntityDtoMapper() {
+    private EntityToDtoMapper() {
         // 인스턴스 생성 방지
     }
 
-    public static Product toEntity(ProductCreateRequest request) {
-        return new Product(
-            request.name(),
-            request.price(),
-            request.imageUrl()
-        );
-    }
 
-    public static Product toEntity(ProductUpdateRequest request) {
-        return new Product(
-            request.name(),
-            request.price(),
-            request.imageUrl()
-        );
-    }
-
-    public static User toEntity(UserCreateRequest request) {
-        var mappedRoles = request.roles().stream()
-                .map(UserRole::valueOf)
-                .collect(Collectors.toSet());
-        return new User(
-                request.email(),
-                request.password(),
-                mappedRoles
-        );
-    }
-
-    public static User toEntity(UserUpdateRequest request) {
-        var user = new User(
-                request.email(),
-                request.password()
-        );
-        if (request.roles() != null) {
-            var mappedRoles = request.roles().stream()
-                    .map(UserRole::valueOf)
-                    .collect(Collectors.toSet());
-            user.setRoles(mappedRoles);
-        }
-        return user;
-    }
 
     public static ProductDefaultResponse toDto(Product product) {
         return new ProductDefaultResponse(
