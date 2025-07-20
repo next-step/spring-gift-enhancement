@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,9 +27,9 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    public Page<Product> getWishList(Long memberId, Pageable pageable) {
-        return wishRepository.findByMemberId(memberId, pageable)
-            .map(Wish::getProduct);
+    public Page<gift.dto.WishResponse> getWishList(Long memberId, Pageable pageable) {
+        return wishRepository.findByMemberIdWithProduct(memberId, pageable)
+            .map(gift.dto.WishResponse::from);
     }
 
     public void addWish(Long memberId, WishRequest wishRequest) {
