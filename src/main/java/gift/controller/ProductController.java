@@ -23,13 +23,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // 상품 전체 조회
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
-    }
-
-    @GetMapping("/page")
     public ResponseEntity<List<ProductResponse>> getProductPage(@RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "10") int size,
                                                                 @RequestParam(defaultValue = "ID_ASC") ProductSortKey sortKey)

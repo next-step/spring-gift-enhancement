@@ -23,11 +23,6 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponse>> getAllWishes(@LoginUser User user) {
-        return new ResponseEntity<>(wishService.getAllWishes(user.getId()), HttpStatus.OK);
-    }
-
-    @GetMapping("/page")
     public ResponseEntity<List<WishResponse>> getWishPage(@LoginUser User user,
                                                           @RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size,
