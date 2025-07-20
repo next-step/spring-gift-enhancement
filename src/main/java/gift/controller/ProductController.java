@@ -5,7 +5,8 @@ import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,9 +40,10 @@ public class ProductController {
 
     // 2-1. 상품 전체 조회
     @GetMapping
-    public Page<ProductResponseDto> getProducts(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return productService.findAll(page, size);
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductResponseDto> products = productService.findAll(pageable);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     // 2-2. 상품 단건 조회
@@ -53,7 +55,6 @@ public class ProductController {
     }
 
     // 3. 상품 수정
-
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@Valid
     @PathVariable Long id,

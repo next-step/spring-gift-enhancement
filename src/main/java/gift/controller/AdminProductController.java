@@ -5,6 +5,8 @@ import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,7 +60,9 @@ public class AdminProductController {
     @GetMapping
     public String list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
 
-        Page<ProductResponseDto> products = productService.findAll(page, size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ProductResponseDto> products = productService.findAll(pageable);
 
         model.addAttribute("products", products);
 

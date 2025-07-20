@@ -4,11 +4,7 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,11 +35,9 @@ public class ProductServiceImpl implements ProductService {
 
     // 2-1. 전체 상품 조회
     @Override
-    public Page<ProductResponseDto> findAll(int page, int size) {
-
-        Pageable pageRequest = PageRequest.of(page, size);
-
-        return productRepository.findAll(pageRequest).map(ProductResponseDto::new);
+    public Page<ProductResponseDto> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(ProductResponseDto::new);
     }
 
     // 2-2. 특정 상품 조회

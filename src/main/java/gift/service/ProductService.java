@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
@@ -10,7 +11,7 @@ public interface ProductService {
     public ProductResponseDto create(ProductRequestDto dto);
 
     // 2-1. 전체 상품 조회
-    public Page<ProductResponseDto> findAll(int page, int size);
+    public Page<ProductResponseDto> findAll(Pageable pageable);
 
     // 2-2. 특정 상품 조회
     public ProductResponseDto findById(Long id);
