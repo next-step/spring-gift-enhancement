@@ -34,7 +34,7 @@ public class OptionController {
     @GetMapping
     public ResponseEntity<CustomPage<OptionDefaultResponse>> getOptions(
             @PathVariable Long productId,
-            @AllowedSortFields(value = { "id", "name", "quantity" }, showAllowedFields = true)
+            @AllowedSortFields(value = { "id", "name", "quantity", "createdAt", "updatedAt" }, showAllowedFields = true)
             @PageableDefault(size = 5)
             Pageable pageable
     ) {
@@ -78,6 +78,7 @@ public class OptionController {
         }
         return ResponseEntity.ok(EntityToDtoMapper.toDto(updatedOption.get()));
     }
+
     @PreAuthorize(UserRole.ROLE_USER)
     @PatchMapping("/{id}")
     public ResponseEntity<OptionDefaultResponse> updateOptionQuantity(

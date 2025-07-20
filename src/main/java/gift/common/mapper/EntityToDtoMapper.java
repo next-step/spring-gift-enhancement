@@ -69,7 +69,9 @@ public class EntityToDtoMapper {
         return new OptionDefaultResponse(
             option.getId(),
             option.getName(),
-            option.getQuantity()
+            option.getQuantity(),
+            option.getCreatedAt(),
+            option.getUpdatedAt()
         );
     }
 }

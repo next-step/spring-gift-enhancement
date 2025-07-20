@@ -52,7 +52,7 @@ public class OptionServiceImpl implements OptionService{
             option.setName(name);
         }
         if (quantity != null) {
-            if (quantity < 0) {
+            if (quantity <= 0) {
                 optionRepository.deleteById(option.getId());
                 return Optional.empty();
             }
@@ -128,7 +128,7 @@ public class OptionServiceImpl implements OptionService{
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
         // 수량이 0 이하로 감소할 때 Optional.empty를 반환
-        return updateOrDelete(existingOption, null, quantity - existingOption.getQuantity());
+        return updateOrDelete(existingOption, null, existingOption.getQuantity() - quantity);
     }
 
     @Override
