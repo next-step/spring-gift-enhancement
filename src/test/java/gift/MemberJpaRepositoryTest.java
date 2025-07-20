@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @DataJpaTest
-@DisplayName("MemberJpaRepository 테스튼")
+@DisplayName("MemberJpaRepository 테스트")
 class MemberJpaRepositoryTest {
 
     @Autowired

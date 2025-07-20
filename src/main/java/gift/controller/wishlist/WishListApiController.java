@@ -5,7 +5,10 @@ import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
 import gift.global.util.RequestAttributes;
 import gift.service.wishlist.WishListService;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +33,17 @@ public class WishListApiController {
     // 특정 유저의 위시리스트를 전부 조회한다.(API를 요청한 유저의 위시리스트를 조회)
     @GetMapping
     public ResponseEntity<?> getWishList(
-        @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId
+        @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
+        @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.ASC)
+        Pageable pageable
     ) {
-        List<WishListResponse> list = wishListService.findAllByMemberId(memberId);
+        wishListService.validate(pageable);
+
+        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId,
+            pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(list);
+            .body(wishListsPage);
     }
 
     // wishList 단건 조회: memberId, productId로 조회
@@ -62,7 +70,7 @@ public class WishListApiController {
         Long wishListId = wishListService.update(memberId, wishListRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new IdResponse(wishListId));
+            .body(IdResponse.from(wishListId));
     }
 
     // quantity 수정과 별개로, 위시리스트 테이블에 저장된 레코드 자체를 삭제

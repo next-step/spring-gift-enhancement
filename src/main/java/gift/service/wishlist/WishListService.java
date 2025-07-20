@@ -12,7 +12,10 @@ import gift.repository.product.ProductJpaRepository;
 import gift.repository.wishlist.WishListJpaRepository;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.dao.DataAccessException;
+import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class WishListService {
 
+    private static final Set<String> ALLOWED_SORT_NAMES = Set.of(
+        "id", "productId", "productName", "productPrice", "quantity", "memberId"
+    );
     private final WishListJpaRepository wishListRepository;
     private final MemberJpaRepository memberRepository;
     private final ProductJpaRepository productRepository;
@@ -31,12 +37,18 @@ public class WishListService {
         this.productRepository = productRepository;
     }
 
-    // wishList 조회
+    // wishList 전체 조회
     public List<WishListResponse> findAllByMemberId(Long memberId) {
         List<WishList> list = wishListRepository.findAllByMemberId(memberId);
 
         return list.stream()
             .map(WishListResponse::from).toList();
+    }
+
+    // wishList 페이지 조회
+    public Page<WishListResponse> findAllPageByMemberId(Long memberId, Pageable pageable) {
+        return wishListRepository.findAllPageByMemberId(memberId, pageable)
+            .map(WishListResponse::from);
     }
 
     // wishlist 단건 조회
@@ -70,10 +82,23 @@ public class WishListService {
     }
 
     public void delete(Long memberId, WishListRequest wishListRequest) {
-        WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId, wishListRequest.productId())
-                .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId,
+                wishListRequest.productId())
+            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
 
         wishListRepository.deleteById(wishList.getId());
+    }
+
+    // Pageable 객체 유효성 검사
+    public void validate(Pageable pageable) {
+        Sort sort = pageable.getSort();
+
+        for (Sort.Order order : sort) {
+            if (!ALLOWED_SORT_NAMES.contains(order.getProperty())) {
+                throw CustomException.from(ErrorCode.INVALID_SORT_NAMES);
+            }
+
+        }
     }
 }
 
