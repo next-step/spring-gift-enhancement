@@ -13,4 +13,5 @@
 ## step2 페이지네이션
 * 예외던지기를 repository로 옮김
 * global-exception에서 자세한 예외메세지 처리하게 수정
-* 
+* 이름 검색 - findByNameContaining가 escape을 자동으로 추가하여 오류를 일으킴. @Query로 searchByName 을 만들어 해결
+* 가격, 이름 기준 정렬
