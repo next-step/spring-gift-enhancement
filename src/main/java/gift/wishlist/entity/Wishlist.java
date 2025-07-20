@@ -41,4 +41,8 @@ public class Wishlist {
     public int getQuantity() {return this.quantity;}
 
     public void addQuantity(int quantity) {this.quantity += quantity;}
+
+    public boolean isOwner(Member member) {
+        return this.member.equals(member);
+    }
 }

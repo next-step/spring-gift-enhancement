@@ -38,5 +38,6 @@
 - [x] entity의 기본 생성자의 접근 제어자를 protected로 변경
 - [x] MemberService 에서 반복되는 회원 조회 로직을 private 메서드로 추출
 - [x] WishNotFoundByMemberIdAndWishId 예외클래스 이름을 WishlistAccessDeniedException으로 변경
+- [x] Wishlist에게 위시리스트를 가진 소유자가 맞는지 확인하는 로직 위임
 
 ## 3단계 - 상품옵션
