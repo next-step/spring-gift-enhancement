@@ -1,7 +1,6 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.controller.AuthController;
 import gift.dto.UserRequestDto;
 import gift.dto.UserResponseDto;
 import gift.dto.TokenResponseDto;
@@ -32,6 +31,11 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private org.springframework.data.jpa.mapping.JpaMetamodelMappingContext jpaMappingContext;
+    @MockitoBean
+    private org.springframework.data.auditing.AuditingHandler jpaAuditingHandler;
 
     @Test
     @DisplayName("회원가입 성공 – 201 CREATED, UserResponseDto 검증")

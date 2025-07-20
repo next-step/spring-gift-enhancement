@@ -7,12 +7,13 @@ import gift.exception.InvalidProductNameException;
 import gift.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import gift.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -37,8 +38,8 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponseDto> findAllProduct(){
-        return productRepository.findAll().stream().map(ProductResponseDto::new).collect(Collectors.toList());
+    public Page<ProductResponseDto> findAllProduct(Pageable pageable){
+        return productRepository.findAll(pageable).map(ProductResponseDto::new);
     }
 
     @Transactional

@@ -1,7 +1,6 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.controller.ProductController;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
@@ -9,6 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +37,11 @@ class ProductControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockitoBean
+    private org.springframework.data.jpa.mapping.JpaMetamodelMappingContext jpaMappingContext;
+    @MockitoBean
+    private org.springframework.data.auditing.AuditingHandler jpaAuditingHandler;
+
     @Test
     @DisplayName("제품 단건 조회 – 200 OK")
     void findProductById() throws Exception {
@@ -53,17 +61,19 @@ class ProductControllerTest {
     @Test
     @DisplayName("모든 제품 조회 – 200 OK")
     void findAllProducts() throws Exception {
+        var pageable = PageRequest.of(0, 20);
         var list = List.of(
                 new ProductResponseDto(1L, "A", 100L, "http://img.url/a.png"),
                 new ProductResponseDto(2L, "B", 200L, "http://img.url/b.png")
         );
-        when(productService.findAllProduct()).thenReturn(list);
+        Page<ProductResponseDto> page = new PageImpl<>(list, pageable, list.size());
+
+        when(productService.findAllProduct(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/products"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].imageUrl").value("http://img.url/a.png"))
-                .andExpect(jsonPath("$[1].imageUrl").value("http://img.url/b.png"));
+                .andExpect(jsonPath("content.[0].imageUrl").value("http://img.url/a.png"))
+                .andExpect(jsonPath("content.[1].imageUrl").value("http://img.url/b.png"));
     }
 
     @Test

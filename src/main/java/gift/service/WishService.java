@@ -7,10 +7,9 @@ import gift.entity.Wish;
 import gift.exception.DuplicateException;
 import gift.exception.NotFoundException;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class WishService {
@@ -21,8 +20,8 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    public List<WishResponseDto> findUserWishes(UserInfoDto userInfoDto) {
-        return wishRepository.findByUserId(userInfoDto.id()).stream().map(WishResponseDto::new).collect(Collectors.toList());
+    public Page<WishResponseDto> findUserWishes(UserInfoDto userInfoDto, Pageable pageable) {
+        return wishRepository.findByUserId(userInfoDto.id(), pageable).map(WishResponseDto::new);
     }
 
     public WishResponseDto addWish(UserInfoDto userInfoDto, WishRequestDto wishRequestDto) {
@@ -30,7 +29,7 @@ public class WishService {
             throw new DuplicateException("이미 리스트에 존재하는 제품입니다.");
         }
 
-        Wish wish = new Wish(wishRequestDto.id(), userInfoDto.id(), wishRequestDto.productId(), wishRequestDto.quantity());
+        Wish wish = new Wish(userInfoDto.id(), wishRequestDto.productId(), wishRequestDto.quantity());
         return new WishResponseDto(wishRepository.save(wish));
     }
 

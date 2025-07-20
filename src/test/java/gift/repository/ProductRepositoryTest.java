@@ -4,9 +4,15 @@ import gift.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.tuple;
 
 @DataJpaTest
 public class ProductRepositoryTest {
@@ -28,7 +34,41 @@ public class ProductRepositoryTest {
     @Test
     void findById() {
         Product product1 = productRepository.save(new Product("과자", 1000L, "http://snack"));
-        Product product2 = productRepository.findById(1L).orElse(null);
+        Product product2 = productRepository.findById(product1.getId()).orElse(null);
         assertThat(product1).isEqualTo(product2);
+    }
+
+    @Test
+    void sortByIdAsc() {
+        productRepository.save(new Product("B", 2000L, "u2"));
+        productRepository.save(new Product("C", 3000L, "u1"));
+        productRepository.save(new Product("A", 1000L, "u3"));
+        Page<Product> page = productRepository.findAll(
+                PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"))
+        );
+
+        List<Product> products = page.getContent();
+        assertThat(products.stream().map(Product::getId).toList())
+                .containsExactly(6L,7L,8L);
+    }
+
+    @Test
+    void sortByPriceDescThenNameAsc() {
+        productRepository.save(new Product("B", 2000L, "u2"));
+        productRepository.save(new Product("A", 3000L, "u1"));
+        productRepository.save(new Product("A", 1000L, "u3"));
+
+        Page<Product> page = productRepository.findAll(
+                PageRequest.of(0, 20,
+                        Sort.by(Sort.Order.desc("price"), Sort.Order.asc("name")))
+        );
+
+        assertThat(page.getContent())
+                .extracting(Product::getPrice, Product::getName)
+                .containsExactly(
+                        tuple(3000L, "A"),
+                        tuple(2000L, "B"),
+                        tuple(1000L, "A")
+                );
     }
 }

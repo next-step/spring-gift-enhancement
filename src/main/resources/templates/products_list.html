@@ -13,11 +13,12 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>ID</th><th>Name</th><th>Price</th><th>ImageUrl</th>
+            <th>ID</th><th>Name</th><th>Price</th><th>ImageUrl</th><th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
+        <!-- products가 Page<ProductDto> 객체라면 content로 반복 -->
+        <tr th:each="product : ${products.content}">
             <td th:text="${product.id}">Product id</td>
             <td th:text="${product.name}">Product name</td>
             <td th:text="${product.price}">product price</td>
@@ -31,6 +32,35 @@
         </tr>
         </tbody>
     </table>
+
+    <nav th:if="${products.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!products.hasPrevious()} ? ' disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/products(page=${products.number - 1},size=${products.size})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}"
+                th:classappend="${i == products.number} ? ' active'">
+                <a class="page-link"
+                   th:href="@{/admin/products(page=${i},size=${products.size})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+
+            <li class="page-item" th:classappend="${!products.hasNext()} ? ' disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/products(page=${products.number+1},size=${products.size})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
 </div>
 </body>
 </html>
