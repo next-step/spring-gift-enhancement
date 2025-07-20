@@ -1,9 +1,11 @@
 package gift.common.mapper;
 
+import gift.dto.option.CreateOptionRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
 import gift.dto.user.UserCreateRequest;
 import gift.dto.user.UserUpdateRequest;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.entity.User;
 import gift.entity.UserRole;
@@ -17,10 +19,15 @@ public class DtoToEntityMapper {
     }
 
     public static Product toEntity(ProductCreateRequest request) {
+        var options = request.options().stream()
+                .map(DtoToEntityMapper::toEntity)
+                .toList();
+
         return new Product(
                 request.name(),
                 request.price(),
-                request.imageUrl()
+                request.imageUrl(),
+                options
         );
     }
 
@@ -55,5 +62,12 @@ public class DtoToEntityMapper {
             user.setRoles(mappedRoles);
         }
         return user;
+    }
+
+    public static Option toEntity(CreateOptionRequest request) {
+        return new Option(
+                request.name(),
+                request.quantity()
+        );
     }
 }

@@ -18,9 +18,4 @@ public record ProductUpdateRequest (
     Long price,
     String imageUrl
 ) {
-    public ProductUpdateRequest(String name, Long price, String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
 }
