@@ -39,5 +39,6 @@
 - [x] MemberService 에서 반복되는 회원 조회 로직을 private 메서드로 추출
 - [x] WishNotFoundByMemberIdAndWishId 예외클래스 이름을 WishlistAccessDeniedException으로 변경
 - [x] Wishlist에게 위시리스트를 가진 소유자가 맞는지 확인하는 로직 위임
+- [x] ProductService 코드 가독성을 높이기 위한 리팩토링
 
 ## 3단계 - 상품옵션
