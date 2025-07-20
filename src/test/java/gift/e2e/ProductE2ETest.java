@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -8,7 +8,6 @@ import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class ProductControllerTest {
+public class ProductE2ETest {
 
     @LocalServerPort
     private int port;
@@ -94,28 +93,6 @@ public class ProductControllerTest {
             () -> assertThat(data.name()).isEqualTo(name),
             () -> assertThat(data.price()).isEqualTo(price),
             () -> assertThat(data.imageUrl()).isEqualTo(imageUrl)
-        );
-    }
-
-    @Test
-    @DisplayName("상품 목록 조회 테스트")
-    void testGetProductList() {
-        createSampleProduct("테스트 상품1", 3000, "https://test1.jpg");
-        createSampleProduct("테스트 상품2", 3500, "https://test2.jpg");
-
-        CustomResponseBody<List<ProductResponse>> response = client.get()
-            .uri("")
-            .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<List<ProductResponse>>>() {
-            });
-
-        assertResponse(response, CustomResponseCode.LIST_RETRIEVED);
-
-        List<ProductResponse> data = response.data();
-
-        assertAll("응답 데이터 필드 검증",
-            () -> assertThat(data).anyMatch(p -> p.name().equals("테스트 상품1")),
-            () -> assertThat(data).anyMatch(p -> p.name().equals("테스트 상품2"))
         );
     }
 

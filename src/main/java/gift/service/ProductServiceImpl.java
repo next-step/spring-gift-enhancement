@@ -2,12 +2,18 @@ package gift.service;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
+import gift.common.util.SortUtil;
+import gift.dto.PageResponse;
+import gift.dto.Pagination;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.dto.ProductSortField;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +30,29 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductResponse create(ProductRequest request) {
         Product savedProduct = productRepository.save(
-            new Product(null, request.name(), request.price(), request.imageUrl()));
+            new Product(request.name(), request.price(), request.imageUrl()));
 
         return ProductResponse.from(savedProduct);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll().stream()
-            .map(ProductResponse::from)
-            .collect(Collectors.toList());
+    public PageResponse<ProductResponse> getAllProducts(Pagination pagination) {
+        Sort sortCondition = SortUtil.createSort(
+            pagination.getSort(),
+            ProductSortField.allowedFields()
+        );
+
+        Pageable pageable = PageRequest.of(pagination.getPage() - 1,
+            pagination.getSize(),
+            sortCondition
+        );
+
+        Page<ProductResponse> page = productRepository
+            .findAll(pageable)
+            .map(ProductResponse::from);
+
+        return PageResponse.from(page);
     }
 
     @Override

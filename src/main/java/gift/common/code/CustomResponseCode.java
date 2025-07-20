@@ -19,6 +19,8 @@ public enum CustomResponseCode {
     NOT_FOUND("리소스를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     EMAIL_DUPLICATE("중복된 이메일이 이미 존재합니다。", HttpStatus.CONFLICT),
     ALREADY_EXISTS("이미 등록된 항목입니다.", HttpStatus.CONFLICT),
+    INVALID_SORT_FIELD("허용되지 않는 정렬 필드입니다.", HttpStatus.BAD_REQUEST),
+    INVALID_SORT_DIRECTION("허용되지 않는 정렬 방향입니다.", HttpStatus.BAD_REQUEST),
     DB_ERROR("데이터베이스 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     INTERNAL_ERROR("서버 내부 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 

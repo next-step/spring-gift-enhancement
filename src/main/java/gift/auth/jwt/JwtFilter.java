@@ -23,7 +23,9 @@ public class JwtFilter implements Filter {
     private static final Set<String> EXCLUDED_PATHS = Set.of(
         "/api/auth/register",
         "/api/auth/login",
-        "/h2-console"
+        "/h2-console",
+        "/admin/products",
+        "/css"
     );
 
     public JwtFilter(JwtProvider jwtProvider) {

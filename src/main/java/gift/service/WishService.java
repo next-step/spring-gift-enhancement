@@ -1,8 +1,9 @@
 package gift.service;
 
+import gift.dto.PageResponse;
+import gift.dto.Pagination;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
-import java.util.List;
 
 public interface WishService {
 
@@ -10,5 +11,5 @@ public interface WishService {
 
     void deleteWish(Long memberId, Long productId);
 
-    List<WishResponse> getWishes(Long memberId);
+    PageResponse<WishResponse> getWishes(Long memberId, Pagination pagination);
 }

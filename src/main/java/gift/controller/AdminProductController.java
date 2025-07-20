@@ -1,10 +1,11 @@
 package gift.controller;
 
+import gift.dto.PageResponse;
+import gift.dto.Pagination;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,9 +26,13 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String showProducts(Model model) {
-        List<ProductResponse> products = productService.getAllProducts();
-        model.addAttribute("products", products);
+    public String showProducts(
+        @Valid @ModelAttribute Pagination pagination,
+        Model model
+    ) {
+        PageResponse<ProductResponse> productPage = productService.getAllProducts(pagination);
+
+        model.addAttribute("productPage", productPage);
         return "admin/products";
     }
 

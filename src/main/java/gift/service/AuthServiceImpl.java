@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String encrypted = passwordEncoder.encode(request.password());
-        Member member = new Member(null, request.email(), encrypted);
+        Member member = new Member(request.email(), encrypted);
         memberRepository.save(member);
     }
 

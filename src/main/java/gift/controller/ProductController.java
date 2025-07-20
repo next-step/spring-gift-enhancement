@@ -2,14 +2,16 @@ package gift.controller;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
+import gift.dto.PageResponse;
+import gift.dto.Pagination;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,8 +40,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<CustomResponseBody<List<ProductResponse>>> getAllProducts() {
-        List<ProductResponse> responses = productService.getAllProducts();
+    public ResponseEntity<CustomResponseBody<PageResponse<ProductResponse>>> getAllProducts(
+        @Valid @ModelAttribute Pagination pagination
+    ) {
+        PageResponse<ProductResponse> responses = productService.getAllProducts(pagination);
 
         return ResponseEntity
             .status(CustomResponseCode.LIST_RETRIEVED.getHttpStatus())

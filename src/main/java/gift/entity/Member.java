@@ -30,6 +30,10 @@ public class Member {
         this.password = password;
     }
 
+    public Member(String email, String password) {
+        this(null, email, password);
+    }
+
     public Long getId() {
         return id;
     }

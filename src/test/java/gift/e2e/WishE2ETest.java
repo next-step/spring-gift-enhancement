@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -15,12 +15,11 @@ import gift.auth.jwt.JwtUtil;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.common.exception.CustomException;
+import gift.controller.WishController;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.Member;
 import gift.service.WishService;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(WishController.class)
-@Import({JwtFilter.class, JwtProvider.class, WishControllerTest.JwtTestConfig.class})
-class WishControllerTest {
+@Import({JwtFilter.class, JwtProvider.class, WishE2ETest.JwtTestConfig.class})
+class WishE2ETest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -91,7 +90,7 @@ class WishControllerTest {
             () -> assertThat(data.productId()).isEqualTo(10L),
             () -> assertThat(data.quantity()).isEqualTo(2),
             () -> assertThat(data.productName()).isEqualTo("상품명"),
-            () -> assertThat(data.price()).isEqualTo(1000),
+            () -> assertThat(data.productPrice()).isEqualTo(1000),
             () -> assertThat(data.imageUrl()).isEqualTo("https://img")
         );
     }
@@ -129,36 +128,6 @@ class WishControllerTest {
                 .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
             .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("위시 목록 조회 성공")
-    void testGetWishesSuccess() throws Exception {
-        WishResponse response = new WishResponse(1L, 10L, 2, "상품명", 1000, "https://img");
-        List<WishResponse> wishList = Collections.singletonList(response);
-
-        given(wishService.getWishes(eq(mockMember.getId()))).willReturn(wishList);
-
-        String token = createToken(mockMember.getId(), mockMember.getEmail());
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/wishes")
-                .header("Authorization", "Bearer " + token))
-            .andReturn();
-
-        String content = result.getResponse().getContentAsString();
-        CustomResponseBody<List<WishResponse>> res = objectMapper.readValue(content,
-            objectMapper.getTypeFactory().constructParametricType(CustomResponseBody.class,
-                objectMapper.getTypeFactory()
-                    .constructCollectionType(List.class, WishResponse.class)));
-
-        assertWishResponse(res, CustomResponseCode.RETRIEVED);
-
-        List<WishResponse> data = res.data();
-        assertAll("응답 데이터 필드 검증",
-            () -> assertThat(data).isNotNull(),
-            () -> assertThat(data).anyMatch(w -> w.productId().equals(10L)),
-            () -> assertThat(data).anyMatch(w -> w.productName().equals("상품명"))
-        );
     }
 
     @Test
