@@ -11,11 +11,12 @@ public class ProductRequestDto {
     @NotNull
     @Size(max = 15, message = "공백 포함 최대 15자까지만 입력 가능합니다.")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$", message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다.")
-
     private final String name;
 
+    @NotNull
     private final String imageUrl;
 
+    @NotNull
     private final Long price;
 
     public ProductRequestDto(Long id, String name, String imageUrl, Long price) {
