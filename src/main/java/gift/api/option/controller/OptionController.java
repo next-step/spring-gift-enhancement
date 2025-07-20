@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,10 +26,11 @@ public class OptionController {
         this.optionService = optionService;
     }
 
+    @GetMapping
     public ResponseEntity<List<OptionResponseDto>> getOptionsForProduct(
             @PathVariable Long productId) {
         List<OptionResponseDto> options = optionService.getOptionsByProductId(productId);
-        
+
         return ResponseEntity.ok(options);
     }
 

@@ -32,6 +32,7 @@ public class OptionService {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException(productId);
         }
+
         return optionRepository.findByProductId(productId).stream()
                 .map(OptionResponseDto::from)
                 .collect(Collectors.toList());

@@ -198,6 +198,115 @@ HTTP/1.1 204 No Content
 
 </details>
 
+# 🔘 옵션 API
+
+---
+
+<details>
+<summary>🔎 옵션 조회</summary>
+
+### Request
+
+```json
+GET /api/products/{productId}/options HTTP/1.1
+```
+
+### Response
+
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+    {
+        "id": 1,
+        "name": "기본 옵션",
+        "quantity": 1
+    },
+    {
+        "id": 2,
+        "name": "옵션 2",
+        "quantity": 2
+    }
+]
+```
+
+</details>
+<details>
+<summary>➕ 옵션 추가</summary>
+
+### Request
+
+```json
+POST /api/products/{productId}/options HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "옵션 1",
+    "quantity": 1
+}
+```
+
+### Response
+
+```json
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "옵션 1",
+    "quantity": 1
+}
+```
+
+</details>
+<details>
+<summary>✏️ 옵션 수정</summary>
+
+### Request
+
+```json
+PUT /api/products/{productId}/options/{optionId} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "수정된 옵션",
+    "quantity": 3
+}
+```
+
+### Response
+
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "수정된 옵션",
+    "quantity": 3
+}
+```
+
+</details>
+<details>
+<summary>❌ 옵션 삭제</summary>
+
+### Request
+
+```json
+DELETE /api/products/{productId}/options/{optionId} HTTP/1.1
+```
+
+### Response
+
+```json
+HTTP/1.1 204 No Content
+```
+
+</details>
+
 # 🎁 위시 리스트 API
 
 ---
@@ -481,6 +590,7 @@ HTTP/1.1 204 No Content
 
 ```sql
 drop table if exists member
+drop table if exists option
 drop table if exists product
 drop table if exists wish
 
@@ -490,6 +600,14 @@ create table member (
     password varchar(255) not null,
     role enum ('ADMIN','USER') not null,
     primary key (id)
+)
+
+create table option (
+        quantity integer not null,
+        id bigint not null auto_increment,
+        product_id bigint not null,
+        name varchar(50) not null,
+        primary key (id)
 )
 
 create table product (
@@ -509,10 +627,18 @@ create table wish (
 )
 
 alter table member 
-   add constraint UKmbmcqelty0fbrvxp1q58dn57t unique (email);
+   add constraint UKmbmcqelty0fbrvxp1q58dn57t unique (email)
+
+alter table option 
+       add constraint UKe78vjnqbmknqwm7d6k2blhhnj unique (product_id, name)
 
 alter table wish 
-   add constraint UKimrh37c61jscdegh9fi3jbpix unique (member_id, product_id);
+   add constraint UKimrh37c61jscdegh9fi3jbpix unique (member_id, product_id)
+
+alter table option 
+       add constraint FK5t6etuqa4wl7lyn0ysxnts7q4 
+       foreign key (product_id) 
+       references product (id)
 
 alter table wish 
    add constraint FK70nrc4a6uvljrtemsn80eq1gd 
@@ -534,21 +660,37 @@ alter table wish
 <details>
 <summary>🔍 유효성 검사</summary>
 
-### 상품 이름
+## 멤버
+### `이메일`
+- 필수 입력
+- 이메일 형식
 
+### `비밀번호`
+- 필수 입력
+
+## 상품
+### `상품 이름`
 - 필수 입력
 - 최소 1자, 최대 15자
 - (), [], +, -, &, /, _ 외의 특수 문자를 사용할 수 없음
 - RequiresApprovalWords 어노테이션을 사용하여 특정 단어가 포함되지 않도록 검사
 
-### 상품 가격
-
+### `상품 가격`
 - 0원 이상
 
-### 상품 이미지 URL
-
+### `상품 이미지 URL`
 - 필수 입력
 
+## 옵션
+### `옵션 이름`
+- 필수 입력
+- 최소 1자, 최대 50자
+- (), [], +, -, &, /, _ 외의 특수 문자를 사용할 수 없음
+- 중복된 옵션 이름은 허용하지 않음 (같은 상품 내에서)
+
+### `옵션 수량`
+- 필수 입력
+- 1개 이상 1억 개 미만
 </details>
 <details>
 <summary>🚨 예외 처리</summary>
@@ -560,17 +702,23 @@ alter table wish
   - 상품이 존재하지 않을 경우 (조회, 수정, 삭제 시)
 - WishNotFoundException
   - 위시가 존재하지 않을 경우 (삭제 시)
+- OptionNotFoundException
+  - 옵션이 존재하지 않을 경우 (수정, 삭제 시)
 
 ### DataConflictException `409 Conflict`
-- DuplicateEmailException
+- EmailDuplicateException
   - 중복된 이메일로 회원가입 할 때
-- DuplicateWishException
+- WishDuplicateException
   - 중복된 위시를 추가할 때
+- OptionNameDuplicateException
+  - 옵션 이름이 중복될 때 (같은 상품 내에서)
+- InvalidOptionQuantityException
+  - 옵션 수량이 1개 이상 1억 개 미만이 아닐 때
 
 ### AuthenticationException `401 Unauthorized`
 - 인증되지 않은 사용자 (로그인하지 않은 경우)
 - 인증 토큰이 유효하지 않은 경우 (예: 만료된 토큰)
-- LoginFailedException `401 Unauthorized`
+- LoginFailedException
   - 로그인 실패 시 (잘못된 이메일 또는 비밀번호)
 
 ### AuthorizationException `403 Forbidden`
@@ -580,6 +728,12 @@ alter table wish
 
 ### MethodArgumentNotValidException `400 Bad Request`
 - 상품을 생성할 때 제약조건에 맞지 않을 경우
+
+### InvalidOptionAccessException `400 Bad Request`
+- 해당 상품에 속한 옵션이 아닐 때 수정 및 삭제하는 경우
+
+### OptionPolicyException `409 Conflict`
+- 옵션이 1개 뿐인 상품의 옵션을 삭제하는 경우
 
 </details>
 
@@ -598,29 +752,36 @@ alter table wish
 
 </details>
 <details>
-<summary>유효성 검사 테스트</summary>
+<summary>E2E 테스트</summary>
 
-- 상품 이름 (최대 15자 실패)
-- 상품 이름 (특수 문자 성공)
-- 상품 이름 (특수 문자 실패)
-- 상품 이름 (MD 승인 글자)
-- 상품 가격 (0원 이상 실패)
+- AuthE2ETest
+  - 관리자/일반 사용자 로그인, 페이지 접근 권한 등 인증/인가 테스트
+- ProductE2ETest
+  - 상품 조회, 추가, 수정, 삭제 및 유효성 검사(이름 길이, 특수문자, 가격) 테스트
+- PaginationE2ETest
+  - 관리자/사용자 상품 목록, 위시리스트의 페이지네이션 및 정렬 기능 테스트
 </details>
 <details>
-<summary>DataJpa 테스트</summary>
+<summary>Repository 테스트</summary>
 
-### 상품 CRUD 테스트
-- 상품 저장 및 조회
-- 상품 수정
-- 상품 삭제
+- MemberRepositoryTest
+  - 회원 정보 저장 및 이메일 중복 조회
+- ProductRepositoryTest
+  - 상품 CRUD 기능 테스트
+- OptionRepositoryTest
+  - 상품별 옵션 조회 및 이름 중복 저장 테스트
+- WishRepositoryTest
+  - 위시리스트 저장, 조회 및 중복 저장 방지 테스트
+</details>
+<details>
+<summary>Service 테스트</summary>
 
-### 멤버 CRUD 테스트
-- 멤버 저장 및 조회
-- 멤버 조회 실패
-- 멤버 회원가입 실패 (중복 이메일)
-
-### 위시 리스트 CRUD 테스트
-- 위시 리스트 저장
-- 위시 리스트 조회
-- 위시 중복 저장 실패
+- MemberServiceTest
+  - 회원가입, 로그인 성공/실패(이메일 중복, 비밀번호 불일치) 케이스 테스트
+- ProductServiceTest
+  - 상품 생성, 조회, 수정, 삭제 기능 테스트
+- OptionServiceTest
+  - 옵션 추가, 삭제(마지막 옵션 방지, 다른 상품 옵션 접근) 및 이름 중복 방지 테스트
+- WishServiceTest
+  - 위시리스트 추가, 삭제 및 예외(중복, 권한 없음) 처리 테스트
 </details>
