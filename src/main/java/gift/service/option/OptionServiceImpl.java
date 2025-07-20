@@ -45,14 +45,18 @@ public class OptionServiceImpl implements OptionService{
 
     private Optional<Option> updateOrDelete(Option option, String name, Long quantity) {
         if (name != null) {
+            if (optionRepository.existsByNameAndProductId(name, option.getProduct().getId())) {
+                throw new DuplicateKeyException("이미 존재하는 옵션 이름입니다. name: " + name + ", productId: " + option.getProduct().getId());
+            }
+
             option.setName(name);
         }
         if (quantity != null) {
+            if (quantity < 0) {
+                optionRepository.deleteById(option.getId());
+                return Optional.empty();
+            }
             option.setQuantity(quantity);
-        }
-        if (option.getQuantity() <= 0) {
-            optionRepository.deleteById(option.getId());
-            return Optional.empty();
         }
         return Optional.of(optionRepository.save(option));
     }
@@ -82,7 +86,6 @@ public class OptionServiceImpl implements OptionService{
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         if (optionRepository.existsByNameAndProductId(name, productId)) {
-            log.error("이미 존재하는 옵션 이름입니다. name: {}, productId: {}", name, productId);
             throw new DuplicateKeyException("이미 존재하는 옵션 이름입니다. name: " + name + ", productId: " + productId);
         }
         return optionRepository.save(new Option(name, quantity, product));
@@ -143,9 +146,8 @@ public class OptionServiceImpl implements OptionService{
     @Override
     @Transactional
     public void deleteAll(Long productId, CustomAuth auth) {
-        if (!productService.existsById(productId)) {
-            throw new NoSuchElementException("존재하지 않는 제품입니다. productId: " + productId);
-        }
+        Product product = productService.findById(productId);
+        validateAuthorization(auth, product);
         optionRepository.deleteAllByProductId(productId);
     }
 }
