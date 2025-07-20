@@ -24,7 +24,7 @@ public class Product {
     @ColumnDefault(value = "FALSE")
     private Boolean isKakaoApprovedByMd;
 
-    public Product() {}
+    protected Product() {}
 
     public Product(Long id, String name, Long price, String imageUrl, Boolean isKakaoApprovedByMd) {
         this.id = id;

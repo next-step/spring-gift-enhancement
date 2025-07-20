@@ -22,7 +22,7 @@ public class Wishlist {
     @Column(nullable = false)
     private int quantity;
 
-    public Wishlist() {}
+    protected Wishlist() {}
 
     public Wishlist(Long id, Member member, Product product, int quantity) {
         this.id = id;
