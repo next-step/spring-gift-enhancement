@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
-import gift.common.util.PageableUtil;
+import gift.common.util.SortUtil;
 import gift.dto.PageResponse;
 import gift.dto.Pagination;
 import gift.dto.WishRequest;
@@ -76,7 +76,7 @@ public class WishServiceImpl implements WishService {
         Member member = memberRepository.findById(userId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        Sort sortCondition = PageableUtil.createSort(
+        Sort sortCondition = SortUtil.createSort(
             pagination.getSort(),
             WishSortField.allowedFields()
         );

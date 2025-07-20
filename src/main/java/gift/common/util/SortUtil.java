@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import org.springframework.data.domain.Sort;
 
-public class PageableUtil {
+public class SortUtil {
 
     private static final String SORT_DELIMITER = ";";
     private static final String DIRECTION_ASC = "asc";

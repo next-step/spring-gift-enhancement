@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
-import gift.common.util.PageableUtil;
+import gift.common.util.SortUtil;
 import gift.dto.PageResponse;
 import gift.dto.Pagination;
 import gift.dto.ProductRequest;
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<ProductResponse> getAllProducts(Pagination pagination) {
-        Sort sortCondition = PageableUtil.createSort(
+        Sort sortCondition = SortUtil.createSort(
             pagination.getSort(),
             ProductSortField.allowedFields()
         );
