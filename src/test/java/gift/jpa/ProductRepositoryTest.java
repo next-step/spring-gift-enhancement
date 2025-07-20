@@ -17,7 +17,7 @@ public class ProductRepositoryTest {
 
     @Test
     void save() {
-        Product expected = new Product("test", 1, "test");
+        Product expected = new Product("test", 1, 1, "test");
 
         Product actual = productRepository.save(expected);
         assertAll(
@@ -29,7 +29,7 @@ public class ProductRepositoryTest {
 
     @Test
     void findById() {
-        Product expected = new Product("example1", 4700, "https://www.starbucks.co.kr/index.do");
+        Product expected = new Product("example1", 4700, 1, "https://www.starbucks.co.kr/index.do");
 
         Product actual = productRepository.findById(1L).get();
         assertAll(
@@ -41,8 +41,8 @@ public class ProductRepositoryTest {
 
     @Test
     void update() {
-        Product origin = new Product("test", 1, "test");
-        Product expected = new Product("test2", 2, "test2");
+        Product origin = new Product("test", 1, 1, "test");
+        Product expected = new Product("test2", 2, 1, "test2");
 
         Product beforeProduct = productRepository.save(origin);
         beforeProduct.change(expected.getName(), expected.getPrice(), expected.getImageUrl());
@@ -69,7 +69,7 @@ public class ProductRepositoryTest {
 
     @Test
     void deleteById() {
-        Product expected = new Product("test", 1, "test");
+        Product expected = new Product("test", 1, 1, "test");
 
         Product actual = productRepository.save(expected);
         productRepository.deleteById(actual.getId());
