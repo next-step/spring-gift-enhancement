@@ -19,6 +19,4 @@ public interface WishlistService {
     Page<WishlistItemResponseDto> findAllWishlistItemsByMemberIdWithPageable(Long memberId, Pageable pageable);
 
     void updateWishlistItemById(Long itemId, Long quantity);
-
-    void existsByIdOrElseThrow(Long id);
 }

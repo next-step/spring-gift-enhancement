@@ -9,6 +9,7 @@ import gift.wishlist.service.WishlistService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,17 +36,9 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistItemResponseDto>> findAllWishlistItemsByMemberId(
-            @LoginMember Member member
-    ) {
-        List<WishlistItemResponseDto> items = wishlistService.findAllWishlistItemsByMemberId(member.getId());
-        return new ResponseEntity<>(items, HttpStatus.OK);
-    }
-
-    @GetMapping("/paged")
     public ResponseEntity<Page<WishlistItemResponseDto>> findAllWishlistItemsByMemberIdWithPageable(
             @LoginMember Member member,
-            @PageableDefault(size = 10) Pageable pageable
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<WishlistItemResponseDto> items = wishlistService.findAllWishlistItemsByMemberIdWithPageable(member.getId(), pageable);
         return new ResponseEntity<>(items, HttpStatus.OK);

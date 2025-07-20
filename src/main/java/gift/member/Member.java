@@ -3,6 +3,8 @@ package gift.member;
 import gift.member.dto.MemberResponseDto;
 import gift.member.dto.MemberUpdateRequestDto;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,7 +17,8 @@ public class Member{
     private String email;
     private String password;
     private String name;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public MemberResponseDto toMemberResponseDto() {
         return new MemberResponseDto(this);
@@ -23,7 +26,7 @@ public class Member{
 
     protected Member(){}
 
-    public Member(String email, String password, String name, String role) {
+    public Member(String email, String password, String name, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -52,7 +55,7 @@ public class Member{
         return name;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }

@@ -1,15 +1,19 @@
 package gift.member;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum Role {
     ADMIN,
     USER;
 
-    public static boolean containsIgnoreCase(String value) {
-        for (Role role : Role.values()) {
+    @JsonCreator
+    public static Role from(String value) {
+        for (Role role : values()) {
             if (role.name().equalsIgnoreCase(value)) {
-                return true;
+                return role;
             }
         }
-        return false;
+        return null;
     }
+
 }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static gift.authorization.service.SaltedSHA256.hashWithSHA256;
 
@@ -33,7 +32,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void addMember(MemberAddRequestDto requestDto) {
-        validateUniqueEmail(requestDto.email(), "admin/memberAdd");
+        validateEmailUnique(requestDto.email(), "admin/memberAdd");
         validateMemberRole(requestDto.role(), "admin/memberAdd");
         String hashedPassword = hashWithSHA256(requestDto.password());
         Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
@@ -42,11 +41,11 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public TokenResponseDto registerMember(MemberRegisterRequestDto requestDto) {
-        validateUniqueEmail(requestDto.email(), "admin/memberAdd");
+        validateEmailUnique(requestDto.email(), "admin/memberAdd");
 
         String hashedPassword = hashWithSHA256(requestDto.password());
 
-        Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), "USER");
+        Member member = new Member(requestDto.email(), hashedPassword, requestDto.name(), Role.USER);
         Member savedMember = memberRepository.save(member);
 
         return new TokenResponseDto(jwtProvider.createToken(savedMember.getId(), savedMember.getName(), savedMember.getEmail(), savedMember.getRole()));
@@ -74,15 +73,14 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public List<MemberResponseDto> findAllMembers() {
         List<Member> members = memberRepository.findAll();
-        List<MemberResponseDto> responseDtos = members.stream().map(Member::toMemberResponseDto).toList();
-        return responseDtos;
+        return members.stream().map(Member::toMemberResponseDto).toList();
     }
 
     @Override
     @Transactional
     public void updateMemberById(Long id, MemberUpdateRequestDto requestDto) {
         validateMemberRole(requestDto.role(), "admin/memberEdit");
-        validateUniqueEmail(id,requestDto.email(), "admin/memberEdit");
+        validateEmailUniqueExceptCurrentMember(id,requestDto.email(), "admin/memberEdit");
         Member member = findMemberByIdOrElseThrow(id);
         member.update(requestDto);
     }
@@ -92,22 +90,22 @@ public class MemberServiceImpl implements MemberService{
         memberRepository.deleteById(id);
     }
 
-    private void validateUniqueEmail(String email, String viewName) {
+    private void validateEmailUnique(String email, String viewName) {
         boolean isNotUniqueEmail = memberRepository.existsByEmail(email);
         if (isNotUniqueEmail) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }
 
-    private void validateUniqueEmail(Long memberId, String email, String viewName) {
+    private void validateEmailUniqueExceptCurrentMember(Long memberId, String email, String viewName) {
         boolean isNotUniqueEmail = memberRepository.existsByEmailAndIdNot(email, memberId);
         if (isNotUniqueEmail) {
             throw new InvalidMemberException("이미 존재하는 이메일입니다.",viewName,"emailErrorMessage");
         }
     }
 
-    private void validateMemberRole(String role, String viewName) {
-        if (!Role.containsIgnoreCase(role)){
+    private void validateMemberRole(Role role, String viewName) {
+        if (role == null){
             throw new InvalidMemberException("잘못된 등급입니다.", viewName, "roleErrorMessage");
         }
     }
@@ -120,14 +118,6 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
-    }
-
-    @Override
-    public void existsByIdOrElseThrow(Long id) {
-        boolean isMember = memberRepository.existsById(id);
-        if (!isMember) {
-            throw new MemberNotFoundException(id);
-        }
     }
 
 }

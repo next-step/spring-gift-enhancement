@@ -39,8 +39,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
-        List<ProductResponseDto> responseDtos = products.stream().map(Product::toProductResponseDto).toList();
-        return responseDtos;
+        return products.stream().map(Product::toProductResponseDto).toList();
     }
 
     @Override
@@ -75,13 +74,5 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
-    }
-
-    @Override
-    public void existsByIdOrElseThrow(Long id) {
-        boolean isProduct = productRepository.existsById(id);
-        if (!isProduct) {
-            throw new ProductNotFoundException(id);
-        }
     }
 }

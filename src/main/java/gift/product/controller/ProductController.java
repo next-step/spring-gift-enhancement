@@ -49,14 +49,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> findAllProducts() {
-        List<ProductResponseDto> responseDto = productService.findAllProducts();
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-    @GetMapping("/paged")
-    public ResponseEntity<Page<ProductResponseDto>> findAllProductsWithPageable(
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    public ResponseEntity<Page<ProductResponseDto>> findAllProducts(
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<ProductResponseDto> responseDto = productService.findAllProductsWithPageable(pageable);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

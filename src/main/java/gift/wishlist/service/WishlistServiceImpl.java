@@ -73,12 +73,4 @@ public class WishlistServiceImpl implements WishlistService {
         return wishlistRepository.findById(id).orElseThrow(() -> new WishlistItemNotFoundException(id));
     }
 
-    @Override
-    public void existsByIdOrElseThrow(Long id) {
-        boolean isWishlist = wishlistRepository.existsById(id);
-        if (!isWishlist) {
-            throw new WishlistItemNotFoundException(id);
-        }
-    }
-
 }

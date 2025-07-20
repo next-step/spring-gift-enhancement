@@ -29,7 +29,5 @@ public interface MemberService {
 
     Member findMemberByIdOrElseThrow(Long id);
 
-    void existsByIdOrElseThrow(Long id);
-
     Member findMemberByEmailOrElseThrow(String email);
 }

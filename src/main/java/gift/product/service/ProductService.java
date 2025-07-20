@@ -21,6 +21,4 @@ public interface ProductService {
     void validateProductName(String name, String viewName);
 
     Product findProductByIdOrElseThrow(Long id);
-
-    void existsByIdOrElseThrow(Long id);
 }
