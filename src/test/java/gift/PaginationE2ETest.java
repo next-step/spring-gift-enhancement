@@ -7,11 +7,11 @@ import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.dto.AuthRequest;
 import gift.dto.AuthResponse;
+import gift.dto.PageResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
-import gift.util.PageResponse;
 import java.util.Comparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -116,10 +116,11 @@ public class PaginationE2ETest {
 
         assertAll("응답 데이터 필드 검증",
             () -> assertThat(response.data()).isNotNull(),
-            () -> assertThat(response.data().getContent()).hasSize(10),
-            () -> assertThat(response.data().getTotalElements()).isEqualTo(25),
-            () -> assertThat(response.data().getTotalPages()).isEqualTo(3),
-            () -> assertThat(response.data().getNumber()).isEqualTo(0)
+            () -> assertThat(response.data().content()).hasSize(10),
+            () -> assertThat(response.data().totalElements()).isEqualTo(25),
+            () -> assertThat(response.data().totalPages()).isEqualTo(3),
+            () -> assertThat(response.data().number()).isEqualTo(0),
+            () -> assertThat(response.data().size()).isEqualTo(10)
         );
     }
 
@@ -143,10 +144,11 @@ public class PaginationE2ETest {
         );
 
         assertAll("사이즈5 데이터 필드 검증",
-            () -> assertThat(response.data().getContent()).hasSize(5),
-            () -> assertThat(response.data().getTotalElements()).isEqualTo(25),
-            () -> assertThat(response.data().getTotalPages()).isEqualTo(5),
-            () -> assertThat(response.data().getNumber()).isEqualTo(0)
+            () -> assertThat(response.data().content()).hasSize(5),
+            () -> assertThat(response.data().totalElements()).isEqualTo(25),
+            () -> assertThat(response.data().totalPages()).isEqualTo(5),
+            () -> assertThat(response.data().number()).isEqualTo(0),
+            () -> assertThat(response.data().size()).isEqualTo(5)
         );
     }
 
@@ -171,8 +173,9 @@ public class PaginationE2ETest {
 
         assertAll("마지막 페이지 데이터 필드 검증",
             () -> assertThat(response.data()).isNotNull(),
-            () -> assertThat(response.data().getContent()).hasSize(5),
-            () -> assertThat(response.data().getNumber()).isEqualTo(2)
+            () -> assertThat(response.data().content()).hasSize(5),
+            () -> assertThat(response.data().number()).isEqualTo(2),
+            () -> assertThat(response.data().size()).isEqualTo(10)
         );
     }
 
@@ -197,9 +200,10 @@ public class PaginationE2ETest {
 
         assertAll("전체 데이터 포함 검증",
             () -> assertThat(response.data()).isNotNull(),
-            () -> assertThat(response.data().getContent()).hasSize(25),
-            () -> assertThat(response.data().getTotalPages()).isEqualTo(1),
-            () -> assertThat(response.data().getNumber()).isEqualTo(0)
+            () -> assertThat(response.data().content()).hasSize(25),
+            () -> assertThat(response.data().totalPages()).isEqualTo(1),
+            () -> assertThat(response.data().number()).isEqualTo(0),
+            () -> assertThat(response.data().size()).isEqualTo(100)
         );
     }
 
@@ -223,7 +227,7 @@ public class PaginationE2ETest {
 
         assertAll("정렬 결과 검증",
             () -> {
-                var prices = response.data().getContent()
+                var prices = response.data().content()
                     .stream()
                     .map(WishResponse::productPrice)
                     .toList();
@@ -252,7 +256,7 @@ public class PaginationE2ETest {
 
         assertAll("정렬 결과 검증",
             () -> {
-                var names = response.data().getContent()
+                var names = response.data().content()
                     .stream()
                     .map(WishResponse::productName)
                     .toList();
@@ -281,7 +285,7 @@ public class PaginationE2ETest {
         );
 
         assertAll("복합 정렬 결과 검증",
-            () -> assertThat(response.data().getContent()).isSortedAccordingTo(
+            () -> assertThat(response.data().content()).isSortedAccordingTo(
                 Comparator.comparing(WishResponse::productPrice)
                     .thenComparing(WishResponse::productName, Comparator.reverseOrder()))
         );
