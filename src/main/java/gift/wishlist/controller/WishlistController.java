@@ -1,16 +1,16 @@
 package gift.wishlist.controller;
 
 import gift.common.dto.PageResponseDto;
-import gift.common.exception.InvalidSortByException;
-import gift.common.exception.InvalidSortDirectionException;
 import gift.common.security.AuthenticatedMember;
 import gift.common.security.LoginMember;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
+import gift.wishlist.WishlistSortBy;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.service.WishlistService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class WishlistController {
 
     private final WishlistService wishlistService;
-
-    private static final Set<String> ALLOWED_SORT_FIELDS =
-        Set.of("member", "item", "id", "createdAt");
 
     public WishlistController(WishlistService wishlistService) {
         this.wishlistService = wishlistService;
@@ -60,30 +57,19 @@ public class WishlistController {
 
     @GetMapping
     public ResponseEntity<PageResponseDto<WishlistResponseDto>> findAll(
-        @RequestParam(defaultValue = "1")
-        @Positive(message = "페이지 인덱스는 양수이어야 합니다.")
-        int page,
-        @RequestParam(defaultValue = "10")
-        @Positive(message = "페이지 사이즈는 양수이어야 합니다.")
-        int size,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "desc") String direction,
         @LoginMember AuthenticatedMember member
     ) {
-        if (!direction.equalsIgnoreCase("asc") &&
-            !direction.equalsIgnoreCase("desc")) {
-            throw new InvalidSortDirectionException(direction);
-        }
-        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
-            throw new InvalidSortByException(sortBy);
-        }
 
         PageResponseDto<WishlistResponseDto> pagedDtos = wishlistService.findAll(
             member.id(),
-            page,
-            size,
-            sortBy,
-            direction
+            new PageIndex(page),
+            new PageSize(size),
+            WishlistSortBy.from(sortBy),
+            SortDirection.from(direction)
         );
         return ResponseEntity.ok(pagedDtos);
     }

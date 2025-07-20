@@ -1,6 +1,9 @@
 package gift.wishlist.service;
 
 import gift.common.dto.PageResponseDto;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
 import gift.item.ItemEntity;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
@@ -8,6 +11,7 @@ import gift.member.MemberEntity;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.wishlist.WishlistEntity;
+import gift.wishlist.WishlistSortBy;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.exception.WishlistNotFoundException;
@@ -58,17 +62,18 @@ public class WishlistService {
 
     public PageResponseDto<WishlistResponseDto> findAll(
         Long memberId,
-        int page,
-        int size,
-        String sortBy,
-        String direction
+        PageIndex page,
+        PageSize size,
+        WishlistSortBy sortBy,
+        SortDirection direction
     ) {
 
-        Sort sort = direction.equalsIgnoreCase("asc") ?
-            Sort.by(sortBy).ascending() :
-            Sort.by(sortBy).descending();
+        Sort sort = Sort.by(
+            direction.toSortDir(),
+            sortBy.property()
+        );
 
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Pageable pageable = PageRequest.of(page.toZeroBased(), size.toValue(), sort);
 
         Page<WishlistEntity> wishlistEntities = wishlistRepository.findByMemberId(memberId,
             pageable);
@@ -84,13 +89,7 @@ public class WishlistService {
                 entity.getCreatedAt()
             ));
 
-        return new PageResponseDto<>(
-            pagedDtos.getContent(),
-            pagedDtos.getNumber() + 1,
-            pagedDtos.getSize(),
-            pagedDtos.getTotalElements(),
-            pagedDtos.getTotalPages()
-        );
+        return PageResponseDto.from(pagedDtos);
 
     }
 
