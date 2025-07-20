@@ -4,7 +4,10 @@ import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
+    private static final int DEFAULT_PAGE_SIZE = 3;
+
     private final ProductService productService;
 
     public AdminProductController(ProductService productService) {
@@ -25,9 +30,10 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String showProductList(Model model) {
-        List<ProductResponse> products = productService.getAllProducts();
-        model.addAttribute("products", products);
+    public String showProductList(Model model,
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<ProductResponse> productsPage = productService.getAllProducts(pageable);
+        model.addAttribute("productsPage", productsPage);
         return "admin/product/list";
     }
 
@@ -38,7 +44,8 @@ public class AdminProductController {
     }
 
     @PostMapping
-    public String createProduct(@Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
+    public String createProduct(@Valid @ModelAttribute("product") ProductRequest request,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product/new-form";
         }
@@ -54,7 +61,8 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
+    public String updateProduct(@PathVariable Long id,
+            @Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product/edit-form";
         }

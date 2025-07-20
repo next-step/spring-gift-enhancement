@@ -14,3 +14,28 @@
 - [x] Spring Data JPA를 사용하도록 리포지토리 계층 리팩터링 (`JdbcTemplate` 구현체 삭제)
 - [x] 리포지토리 변경에 따른 서비스 계층 코드 수정
 - [x] `@DataJpaTest`를 이용한 JPA 리포지토리 학습 테스트 작성
+
+## 구현할 기능 목록 (2단계 - 페이지네이션)
+
+- [x] `ProductRepository`에 페이지네이션 기능 적용 (수정 필요 없음, JpaRepository 기본 기능 활용 가능!)
+- [x] `ProductService`의 `getAllProducts` 메소드가 `Pageable`을 인자로 받도록 수정
+- [x] `ProductController`의 상품 목록 조회 API가 페이지네이션을 지원하도록 수정
+- [x] `AdminProductController`의 상품 관리 페이지가 페이지네이션을 지원하도록 수정
+- [x] `admin/product/list.html` 뷰에 페이지네이션 UI(이전, 다음, 페이지 번호) 추가
+- [x] `WishRepository`의 `findByMember` 메소드가 `Pageable`을 인자로 받도록 수정
+- [x] `WishService`의 `getWishes` 메소드가 `Pageable`을 인자로 받도록 수정
+- [x] `WishController`의 위시리스트 조회 API가 페이지네이션을 지원하도록 수정
+
+## 개별 개선 작업 (위시리스트 조회 페이지 추가)
+
+- [x] 위시리스트 페이지 뷰 (`wishlist.html`) 추가
+- [x] 위시리스트 페이지에서 현재 로그인한 사용자의 위시리스트 상품 목록을 비동기(AJAX)로 조회
+- [x] 조회된 상품 목록을 화면에 동적으로 렌더링
+- [x] 위시리스트 상품 삭제 기능 구현
+
+## 개별 개선 작업 (사용자 인증)
+
+- [x] 일반 사용자용 회원가입/로그인 페이지 (`register.html`, `login.html`) 추가
+- [x] 로그아웃 기능 구현
+- [x] `MemberController`를 사용자 인증 전용 컨트롤러로 리팩터링
+- [x] 홈페이지(`home.html`) 및 네비게이션에 회원가입, 로그인, 로그아웃 링크 추가
