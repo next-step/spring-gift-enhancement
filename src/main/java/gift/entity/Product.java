@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -44,8 +46,6 @@ public class Product {
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Min(value = 1, message = "1 이상 1억 미만의 값을 가져야 합니다.")
-    @Max(value = 99999999, message = "1 이상 1억 미만의 값을 가져야 합니다.")
     @Column(name="quantity", nullable = false)
     private int quantity;
 
@@ -60,6 +60,13 @@ public class Product {
     )
     private List<Wish> wishes = new ArrayList<>();
 
+    @OneToMany(
+        mappedBy = "product",
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
+    )
+    private List<ProductOption> options = new ArrayList<>();
+
     protected Product() { }
 
     public Product(Long id, String name, int price, int quantity, String imageUrl) {
@@ -70,8 +77,8 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Product(String name, int price, String imageUrl) {
-        this(null, name, price, 1, imageUrl);
+    public Product(String name, int price, int quantity, String imageUrl) {
+        this(null, name, price, quantity, imageUrl);
     }
 
     public Long getId() {
@@ -96,6 +103,18 @@ public class Product {
         return wishes;
     }
 
+    public List<ProductOption> getOptions() {
+        return options;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void validationOptions() {
+        if (!options.isEmpty()) {
+            throw new IllegalArgumentException("상품에 하나 이상의 옵션이 필요합니다.");
+        }
+    }
+
     public void change(String name, int price, String imageUrl) {
         this.name = name;
         this.price = price;
@@ -110,5 +129,17 @@ public class Product {
     public void removeWish(Wish wish) {
         wishes.remove(wish);
         wish.setProduct(null);
+    }
+
+    public ProductOption addOption(ProductOption option) {
+        options.add(option);
+        this.quantity += option.getQuantity();
+        return option;
+    }
+
+    public void removeOption(ProductOption option) {
+        options.remove(option);
+        this.quantity -= option.getQuantity();
+        option.setProduct(null);
     }
 }
