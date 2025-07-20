@@ -7,11 +7,11 @@ import gift.dto.WishRequest;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,10 +27,9 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getWishList(Long memberId) {
-        return wishRepository.findByMemberId(memberId).stream()
-            .map(Wish::getProduct)
-            .collect(Collectors.toList());
+    public Page<gift.dto.WishResponse> getWishList(Long memberId, Pageable pageable) {
+        return wishRepository.findByMemberIdWithProduct(memberId, pageable)
+            .map(gift.dto.WishResponse::from);
     }
 
     public void addWish(Long memberId, WishRequest wishRequest) {

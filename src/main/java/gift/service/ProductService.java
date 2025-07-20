@@ -2,10 +2,11 @@ package gift.service;
 
 import gift.domain.Product;
 import gift.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 //
@@ -20,8 +21,8 @@ public class ProductService {
     }
 
 
-    public List<Product> findAll() {
-        return repo.findAll();
+    public Page<Product> findAll(Pageable pageable) {
+        return repo.findAll(pageable);
     }
 
     public Optional<Product> findById(Long id) {
@@ -32,15 +33,19 @@ public class ProductService {
         return repo.save(product);
     }
 
-    public Product update(Long id, Product product) {
-        Product target = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
+    public void update(Long id, Product product) {
+        Product target = repo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
         target.setName(product.getName());
         target.setPrice(product.getPrice());
         target.setImageUrl(product.getImageUrl());
-        return target;
     }
 
-    public void delete(Long id) {
-        repo.deleteById(id);
+    public boolean delete(Long id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

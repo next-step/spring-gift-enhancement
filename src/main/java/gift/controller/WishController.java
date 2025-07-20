@@ -2,13 +2,13 @@ package gift.controller;
 
 import gift.auth.LoginMember;
 import gift.domain.Member;
-import gift.domain.Product;
 import gift.dto.WishRequest;
+import gift.dto.WishResponse;
 import gift.service.WishService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -21,8 +21,8 @@ public class WishController {
     }
 
     @GetMapping
-    public List<Product> getMyWishes(@LoginMember Member member) {
-        return wishService.getWishList(member.getId());
+    public Page<WishResponse> getMyWishes(@LoginMember Member member, Pageable pageable) {
+        return wishService.getWishList(member.getId(), pageable);
     }
 
     @PostMapping
