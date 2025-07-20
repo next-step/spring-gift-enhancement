@@ -99,6 +99,8 @@ public class OptionCreateTest extends AbstractOptionTest {
                 new CreateOptionRequest("", 1000L), // 이름이 빈 문자열인 경우
                 new CreateOptionRequest("Valid Name", null), // 수량이 null인 경우
                 new CreateOptionRequest("Valid Name", -100L), // 수량이 음수인 경우
+                new CreateOptionRequest("Valid Name", 0L), // 수량이 0인 경우
+                new CreateOptionRequest("Valid Name", 1_00_000_000L), // 수량이 1억 이상인 경우
                 new CreateOptionRequest(longText, 1000L), // 이름이 너무 긴 경우
                 new CreateOptionRequest("Invalid Name<>", 1000L) // 이름에 유효하지 않은 문자가 포함된 경우
         ).forEach(request ->

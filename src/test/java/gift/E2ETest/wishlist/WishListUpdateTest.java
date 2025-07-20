@@ -42,6 +42,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
 
 
     @Test
+    @DisplayName("위시리스트 제품 수량 수정 성공 테스트")
     public void WishList_Update_Success() {
         // 위시리스트에 제품을 추가한 후, 해당 제품의 수량을 수정하는 테스트
 

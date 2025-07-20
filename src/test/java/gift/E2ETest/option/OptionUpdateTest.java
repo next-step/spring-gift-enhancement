@@ -209,7 +209,8 @@ public class OptionUpdateTest extends AbstractOptionTest {
                 new UpdateOptionRequest(longText, 20L), // 이름 길이 초과
                 new UpdateOptionRequest("<><>", 20L), // 이름에 유효하지 않은 특수문자 포함
                 new UpdateOptionRequest("수정된 옵션", -10L), // 수량 음수
-                new UpdateOptionRequest("수정된 옵션", 0L) // 수량 0
+                new UpdateOptionRequest("수정된 옵션", 0L), // 수량 0
+                new UpdateOptionRequest("수정된 옵션", 100_000_001L) // 수량 1억 초과
         ).forEach(request ->
             updateWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(400)
@@ -225,15 +226,20 @@ public class OptionUpdateTest extends AbstractOptionTest {
     }
 
     @Test
-    @DisplayName("옵션 수정 실패 테스트 - 결과가 음수가 되는 경우(400 Forbidden)")
+    @DisplayName("옵션 수정 실패 테스트 - 결과가 음수 혹은 1억 이상이 되는 경우(400 Forbidden)")
     public void update_Option_Failure_Negative_Result() {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
 
         // 수량을 음수로 만드는 요청
-        PatchOptionRequest request = new PatchOptionRequest(validOption.quantity() + 1, false); // 수량을 15 감소
+        PatchOptionRequest negativeReq = new PatchOptionRequest(validOption.quantity() + 1, false); // 수량을 15 감소
 
-        patchWithoutDocumentation(validProductId, validOption.id(), request, this.adminToken)
+        // 수량을 1억 이상으로 만드는 요청
+        PatchOptionRequest overLimitReq = new PatchOptionRequest(100_000_001L, true); // 수량을 1억 증가
+
+        patchWithoutDocumentation(validProductId, validOption.id(), negativeReq, this.adminToken)
+                .statusCode(400);
+        patchWithoutDocumentation(validProductId, validOption.id(), overLimitReq, this.adminToken)
                 .statusCode(400);
     }
     

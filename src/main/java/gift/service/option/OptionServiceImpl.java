@@ -52,7 +52,10 @@ public class OptionServiceImpl implements OptionService{
         }
         if (quantity != null) {
             if (quantity <= 0) {
-                throw new IllegalArgumentException("수정될 수량은 0보다 커야 합니다. 현재 수량: " + quantity);
+                throw new IllegalArgumentException("수정될 수량은 0보다 커야 합니다.");
+            }
+            if (quantity >= 1_00_000_000L) {
+                throw new IllegalArgumentException("수정될 수량은 10억 미만이어야 합니다.");
             }
             option.setQuantity(quantity);
         }

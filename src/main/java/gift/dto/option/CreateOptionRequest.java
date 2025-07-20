@@ -1,10 +1,7 @@
 package gift.dto.option;
 
 import gift.common.validation.annotation.ValidCharSet;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record CreateOptionRequest(
         @NotNull
@@ -14,6 +11,7 @@ public record CreateOptionRequest(
         String name,
         @NotNull(message = "수량은 필수입니다.")
         @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
+        @Max(value = 99_999_999, message = "수량은 1 억개 미만이여야 합니다.")
         Long quantity
 ) {
 }
