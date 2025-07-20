@@ -2,8 +2,8 @@ package gift.dto;
 
 public class CreateWishResponse {
 
-    Long wishId;
-    Long productId;
+    private final Long wishId;
+    private final Long productId;
 
     public CreateWishResponse(Long wishId, Long productId) {
         this.wishId = wishId;

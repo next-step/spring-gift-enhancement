@@ -2,14 +2,14 @@ package gift.dto;
 
 import gift.entity.Product;
 
-public class ResponseDto {
+public class ProductResponseDto {
 
-    private Long id;
-    private String name;
-    private String imageUrl;
-    private Long price;
+    private final Long id;
+    private final  String name;
+    private final String imageUrl;
+    private final Long price;
 
-    public ResponseDto(Product product) {
+    public ProductResponseDto(Product product) {
         this.id = product.getId();
         this.name = product.getName();
         this.imageUrl = product.getImageUrl();

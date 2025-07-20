@@ -1,7 +1,7 @@
 package gift.controller;
 
-import gift.dto.RequestDto;
-import gift.dto.ResponseDto;
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -30,18 +30,18 @@ public class ProductController {
 
     // 1. 상품 추가
     @PostMapping
-    public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody RequestDto dto) {
+    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto dto) {
 
-        ResponseDto response = productService.create(dto);
+        ProductResponseDto response = productService.create(dto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // 2-1. 상품 전체 조회
     @GetMapping
-    public ResponseEntity<Page<ResponseDto>> getProducts(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ResponseDto> productPage = productService.findAll(page, size);
+        Page<ProductResponseDto> productPage = productService.findAll(page, size);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Page-Number", String.valueOf((productPage.getNumber())));
         headers.add("X-Page-Size", String.valueOf(productPage.getSize()));
@@ -53,8 +53,8 @@ public class ProductController {
 
     // 2-2. 상품 단건 조회
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getProduct(@PathVariable Long id) {
-        ResponseDto response = productService.findById(id);
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long id) {
+        ProductResponseDto response = productService.findById(id);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -62,11 +62,11 @@ public class ProductController {
     // 3. 상품 수정
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto> updateProduct(@Valid
+    public ResponseEntity<ProductResponseDto> updateProduct(@Valid
     @PathVariable Long id,
-            @RequestBody RequestDto dto
+            @RequestBody ProductRequestDto dto
     ) {
-        ResponseDto response = productService.update(id, dto);
+        ProductResponseDto response = productService.update(id, dto);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

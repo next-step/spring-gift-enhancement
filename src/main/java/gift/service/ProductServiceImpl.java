@@ -1,7 +1,7 @@
 package gift.service;
 
-import gift.dto.RequestDto;
-import gift.dto.ResponseDto;
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 1. 상품 등록
     @Override
-    public ResponseDto create(RequestDto dto) {
+    public ProductResponseDto create(ProductRequestDto dto) {
 
         if (dto.getName().contains("카카오")) {
             throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
@@ -34,30 +34,30 @@ public class ProductServiceImpl implements ProductService {
         Product product = Product.of(dto.getName(), dto.getImageUrl(), dto.getPrice());
         Product saved = productRepository.save(product);
 
-        return new ResponseDto(saved);
+        return new ProductResponseDto(saved);
     }
 
     // 2-1. 전체 상품 조회
     @Override
-    public Page<ResponseDto> findAll(int page, int size) {
+    public Page<ProductResponseDto> findAll(int page, int size) {
 
         Pageable pageRequest = PageRequest.of(page, size);
 
-        return productRepository.findAll(pageRequest).map(ResponseDto::new);
+        return productRepository.findAll(pageRequest).map(ProductResponseDto::new);
     }
 
     // 2-2. 특정 상품 조회
     @Override
-    public ResponseDto findById(Long id) {
+    public ProductResponseDto findById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return new ResponseDto(product);
+        return new ProductResponseDto(product);
     }
 
     // 3. 상품 수정
     @Override
-    public ResponseDto update(Long id, RequestDto dto) {
+    public ProductResponseDto update(Long id, ProductRequestDto dto) {
 
         if (dto.getName().contains("카카오")) {
             throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.update(dto.getName(), dto.getImageUrl(), dto.getPrice());
         productRepository.save(product);
-        return new ResponseDto(product);
+        return new ProductResponseDto(product);
     }
 
     // 4. 상품 삭제

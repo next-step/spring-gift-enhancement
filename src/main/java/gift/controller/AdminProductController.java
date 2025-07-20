@@ -1,7 +1,7 @@
 package gift.controller;
 
-import gift.dto.RequestDto;
-import gift.dto.ResponseDto;
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -28,14 +28,14 @@ public class AdminProductController {
     // 1-1. 상품 등록 화면
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("product", new RequestDto());
+        model.addAttribute("product", new ProductRequestDto());
         model.addAttribute("actionUrl", "/admin/products/new");
         return "admin/form";
     }
 
     // 1-2.상품 등록 처리
     @PostMapping("/new")
-    public String create(@Valid @ModelAttribute("product") RequestDto dto,
+    public String create(@Valid @ModelAttribute("product") ProductRequestDto dto,
             BindingResult br,
             Model model) {
         if (br.hasErrors()) {
@@ -58,7 +58,7 @@ public class AdminProductController {
     @GetMapping
     public String list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
 
-        Page<ResponseDto> products = productService.findAll(page, size);
+        Page<ProductResponseDto> products = productService.findAll(page, size);
 
         model.addAttribute("products", products);
 
@@ -68,7 +68,7 @@ public class AdminProductController {
     // 3-1. 상품 수정 폼
     @GetMapping("{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
-        ResponseDto product = productService.findById(id);
+        ProductResponseDto product = productService.findById(id);
         model.addAttribute("product", product);
         model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
         return "admin/form";
@@ -76,7 +76,7 @@ public class AdminProductController {
 
     // 3-2. 상품 수정 처리
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") RequestDto dto,
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequestDto dto,
             BindingResult br, Model model) {
         if (br.hasErrors()) {
             model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
