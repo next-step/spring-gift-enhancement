@@ -90,11 +90,9 @@ public class ProductOptionRepositoryTest {
         ProductOption option = new ProductOption("option1", 1, product);
         productOptionRepository.save(option);
 
-        ProductOption option2 = productOptionRepository.findById(4L).get();
-
         String expectedName = "changeOption";
         int expectedQuantity = 2;
-        option2.change(expectedName, expectedQuantity);
+        option.change(expectedName, expectedQuantity);
 
         ProductOption actual = productOptionRepository.findById(4L).get();
         assertAll(
