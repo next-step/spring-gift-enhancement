@@ -11,10 +11,10 @@ import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,19 +33,20 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     @Transactional
-    public WishItem addWishItem(CreateWishItemRequestDto dto, String userEmail) {
+    public WishItem addWishItem(CreateWishItemRequestDto createWishItemRequestDto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        Optional<Item> findItem = itemService.findItemByName(dto.name());
+        String itemName = createWishItemRequestDto.name();
+        Optional<Item> findItem = itemService.findItemByName(itemName);
         if (findItem.isEmpty()) {
-            throw new ItemNotFoundException(dto.name());
+            throw new ItemNotFoundException(createWishItemRequestDto.name());
         }
 
         Item item = findItem.get();
-        Integer quantity = dto.quantity();
+        Integer quantity = createWishItemRequestDto.quantity();
 
         WishItem wishItem = new WishItem(user, item, quantity);
 
@@ -53,32 +54,17 @@ public class WishListServiceImpl implements WishListService {
             throw new ItemDuplicatedException();
         }
 
-        WishItem savedWishItem = wishListRepository.save(wishItem);
-
-        return savedWishItem;
+        return wishListRepository.save(wishItem);
     }
 
     @Override
-    public List<WishItem> getItemList(String name, Integer price, String userEmail) {
+    public Page<WishItem> getItemList(String name, Integer price, String userEmail, Pageable pageable) {
         User user = userService.findUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException();
         }
+        return wishListRepository.findByUserAndItemNameContainingAndItemPrice(user, name, price, pageable);
 
-        List<WishItem> wishItems = wishListRepository.findAllByUser(user);
-        if (wishItems.isEmpty()) {
-            return wishItems;
-        }
-
-        List<WishItem> result = new ArrayList<>();
-        for (WishItem wishItem : wishItems) {
-            Item item = wishItem.getItem();
-            if (item.isValid(name,price)) {
-                result.add(wishItem);
-            }
-        }
-
-        return result;
     }
 
 
@@ -130,9 +116,9 @@ public class WishListServiceImpl implements WishListService {
         }
 
         WishItem wishItem = toUpdatedWishItem.get();
-        wishItem.changeQuantity(quantity);
+        WishItem updatedWishItem = wishItem.changeQuantity(quantity);
 
-        return wishItem;
+        return wishListRepository.save(updatedWishItem);
     }
 
 }

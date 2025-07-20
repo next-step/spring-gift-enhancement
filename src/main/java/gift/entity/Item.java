@@ -6,10 +6,9 @@ import gift.exception.itemException.ItemPriceException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "items") // 테이블명이 items인 경우 명시
+@Table(name = "product")
 public class Item {
 
     @Id
@@ -37,11 +36,11 @@ public class Item {
         this.imageUrl = imageUrl;
     }
 
-    public Item(Item item) {
-        this.id = item.getId();
-        this.name = item.getName();
-        this.price = item.getPrice();
-        this.imageUrl = item.getImageUrl();
+    public Item(Long id, String name, Integer price, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -69,22 +68,20 @@ public class Item {
         return nameMatches && priceMatches;
     }
 
-    public void update(String name, Integer price, String imageUrl) {
+    public Item update(Item item) {
 
-        if (name == null) {
+        if (item.getName() == null) {
             throw new ItemNameException();
         }
 
-        if (price == null) {
+        if (item.getPrice() == null) {
             throw new ItemPriceException();
         }
 
-        if (imageUrl == null) {
+        if (item.getImageUrl() == null) {
             throw new ItemImageurlException();
         }
 
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
+        return new Item(this.id, item.getName(), item.getPrice(), item.getImageUrl());
     }
 }

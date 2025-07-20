@@ -3,14 +3,14 @@ package gift.service.wishListService;
 import gift.dto.wishListDto.CreateWishItemRequestDto;
 import gift.entity.WishItem;
 import jakarta.validation.Valid;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface WishListService {
 
-    WishItem addWishItem(@Valid CreateWishItemRequestDto dto, String userEmail);
+    WishItem addWishItem(@Valid CreateWishItemRequestDto createWishItemRequestDto, String userEmail);
 
-    List<WishItem> getItemList(String name, Integer price, String userEmail);
+    Page<WishItem> getItemList(String name, Integer price, String userEmail, Pageable pageable);
 
     WishItem deleteWishItem(String name, String userEmail);
 

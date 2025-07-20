@@ -16,4 +16,8 @@ public record ItemUpdateDto(@NotNull Long id, String name, @Min(0) Integer price
     public ItemUpdateDto(ItemDto item) {
         this(item.getId(), item.getName(), item.getPrice(), item.getImageUrl(), false);
     }
+
+    public Item dtoToItem() {
+        return new Item(name, price, imageUrl);
+    }
 }

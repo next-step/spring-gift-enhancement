@@ -2,17 +2,17 @@ package gift.controller.itemController;
 
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.dto.itemDto.ResponseItems;
 import gift.entity.Item;
 import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -26,27 +26,27 @@ public class AdminItemController {
     }
 
     @GetMapping
-    public String viewItemList(
-            Model model,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer price) {
+    public String viewItemList(Model model, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price, Pageable pageable) {
 
-        ResponseItems items = findItems(name, price);
+        ResponseItems items = findItems(name, price, pageable);
         model.addAttribute("items", items);
         return "admin/list";
     }
 
-    private ResponseItems findItems(String name, Integer price) {
-        List<Item> items;
+    private ResponseItems findItems(String name, Integer price, Pageable pageable) {
+        Page<Item> items;
 
         if (name == null && price == null) {
-            items = itemService.getAllItems();
+            items = itemService.getAllItems(pageable);
+        } else if (name != null && price == null) {
+            items = itemService.findItemsByName(name, pageable);
+        } else if (name == null && price != null) {
+            items = itemService.findItemsByPrice(price, pageable);
         } else {
-            items = itemService.getItems(name, price);
+            items = itemService.findItemsByNameAndPrice(name, price, pageable);
         }
 
-        List<ItemResponseDto> itemList = ItemResponseDto.from(items);
-        return new ResponseItems(itemList);
+        return ResponseItems.from(items);
     }
 
     @PostMapping

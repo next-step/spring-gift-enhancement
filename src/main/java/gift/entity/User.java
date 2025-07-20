@@ -1,12 +1,13 @@
 package gift.entity;
 
+import gift.dto.userDto.UserUpdateDto;
 import gift.exception.userException.UserEmailException;
 import gift.exception.userException.UserPasswordException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "member")
 public class User {
 
     @Id
@@ -73,5 +74,9 @@ public class User {
 
         this.email = newEmail;
         this.password = newPassword;
+    }
+
+    public User updateFrom(UserUpdateDto dto) {
+        return new User(this.getId(), dto.email(), dto.password(), this.role);
     }
 }

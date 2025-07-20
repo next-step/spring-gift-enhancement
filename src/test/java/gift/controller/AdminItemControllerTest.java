@@ -5,20 +5,27 @@ import gift.Jwt.TokenUtils;
 import gift.dto.itemDto.ItemCreateDto;
 import gift.entity.User;
 import gift.entity.UserRole;
+import gift.repository.itemRepository.ItemRepository;
 import gift.service.itemService.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
+@Transactional
 class AdminItemControllerTest {
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -27,24 +34,24 @@ class AdminItemControllerTest {
     private JwtUtil jwtUtil;
 
     @Test
-    void 카카오상품저장하기() {
+    void 관리자상품저장_성공() {
         ItemCreateDto dto = new ItemCreateDto("카카오", 1500, "juice.png", true);
+
         itemService.saveItem(dto);
-        assertThat(itemService.getAllItems())
-                .anyMatch(item -> item.getName().equals("카카오"));
+
+        assertThat(itemRepository.findAll()).anyMatch(item -> item.getName().equals("카카오"));
     }
 
     @Test
-    void 카카오상품_저장하기예외처리(){ // 의도와 다르게 작동함 -> 오류수정 필요
+    void 관리자가아닌경우상품저장_예외발생() {
+        // given
         ItemCreateDto dto = new ItemCreateDto("카카오", 1500, "juice.png", false);
-        itemService.saveItem(dto);
-        assertThat(itemService.getAllItems())
-                .anyMatch(item -> item.getName().equals("카카오"));
+
+        assertThatThrownBy(() -> itemService.saveItem(dto)).isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    void 이메일추출_성공() {
-
+    void 토큰에서이메일_추출성공() {
         User user = new User(1L, "tester@example.com", "securePassword", UserRole.USER);
         String token = jwtUtil.generateToken(user);
 
@@ -52,9 +59,4 @@ class AdminItemControllerTest {
 
         assertThat(extractedEmail).isEqualTo("tester@example.com");
     }
-
 }
-
-
-
-

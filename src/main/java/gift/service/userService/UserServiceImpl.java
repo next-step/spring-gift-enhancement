@@ -5,16 +5,15 @@ import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
-import gift.entity.UserRole;
 import gift.exception.userException.UserAuthorizationException;
 import gift.exception.userException.UserDuplicatedException;
 import gift.exception.userException.UserNotFoundException;
 import gift.exception.userException.UserPasswordInputException;
 import gift.repository.userRepository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,16 +28,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String registerUser(UserRegisterDto dto) {
-        String email = dto.email();
-        String password = dto.password();
-        UserRole role = dto.role();
+    public String registerUser(UserRegisterDto userRegisterDto) {
+        User user = userRegisterDto.dtoToUser();
 
-        if (isEmailExist(email)) {
+        if (isEmailExist(user.getEmail())) {
             throw new UserDuplicatedException();
         }
-
-        User user = new User(null, email, password, role);
         User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser);
 
@@ -51,15 +46,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String loginUser(UserLoginDto dto) {
-        String targetEmail = dto.email();
+    public String loginUser(UserLoginDto userLoginDto) {
+        String targetEmail = userLoginDto.email();
 
         User findUser = findUserByEmail(targetEmail);
 
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
-        if (!findUser.checkPassword(dto.password())) {
+        if (!findUser.checkPassword(userLoginDto.password())) {
             throw new UserPasswordInputException();
         }
         return jwtUtil.generateToken(findUser);
@@ -78,27 +73,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUserList(String email, boolean isAdmin) {
+    public Page<User> getUserList(String email, boolean isAdmin, Pageable pageable) {
 
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
+        if (email != null) {
+            return getUsersByEmail(email, pageable);
+        }
 
-        List<User> users = getUsersByEmail(email);
-
-        return users;
+        return getAllUser(pageable);
     }
 
-    private List<User> getUsersByEmail(String email) {
+    private Page<User> getAllUser(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    private Page<User> getUsersByEmail(String email, Pageable pageable) {
         if (email == null) {
-            return userRepository.findAll();
+            throw new UserNotFoundException();
         } else {
-            User findUser = findUserByEmail(email);
-            if (findUser == null) {
+            Page<User> users = userRepository.findByEmailContaining(email, pageable);
+            if (users.isEmpty()) {
                 throw new UserNotFoundException();
-            } else {
-                return List.of(findUser);
             }
+            return users;
         }
     }
 
@@ -118,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
+    public User updateUser(Long id, UserUpdateDto userUpdateDto, boolean isAdmin) {
         if (!isAdmin) {
             throw new UserAuthorizationException();
         }
@@ -129,11 +128,9 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
         }
 
-        String email = dto.email();
-        String password = dto.password();
-        findUser.changeEmailAndPassword(email, password);
+        User updatedUser = findUser.updateFrom(userUpdateDto);
 
-        return findUser;
+        return userRepository.save(updatedUser);
     }
 
 
