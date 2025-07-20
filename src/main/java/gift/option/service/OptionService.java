@@ -10,6 +10,8 @@ import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class OptionService {
     private final OptionRepository optionRepository;
@@ -35,6 +37,15 @@ public class OptionService {
         product.addOption(option);
 
         return OptionResponseDto.from(optionRepository.save(option));
+    }
+
+    public List<OptionResponseDto> getOptions(Long productId) {
+        Product product = getProduct(productId);
+
+        return product.getOptions()
+                .stream()
+                .map(OptionResponseDto::from)
+                .toList();
     }
 
     private Product getProduct(Long productId) {
