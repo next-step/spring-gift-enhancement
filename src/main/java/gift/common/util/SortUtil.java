@@ -19,13 +19,13 @@ public class SortUtil {
     public static Sort createSort(List<String> sortParams, Set<String> allowedFields) {
         Map<String, String> sortMap = getSortMap(sortParams, allowedFields);
 
-        if (sortMap.isEmpty()) {
-            return Sort.by(Sort.Order.desc(DEFAULT_SORT_FIELD));
-        }
-
         List<Sort.Order> orders = new ArrayList<>();
         for (Map.Entry<String, String> entry : sortMap.entrySet()) {
             orders.add(createOrder(entry));
+        }
+
+        if (!sortMap.containsKey(DEFAULT_SORT_FIELD)) {
+            orders.add(new Sort.Order(Sort.Direction.DESC, DEFAULT_SORT_FIELD));
         }
 
         return Sort.by(orders);
