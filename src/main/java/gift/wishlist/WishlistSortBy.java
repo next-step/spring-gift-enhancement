@@ -7,7 +7,7 @@ public enum WishlistSortBy {
     ITEM_NAME("itemName", "item.name"),
     ITEM_PRICE("itemPrice", "item.price"),
     CREATED_AT("createdAt", "createdAt"),
-    WISHLIST_ID("wishlistId", "id");
+    WISHLIST_ID("id", "id");
 
     private final String key; // 사용자가 요청할 때 보내는 key
     private final String property; // 실제 JPA 정렬 필드
