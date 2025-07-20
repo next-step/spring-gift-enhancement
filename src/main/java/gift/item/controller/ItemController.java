@@ -1,15 +1,15 @@
 package gift.item.controller;
 
 import gift.common.dto.PageResponseDto;
-import gift.common.exception.InvalidSortByException;
-import gift.common.exception.InvalidSortDirectionException;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
+import gift.item.ItemSortBy;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.service.ItemService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,9 +30,6 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    private static final Set<String> ALLOWED_SORT_FIELDS =
-        Set.of("name", "price", "id");
-
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
@@ -45,28 +42,17 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<PageResponseDto<ItemResponseDto>> findAll(
-        @RequestParam(defaultValue = "1")
-        @Positive(message = "페이지 인덱스는 양수이어야 합니다.")
-        int page,
-        @RequestParam(defaultValue = "10")
-        @Positive(message = "페이지 사이즈는 양수이어야 합니다.")
-        int size,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "desc") String direction
     ) {
-        if (!direction.equalsIgnoreCase("asc") &&
-            !direction.equalsIgnoreCase("desc")) {
-            throw new InvalidSortDirectionException(direction);
-        }
-        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
-            throw new InvalidSortByException(sortBy);
-        }
 
         PageResponseDto<ItemResponseDto> pagedDtos = itemService.findAll(
-            page,
-            size,
-            sortBy,
-            direction
+            new PageIndex(page),
+            new PageSize(size),
+            ItemSortBy.from(sortBy),
+            SortDirection.from(direction)
         );
         return ResponseEntity.ok(pagedDtos);
     }

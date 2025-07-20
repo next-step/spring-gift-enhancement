@@ -1,6 +1,10 @@
 package gift.admin;
 
 import gift.common.dto.PageResponseDto;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
+import gift.item.ItemSortBy;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
@@ -37,8 +41,12 @@ public class AdminItemController {
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "asc") String direction
     ) {
-        PageResponseDto<ItemResponseDto> pageResponse = itemService.findAll(page, size, sortBy,
-            direction);
+        PageResponseDto<ItemResponseDto> pageResponse = itemService.findAll(
+            new PageIndex(page),
+            new PageSize(size),
+            ItemSortBy.from(sortBy),
+            SortDirection.from(direction)
+        );
         model.addAttribute("items", pageResponse.contents());
         model.addAttribute("page", pageResponse);
         model.addAttribute("sortBy", sortBy);

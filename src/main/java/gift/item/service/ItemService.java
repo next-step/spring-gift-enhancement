@@ -1,7 +1,11 @@
 package gift.item.service;
 
 import gift.common.dto.PageResponseDto;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
 import gift.item.ItemEntity;
+import gift.item.ItemSortBy;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
@@ -36,16 +40,18 @@ public class ItemService {
     }
 
     public PageResponseDto<ItemResponseDto> findAll(
-        int page,
-        int size,
-        String sortBy,
-        String direction
+        PageIndex page,
+        PageSize size,
+        ItemSortBy sortBy,
+        SortDirection direction
     ) {
-        Sort sort = direction.equalsIgnoreCase("asc") ?
-            Sort.by(sortBy).ascending() :
-            Sort.by(sortBy).descending();
 
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Sort sort = Sort.by(
+            direction.toSortDir(),
+            sortBy.property()
+        );
+
+        Pageable pageable = PageRequest.of(page.toZeroBased(), size.toValue(), sort);
 
         Page<ItemEntity> itemEntities = itemRepository.findAll(pageable);
         Page<ItemResponseDto> pagedDtos = itemEntities.map(entity -> new ItemResponseDto(
@@ -55,13 +61,7 @@ public class ItemService {
             entity.getImageUrl()
         ));
 
-        return new PageResponseDto<>(
-            pagedDtos.getContent(),
-            pagedDtos.getNumber() + 1,
-            pagedDtos.getSize(),
-            pagedDtos.getTotalElements(),
-            pagedDtos.getTotalPages()
-        );
+        return PageResponseDto.from(pagedDtos);
 
     }
 
