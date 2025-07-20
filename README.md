@@ -50,3 +50,4 @@
   - [x] Product에 연관관계 편의 메서드 추가
 - [ ] Option CRUD 기능 구현
   - [x] controller, service, repository 구현
+  - [x] 요청을 위한 OptionReqeustDto, 응답을 위한 OptionResponseDto 구현
