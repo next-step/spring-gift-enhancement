@@ -39,16 +39,9 @@ public class ProductController {
 
     // 2-1. 상품 전체 조회
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(defaultValue = "0") int page,
+    public Page<ProductResponseDto> getProducts(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ProductResponseDto> productPage = productService.findAll(page, size);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Page-Number", String.valueOf((productPage.getNumber())));
-        headers.add("X-Page-Size", String.valueOf(productPage.getSize()));
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(productPage);
+        return productService.findAll(page, size);
     }
 
     // 2-2. 상품 단건 조회
