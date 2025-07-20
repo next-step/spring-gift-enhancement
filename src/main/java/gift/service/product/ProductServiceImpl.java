@@ -1,7 +1,7 @@
-package gift.service;
+package gift.service.product;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.product.ProductNotFoundException;
 import gift.repository.ProductRepository;

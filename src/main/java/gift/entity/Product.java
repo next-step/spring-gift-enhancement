@@ -2,6 +2,9 @@ package gift.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 public class Product extends BaseTimeEntity{
@@ -23,6 +26,10 @@ public class Product extends BaseTimeEntity{
     private Boolean approved;
 
     private String description;
+
+//    @OneToMany(mappedBy = "product")
+//    @JoinColumn(name = "product_option_id")
+//    private List<ProductOption> productOptions = new ArrayList<>();
 
     protected Product() {}
 

@@ -1,8 +1,8 @@
-package gift.controller;
+package gift.e2e;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.service.ProductService;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
+import gift.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,20 +75,6 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    // 컨트롤러에서 페이지네이션 테스트 코드 작성 실패
-//    @DisplayName("상품 페이지네이션 조회 시, 정상적으로 모든 상품을 가져오는지 테스트")
-//    @Test
-//    void 정상적인_페이지네이션_상품_조회() {
-//
-//        var response = client.get()
-//                .uri(url)
-//                .retrieve()
-//                .toEntity();
-//
-//        Page<ProductResponseDto> page = response.getBody();
-//
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//    }
 
     @DisplayName("이름이 15자를 초과하는 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test

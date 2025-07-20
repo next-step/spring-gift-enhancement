@@ -1,9 +1,9 @@
-package gift.service;
+package gift.service.member;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.MemberRoleRequestDto;
-import gift.dto.TokenResponseDto;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
+import gift.dto.member.MemberRoleRequestDto;
+import gift.dto.member.TokenResponseDto;
 
 import java.util.List;
 import java.util.Optional;

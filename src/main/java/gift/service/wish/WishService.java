@@ -1,6 +1,6 @@
-package gift.service;
+package gift.service.wish;
 
-import gift.dto.WishRequestDto;
+import gift.dto.wish.WishRequestDto;
 import gift.dto.wish.WishResponseDto;
 import gift.entity.Member;
 import org.springframework.data.domain.Page;
