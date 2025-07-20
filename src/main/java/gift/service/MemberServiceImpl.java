@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional(readOnly = true)
 @Service
 public class MemberServiceImpl implements MemberService {
 
@@ -31,7 +30,6 @@ public class MemberServiceImpl implements MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Transactional
     @Override
     public TokenResponseDto registerMember(MemberRequestDto dto) {
 
@@ -118,7 +116,6 @@ public class MemberServiceImpl implements MemberService {
                 );
     }
 
-    @Transactional
     @Override
     public MemberResponseDto saveMember(MemberRequestDto dto) {
 
@@ -155,7 +152,6 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-    @Transactional
     @Override
     public void deleteMember(Long id) {
         if (!memberRepository.existsById(id)) {

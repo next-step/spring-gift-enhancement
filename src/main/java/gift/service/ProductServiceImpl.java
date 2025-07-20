@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional(readOnly = true)
 @Service
 public class ProductServiceImpl implements ProductService{
 
@@ -91,7 +90,6 @@ public class ProductServiceImpl implements ProductService{
                 );
     }
 
-    @Transactional
     @Override
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
 
@@ -149,7 +147,6 @@ public class ProductServiceImpl implements ProductService{
         );
     }
 
-    @Transactional
     @Override
     public void deleteProduct(Long id) {
 
