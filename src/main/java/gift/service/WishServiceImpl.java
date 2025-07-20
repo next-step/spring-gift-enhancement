@@ -3,6 +3,7 @@ package gift.service;
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
 import gift.common.util.PageableUtil;
+import gift.dto.PageResponse;
 import gift.dto.Pagination;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
@@ -71,16 +72,24 @@ public class WishServiceImpl implements WishService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<WishResponse> getWishes(Long userId, Pagination pagination) {
+    public PageResponse<WishResponse> getWishes(Long userId, Pagination pagination) {
         Member member = memberRepository.findById(userId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        Sort sortCondition = PageableUtil.createSort(pagination.getSort(),
-            WishSortField.allowedFields());
-        Pageable pageable = PageRequest.of(pagination.getPage() - 1, pagination.getSize(),
-            sortCondition);
+        Sort sortCondition = PageableUtil.createSort(
+            pagination.getSort(),
+            WishSortField.allowedFields()
+        );
 
-        return wishRepository.findAllByMember(member, pageable)
+        Pageable pageable = PageRequest.of(pagination.getPage() - 1,
+            pagination.getSize(),
+            sortCondition
+        );
+
+        Page<WishResponse> page = wishRepository
+            .findAllByMember(member, pageable)
             .map(WishResponse::from);
+
+        return PageResponse.from(page);
     }
 }

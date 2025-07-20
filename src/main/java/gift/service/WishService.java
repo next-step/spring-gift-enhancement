@@ -1,9 +1,9 @@
 package gift.service;
 
+import gift.dto.PageResponse;
 import gift.dto.Pagination;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
-import org.springframework.data.domain.Page;
 
 public interface WishService {
 
@@ -11,5 +11,5 @@ public interface WishService {
 
     void deleteWish(Long memberId, Long productId);
 
-    Page<WishResponse> getWishes(Long memberId, Pagination pagination);
+    PageResponse<WishResponse> getWishes(Long memberId, Pagination pagination);
 }

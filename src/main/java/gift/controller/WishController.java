@@ -3,13 +3,13 @@ package gift.controller;
 import gift.common.annotation.CurrentUser;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
+import gift.dto.PageResponse;
 import gift.dto.Pagination;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,11 +42,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<CustomResponseBody<Page<WishResponse>>> getWishes(
+    public ResponseEntity<CustomResponseBody<PageResponse<WishResponse>>> getWishes(
         @Valid @ModelAttribute Pagination pagination,
         @CurrentUser Member member
     ) {
-        Page<WishResponse> wishes = wishService.getWishes(member.getId(), pagination);
+        PageResponse<WishResponse> wishes = wishService.getWishes(member.getId(), pagination);
 
         return ResponseEntity
             .ok(CustomResponseBody.of(CustomResponseCode.RETRIEVED, wishes));
