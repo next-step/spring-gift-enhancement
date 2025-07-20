@@ -64,10 +64,22 @@ public class WishListServiceImpl implements WishListService {
         if (user == null) {
             throw new UserNotFoundException();
         }
-        return wishListRepository.findByUserAndItemNameContainingAndItemPrice(user, name, price, pageable);
 
+        Page<Item> items;
+        if (name == null && price == null) {
+            items = itemService.getAllItems(pageable);
+        } else {
+            items = itemService.findItemsByNameAndPrice(name, price, pageable);
+        }
+
+        List<Item> itemList = items.getContent();
+        if (itemList.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        Page<WishItem> wishItems = wishListRepository.findByUserAndItemIn(user, itemList, pageable);
+        return wishItems;
     }
-
 
     @Override
     @Transactional
