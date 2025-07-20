@@ -2,8 +2,8 @@ package gift.controller;
 
 import gift.auth.LoginMember;
 import gift.domain.Member;
-import gift.domain.Product;
 import gift.dto.WishRequest;
+import gift.dto.WishResponse;
 import gift.service.WishService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ public class WishController {
     }
 
     @GetMapping
-    public Page<Product> getMyWishes(@LoginMember Member member, Pageable pageable) {
+    public Page<WishResponse> getMyWishes(@LoginMember Member member, Pageable pageable) {
         return wishService.getWishList(member.getId(), pageable);
     }
 
