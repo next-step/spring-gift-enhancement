@@ -51,3 +51,4 @@
 - [ ] Option CRUD 기능 구현
   - [x] controller, service, repository 구현
   - [x] 요청을 위한 OptionReqeustDto, 응답을 위한 OptionResponseDto 구현
+  - [x] 상품에 Option 추가 기능 구현

@@ -63,4 +63,9 @@ public class Product {
         this.options.add(option);
         option.setProduct(this);
     }
+
+    public boolean isDuplicateOptionName(String name){
+        return this.options.stream()
+                .anyMatch(option -> option.getName().equals(name));
+    }
 }
