@@ -63,4 +63,8 @@ public class Product {
     }
 
 
+    public void addOption(Option option) {
+        options.add(option);
+        option.setProduct(this);
+    }
 }
