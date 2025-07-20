@@ -72,7 +72,8 @@ public class GlobalExceptionHandler {
     // 잘못된 파라미터 예외 400
     @ExceptionHandler({
         InvalidSortDirectionException.class,
-        InvalidSortByException.class
+        InvalidSortByException.class,
+        IllegalArgumentException.class,
     })
     public ResponseEntity<ErrorResponseDto> handleInvalidParameterException(
         RuntimeException e,
