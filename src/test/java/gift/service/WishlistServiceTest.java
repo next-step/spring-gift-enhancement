@@ -1,6 +1,10 @@
 package gift.service;
 
+import gift.common.exception.InvalidUserException;
+import gift.common.exception.WishlistAlreadyExistsException;
+import gift.domain.Product;
 import gift.domain.User;
+import gift.domain.Wishlist;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.user.CreateUserRequest;
 import gift.dto.wishlist.CreateWishlistRequest;
@@ -16,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -77,5 +82,64 @@ public class WishlistServiceTest {
 
         assertThat(response.getContent().get(0).getProductName()).isEqualTo("연필2");
         assertThat(response.getContent().get(1).getProductName()).isEqualTo("연필1");
+    }
+
+    @Test
+    @DisplayName("위시리스트를 생성할 수 있다.")
+    void test3() {
+        CreateProductRequest productRequest = new CreateProductRequest("연필1", "image1", 10000, 100);
+        Product product = productService.saveProduct(productRequest);
+        CreateWishlistRequest wishlistRequest = new CreateWishlistRequest(product.getId());
+        wishlistService.saveWishlist(user.getId(), wishlistRequest);
+
+        Page<WishlistResponse> response = wishlistService.getWishlistsByUserId(user.getId(), PageRequest.of(1, 1));
+
+        WishlistResponse data = response.getContent().get(0);
+
+        assertThat(data.getId()).isNotNull();
+        assertThat(data.getProductId()).isEqualTo(product.getId());
+        assertThat(data.getProductName()).isEqualTo("연필1");
+        assertThat(data.getProductImageUrl()).isEqualTo("image1");
+        assertThat(data.getProductPrice()).isEqualTo(10000);
+    }
+
+    @Test
+    @DisplayName("특정 상품에 대해 이미 위시리스트가 있는 경우 위시리스트를 생성할 수 없다.")
+    void test4() {
+        CreateProductRequest productRequest = new CreateProductRequest("연필1", "image1", 10000, 100);
+        Product product = productService.saveProduct(productRequest);
+        CreateWishlistRequest wishlistRequest = new CreateWishlistRequest(product.getId());
+
+        wishlistService.saveWishlist(user.getId(), wishlistRequest);
+
+        assertThatThrownBy(() -> wishlistService.saveWishlist(user.getId(), wishlistRequest)).isInstanceOf(WishlistAlreadyExistsException.class);
+    }
+
+    @Test
+    @DisplayName("위시리스트를 삭제할 수 있다.")
+    void test5() {
+        CreateProductRequest productRequest = new CreateProductRequest("연필1", "image1", 10000, 100);
+        Product product = productService.saveProduct(productRequest);
+        CreateWishlistRequest wishlistRequest = new CreateWishlistRequest(product.getId());
+        Wishlist wishlist = wishlistService.saveWishlist(user.getId(), wishlistRequest);
+
+        wishlistService.deleteWishlist(user.getId(), wishlist.getId());
+
+        Page<WishlistResponse> response = wishlistService.getWishlistsByUserId(user.getId(), PageRequest.of(1, 1));
+
+        assertThat(response).isEmpty();
+    }
+
+    @Test
+    @DisplayName("본인의 위시리스트가 아닐 경우 삭제할 수 없다.")
+    void test6() {
+        CreateProductRequest productRequest = new CreateProductRequest("연필1", "image1", 10000, 100);
+        Product product = productService.saveProduct(productRequest);
+        CreateWishlistRequest wishlistRequest = new CreateWishlistRequest(product.getId());
+        Wishlist wishlist = wishlistService.saveWishlist(user.getId(), wishlistRequest);
+
+        User newUser = userService.saveUser(new CreateUserRequest("abc@mail.com", "1234"));
+
+        assertThatThrownBy(() -> wishlistService.deleteWishlist(newUser.getId(), wishlist.getId())).isInstanceOf(InvalidUserException.class);
     }
 }
