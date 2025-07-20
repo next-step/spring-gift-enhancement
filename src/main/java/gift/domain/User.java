@@ -57,6 +57,6 @@ public class User {
         return role;
     }
 
-    public User() {
+    protected User() {
     }
 }

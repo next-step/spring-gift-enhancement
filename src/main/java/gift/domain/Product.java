@@ -55,6 +55,6 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public Product() {
+    protected Product() {
     }
 }
