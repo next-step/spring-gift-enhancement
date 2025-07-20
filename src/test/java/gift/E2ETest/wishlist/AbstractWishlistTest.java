@@ -2,6 +2,7 @@ package gift.E2ETest.wishlist;
 
 import gift.E2ETest.AbstractControllerTest;
 import gift.E2ETest.testutil.RestAssuredUtils;
+import gift.dto.option.CreateOptionRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductDefaultResponse;
 import gift.dto.user.UserCreateRequest;
@@ -28,10 +29,14 @@ public abstract class AbstractWishlistTest extends AbstractControllerTest {
         super.setUp(provider);
         this.restAssuredUtils = new RestAssuredUtils(getBaseUrl(), adminToken);
         this.testProducts = new ArrayList<>();
+        var options = List.of(
+                new CreateOptionRequest("옵션1", 100L),
+                new CreateOptionRequest("옵션2", 200L)
+        );
 
         for (int i= 0; i < 5; i++) {
             ProductCreateRequest request = new ProductCreateRequest(
-                    "테스트 제품 " + i, 1000L + i, "이미지 URL " + i
+                    "테스트 제품 " + i, 1000L + i, "이미지 URL " + i, options
             );
             ProductDefaultResponse response = restAssuredUtils.createProduct(request, this.adminToken);
             this.testProducts.add(response);

@@ -14,7 +14,6 @@ import org.springframework.restdocs.request.ParameterDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -51,16 +50,6 @@ public class OptionDeleteTest extends AbstractOptionTest {
                 .then();
     }
 
-    private ValidatableResponse deleteAllWithoutDocumentation(Long productId, String token) {
-        String url = getRequestUrl();
-        return RestAssured.given()
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, token)
-                .when()
-                .delete(url, productId)
-                .then();
-    }
-
     @Test
     @DisplayName("옵션 단건 삭제 성공 테스트")
     public void Option_Delete_Success() {
@@ -91,6 +80,36 @@ public class OptionDeleteTest extends AbstractOptionTest {
     }
 
     @Test
+    @DisplayName("옵션 단건 삭제 실패 테스트: 마지막 옵션 삭제(400 Bad Request)")
+    public void Option_Delete_Failure_LastOption() {
+        Long productId = this.testProducts.get(UserRole.ROLE_USER).id();
+
+        var options = RestAssured.given(this.spec)
+                .contentType("application/json")
+                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
+                .when()
+                .get(getRequestUrl(), productId)
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("contents", OptionDefaultResponse.class);
+
+        for (int i=0; i < options.size() - 1; i++) {
+            Long optionId = options.get(i).id();
+            deleteWithoutDocumentation(productId, optionId, this.adminToken)
+                    .statusCode(204); // No Content 응답 확인
+        }
+
+        Long lastOptionId = options.getLast().id();
+
+        deleteWithoutDocumentation(productId, lastOptionId, this.adminToken)
+                .statusCode(400); // Bad Request 응답 확인
+    }
+
+
+
+    @Test
     @DisplayName("옵션 단건 삭제 실패 테스트 - 권한 없는 사용자(403 Forbidden)")
     public void Option_Delete_Failure_NoPermission() {
         Long productId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
@@ -107,41 +126,5 @@ public class OptionDeleteTest extends AbstractOptionTest {
 
         deleteWithoutDocumentation(productId, nonExistentOptionId, this.adminToken)
                 .statusCode(404); // Not Found 응답 확인
-    }
-
-    @Test
-    @DisplayName("옵션 전체 삭제 성공 테스트")
-    public void Option_Delete_All_Success() {
-        Long productId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
-
-        RestAssured.given(this.spec)
-                .filter(document("옵션 전체 삭제 성공",
-                        pathParameters(parameterWithName("productId").description("옵션이 속한 제품 ID")),
-                        requestHeaders(AUTHENTICATE_HEADERS)
-                ))
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
-                .when()
-                .delete(getRequestUrl(), productId)
-                .then()
-                .statusCode(204); // No Content 응답 확인
-
-        // 삭제 후 옵션이 존재하지 않는지 확인
-        RestAssured.given()
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
-                .when()
-                .get(getRequestUrl(), productId)
-                .then()
-                .statusCode(200)
-                .body("contents.size()", equalTo(0)); // 옵션이 존재하지 않음을 확인
-    }
-
-    @Test
-    @DisplayName("옵션 전체 삭제 실패 테스트 - 권한 없는 사용자(403 Forbidden)")
-    public void Option_Delete_All_Failure_NoPermission() {
-        Long productId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
-        deleteAllWithoutDocumentation(productId, this.testUserTokens.get(UserRole.ROLE_USER))
-                .statusCode(403); // Forbidden 응답 확인
     }
 }

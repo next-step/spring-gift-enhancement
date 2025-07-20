@@ -139,32 +139,5 @@ public class OptionRepositoryTest extends AbstractRepositoryTest {
         assertFalse(optionRepository.findById(idToDelete).isPresent());
         testOptions.removeFirst();
     }
-    @Test
-    @DisplayName("특정 제품의 전체 옵션 삭제 테스트")
-    @Order(6)
-    public void deleteAllOptionsByProductId() {
-        Product deleteTestProduct = productRepository.save(new Product("Delete Test Product", 2000L, "http://example.com/delete.jpg", testUser));
-        for (int i = 0; i < 3; i++) {
-            Option option = new Option("Delete Test Option " + i, 150L + i * 20, deleteTestProduct);
-            testOptions.add(optionRepository.save(option));
-        }
-        Long productId = deleteTestProduct.getId();
-        optionRepository.deleteAllByProductId(productId);
-        // 옵션이 삭제되었는지 확인
-        Page<Option> optionsPage = optionRepository.findAllByProductId(productId, PageRequest.of(0, 10));
-        assertNotNull(optionsPage);
-        assertAll(
-                () -> assertEquals(0, optionsPage.getTotalElements()),
-                () -> assertTrue(optionsPage.getContent().isEmpty())
-        );
-
-        // 다른 제품의 옵션은 영향을 받지 않아야 함
-        Page<Option> irrelevantPage = optionRepository.findAllByProductId(testProduct.getId(), PageRequest.of(0, 10));
-        assertNotNull(irrelevantPage);
-        assertAll(
-                () -> assertFalse(irrelevantPage.isEmpty()),
-                () -> assertTrue(irrelevantPage.getTotalElements() > 0)
-        );
-    }
 
 }

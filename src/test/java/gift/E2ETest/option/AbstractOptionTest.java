@@ -45,7 +45,10 @@ public class AbstractOptionTest extends AbstractControllerTest {
             this.testUsers.put(role, restAssuredUtils.createUser(request));
             var token = restAssuredUtils.getToken(request);
             this.testUserTokens.put(role, token);
-            var productRequest = new ProductCreateRequest(role.name() + " Prod", 1000L, "www.example.com/image.jpg");
+            var optionRequest = new CreateOptionRequest(role.name() + " Option", 100L);
+            var productRequest = new ProductCreateRequest(
+                    role.name() + " Prod", 1000L, "www.example.com/image.jpg", List.of(optionRequest)
+            );
             this.testProducts.put(role, restAssuredUtils.createProduct(productRequest, token));
         });
     }

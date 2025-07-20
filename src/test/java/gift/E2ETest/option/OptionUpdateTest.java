@@ -120,28 +120,6 @@ public class OptionUpdateTest extends AbstractOptionTest {
     }
 
     @Test
-    @DisplayName("옵션 수정 성공 테스트 - quantity가 0일 때 (204 No Content)")
-    public void update_Option_Success_With_Zero_Quantity_() {
-        Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
-        Long validId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
-        CreateOptionRequest request = new CreateOptionRequest("수정된 옵션", 0L);
-
-        RestAssured.given(this.spec)
-                .filter(document("옵션 수정 성공 - 수량이 0일 때",
-                        requestFields(OPTION_UPDATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(OPTION_UPDATE_PATH_PARAMETERS)
-                ))
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
-                .body(request)
-                .when()
-                .put(getRequestUrl() + "/{id}", validProductId, validId) // 존재하는 옵션 ID로 변경
-                .then()
-                .statusCode(204);
-    }
-
-    @Test
     @DisplayName("옵션 수정 성공 테스트 - 특정 필드 누락")
     public void update_Option_Success_With_Partial_Request() {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
@@ -149,12 +127,12 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Stream.of(
                 new UpdateOptionRequest("수정된 옵션", null),
                 new UpdateOptionRequest(null, 20L)
-        ).forEach(request -> {
+        ).forEach(request ->
             updateWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(200)
                     .body("id", notNullValue())
-                    .body("name", notNullValue());
-        });
+                    .body("name", notNullValue())
+        );
     }
 
     @Test
@@ -203,28 +181,6 @@ public class OptionUpdateTest extends AbstractOptionTest {
     }
 
     @Test
-    @DisplayName("옵션 증감 성공 테스트 - 수량이 0이하 일 때(204 No Content)")
-    public void update_Option_Increment_Success_With_Zero_Quantity() {
-        Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
-        var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
-        // 수량을 감소시켜 0 이하로 만들기
-        var request = new PatchOptionRequest(validOption.quantity() + 1, false);
-        RestAssured.given(this.spec)
-                .filter(document("옵션 증감 성공 - 수량이 0이하일 때",
-                        requestFields(OPTION_PATCH_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(OPTION_UPDATE_PATH_PARAMETERS)
-                ))
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
-                .body(request)
-                .when()
-                .patch(getRequestUrl() + "/{id}", validProductId, validOption.id()) // 존재하는 옵션 ID로 변경
-                .then()
-                .statusCode(204);
-    }
-
-    @Test
     @DisplayName("옵션 증감 성공 테스트 - user_role인 사용자가 자신의 상품 증감")
     public void update_Option_Increment_Success_User_Role() {
         String userToken = this.testUserTokens.get(UserRole.ROLE_USER);
@@ -252,20 +208,35 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Stream.of(
                 new UpdateOptionRequest(longText, 20L), // 이름 길이 초과
                 new UpdateOptionRequest("<><>", 20L), // 이름에 유효하지 않은 특수문자 포함
-                new UpdateOptionRequest("수정된 옵션", -10L) // 수량 음수
-        ).forEach(request -> {
+                new UpdateOptionRequest("수정된 옵션", -10L), // 수량 음수
+                new UpdateOptionRequest("수정된 옵션", 0L) // 수량 0
+        ).forEach(request ->
             updateWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(400)
-                    .body("validationErrors", notNullValue());
-        });
+                    .body("validationErrors", notNullValue())
+        );
         Stream.of(
                 new PatchOptionRequest(-5L, true) // 수량 음수
-        ).forEach(request -> {
+        ).forEach(request ->
             patchWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(400)
-                    .body("validationErrors", notNullValue());
-        });
+                    .body("validationErrors", notNullValue())
+        );
     }
+
+    @Test
+    @DisplayName("옵션 수정 실패 테스트 - 결과가 음수가 되는 경우(400 Forbidden)")
+    public void update_Option_Failure_Negative_Result() {
+        Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
+        var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
+
+        // 수량을 음수로 만드는 요청
+        PatchOptionRequest request = new PatchOptionRequest(validOption.quantity() + 1, false); // 수량을 15 감소
+
+        patchWithoutDocumentation(validProductId, validOption.id(), request, this.adminToken)
+                .statusCode(400);
+    }
+    
 
     @Test
     @DisplayName("옵션 수정 실패 테스트 - 권한 없는 사용자 요청(403 Forbidden)")
