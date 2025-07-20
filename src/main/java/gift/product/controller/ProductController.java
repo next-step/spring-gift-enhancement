@@ -1,5 +1,8 @@
 package gift.product.controller;
 
+import gift.product.dto.request.OptionCreateRequest;
+import gift.product.dto.response.OptionResponse;
+import gift.product.service.OptionService;
 import gift.shared.annotation.AuthUser;
 import gift.product.dto.request.ProductCreateRequest;
 import gift.product.dto.request.ProductModifyRequest;
@@ -23,8 +26,10 @@ import static gift.product.status.ProductStatus.*;
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService productService;
+    private final OptionService optionService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(OptionService optionService, ProductService productService) {
+        this.optionService = optionService;
         this.productService = productService;
     }
 
@@ -65,6 +70,21 @@ public class ProductController {
     ) {
         productService.deleteGift(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/options")
+    public ResponseEntity<OptionResponse> addOption(
+            @PathVariable Long id,
+            @Valid @RequestBody OptionCreateRequest optionCreateRequest
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(optionService.save(id, optionCreateRequest.toEntity()));
+    }
+
+    @GetMapping("/{id}/options")
+    public ResponseEntity<List<OptionResponse>> getAllOptionsByProduct(@PathVariable Long id){
+        return ResponseEntity.ok()
+                .body(optionService.getAllOptionsByProductId(id));
     }
 
     @ExceptionHandler(value = NoProductException.class)
