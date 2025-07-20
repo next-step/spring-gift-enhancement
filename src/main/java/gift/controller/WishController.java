@@ -7,7 +7,9 @@ import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +31,9 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<WishResponseDto>> getWishes(@Login Member member, @PageableDefault(size = 5, sort = "id") Pageable pageable) {
-        return new ResponseEntity<>(wishService.getWishes(member.getId(), pageable), HttpStatus.OK);
+    public ResponseEntity<Page<WishResponseDto>> getWishes(@Login Member member, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
+        return new ResponseEntity<>(wishService.getWishes(member.getId(), fixedPageable), HttpStatus.OK);
     }
 
     @PostMapping
