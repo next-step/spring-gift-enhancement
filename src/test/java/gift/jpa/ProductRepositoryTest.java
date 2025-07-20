@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import gift.entity.Product;
+import gift.entity.ProductOption;
 import gift.repository.product.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class ProductRepositoryTest {
     @Test
     void save() {
         Product expected = new Product("test", 1, 1, "test");
+        ProductOption option = new ProductOption("option1", 1, expected);
+
+        expected.addOption(option);
 
         Product actual = productRepository.save(expected);
         assertAll(
@@ -30,6 +34,7 @@ public class ProductRepositoryTest {
     @Test
     void findById() {
         Product expected = new Product("example1", 4700, 1, "https://www.starbucks.co.kr/index.do");
+        ProductOption option = new ProductOption("option1", 1, expected);
 
         Product actual = productRepository.findById(1L).get();
         assertAll(
@@ -43,6 +48,11 @@ public class ProductRepositoryTest {
     void update() {
         Product origin = new Product("test", 1, 1, "test");
         Product expected = new Product("test2", 2, 1, "test2");
+
+        ProductOption option = new ProductOption("option1", 1, expected);
+
+        origin.addOption(option);
+
 
         Product beforeProduct = productRepository.save(origin);
         beforeProduct.change(expected.getName(), expected.getPrice(), expected.getImageUrl());
@@ -70,6 +80,9 @@ public class ProductRepositoryTest {
     @Test
     void deleteById() {
         Product expected = new Product("test", 1, 1, "test");
+        ProductOption option = new ProductOption("option1", 1, expected);
+
+        expected.addOption(option);
 
         Product actual = productRepository.save(expected);
         productRepository.deleteById(actual.getId());

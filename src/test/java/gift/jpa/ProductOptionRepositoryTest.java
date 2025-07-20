@@ -27,9 +27,12 @@ public class ProductOptionRepositoryTest {
     @DisplayName("상품 옵션 생성 성공")
     void save_success() {
         Product product = new Product("example4", 4700, 1, "https://www.starbucks.co.kr/index.do");
-        productRepository.save(product);
 
         ProductOption expected = new ProductOption("option1", 1, product);
+        product.addOption(expected);
+
+        productRepository.save(product);
+
         ProductOption actual = productOptionRepository.save(expected);
 
         assertAll(
@@ -42,37 +45,37 @@ public class ProductOptionRepositoryTest {
     @DisplayName("상품 옵션 생성 실패1 - 0 이하 quantity 값")
     void save_fail1() {
         Product product = new Product("example4", 4700, 1, "https://www.starbucks.co.kr/index.do");
-        productRepository.save(product);
 
         ProductOption expected = new ProductOption("option1", 0, product);
+        product.addOption(expected);
 
         assertThrows(ConstraintViolationException.class, () ->
-            productOptionRepository.save(expected)
+            productRepository.save(product)
         );
     }
 
     @Test
     @DisplayName("상품 옵션 생성 실패2 - 1억 이상 quantity 값")
     void save_fail2() {
-        Product product = new Product("example4", 4700, 100000000,
-            "https://www.starbucks.co.kr/index.do");
-        productRepository.save(product);
+        Product product = new Product("example4", 4700, 100000000, "https://www.starbucks.co.kr/index.do");
 
         ProductOption expected = new ProductOption("option1", 100000000, product);
+        product.addOption(expected);
 
-        assertThrows(ConstraintViolationException.class, () -> {
-            productOptionRepository.save(expected);
-            productRepository.flush();
-        });
+        assertThrows(ConstraintViolationException.class, () ->
+            productRepository.save(product)
+        );
     }
 
     @Test
     @DisplayName("상품 옵션 검색 성공")
     void findById() {
         Product product = new Product("example4", 4700, 1, "https://www.starbucks.co.kr/index.do");
-        productRepository.save(product);
 
         ProductOption expected = new ProductOption("option1", 1, product);
+        product.addOption(expected);
+
+        productRepository.save(product);
         ProductOption actual = productOptionRepository.save(expected);
 
         assertAll(
@@ -85,16 +88,18 @@ public class ProductOptionRepositoryTest {
     @DisplayName("상품 옵션 업데이트 성공")
     void update() {
         Product product = new Product("example4", 4700, 1, "https://www.starbucks.co.kr/index.do");
-        productRepository.save(product);
 
         ProductOption option = new ProductOption("option1", 1, product);
-        productOptionRepository.save(option);
+        product.addOption(option);
+
+        productRepository.save(product);
+        ProductOption saveResult = productOptionRepository.save(option);
 
         String expectedName = "changeOption";
         int expectedQuantity = 2;
         option.change(expectedName, expectedQuantity);
 
-        ProductOption actual = productOptionRepository.findById(4L).get();
+        ProductOption actual = productOptionRepository.findById(saveResult.getId()).get();
         assertAll(
             () -> assertThat(actual.getName()).isEqualTo(expectedName),
             () -> assertThat(actual.getQuantity()).isEqualTo(expectedQuantity)
@@ -105,9 +110,11 @@ public class ProductOptionRepositoryTest {
     @DisplayName("상품 옵션 삭제 성공")
     void delete() {
         Product product = new Product("example4", 4700, 1, "https://www.starbucks.co.kr/index.do");
-        productRepository.save(product);
 
         ProductOption option = new ProductOption("option1", 1, product);
+        product.addOption(option);
+
+        productRepository.save(product);
         productOptionRepository.save(option);
 
         int deleteRow = productOptionRepository.deleteProductOptionById(4L);
