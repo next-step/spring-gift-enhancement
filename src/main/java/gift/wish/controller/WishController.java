@@ -3,6 +3,7 @@ package gift.wish.controller;
 import gift.auth.LoginMember;
 import gift.exception.GlobalExceptionHandler.ApiResponse;
 import gift.member.entity.Member;
+import gift.wish.dto.WishPageDto;
 import gift.wish.dto.WishRequestDto;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.service.WishService;
@@ -24,11 +25,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<WishResponseDto>>> getWishlist(@LoginMember Member member ,
-                                                                          @PageableDefault(size = 5, sort = "quantity", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ApiResponse<WishPageDto<WishResponseDto>>> getWishlist(@LoginMember Member member ,
+                                                                                 @PageableDefault(size = 5, sort = "quantity", direction = Sort.Direction.DESC) Pageable pageable) {
         WishRequestDto wishRequestDto = new WishRequestDto();
         wishRequestDto.setMemberId(member.getId());
-        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", wishService.getWishlist(wishRequestDto,pageable)));
+        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", WishPageDto.fromEntity(wishService.getWishlist(wishRequestDto,pageable))));
     }
 
     @PostMapping
