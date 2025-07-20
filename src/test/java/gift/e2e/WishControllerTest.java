@@ -3,7 +3,7 @@ package gift.controller;
 import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
+import gift.dto.wish.WishResponseDto;
 import gift.service.MemberService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

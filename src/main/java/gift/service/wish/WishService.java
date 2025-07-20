@@ -1,7 +1,7 @@
 package gift.service;
 
 import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
+import gift.dto.wish.WishResponseDto;
 import gift.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
