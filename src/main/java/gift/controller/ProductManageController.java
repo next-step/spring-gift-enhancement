@@ -30,6 +30,8 @@ public class ProductManageController {
     public String getProductsForm(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, page = 1) Pageable pageable, Model model) {
         Page<ProductManageResponse> products = productManageService.getAllProducts(pageable);
         model.addAttribute("products", products);
+        String currentSort = pageable.getSort().toString().replace(": ", ",").toLowerCase();
+        model.addAttribute("currentSort", currentSort);
         return "/admin/product/productList";
     }
 
