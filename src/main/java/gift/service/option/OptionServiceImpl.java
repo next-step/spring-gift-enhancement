@@ -13,10 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Service
 public class OptionServiceImpl implements OptionService{
     private static final Integer ADMIN_PRIORITY = UserRole.ROLE_ADMIN.getPriority();
     private static final Logger log = LoggerFactory.getLogger(OptionServiceImpl.class);
@@ -55,6 +58,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CustomPage<Option> findAllBy(Long productId, Pageable pageable) {
         if (!productService.existsById(productId)) {
             throw new NoSuchElementException("존재하지 않는 제품입니다. productId: " + productId);
@@ -63,6 +67,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Option findBy(Long id, Long productId) {
         if (!optionRepository.existsByIdAndProductId(id, productId)) {
             throw new NoSuchElementException("존재하지 않는 옵션입니다. id: " + id + ", productId: " + productId);
@@ -72,6 +77,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional
     public Option create(Long productId, CustomAuth auth, String name, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
@@ -83,16 +89,19 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional
     public Optional<Option> update(Long id, Long productId, CustomAuth auth, String name) {
         return update(id, productId, auth, name, null);
     }
 
     @Override
+    @Transactional
     public Optional<Option> update(Long id, Long productId, CustomAuth auth, Long quantity) {
         return update(id, productId, auth, null, quantity);
     }
 
     @Override
+    @Transactional
     public Optional<Option> update(Long id, Long productId, CustomAuth auth, String name, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
@@ -101,6 +110,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional
     public Optional<Option> increaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
@@ -109,6 +119,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional
     public Optional<Option> decreaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
@@ -118,6 +129,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional
     public void deleteBy(Long id, Long productId, CustomAuth auth) {
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
@@ -129,6 +141,7 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    @Transactional
     public void deleteAll(Long productId, CustomAuth auth) {
         if (!productService.existsById(productId)) {
             throw new NoSuchElementException("존재하지 않는 제품입니다. productId: " + productId);
