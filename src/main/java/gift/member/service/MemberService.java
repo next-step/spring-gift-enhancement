@@ -52,8 +52,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponseDto getMemberById(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundByIdException(id));
+        Member member = findById(id);
 
         return MemberResponseDto.from(member);
     }
@@ -67,8 +66,7 @@ public class MemberService {
     }
 
     public MemberResponseDto updateMember(Long id, UpdateRequestDto updateRequestDto) {
-        Member member = memberRepository.findById(id)
-                        .orElseThrow(() -> new MemberNotFoundByIdException(id));
+        Member member = findById(id);
 
         memberRepository.findByEmail(updateRequestDto.email())
                 .filter(foundMember -> !foundMember.getId().equals(id))
@@ -100,5 +98,10 @@ public class MemberService {
         }
 
         memberRepository.deleteById(id);
+    }
+
+    private Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundByIdException(id));
     }
 }
