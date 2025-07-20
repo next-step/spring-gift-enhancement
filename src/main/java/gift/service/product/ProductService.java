@@ -6,14 +6,19 @@ import gift.dto.product.ProductResponse;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
 import gift.repository.product.ProductJpaRepository;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
 
+    private static final Set<String> ALLOWED_SORT_NAMES = Set.of(
+        "id", "name", "price"
+    );
     private final ProductJpaRepository productRepository;
 
     public ProductService(ProductJpaRepository productRepository) {
@@ -59,5 +64,17 @@ public class ProductService {
             .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
 
         productRepository.deleteById(productId);
+    }
+
+    // Pageable 객체 유효성 검사
+    public void validate(Pageable pageable) {
+        Sort sort = pageable.getSort();
+
+        for (Sort.Order order : sort) {
+            if (!ALLOWED_SORT_NAMES.contains(order.getProperty())) {
+                throw CustomException.from(ErrorCode.INVALID_SORT_NAMES);
+            }
+
+        }
     }
 }
