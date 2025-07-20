@@ -5,7 +5,10 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "options")
+@Table(
+    name = "options",
+    uniqueConstraints = { @UniqueConstraint(columnNames = {"product_id", "name"})}
+)
 public class Option extends BaseEntity {
 
     @Column(nullable = false, unique = true)

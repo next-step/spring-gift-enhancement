@@ -1,6 +1,8 @@
 package gift.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
@@ -8,10 +10,17 @@ import java.util.Objects;
 @Table(name = "products")
 public class Product extends BaseEntity {
 
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Long price;
+    @Column(nullable = false)
     private String imageUrl;
-    private Long ownerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private User owner;
 
     protected Product() {
 
@@ -22,16 +31,16 @@ public class Product extends BaseEntity {
     }
 
 
-    public Product(String name, Long price, String imageUrl, Long ownerId) {
-        this(null, name, price, imageUrl, ownerId);
+    public Product(String name, Long price, String imageUrl, User owner) {
+        this(null, name, price, imageUrl, owner);
     }
 
-    public Product(Long id, String name, Long price, String imageUrl, Long ownerId) {
+    public Product(Long id, String name, Long price, String imageUrl, User owner) {
         super(id);
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.ownerId = ownerId;
+        this.owner = owner;
     }
 
     public String getName() {
@@ -58,12 +67,12 @@ public class Product extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -73,7 +82,6 @@ public class Product extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", ownerId=" + ownerId +
                 ", createdAt=" + getCreatedAt() +
                 ", updatedAt=" + getUpdatedAt() +
                 '}';

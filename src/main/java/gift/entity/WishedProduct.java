@@ -34,6 +34,7 @@ public class WishedProduct extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
+    @Column(nullable = false)
     private Integer quantity;
 
 

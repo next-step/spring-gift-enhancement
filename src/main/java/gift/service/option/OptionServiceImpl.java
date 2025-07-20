@@ -37,9 +37,9 @@ public class OptionServiceImpl implements OptionService{
             log.info("관리자 권한으로 옵션 검증을 건너뜁니다.");
             return;
         }
-        if (!product.getOwnerId().equals(auth.userId())) {
-            log.error("허용되지 않은 접근: 사용자 ID {}, 소유자 ID {}",auth.userId(), product.getOwnerId());
-            throw new AccessDeniedException("허용되지 않은 접근입니다. 사용자 ID: " + auth.userId() + ", 소유자 ID: " + product.getOwnerId());
+        if (!product.getOwner().getId().equals(auth.userId())) {
+            log.error("허용되지 않은 접근: 사용자 ID {}, 소유자 ID {}",auth.userId(), product.getOwner());
+            throw new AccessDeniedException("허용되지 않은 접근입니다. 사용자 ID: " + auth.userId() + ", 소유자 ID: " + product.getOwner());
         }
     }
 

@@ -49,7 +49,7 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
         if (this.testProducts == null) {
             this.testProducts = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
-                Product product = new Product(null, "Test Product " + i, 1000L + (i * 100), "http://example.com/image" + i + ".jpg", this.testUser.getId());
+                Product product = new Product(null, "Test Product " + i, 1000L + (i * 100), "http://example.com/image" + i + ".jpg", this.testUser);
                 this.testProducts.add(productRepository.save(product));
             }
         }
