@@ -141,7 +141,7 @@ public class ProductReadTest extends AbstractProductTest {
     @DisplayName("특정 제품 조회 성공 테스트")
     public void find_Specific_Product_Success() {
         String url = getBaseUrl() + "/api/products/{id}"; // 존재하는 제품 ID
-        Long testProductId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+        Long testProductId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
         RestAssured
                 .given(this.spec)
                 .filter(document("상품 특정 조회 성공",

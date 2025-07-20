@@ -57,7 +57,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 .body("imageUrl", notNullValue())
                 .extract()
                 .as(ProductDefaultResponse.class);
-        this.testProductIds.add(response);
+        this.testProducts.add(response);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 .body("imageUrl", equalTo("이미지 URL"))
                 .extract()
                 .as(ProductDefaultResponse.class);
-        this.testProductIds.add(response);
+        this.testProducts.add(response);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 new ProductCreateRequest("", 1000L, "이미지 URL")
         );
 
-        requests.forEach(request -> {
+        requests.forEach(request ->
             RestAssured.given()
                     .contentType("application/json")
                     .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
@@ -108,8 +108,8 @@ public class ProductCreateTest extends AbstractProductTest {
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .body("title", notNullValue())
                     .body("detail", notNullValue())
-                    .body("validationErrors", notNullValue());
-        });
+                    .body("validationErrors", notNullValue())
+        );
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 new ProductCreateRequest("이름이 너무 김 이름이 너무 김 이름이 너무 김 이름이 너무 김", 1000L, ""), // 이름이 너무 김
                 new ProductCreateRequest("<><><>", 1000L, "이미지 URL") // 이름에 허용하지 않는 문자 포함
         );
-        requests.forEach(request -> {
+        requests.forEach(request ->
             RestAssured.given(this.spec)
                     .contentType("application/json")
                     .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
@@ -155,8 +155,8 @@ public class ProductCreateTest extends AbstractProductTest {
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .body("title", notNullValue())
                     .body("detail", notNullValue())
-                    .body("validationErrors", notNullValue());
-        });
+                    .body("validationErrors", notNullValue())
+        );
     }
 
     @Test

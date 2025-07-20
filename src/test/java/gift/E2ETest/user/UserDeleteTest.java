@@ -32,7 +32,8 @@ public class UserDeleteTest extends AbstractUserTest {
                 .then()
                 .statusCode(204);
 
-        this.testUsers.remove(UserRole.ROLE_USER); // 삭제한 사용자 제거
+        // 삭제한 사용자 ID 제거
+        this.testedUserIds.removeIf(id -> id.equals(targetId));
     }
 
     @Test
@@ -45,7 +46,8 @@ public class UserDeleteTest extends AbstractUserTest {
                 .delete(url)
                 .then()
                 .statusCode(204);
-        this.testUsers.remove(UserRole.ROLE_USER); // 삭제한 사용자 제거
+        // 삭제한 사용자 ID 제거
+        this.testedUserIds.removeIf(id -> id.equals(this.testUsers.get(UserRole.ROLE_USER).id()));
     }
 
     @Test

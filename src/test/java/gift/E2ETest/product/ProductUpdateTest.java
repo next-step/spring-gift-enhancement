@@ -41,7 +41,7 @@ public class ProductUpdateTest extends AbstractProductTest {
     @Test
     @DisplayName("제품 수정 성공 테스트")
     public void Product_Update_Success() {
-        Long validId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+        Long validId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
         String url = getBaseUrl() + "/api/products/{id}";
         ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", 1500L, "수정된 이미지 URL");
         RestAssured.given(this.spec)
@@ -67,7 +67,7 @@ public class ProductUpdateTest extends AbstractProductTest {
     @DisplayName("제품 수정 성공 테스트: 특정 필드 누락 가능")
     public void update_Product_Success_With_Partial_Request() {
         String url = getBaseUrl() + "/api/products/{id}"; // 존재하는 제품 ID로 변경
-        Long validId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+        Long validId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
         ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", null, "수정된 이미지 URL"); // 가격 필드 누락
 
         RestAssured.given(this.spec)
@@ -94,7 +94,7 @@ public class ProductUpdateTest extends AbstractProductTest {
     @DisplayName("제품 수정 실패 테스트 : 유효성 검사 실패 시 400 반환")
     public void update_Product_Validation_Failure_Returns_400() {
         String url = getBaseUrl() + "/api/products/{id}";
-        Long validId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+        Long validId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
 
         List<ProductUpdateRequest> invalidRequests = List.of(
                 new ProductUpdateRequest("", 1000L, "이미지 URL"), // 이름 필드 비어있음
