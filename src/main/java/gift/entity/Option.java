@@ -11,7 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 )
 public class Option extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column(nullable = false)
@@ -24,6 +24,10 @@ public class Option extends BaseEntity {
 
     protected Option() {
 
+    }
+
+    public Option(String name, Long quantity) {
+        this(name, quantity, null);
     }
 
     public Option(String name, Long quantity, Product product) {
@@ -60,5 +64,14 @@ public class Option extends BaseEntity {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Option option)) return false;
+        if (!super.equals(o)) return false;
+
+        return option.getId().equals(this.getId());
     }
 }
