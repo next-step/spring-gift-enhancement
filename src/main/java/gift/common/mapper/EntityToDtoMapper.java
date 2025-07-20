@@ -1,5 +1,6 @@
 package gift.common.mapper;
 
+import gift.dto.option.OptionDefaultResponse;
 import gift.dto.product.ProductDefaultResponse;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserDefaultResponse;
@@ -61,6 +62,14 @@ public class EntityToDtoMapper {
                 .collect(Collectors.toList()),
             user.getCreatedAt(),
             user.getUpdatedAt()
+        );
+    }
+
+    public static OptionDefaultResponse toDto(Option option) {
+        return new OptionDefaultResponse(
+            option.getId(),
+            option.getName(),
+            option.getQuantity()
         );
     }
 }
