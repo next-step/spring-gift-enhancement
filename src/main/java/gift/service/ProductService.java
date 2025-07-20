@@ -33,15 +33,12 @@ public class ProductService {
         return repo.save(product);
     }
 
-    public boolean update(Long id, Product product) {
-        Product target = repo.findById(id).orElse(null);
-        if (target == null) {
-            return false;
-        }
+    public void update(Long id, Product product) {
+        Product target = repo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
         target.setName(product.getName());
         target.setPrice(product.getPrice());
         target.setImageUrl(product.getImageUrl());
-        return true;
     }
 
     public boolean delete(Long id) {
