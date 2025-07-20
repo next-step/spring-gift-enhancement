@@ -183,6 +183,30 @@ public class PaginationE2ETest {
     }
 
     @Test
+    void 위시리스트_아이템_이름_오름차순_정렬_테스트() {
+        // given
+        String url = "http://localhost:" + port
+            + "/api/wishlists?page=1&size=3&sortBy=itemName&direction=asc";
+
+        // when
+        ResponseEntity<PageResponseDto<WishlistResponseDto>> response = client.get()
+            .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, authToken)
+            .retrieve()
+            .toEntity(new ParameterizedTypeReference<PageResponseDto<WishlistResponseDto>>() {
+            });
+
+        // then
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().contents()).hasSize(3);
+
+        // 아이템 이름이 알파벳/한글 순서대로 오름차순 정렬되어 있는지 확인
+        var contents = response.getBody().contents();
+        assertThat(contents.get(0).itemName()).isLessThanOrEqualTo(contents.get(1).itemName());
+        assertThat(contents.get(1).itemName()).isLessThanOrEqualTo(contents.get(2).itemName());
+    }
+
+    @Test
     void 위시리스트_ID_기준_정렬_테스트() {
         // given
         String url =
