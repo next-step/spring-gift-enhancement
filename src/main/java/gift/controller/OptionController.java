@@ -48,16 +48,17 @@ public class OptionController {
 
     @DeleteMapping(value = "/{productId}/options/{optionId}")
     public ResponseEntity<Void> deleteOption(
+        @PathVariable("productId") Long productId,
         @PathVariable("optionId") Long optionId
     ) {
-        optionService.deleteOption(optionId);
+        optionService.deleteOption(productId, optionId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{productId}/options")
     public ResponseEntity<List<OptionResponseDto>> getOptions(
-        @PathVariable Long productId
+        @PathVariable("productId") Long productId
     ) {
         return new ResponseEntity<>(optionService.getOptions(productId), HttpStatus.OK);
     }
