@@ -3,6 +3,7 @@ package gift.service;
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
 import gift.common.util.PageableUtil;
+import gift.dto.PageResponse;
 import gift.dto.Pagination;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
@@ -36,14 +37,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductResponse> getAllProducts(Pagination pagination) {
-        Sort sortCondition = PageableUtil.createSort(pagination.getSort(),
-            ProductSortField.allowedFields());
-        Pageable pageable = PageRequest.of(pagination.getPage() - 1, pagination.getSize(),
-            sortCondition);
+    public PageResponse<ProductResponse> getAllProducts(Pagination pagination) {
+        Sort sortCondition = PageableUtil.createSort(
+            pagination.getSort(),
+            ProductSortField.allowedFields()
+        );
 
-        return productRepository.findAll(pageable)
+        Pageable pageable = PageRequest.of(pagination.getPage() - 1,
+            pagination.getSize(),
+            sortCondition
+        );
+
+        Page<ProductResponse> page = productRepository
+            .findAll(pageable)
             .map(ProductResponse::from);
+
+        return PageResponse.from(page);
     }
 
     @Override
