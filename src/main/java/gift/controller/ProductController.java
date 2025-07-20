@@ -34,7 +34,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.addProduct(productRequestDto), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.addProduct(productRequestDto));
     }
 
     @GetMapping
@@ -46,21 +46,22 @@ public class ProductController {
         }
 
         Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
-        return new ResponseEntity<>(productService.findAllProduct(fixedPageable), HttpStatus.OK);
+        return ResponseEntity.ok(productService.findAllProduct(fixedPageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> findProductById(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
+        return ResponseEntity.ok(productService.findProductById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@Valid @RequestBody UpdateProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.updateProduct(productRequestDto), HttpStatus.OK);
+        return ResponseEntity.ok(productService.updateProduct(productRequestDto));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
     }
 }

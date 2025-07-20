@@ -41,7 +41,7 @@ public class WishController {
         }
 
         Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
-        return new ResponseEntity<>(wishService.getWishes(member.getId(), fixedPageable), HttpStatus.OK);
+        return ResponseEntity.ok(wishService.getWishes(member.getId(), fixedPageable));
     }
 
     @PostMapping
@@ -59,7 +59,7 @@ public class WishController {
             @PathVariable Long productId
     ) {
         wishService.deleteWish(member.getId(), productId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 }
