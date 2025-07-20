@@ -24,8 +24,6 @@ public class WishlistService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    private final static int PAGE_SIZE = 10;
-
     public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.wishlistRepository = wishlistRepository;
         this.productRepository = productRepository;
