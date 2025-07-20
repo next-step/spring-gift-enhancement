@@ -32,3 +32,8 @@
   - [x] WishlistController의 getWishlist 메서드 로직 변경
   
 - [x] 기존 테스트 코드 복구 및 리팩토링
+
+## 리뷰 반영
+- [x] WishlistServiceTest 실패하는 테스트 성공하도록 수정  
+
+## 3단계 - 상품옵션

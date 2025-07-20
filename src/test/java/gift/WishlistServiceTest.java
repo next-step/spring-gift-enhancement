@@ -121,10 +121,11 @@ public class WishlistServiceTest {
 
     @Test
     void deleteWish_정상적으로_위시삭제(){
+        given(wishlistRepository.findById(wish1.getId())).willReturn(Optional.of(wish1));
         willDoNothing().given(wishlistRepository)
                 .delete(wish1);
 
-        assertDoesNotThrow(() -> wishlistService.deleteWish(member, 5L));
+        assertDoesNotThrow(() -> wishlistService.deleteWish(member, wish1.getId()));
 
     }
 
