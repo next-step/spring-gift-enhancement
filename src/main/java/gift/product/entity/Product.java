@@ -3,6 +3,7 @@ package gift.product.entity;
 import gift.product.dto.request.ProductModifyRequest;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +27,13 @@ public class Product {
 
     @Column(nullable = false)
     private boolean isKakaoMDAccepted = true;
+
+    // CascadeType.ALL 을 사용한 이유
+    // 상품마다 다른 옵션을 가지고 있고, 부모 entity 에 의해서 전의를 하게 두어도
+    // 다른 상품에서 이에 대해 정보를 가지고 있을 수 없으니까, ALL 로 설정하게 되었다.
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private List<Option> options;
 
     public Product(Long giftId, String giftName, Integer giftPrice, String giftPhotoUrl) {
         this.giftId = giftId;
@@ -60,9 +68,8 @@ public class Product {
         return isKakaoMDAccepted;
     }
 
-    public boolean isGiftNameValid(){
-        String pattern = "^[a-zA-Z0-9가-힣 ()\\[\\]\\+\\-\\&\\/\\_]*$";
-        return giftName.matches(pattern);
+    public void addOption(Option option) {
+        options.add(option);
     }
 
     public void isKakaoMessageInclude(){

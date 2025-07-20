@@ -29,9 +29,6 @@ public class ProductService {
 
     public ProductResponse addGift(ProductCreateRequest productCreateRequest) {
         Product product = productCreateRequest.toEntity();
-        if(!product.isGiftNameValid()){
-            throw new InValidSpecialCharException(WRONG_CHARACTER.getMessage());
-        }
         product.isKakaoMessageInclude();
         return ProductResponse.from(productRepository.save(product));
     }
