@@ -51,9 +51,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(WishNotFoundByMemberIdAndWishId.class)
-    public ResponseEntity<?> handleWishNotFoundByMemberIdAndWishId(WishNotFoundByMemberIdAndWishId e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @ExceptionHandler(WishlistAccessDeniedException.class)
+    public ResponseEntity<?> handleWishlistAccessDeniedException(WishlistAccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(WishNotFoundById.class)
