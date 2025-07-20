@@ -4,6 +4,8 @@ import gift.product.dto.ProductRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,14 @@ public class ProductService {
 
     public ProductService(ProductRepository repository) {
         this.repository = repository;
+    }
+
+    public Page<ProductResponse> search(String name, Pageable pageable) {
+        Page<Product> page = (name == null || name.isBlank())
+                ? repository.findAll(pageable)
+                : repository.searchByName(name, pageable);
+
+        return page.map(ProductResponse::from);
     }
 
     public List<ProductResponse> findAllProducts() {
