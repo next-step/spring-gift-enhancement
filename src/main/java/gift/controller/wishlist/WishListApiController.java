@@ -1,14 +1,11 @@
 package gift.controller.wishlist;
 
-import gift.domain.WishList;
 import gift.dto.IdResponse;
 import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
 import gift.global.util.RequestAttributes;
 import gift.service.wishlist.WishListService;
-import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,10 +34,13 @@ public class WishListApiController {
     @GetMapping
     public ResponseEntity<?> getWishList(
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
-        @PageableDefault(page=0, size=3, sort="id", direction = Sort.Direction.ASC)
+        @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.ASC)
         Pageable pageable
     ) {
-        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId, pageable);
+        wishListService.validate(pageable);
+
+        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId,
+            pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(wishListsPage);
