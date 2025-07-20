@@ -57,7 +57,7 @@ public class ProductApiController {
     ) {
         Long id = productService.insert(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(new IdResponse(id));
+            .body(IdResponse.from(id));
     }
 
     // 상품 수정

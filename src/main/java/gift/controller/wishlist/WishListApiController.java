@@ -71,7 +71,7 @@ public class WishListApiController {
         Long wishListId = wishListService.update(memberId, wishListRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(new IdResponse(wishListId));
+            .body(IdResponse.from(wishListId));
     }
 
     // quantity 수정과 별개로, 위시리스트 테이블에 저장된 레코드 자체를 삭제

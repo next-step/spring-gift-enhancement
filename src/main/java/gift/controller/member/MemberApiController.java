@@ -43,7 +43,7 @@ public class MemberApiController {
     ){
         Long memberId = memberService.insert(memberRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(new IdResponse(memberId));
+            .body(IdResponse.from(memberId));
     }
 
     // member 조회: 관리자용 기능
