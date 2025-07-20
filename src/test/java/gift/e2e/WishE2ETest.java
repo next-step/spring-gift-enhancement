@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -15,6 +15,7 @@ import gift.auth.jwt.JwtUtil;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.common.exception.CustomException;
+import gift.controller.WishController;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.Member;
@@ -33,8 +34,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(WishController.class)
-@Import({JwtFilter.class, JwtProvider.class, WishControllerTest.JwtTestConfig.class})
-class WishControllerTest {
+@Import({JwtFilter.class, JwtProvider.class, WishE2ETest.JwtTestConfig.class})
+class WishE2ETest {
 
     @Autowired
     private MockMvc mockMvc;
