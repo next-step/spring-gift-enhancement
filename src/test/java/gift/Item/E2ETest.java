@@ -21,7 +21,7 @@ import org.springframework.web.client.RestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // 각 메서드 실행 전 스프링 컨텍스트, DB 초기화
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql(scripts = "/data.sql")
+@Sql(scripts = "/gift/sql/data.sql")
 public class E2ETest {
 
     @LocalServerPort
