@@ -1,7 +1,7 @@
 package gift;
 
 
-import gift.test_dto.PageDto;
+import gift.dto.PageDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;
 import org.junit.jupiter.api.BeforeEach;

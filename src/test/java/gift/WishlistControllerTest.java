@@ -6,7 +6,7 @@ import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.member.token.TokenProvider;
 import gift.product.entity.Product;
-import gift.test_dto.PageDto;
+import gift.dto.PageDto;
 import gift.wishlist.controller.WishlistController;
 import gift.wishlist.dto.WishRequestDto;
 import gift.wishlist.dto.WishResponseDto;

@@ -1,4 +1,4 @@
-package gift.test_dto;
+package gift.dto;
 
 import java.util.List;
 

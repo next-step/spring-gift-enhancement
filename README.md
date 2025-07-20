@@ -40,5 +40,6 @@
 - [x] WishNotFoundByMemberIdAndWishId 예외클래스 이름을 WishlistAccessDeniedException으로 변경
 - [x] Wishlist에게 위시리스트를 가진 소유자가 맞는지 확인하는 로직 위임
 - [x] ProductService 코드 가독성을 높이기 위한 리팩토링
+- [x] 스네이크 표기법 사용된 패키지명 변경
 
 ## 3단계 - 상품옵션
