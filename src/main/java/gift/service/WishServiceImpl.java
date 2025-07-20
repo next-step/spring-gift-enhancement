@@ -49,7 +49,7 @@ public class WishServiceImpl implements WishService {
         }
 
         Wish savedWish = wishRepository.save(
-            new Wish(null, member, product, request.quantity()));
+            new Wish(member, product, request.quantity()));
 
         return WishResponse.from(savedWish);
     }

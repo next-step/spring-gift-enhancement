@@ -36,16 +36,16 @@ class WishRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        testMember = memberRepository.save(new Member(null, "test@domain.com", "pw"));
-        testProduct = productRepository.save(new Product(null, "테스트 상품", 4500, "https://test.jpg"));
+        testMember = memberRepository.save(new Member("test@domain.com", "pw"));
+        testProduct = productRepository.save(new Product("테스트 상품", 4500, "https://test.jpg"));
         testProduct2 = productRepository.save(
-            new Product(null, "또다른 상품", 3000, "https://another.jpg"));
+            new Product("또다른 상품", 3000, "https://another.jpg"));
     }
 
     @Test
     @DisplayName("위시 저장 테스트")
     void save() {
-        Wish wish = new Wish(null, testMember, testProduct, 1);
+        Wish wish = new Wish(testMember, testProduct, 1);
         Wish savedWish = wishRepository.save(wish);
 
         Wish testWish = wishRepository.findById(savedWish.getId()).orElseThrow();
@@ -67,7 +67,7 @@ class WishRepositoryTest {
     @Test
     @DisplayName("유저와 상품으로 위시 존재 여부 확인")
     void existsByMemberAndProduct() {
-        wishRepository.save(new Wish(null, testMember, testProduct, 1));
+        wishRepository.save(new Wish(testMember, testProduct, 1));
 
         boolean exists = wishRepository.existsByMemberAndProduct(testMember, testProduct);
 
@@ -77,7 +77,7 @@ class WishRepositoryTest {
     @Test
     @DisplayName("유저와 상품으로 위시 삭제")
     void deleteByMemberAndProduct() {
-        Wish wish = wishRepository.save(new Wish(null, testMember, testProduct, 1));
+        Wish wish = wishRepository.save(new Wish(testMember, testProduct, 1));
 
         wishRepository.deleteByMemberAndProduct(testMember, testProduct);
 
@@ -92,8 +92,8 @@ class WishRepositoryTest {
     @Test
     @DisplayName("유저로 모든 위시 조회")
     void findAllByMember() {
-        Wish wish1 = wishRepository.save(new Wish(null, testMember, testProduct, 1));
-        Wish wish2 = wishRepository.save(new Wish(null, testMember, testProduct2, 2));
+        Wish wish1 = wishRepository.save(new Wish(testMember, testProduct, 1));
+        Wish wish2 = wishRepository.save(new Wish(testMember, testProduct2, 2));
 
         Pageable pageable = PageRequest.of(0, 10);
         Page<Wish> wishesPage = wishRepository.findAllByMember(testMember, pageable);

@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductResponse create(ProductRequest request) {
         Product savedProduct = productRepository.save(
-            new Product(null, request.name(), request.price(), request.imageUrl()));
+            new Product(request.name(), request.price(), request.imageUrl()));
 
         return ProductResponse.from(savedProduct);
     }
