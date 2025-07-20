@@ -9,9 +9,10 @@ public interface OptionService {
 
     Option toOption(Long productId, OptionRequestDto request);
 
-    void addOption(Long productId, OptionRequestDto optionRequestDto);
+    OptionResponseDto addOption(Long productId, OptionRequestDto optionRequestDto);
 
-    void updateOption(Long productId, Long optionId, OptionRequestDto optionRequestDto);
+    OptionResponseDto updateOption(Long productId, Long optionId,
+        OptionRequestDto optionRequestDto);
 
     void deleteOption(Long optionId);
 

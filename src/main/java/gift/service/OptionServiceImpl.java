@@ -35,23 +35,30 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     @Transactional
-    public void addOption(Long productId, OptionRequestDto optionRequestDto) {
+    public OptionResponseDto addOption(Long productId, OptionRequestDto optionRequestDto) {
         Option option = toOption(productId, optionRequestDto);
         if (optionRepository.existsByProductIdAndName(productId, option.getName())) {
             throw new OptionNameDuplicationException("이미 존재하는 옵션명입니다: " + option.getName());
         }
-        optionRepository.save(option);
+        Option storedOption = optionRepository.save(option);
+        return new OptionResponseDto(storedOption);
+
     }
 
     @Override
-    public void updateOption(Long productId, Long optionId, OptionRequestDto optionRequestDto) {
+    @Transactional
+    public OptionResponseDto updateOption(Long productId, Long optionId,
+        OptionRequestDto optionRequestDto) {
         Option option = optionRepository.findById(optionId)
             .orElseThrow(() -> new OptionNotFoundException("옵션이 존재하지 않습니다"));
         if (optionRepository.existsByProductIdAndNameAndIdNot(productId, option.getName(),
             optionId)) {
             throw new OptionNameDuplicationException("이미 존재하는 옵션명입니다: " + option.getName());
         }
-        optionRepository.save(option);
+        option.setName(optionRequestDto.optionName());
+        option.setQuantity(optionRequestDto.quantity());
+        Option updatedOption = optionRepository.save(option);
+        return new OptionResponseDto(updatedOption);
     }
 
     @Override
