@@ -1,5 +1,9 @@
 package gift.wishlist.service;
 
+import gift.common.dto.PageResponseDto;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
 import gift.item.ItemEntity;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
@@ -7,12 +11,15 @@ import gift.member.MemberEntity;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.wishlist.WishlistEntity;
+import gift.wishlist.WishlistSortBy;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.exception.WishlistNotFoundException;
 import gift.wishlist.repository.WishlistRepository;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,26 +60,36 @@ public class WishlistService {
         );
     }
 
-    public List<WishlistResponseDto> findAll(Long memberId) {
-        List<WishlistEntity> wishlistEntities =
-            wishlistRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
+    public PageResponseDto<WishlistResponseDto> findAll(
+        Long memberId,
+        PageIndex page,
+        PageSize size,
+        WishlistSortBy sortBy,
+        SortDirection direction
+    ) {
 
-        List<WishlistResponseDto> wishlistResponseDtos = new ArrayList<>();
+        Sort sort = Sort.by(
+            direction.toSortDir(),
+            sortBy.property()
+        );
 
-        for (WishlistEntity wishlistEntity : wishlistEntities) {
-            WishlistResponseDto dto = new WishlistResponseDto(
-                wishlistEntity.getId(),
-                wishlistEntity.getMember().getId(),
-                wishlistEntity.getItem().getId(),
-                wishlistEntity.getItem().getName(),
-                wishlistEntity.getItem().getPrice(),
-                wishlistEntity.getItem().getImageUrl(),
-                wishlistEntity.getCreatedAt()
-            );
-            wishlistResponseDtos.add(dto);
-        }
+        Pageable pageable = PageRequest.of(page.toZeroBased(), size.toValue(), sort);
 
-        return wishlistResponseDtos;
+        Page<WishlistEntity> wishlistEntities = wishlistRepository.findByMemberId(memberId,
+            pageable);
+
+        Page<WishlistResponseDto> pagedDtos = wishlistEntities.map(
+            entity -> new WishlistResponseDto(
+                entity.getId(),
+                entity.getMember().getId(),
+                entity.getItem().getId(),
+                entity.getItem().getName(),
+                entity.getItem().getPrice(),
+                entity.getItem().getImageUrl(),
+                entity.getCreatedAt()
+            ));
+
+        return PageResponseDto.from(pagedDtos);
 
     }
 

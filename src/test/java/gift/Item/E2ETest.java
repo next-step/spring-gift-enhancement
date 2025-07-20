@@ -4,10 +4,10 @@ package gift.Item;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import gift.common.dto.PageResponseDto;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -37,14 +37,18 @@ public class E2ETest {
         var response = client.get()
             .uri(url)
             .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<ItemResponseDto>>() {
+            .toEntity(new ParameterizedTypeReference<PageResponseDto<ItemResponseDto>>() {
             });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().get(0).name()).isEqualTo("나이키 모자");
-        assertThat(response.getBody().get(1).price()).isEqualTo(38000);
-        assertThat(response.getBody().get(2).imageUrl()).isEqualTo("www.musinsa.com");
+        assertThat(response.getBody().contents()).hasSize(3);
+        assertThat(response.getBody().totalElements()).isEqualTo(3L);
+
+        var contents = response.getBody().contents();
+        assertThat(contents.get(0).name()).isEqualTo("무탠다드 슬랙스");
+        assertThat(contents.get(1).price()).isEqualTo(38000);
+        assertThat(contents.get(2).imageUrl()).isEqualTo("www.nike.com");
     }
 
     @Test

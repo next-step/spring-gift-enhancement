@@ -1,12 +1,16 @@
 package gift.wishlist.controller;
 
+import gift.common.dto.PageResponseDto;
 import gift.common.security.AuthenticatedMember;
 import gift.common.security.LoginMember;
+import gift.common.vo.PageIndex;
+import gift.common.vo.PageSize;
+import gift.common.vo.SortDirection;
+import gift.wishlist.WishlistSortBy;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.service.WishlistService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,11 +54,22 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistResponseDto>> findAllWishlists(
+    public ResponseEntity<PageResponseDto<WishlistResponseDto>> findAll(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction,
         @LoginMember AuthenticatedMember member
     ) {
-        List<WishlistResponseDto> wishlistResponseDtos = wishlistService.findAll(member.id());
-        return ResponseEntity.status(HttpStatus.OK).body(wishlistResponseDtos);
+
+        PageResponseDto<WishlistResponseDto> pagedDtos = wishlistService.findAll(
+            member.id(),
+            new PageIndex(page),
+            new PageSize(size),
+            WishlistSortBy.from(sortBy),
+            SortDirection.from(direction)
+        );
+        return ResponseEntity.ok(pagedDtos);
     }
 
     @DeleteMapping("/{wishlistId}")
