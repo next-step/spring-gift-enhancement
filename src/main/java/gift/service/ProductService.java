@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.OptionResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ public interface ProductService {
     ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto);
 
     void deleteProduct(Long id);
+
+    List<OptionResponseDto> findOptionsByProductId(Long id);
 
 
 }

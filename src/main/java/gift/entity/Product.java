@@ -1,6 +1,12 @@
 package gift.entity;
 
+import gift.dto.OptionRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Product {
@@ -17,6 +23,10 @@ public class Product {
 
     @Column(nullable = false)
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotEmpty(message = "상품에는 최소 하나 이상의 옵션이 있어야 합니다.")
+    private List<Option> options = new ArrayList<Option>();
 
     public Product(String name, long price, String imageUrl) {
         this.name = name;
@@ -57,6 +67,10 @@ public class Product {
         return imageUrl;
     }
 
+    public List<Option> getOptions() {
+        return options;
+    }
+
     public void setPrice(long price) {
         this.price = price;
     }
@@ -65,5 +79,14 @@ public class Product {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void saveOption(Option option) {
+        this.options.add(option);
+        option.changeProduct(this);
+    }
+
+    public void clearOptions() {
+        this.options.clear();
     }
 }

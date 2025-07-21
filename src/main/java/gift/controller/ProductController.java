@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.OptionResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
@@ -45,6 +46,11 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequestDto requestDto) {
 
         return ResponseEntity.ok(productService.updateProduct(id, requestDto));
+    }
+
+    @GetMapping("/{id}/options")
+    public ResponseEntity<List<OptionResponseDto>> getProductOptions(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findOptionsByProductId(id));
     }
 
 
