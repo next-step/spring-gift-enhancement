@@ -6,6 +6,7 @@ import gift.item.dto.OptionCreateDto;
 import gift.item.dto.OptionResponseDto;
 import gift.item.dto.OptionUpdateDto;
 import gift.item.exception.ItemNotFoundException;
+import gift.item.exception.LastOptionCannotBeDeletedException;
 import gift.item.exception.OptionNotFoundException;
 import gift.item.repository.ItemRepository;
 import gift.item.repository.OptionRepository;
@@ -79,7 +80,14 @@ public class OptionService {
         OptionEntity oldOptionEntity = optionRepository.findById(optionId)
             .orElseThrow(() -> new OptionNotFoundException(optionId));
 
+        Long itemId = oldOptionEntity.getItem().getId();
+        List<OptionEntity> itemOptions = optionRepository.findByItemId(itemId);
+
+        if (itemOptions.size() <= 1) {
+            throw new LastOptionCannotBeDeletedException(itemId);
+        }
+
         optionRepository.delete(oldOptionEntity);
     }
-    
+
 }

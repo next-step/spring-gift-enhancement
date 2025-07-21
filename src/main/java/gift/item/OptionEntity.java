@@ -48,6 +48,10 @@ public class OptionEntity {
         return quantity;
     }
 
+    public ItemEntity getItem() {
+        return item;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
