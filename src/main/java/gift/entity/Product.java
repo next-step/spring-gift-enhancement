@@ -4,6 +4,9 @@ import gift.domain.product.MdApprovalStatus;
 import gift.domain.product.ProductName;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -21,6 +24,9 @@ public class Product {
     @Embedded
     @AttributeOverride(name = "approved", column = @Column(name = "md_approved"))
     private MdApprovalStatus mdApproval;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductOption> options = new ArrayList<>();
 
     protected Product() {
     }
@@ -68,4 +74,12 @@ public class Product {
     public void setId(Long productId) {
         this.id = productId;
     }
+
+    public void addOption(ProductOption option) {
+        options.add(option);
+        option.setProduct(this);
+    }
+
+    public List<ProductOption> getOptions() { return options; }
+    public void setOptions(List<ProductOption> options) { this.options = options; }
 }
