@@ -45,8 +45,8 @@
 - [x] `Option` 엔티티 클래스 생성 (name, quantity 필드 포함)
 - [x] `Product`와 `Option` 간의 1:N 연관관계 매핑 (상품은 최소 1개 이상의 옵션을 가져야 함)
 - [x] `OptionRepository` 생성
-- [ ] 옵션 이름, 수량에 대한 유효성 검사 로직 추가
-- [ ] 상품 내 옵션 이름 중복 검사 로직 추가
+- [x] 옵션 이름, 수량에 대한 유효성 검사 로직 추가
+- [x] 상품 내 옵션 이름 중복 검사 로직 추가
 - [x] `Option` 엔티티에 수량 차감(`subtract`) 비즈니스 로직 구현
 - [x] Option 관련 DTO 생성 및 ProductRequest 수정
 - [ ] `ProductService` 또는 별도의 `OptionService`에 특정 상품의 옵션 목록을 조회하는 기능 추가

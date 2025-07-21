@@ -2,9 +2,12 @@ package gift.service;
 
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,14 @@ public class ProductService {
 
     @Transactional
     public ProductResponse addProduct(ProductRequest request) {
+        validateUniqueOptionNames(request);
+
         Product product = new Product(request.name(), request.price(), request.imageUrl());
+
+        request.options().stream()
+                .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+                .forEach(product::addOption);
+
         Product saved = productRepository.save(product);
         return new ProductResponse(saved);
     }
@@ -57,5 +67,14 @@ public class ProductService {
             throw new ProductNotFoundException("해당 ID의 상품이 존재하지 않아 삭제할 수 없습니다: " + id);
         }
         productRepository.deleteById(id);
+    }
+
+    private void validateUniqueOptionNames(ProductRequest request) {
+        Set<String> optionNames = new HashSet<>();
+        for (var optionRequest : request.options()) {
+            if (!optionNames.add(optionRequest.name())) {
+                throw new IllegalArgumentException("옵션 이름은 중복될 수 없습니다: " + optionRequest.name());
+            }
+        }
     }
 }
