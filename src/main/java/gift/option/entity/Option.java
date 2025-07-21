@@ -49,4 +49,13 @@ public class Option {
 
         this.product = product;
     }
+
+    public void updateOption(String name, int quantity){
+        this.name = name;
+        this.quantity = quantity;
+    }
+
+    public boolean isEqualProduct(Product product) {
+        return this.product.equals(product);
+    }
 }

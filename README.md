@@ -53,3 +53,4 @@
   - [x] 요청을 위한 OptionReqeustDto, 응답을 위한 OptionResponseDto 구현
   - [x] 상품에 Option 추가 기능 구현
   - [x] 상품의 전체 Option 조회 기능 구현
+  - [x] 옵션 수정 기능 구현

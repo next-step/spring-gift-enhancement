@@ -48,6 +48,26 @@ public class OptionService {
                 .toList();
     }
 
+    @Transactional
+    public OptionResponseDto updateOption(Long productId, Long optionId, OptionRequestDto optionRequestDto) {
+        Product product = getProduct(productId);
+
+        Option option = optionRepository.findById(optionId)
+                .orElseThrow(()->new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
+
+        if(!option.isEqualProduct(product)) {
+            throw new IllegalArgumentException(productId + "번 상품에 해당하는 상품 옵션이 아닙니다.");
+        }
+
+        if(product.isDuplicateOptionName(optionRequestDto.name())) {
+            throw new IllegalArgumentException(optionRequestDto.name() + "해당 옵션명은 이미 존재합니다.");
+        }
+
+        option.updateOption(optionRequestDto.name(), optionRequestDto.quantity());
+
+        return OptionResponseDto.from(option);
+    }
+
     private Product getProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
