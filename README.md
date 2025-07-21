@@ -28,7 +28,7 @@
 - [x] option crud 구현
 - [x] 기존 API 수정
 - [x] option 수량 감소 기능 구현
-- [ ] 테스트코드 작성
+- [x] 테스트코드 작성
 
 # spring-gift-wishlist
 
