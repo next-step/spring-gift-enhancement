@@ -1,5 +1,7 @@
 package gift.entity;
 
+import gift.common.code.CustomResponseCode;
+import gift.common.exception.CustomException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,6 +50,23 @@ public class Product {
     public void addOption(ProductOption option) {
         options.add(option);
         option.setProduct(this);
+    }
+
+    public ProductOption addUniqueOption(String name, Long quantity) {
+        validateDuplicateOptionName(name);
+
+        ProductOption option = ProductOption.of(name, quantity, this);
+        this.addOption(option);
+
+        return option;
+    }
+
+    private void validateDuplicateOptionName(String name) {
+        boolean isOptionNameDuplicated = options.stream()
+            .anyMatch(opt -> opt.getName().equals(name));
+        if (isOptionNameDuplicated) {
+            throw new CustomException(CustomResponseCode.OPTION_DUPLICATED);
+        }
     }
 
     public List<ProductOption> getOptions() {

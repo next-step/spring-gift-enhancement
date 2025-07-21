@@ -30,16 +30,7 @@ public class OptionServiceImpl implements OptionService {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        boolean isDuplicate = product.getOptions().stream()
-            .anyMatch(opt -> opt.getName().equals(request.name()));
-
-        if (isDuplicate) {
-            throw new CustomException(CustomResponseCode.OPTION_DUPLICATED);
-        }
-
-        ProductOption option = ProductOption.of(request.name(), request.quantity(), product);
-        product.addOption(option);
-
+        ProductOption option = product.addUniqueOption(request.name(), request.quantity());
         ProductOption savedOption = optionRepository.save(option);
 
         return ProductOptionResponse.from(savedOption);
