@@ -101,7 +101,7 @@
 - [x] Option 재고 차감, 중복 이름 검증 구현
 - [x] Option repository 구현
 - [x] Option service 구현
-- [ ] Option controller 구현
+- [x] Option controller 구현
 - [ ] (선택) 상품 옵션 서비스 화면 추가
 
 # spring-gift-product (Mission 1)
