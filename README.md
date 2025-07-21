@@ -44,7 +44,7 @@
 
 - [x] `Option` 엔티티 클래스 생성 (name, quantity 필드 포함)
 - [x] `Product`와 `Option` 간의 1:N 연관관계 매핑 (상품은 최소 1개 이상의 옵션을 가져야 함)
-- [ ] `OptionRepository` 생성
+- [x] `OptionRepository` 생성
 - [ ] 옵션 이름, 수량에 대한 유효성 검사 로직 추가
 - [ ] 상품 내 옵션 이름 중복 검사 로직 추가
 - [ ] `Option` 엔티티에 수량 차감(`subtract`) 비즈니스 로직 구현
