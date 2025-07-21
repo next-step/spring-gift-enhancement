@@ -9,7 +9,6 @@ public class WishlistResponse {
     Long productId;
     String productName;
     String productImageUrl;
-    Integer productPrice;
 
     public WishlistResponse(Wishlist wishlist) {
         Product product = wishlist.getProduct();
@@ -17,7 +16,6 @@ public class WishlistResponse {
         this.productId = product.getId();
         this.productName = product.getName();
         this.productImageUrl = product.getImageUrl();
-        this.productPrice = product.getPrice();
     }
 
     public Long getId() {
@@ -30,10 +28,6 @@ public class WishlistResponse {
 
     public String getProductName() {
         return productName;
-    }
-
-    public Integer getProductPrice() {
-        return productPrice;
     }
 
     public String getProductImageUrl() {

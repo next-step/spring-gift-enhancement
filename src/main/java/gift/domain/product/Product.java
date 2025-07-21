@@ -20,7 +20,7 @@ public class Product {
     @Column(nullable = false)
     private String imageUrl;
 
-    @OneToMany(mappedBy = "product_id", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProductOption> options = new ArrayList<>();
 
     public Product(String name, String imageUrl) {
@@ -45,12 +45,14 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void addOption(ProductOptionCreateRequest request) {
-        if (existOptionName(request.name())) {
-            throw new DuplicateOptionNameException();
+    public void addOption(ProductOptionCreateRequest ... request) {
+        for (ProductOptionCreateRequest r : request) {
+            if (existOptionName(r.name())) {
+                throw new DuplicateOptionNameException();
+            }
+            ProductOption option = ProductOption.of(this, r.name(), r.price(), r.quantity());
+            options.add(option);
         }
-        ProductOption option = ProductOption.of(this, request.name(), request.price(), request.quantity());
-        options.add(option);
     }
 
     private boolean existOptionName(String name) { // N+1문제
