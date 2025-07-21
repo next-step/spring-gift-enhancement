@@ -1,5 +1,6 @@
 package gift;
 
+import gift.product.dto.ProductOptionSaveRequestDto;
 import gift.product.dto.ProductSaveRequestDto;
 import gift.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +31,14 @@ public class paginationTest {
 
     @BeforeEach
     void setUp() {
+        List<ProductOptionSaveRequestDto> options = new ArrayList<>();
+        options.add(new ProductOptionSaveRequestDto("option1", 100));
         for (int i = 1; i <= 21; i++) {
             String name = "testProduct" + i;
             int price = i * 1000;
             String imageUrl = "imageUrl" + i;
 
-            ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto(name, price, imageUrl);
+            ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto(name, price, imageUrl, options);
             productService.createProduct(productSaveRequestDto);
         }
     }

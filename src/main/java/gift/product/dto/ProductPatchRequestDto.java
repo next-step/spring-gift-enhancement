@@ -3,7 +3,6 @@ package gift.product.dto;
 import gift.common.annotation.BannedWord;
 import gift.common.annotation.NoSpecialChar;
 import gift.product.domain.Product;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 

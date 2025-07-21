@@ -1,5 +1,6 @@
 package gift;
 
+import gift.product.dto.ProductOptionSaveRequestDto;
 import gift.product.dto.ProductPatchRequestDto;
 import gift.product.dto.ProductSaveRequestDto;
 import gift.product.dto.ResponseDto;
@@ -15,6 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +36,9 @@ class crudE2ETest {
 
     @BeforeEach
     void setUp() {
-        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct1", 1000, "imageUrl1");
+        List<ProductOptionSaveRequestDto> options = new ArrayList<>();
+        options.add(new ProductOptionSaveRequestDto("option1", 100));
+        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct1", 1000, "imageUrl1", options);
         productService.createProduct(productSaveRequestDto);
         lastId = productService.findAll().getLast().getId();
     }
@@ -41,7 +46,10 @@ class crudE2ETest {
     @Test
     void 상품이_정상적으로_생성됨() {
         String url = "http://localhost:" + port + "/api/product/add";
-        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2", 2000, "imageUrl2");
+
+        List<ProductOptionSaveRequestDto> options = new ArrayList<>();
+        options.add(new ProductOptionSaveRequestDto("option2", 200));
+        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2", 2000, "imageUrl2", options);
         ResponseEntity<ResponseDto> response = restClient
                 .post()
                 .uri(url)
@@ -58,7 +66,11 @@ class crudE2ETest {
     @Test
     void 상품_생성요청에서_이름에_특수문자를_포함할_시_400_반환() {
         String url = "http://localhost:" + port + "/api/product/add";
-        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2!?", 2000, "imageUrl2");
+
+
+        List<ProductOptionSaveRequestDto> options = new ArrayList<>();
+        options.add(new ProductOptionSaveRequestDto("option2", 200));
+        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2!?", 2000, "imageUrl2", options);
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> restClient
