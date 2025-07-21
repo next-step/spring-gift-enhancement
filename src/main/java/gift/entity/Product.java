@@ -3,6 +3,9 @@ package gift.entity;
 import gift.dto.ProductRequestDto;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -13,6 +16,9 @@ public class Product {
     private String name;
     private Long price;
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductOption> options = new ArrayList<>();
 
     protected Product() {}
 
