@@ -43,9 +43,6 @@ public class WishListServiceImpl implements WishListService {
 
         String itemName = createWishItemRequestDto.name();
         Optional<Item> findItem = itemService.findItemByName(itemName);
-        if (findItem.isEmpty()) {
-            throw new ItemNotFoundException(createWishItemRequestDto.name());
-        }
 
         Item item = findItem.get();
         Integer quantity = createWishItemRequestDto.quantity();
@@ -91,9 +88,6 @@ public class WishListServiceImpl implements WishListService {
         }
 
         Optional<Item> targetItem = itemService.findItemByName(name);
-        if (targetItem.isEmpty()) {
-            throw new ItemNotFoundException(name);
-        }
 
         Item item = targetItem.get();
 
@@ -119,10 +113,6 @@ public class WishListServiceImpl implements WishListService {
 
         String itemName = updateWishItemDto.itemName();
         Optional<Item> findItem = itemService.findItemByName(itemName);
-
-        if (findItem.isEmpty()) {
-            throw new ItemNotFoundException();
-        }
 
         WishItem findWishItem = wishListRepository.findByUserEmailAndItem(userEmail, findItem);
 
