@@ -13,3 +13,8 @@
 2. wishes 유저별 조회 페이지네이션 적용
 3. Products 관리 화면 페이지 이동 버튼 추가
 4. 테스트 코드 수정
+
+# 상품 옵션
+1. options, product_options 테이블 정의 및 엔티티 매핑
+2. ProductOption에 value 필드 추가
+3. 테스트 케이스 작성 및 디버깅(데이터베이스 자체 설정 삭제 후 JPA에게 위탁)
