@@ -27,7 +27,7 @@ public class WishService {
     @Transactional(readOnly = true)
     public Page<ProductResponse> getWishes(Member member, Pageable pageable) {
         Page<Wish> wishes = wishRepository.findByMemberWithProduct(member, pageable);
-        return wishes.map(wish -> wish.getProduct().toResponse());
+        return wishes.map(Wish::getProduct).map(ProductResponse::from);
     }
 
     @Transactional

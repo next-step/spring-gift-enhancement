@@ -1,6 +1,5 @@
 package gift.entity;
 
-import gift.dto.ProductResponse;
 import gift.entity.vo.Money;
 import gift.entity.vo.ProductName;
 import jakarta.persistence.*;
@@ -39,9 +38,5 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-    }
-
-    public ProductResponse toResponse() {
-        return new ProductResponse(id, this.getName(), this.getPrice(), imageUrl);
     }
 }

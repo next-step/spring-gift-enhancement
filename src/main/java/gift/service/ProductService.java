@@ -27,7 +27,7 @@ public class ProductService {
     public ProductResponse addProduct(ProductRequest request) {
         Product product = request.toEntity();
         Product savedProduct = productRepository.save(product);
-        return savedProduct.toResponse();
+        return ProductResponse.from(savedProduct);
     }
 
     @Transactional
@@ -39,18 +39,19 @@ public class ProductService {
                 new Money(request.price()),
                 request.imageUrl()
         );
-        return product.toResponse();
+        return ProductResponse.from(product);
     }
 
     @Transactional(readOnly = true)
     public Page<ProductResponse> findAllProducts(Pageable pageable) {
         Page<Product> productsPage = productRepository.findAll(pageable);
-        return productsPage.map(Product::toResponse);
+        return productsPage.map(ProductResponse::from);
     }
 
     @Transactional(readOnly = true)
     public ProductResponse findProductById(Long id) {
-        return findProductEntityById(id).toResponse();
+        Product product = findProductEntityById(id);
+        return ProductResponse.from(product);
     }
 
     @Transactional

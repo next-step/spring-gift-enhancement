@@ -9,6 +9,11 @@ public record ProductResponse(
         String imageUrl
 ) {
     public static ProductResponse from(Product product) {
-        return product.toResponse();
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        );
     }
 }
