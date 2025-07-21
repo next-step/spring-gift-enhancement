@@ -87,11 +87,10 @@ public class WishListApiTest {
     }
 
     @Test
-    void 위시리스트_페이지네이션_조회_성공하면_200() {
+    void 위시리스트_페이지네이션_조회_첫번째페이지_성공하면_200() {
         String baseUrl = "http://localhost:" + port + "/api/wishlists";
 
         // 첫번째 페이지 조회
-
         int page1 = 0;
         int size1 = 2;
         String[] sort1 = {"id", "asc"};
@@ -114,7 +113,11 @@ public class WishListApiTest {
         JsonNode contentNode1 = response1.getBody().get("content");
         assertThat(contentNode1.get(0).get("productId").asLong()).isEqualTo(1L);
         assertThat(contentNode1.size()).isEqualTo(2);
+    }
 
+    @Test
+    void 위시리스트_페이지네이션_조회_두번째페이지_성공시_200(){
+        String baseUrl = "http://localhost:" + port + "/api/wishlists";
         // 두번째 페이지 조회
         int page2 = 1;
         int size2 = 2;
@@ -137,6 +140,11 @@ public class WishListApiTest {
 
         JsonNode contentNode2 = response2.getBody().get("content");
         assertThat(contentNode2.get(0).get("productId").asLong()).isEqualTo(3L);
+    }
+
+    @Test
+    void 위시리스트_페이지네이션_조회_정렬조건변경_성공시_200(){
+        String baseUrl = "http://localhost:" + port + "/api/wishlists";
 
         // 정렬 조건 수정
         int page3 = 0;
@@ -164,7 +172,7 @@ public class WishListApiTest {
     }
 
     @Test
-    void 위시리스트_페이지네이션_정렬조건_위배시_401(){
+    void 위시리스트_페이지네이션_정렬조건_위배시_400(){
         String baseUrl = "http://localhost:" + port + "/api/wishlists";
 
         int page = 0;
