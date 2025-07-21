@@ -49,9 +49,11 @@ public class OptionController {
     }
 
     @DeleteMapping("/{optionId}")
-    public ResponseEntity<OptionResponseDto> deleteOption(
+    public ResponseEntity<Void> deleteOption(
             @PathVariable Long productId,
             @PathVariable Long optionId){
+        optionService.deleteOption(productId, optionId);
 
+        return ResponseEntity.noContent().build();
     }
 }

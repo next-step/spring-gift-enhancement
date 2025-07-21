@@ -48,9 +48,10 @@
 - [x] Product와 Option의 양방향 연관관계 설정
   - [x] Product에 Option 객체들을 저장하는 options 필드 추가
   - [x] Product에 연관관계 편의 메서드 추가
-- [ ] Option CRUD 기능 구현
+- [x] Option CRUD 기능 구현
   - [x] controller, service, repository 구현
   - [x] 요청을 위한 OptionReqeustDto, 응답을 위한 OptionResponseDto 구현
   - [x] 상품에 Option 추가 기능 구현
   - [x] 상품의 전체 Option 조회 기능 구현
   - [x] 옵션 수정 기능 구현
+  - [x] 옵션 삭제 기능 구현

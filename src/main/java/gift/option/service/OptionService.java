@@ -68,6 +68,20 @@ public class OptionService {
         return OptionResponseDto.from(option);
     }
 
+    @Transactional
+    public void deleteOption(Long productId, Long optionId) {
+        Product product = getProduct(productId);
+
+        Option option = optionRepository.findById(optionId)
+                .orElseThrow(()-> new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
+
+        if(!option.isEqualProduct(product)) {
+            throw new IllegalArgumentException(productId + "번 상품에 해당하는 상품 옵션이 아닙니다.");
+        }
+
+        product.getOptions().remove(option);
+    }
+
     private Product getProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
