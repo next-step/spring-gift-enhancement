@@ -2,7 +2,10 @@ package gift.controller.admin;
 
 import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
+import gift.dto.product.option.OptionRequestDto;
+import gift.dto.product.option.OptionResponseDto;
 import gift.service.product.ProductService;
+import gift.service.product.option.OptionService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +20,11 @@ import java.util.List;
 public class AdminProductController {
 
     private final ProductService productService;
+    private final OptionService optionService;
 
-    public AdminProductController(ProductService productService) {
+    public AdminProductController(ProductService productService, OptionService optionService) {
         this.productService = productService;
+        this.optionService = optionService;
     }
 
     // 상품 추가 페이지로 이동
@@ -36,6 +41,30 @@ public class AdminProductController {
         model.addAttribute("product", product);
 
         return "admin/editProductForm";
+    }
+
+    // 옵션 추가 페이지로 이동
+    @GetMapping("{productId}/options/new")
+    public String goNewOptionForm(@PathVariable Long productId, Model model) {
+
+        ProductResponseDto product = productService.findProductById(productId);
+        model.addAttribute("product", product);
+        return "admin/newOptionForm";
+    }
+
+    // 옵션 수정 페이지로 이동
+    @GetMapping("{productId}/options/{optionId}/edit")
+    public String editOptionForm(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            Model model) {
+
+        ProductResponseDto product = productService.findProductById(productId);
+        OptionResponseDto option = optionService.findOptionById(optionId);
+
+        model.addAttribute("product", product);
+        model.addAttribute("option", option);
+        return "admin/editOptionForm";
     }
 
     // 상품 목록 조회 기능
@@ -85,5 +114,45 @@ public class AdminProductController {
 
         productService.deleteProduct(id);
         return "redirect:/admin/products";
+    }
+
+    @GetMapping("{id}/options")
+    public String findOptions(@PathVariable Long id, Model model) {
+
+        ProductResponseDto product = productService.findProductById(id);
+        List<OptionResponseDto> options = optionService.findAllOptionByProductId(id);
+
+        model.addAttribute("product", product);
+        model.addAttribute("options", options);
+
+        return "admin/options";
+    }
+
+    @PostMapping("{id}/options")
+    public String saveOption(
+            @PathVariable Long id,
+            @Valid @ModelAttribute OptionRequestDto dto) {
+
+        optionService.saveOption(id, dto);
+        return "redirect:/admin/products/" + id + "/options";
+    }
+
+    @PutMapping("{productId}/options/{optionId}")
+    public String updateOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            @Valid @ModelAttribute OptionRequestDto dto) {
+
+        optionService.updateOption(optionId, dto);
+        return "redirect:/admin/products/" + productId + "/options";
+    }
+
+    @DeleteMapping("{productId}/options/{optionId}")
+    public String deleteOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId) {
+
+        optionService.deleteOption(optionId);
+        return "redirect:/admin/products/" + productId + "/options";
     }
 }
