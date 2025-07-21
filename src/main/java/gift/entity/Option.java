@@ -27,7 +27,7 @@ public class Option {
 
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY) // 성능 향상 고려를 위해 지연 로딩 적용
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
