@@ -33,4 +33,9 @@ public class ProductOption {
         this.quantity -= amount;
     }
 
+    public Long getId() {return id;}
+    public Product getProduct() {return product;}
+    public String getName() {return name;}
+    public int getQuantity() {return quantity;}
+
 }

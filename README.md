@@ -60,11 +60,11 @@ Content-Type: application/json
 - [x] boolean existsByProductIdAndName(Long productId, String name)
 
 4. Service 구현
-- [ ] 옵션 추가 로직 (addOption)
-- [ ] 동일 상품 내 이름 중복 검증
-- [ ] 유효성 검증 후 저장
-- [ ] 옵션 목록 조회 로직 (getOptionsByProductId)
-- [ ] 옵션 수량 차감 기능 (subtractOptionQuantity)
+- [x] 옵션 추가 로직 (addOption)
+- [x] 동일 상품 내 이름 중복 검증
+- [x] 유효성 검증 후 저장
+- [x] 옵션 목록 조회 로직 (getOptionsByProductId)
+- [x] 옵션 수량 차감 기능 (subtractOptionQuantity)
 
 5. Controller 구현
 - [ ] GET /api/products/{productId}/options → 옵션 목록 반환
