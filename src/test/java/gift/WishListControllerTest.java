@@ -9,8 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import gift.controller.wishlist.WishListController;
 import gift.dto.member.MemberCredentialDto;
 import gift.dto.product.ProductResponseDto;
-import gift.dto.wishlist.WishListResponseDto;
-import gift.entity.Product;
 import gift.exception.UnAuthenicatedException;
 import gift.resolver.LoginMemberArgumentResolver;
 import gift.service.member.MemberService;
@@ -99,7 +97,8 @@ public class WishListControllerTest {
         productList.add(new ProductResponseDto(3L, "테스트 3", 1, 1, "test"));
 
         Pageable pageRequest = PageRequest.of(0, 10);
-        Page<ProductResponseDto> productPage = new PageImpl<>(productList, pageRequest, productList.size());
+        Page<ProductResponseDto> productPage = new PageImpl<>(productList, pageRequest,
+            productList.size());
 
         given(jwtUtil.getMemberIdFromToken(token))
             .willReturn(memberId);

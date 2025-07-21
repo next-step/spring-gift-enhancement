@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductRequestDto.ProductOptionRequestDto;
 import gift.dto.product.ProductResponseDto;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -36,7 +36,9 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 성공")
     void createProduct_success() {
-        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com");
+        var option1 = new ProductOptionRequestDto("option1", 1);
+        var option2 = new ProductOptionRequestDto("option2", 2);
+        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com", List.of(option1, option2));
 
         var response = client.post()
             .uri(BASE_URL)
@@ -50,7 +52,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 ('카카오' 포함 시 유효성 검사 400 Bad Request)")
     void createProduct_fail_whenNameContainsKakao() {
-        var requestDto = new ProductRequestDto("카카오", 0, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("카카오", 0, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -66,7 +68,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (이름이 빈칸일 경우 400 Bad Request)")
     void createProduct_fail_whenNameIsBlank() {
-        var requestDto = new ProductRequestDto("", 0, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("", 0, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -82,7 +84,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (이름 15자 초과 시 400 Bad Request)")
     void createProduct_fail_whenNameExceedsMaxLength() {
-        var requestDto = new ProductRequestDto("ddddddddddddddd", 0, 1, "");
+        var requestDto = new ProductRequestDto("ddddddddddddddd", 0, 1, "", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -98,7 +100,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (이름에 허용되지 않은 특수문자 포함 시 400 Bad Request)")
     void createProduct_fail_whenNameContainsInvalidSpecialChars() {
-        var requestDto = new ProductRequestDto("###", 0, 1, "");
+        var requestDto = new ProductRequestDto("###", 0, 1, "", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -114,7 +116,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (가격이 음수일 경우 400 Bad Request)")
     void createProduct_fail_whenPriceIsNegative() {
-        var requestDto = new ProductRequestDto("test product", -1, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("test product", -1, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -130,7 +132,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (상품 수량이 1 미만인 경우)")
     void createProduct_fail_whenQuantityIsZero() {
-        var requestDto = new ProductRequestDto("test product", -1, 0, "www.example.com");
+        var requestDto = new ProductRequestDto("test product", -1, 0, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -146,7 +148,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (상품 수량이 1억 이상인 경우)")
     void createProduct_fail_whenQuantityIs100000000More() {
-        var requestDto = new ProductRequestDto("test product", -1, 100000000, "www.example.com");
+        var requestDto = new ProductRequestDto("test product", -1, 100000000, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -162,7 +164,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (이미지 URL이 빈칸일 경우 400 Bad Request)")
     void createProduct_fail_whenImageUrlIsBlank() {
-        var requestDto = new ProductRequestDto("test product", 1000, 1, "");
+        var requestDto = new ProductRequestDto("test product", 1000, 1, "", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -216,7 +218,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 성공")
     void updateProduct_success() {
-        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com", List.of());
 
         var response = client.put()
             .uri(BASE_URL + "/2")
@@ -230,7 +232,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (존재하지 않는 상품 ID로 요청 시 404 Not Found 응답)")
     void updateProduct_fail_whenProductNotFound() {
-        var requestDto = new ProductRequestDto("test", 0, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("test", 0, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
@@ -246,7 +248,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (이름이 '카카오'를 포함)")
     void updateProduct_fail_whenNameContainsKakao() {
-        var requestDto = new ProductRequestDto("카카오", 0, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("카카오", 0, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -262,7 +264,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (이름이 빈칸)")
     void updateProduct_fail_whenNameIsBlank() {
-        var requestDto = new ProductRequestDto("", 0, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("", 0, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -278,7 +280,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (이름이 15자 초과)")
     void updateProduct_fail_whenNameExceedsMaxLength() {
-        var requestDto = new ProductRequestDto("ddddddddddddddd", 0, 1, "");
+        var requestDto = new ProductRequestDto("ddddddddddddddd", 0, 1, "", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -294,7 +296,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (이름에 허용되지 않은 특수문자 포함)")
     void updateProduct_fail_whenNameContainsInvalidSpecialChars() {
-        var requestDto = new ProductRequestDto("###", 0, 1, "");
+        var requestDto = new ProductRequestDto("###", 0, 1, "", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -310,7 +312,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (가격이 음수)")
     void updateProduct_fail_whenPriceIsNegative() {
-        var requestDto = new ProductRequestDto("test product", -1, 1, "www.example.com");
+        var requestDto = new ProductRequestDto("test product", -1, 1, "www.example.com", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -326,7 +328,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 실패 (이미지 URL이 빈칸)")
     void updateProduct_fail_whenImageUrlIsBlank() {
-        var requestDto = new ProductRequestDto("test product", 1000, 1, "");
+        var requestDto = new ProductRequestDto("test product", 1000, 1, "", List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
