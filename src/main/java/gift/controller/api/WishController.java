@@ -9,8 +9,8 @@ import gift.login.Login;
 import gift.service.WishService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -35,11 +35,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<WishResponse>> getWishes(
+    public ResponseEntity<Slice<WishResponse>> getWishes(
         @Login Member member,
         @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        Page<WishResponse> wishes = wishService.getWishes(member, pageable);
+        Slice<WishResponse> wishes = wishService.getWishes(member, pageable);
         return ResponseEntity.ok(wishes);
     }
 
