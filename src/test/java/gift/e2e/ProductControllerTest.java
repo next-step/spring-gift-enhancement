@@ -2,6 +2,8 @@ package gift.e2e;
 
 import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
+import gift.dto.product.option.OptionRequestDto;
+import gift.dto.product.option.OptionResponseDto;
 import gift.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -226,5 +228,100 @@ public class ProductControllerTest {
         assertThat(dtoBody.getDescription()).isEqualTo("카카오 문구가 담긴 상품은 담당 MD와 협의 후 사용가능합니다.");
     }
 
+    @DisplayName("정상적으로 상품 옵션 추가가 되는지 테스트")
+    @Test
+    void 정상적인_상품_옵션_생성(){
 
+        OptionRequestDto requestDto = new OptionRequestDto(
+                "L size",
+                100L
+        );
+
+        var response = client.post()
+                .uri(url + "/2/options")
+                .body(requestDto)
+                .retrieve()
+                .toEntity(OptionResponseDto.class);
+
+        OptionResponseDto responseDto = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        assertThat(responseDto.getName()).isEqualTo("L size");
+        assertThat(responseDto.getQuantity()).isEqualTo(100L);
+    }
+
+    @DisplayName("정상적으로 상품 옵션 조회가 되는지 테스트")
+    @Test
+    void 정상적인_상품_옵션_조회(){
+
+        var response = client.get()
+                .uri(url + "/2/options")
+                .retrieve()
+                .toEntity(OptionResponseDto[].class);
+
+        OptionResponseDto[] responseDto = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    @DisplayName("정상적으로 상품 옵션 수정이 되는지 테스트")
+    @Test
+    void 정상적인_상품_옵션_수정(){
+
+        OptionRequestDto requestDto = new OptionRequestDto(
+                "XL size",
+                100L
+        );
+
+        var response = client.put()
+                .uri(url + "/2/options/2")
+                .body(requestDto)
+                .retrieve()
+                .toEntity(OptionResponseDto.class);
+
+        OptionResponseDto responseDto = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseDto.getName()).isEqualTo("XL size");
+        assertThat(responseDto.getQuantity()).isEqualTo(100L);
+
+    }
+
+    @DisplayName("정상적으로 상품 옵션 삭제가 되는지 테스트")
+    @Test
+    void 정상적인_상품_옵션_삭제(){
+
+        var response = client.delete()
+                .uri(url + "/2/options/1")
+                .retrieve()
+                .toBodilessEntity();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @DisplayName("중복된 옵션을 추가할 때의 에러코드와 메세지 테스트")
+    @Test
+    void 중복된_상품_옵션_생성(){
+
+        OptionRequestDto requestDto = new OptionRequestDto(
+                "M size",
+                100L
+        );
+
+        assertThatExceptionOfType(HttpClientErrorException.Conflict.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url + "/2/options")
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(OptionResponseDto.class)
+                )
+                .satisfies(ex -> {
+                    String body = ex.getResponseBodyAsString();
+                    assertThat(body).contains("해당 상품에 동일한 옵션이 존재합니다.");
+                });
+    }
 }
