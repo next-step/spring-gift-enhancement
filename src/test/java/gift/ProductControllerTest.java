@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
+import gift.dto.OptionRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ public class ProductControllerTest {
     private RestClient client = RestClient.builder().build();
     private String url;
     private String accessToken;
+    private List<OptionRequestDto> options;
 
     @BeforeEach
     void setUp() {
@@ -50,6 +53,11 @@ public class ProductControllerTest {
                 .toEntity(MemberResponseDto.class);
 
         this.accessToken = loginResponse.getBody().token();
+
+        options = List.of(
+                new OptionRequestDto("테스트용 옵션", 100),
+                new OptionRequestDto("테스트용 옵션2", 100)
+                );
     }
 
     @Autowired
@@ -67,7 +75,8 @@ public class ProductControllerTest {
                 "치킨",
                 BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
-                false
+                false,
+                options
         );
 
         var response = client.post()
@@ -90,7 +99,8 @@ public class ProductControllerTest {
                 "카카오치킨",
                 BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
-                false
+                false,
+                options
         );
 
         assertThatThrownBy(() ->
@@ -109,7 +119,8 @@ public class ProductControllerTest {
                 "카카오치킨",
                 BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
-                true
+                true,
+                options
         );
 
         var response = client.post()
@@ -132,7 +143,9 @@ public class ProductControllerTest {
                 "치킨",
                 BigDecimal.valueOf(10000),
                 "https://picsum.photos/200",
-                false
+                false,
+                options
+
         );
 
         var response = client.post()
