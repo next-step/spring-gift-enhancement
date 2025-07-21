@@ -50,12 +50,14 @@ public class OptionService {
             itemEntity
         );
 
-        OptionEntity savedOptionEntity = optionRepository.save(newOptionEntity);
+        itemEntity.getOptions().add(newOptionEntity);
+
+        itemRepository.save(itemEntity);
 
         return new OptionResponseDto(
-            savedOptionEntity.getId(),
-            savedOptionEntity.getName(),
-            savedOptionEntity.getQuantity()
+            newOptionEntity.getId(),
+            newOptionEntity.getName(),
+            newOptionEntity.getQuantity()
         );
     }
 
