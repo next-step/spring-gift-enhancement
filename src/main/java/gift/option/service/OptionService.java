@@ -26,13 +26,8 @@ public class OptionService {
     public OptionResponseDto addOption(Long productId, OptionRequestDto optionRequestDto) {
         Product product = getProduct(productId);
 
-        if (product.isDuplicateOptionName(optionRequestDto.name())) {
-            throw new IllegalArgumentException(optionRequestDto.name() + "해당 옵션명은 이미 존재합니다.");
-        }
-
         Option option = new Option(optionRequestDto.name(),
-                optionRequestDto.quantity(),
-                product);
+                optionRequestDto.quantity());
 
         product.addOption(option);
 
@@ -59,9 +54,7 @@ public class OptionService {
             throw new IllegalArgumentException(productId + "번 상품에 해당하는 상품 옵션이 아닙니다.");
         }
 
-        if(product.isDuplicateOptionName(optionRequestDto.name())) {
-            throw new IllegalArgumentException(optionRequestDto.name() + "해당 옵션명은 이미 존재합니다.");
-        }
+        product.validateOptionForUpdate(optionId, optionRequestDto.name());
 
         option.updateOption(optionRequestDto.name(), optionRequestDto.quantity());
 

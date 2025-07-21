@@ -29,8 +29,8 @@ public class Option {
         this.product = product;
     }
 
-    public Option(String name, int quantity, Product product) {
-        this(null, name, quantity, product);
+    public Option(String name, int quantity) {
+        this(null, name, quantity, null);
     }
 
     public Long getId() {return id;}

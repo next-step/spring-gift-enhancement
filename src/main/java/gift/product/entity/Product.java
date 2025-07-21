@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "product")
@@ -60,12 +61,26 @@ public class Product {
     }
 
     public void addOption(Option option){
+        validateOptionForAdd(option.getName());
         this.options.add(option);
         option.setProduct(this);
     }
 
-    public boolean isDuplicateOptionName(String name){
-        return this.options.stream()
-                .anyMatch(option -> option.getName().equals(name));
+    public void validateOptionForUpdate(Long optionId, String name){
+        Stream<Option> streamExceptMine = this.options.stream()
+                .filter(option -> !option.getId().equals(optionId));
+
+        checkDuplicateOptionName(streamExceptMine, name);
+    }
+
+    private void validateOptionForAdd(String name){
+        checkDuplicateOptionName(this.options.stream(), name);
+    }
+
+    private void checkDuplicateOptionName(Stream<Option> stream, String name){
+        if(stream.anyMatch(
+                option -> option.getName().equals(name))){
+            throw new IllegalArgumentException(name + "는 이미 존재하는 옵션명입니다.");
+        }
     }
 }
