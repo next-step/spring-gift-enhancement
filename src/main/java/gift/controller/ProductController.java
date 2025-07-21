@@ -5,8 +5,11 @@ import gift.dto.ProductResponseDTO;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +17,9 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
+@Validated
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -27,21 +32,24 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ProductRequestDTO dto) {
+    public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id,
+        @Valid @RequestBody ProductRequestDTO dto) {
         Optional<ProductResponseDTO> productResponse = productService.update(id, dto);
-        return productResponse.map(ResponseEntity::ok).orElseGet( () -> ResponseEntity.noContent().build());
+        return productResponse.map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
         Optional<ProductResponseDTO> productResponse = productService.findProductById(id);
-        return productResponse.map(ResponseEntity::ok).orElseGet( () -> ResponseEntity.noContent().build());
+        return productResponse.map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> findAll(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "0") @Min(value = 0, message = "페이지 번호는 0 이상이어야 합니다") int page,
+        @RequestParam(defaultValue = "10") @Min(value = 1, message = "페이지 크기는 1 이상이어야 합니다") @Max(value = 50, message = "페이지 크기는 50 이하여야 합니다") int size,
         @RequestParam(defaultValue = "id,asc") String sort
     ) {
         List<ProductResponseDTO> products = productService.findAllProducts(page, size, sort);
