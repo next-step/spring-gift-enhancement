@@ -47,6 +47,16 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
+    public OptionResponseDto findOptionById(Long optionId) {
+        Option option = optionRepository.findById(optionId)
+                .orElseThrow(() -> new OptionNotFoundException(
+                        "해당 ID의 옵션은 존재하지 않습니다."
+                ));
+
+        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity());
+    }
+
+    @Override
     public OptionResponseDto saveOption(Long productId, OptionRequestDto dto) {
 
         Product product = productRepository.findById(productId)
