@@ -4,8 +4,48 @@
     <meta charset="UTF-8">
     <title>상품 목록 폼</title>
     <link rel="stylesheet" th:href="@{/product-list.css}">
+    <style>
+        .fieldError { color: red; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        details summary {
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .action-bar {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .add-button {
+            text-decoration: none;
+            padding: 6px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+        }
+        .pagination a {
+            margin: 0 4px;
+            text-decoration: none;
+        }
+        .pagination a.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+
 <h2>상품 목록</h2>
 
 <!-- 정렬 선택 폼 -->
@@ -13,12 +53,10 @@
     <label for="sortSelect">정렬:</label>
     <select name="sort" id="sortSelect" onchange="document.getElementById('sortForm').submit()">
         <option value="id,desc" th:selected="${currentSort eq 'id,desc'}">최신순</option>
-        <option value="price,asc" th:selected="${currentSort eq 'price,asc'}">가격 오름차순</option>
-        <option value="price,desc" th:selected="${currentSort eq 'price,desc'}">가격 내림차순</option>
         <option value="name,asc" th:selected="${currentSort eq 'name,asc'}">이름 오름차순</option>
         <option value="name,desc" th:selected="${currentSort eq 'name,desc'}">이름 내림차순</option>
     </select>
-    <!-- 현재 페이지 번호 유지 (1-based) -->
+    <!-- 현재 페이지 번호 유지 -->
     <input type="hidden" name="page" th:value="${products.number + 1}" />
 </form>
 
@@ -26,20 +64,31 @@
     <a class="add-button" th:href="@{/admin/products/new}">상품 추가</a>
 </div>
 
-<table th:border="1">
+<table>
+    <thead>
     <tr>
         <th>아이디</th>
-        <th>이름</th>
-        <th>가격</th>
-        <th>수량</th>
+        <th>이름 및 옵션</th>
         <th>이미지</th>
         <th>관리</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="product : ${products}">
         <td th:text="${product.id}"></td>
-        <td th:text="${product.name}"></td>
-        <td th:text="${product.price}"></td>
-        <td th:text="${product.quantity}"></td>
+        <td>
+            <span th:text="${product.name}"></span>
+            <details>
+                <summary>옵션 보기</summary>
+                <ul>
+                    <li th:each="option : ${product.options}">
+                        이름: <span th:text="${option.name}"></span>,
+                        가격: <span th:text="${option.price}"></span>,
+                        수량: <span th:text="${option.quantity}"></span>
+                    </li>
+                </ul>
+            </details>
+        </td>
         <td th:text="${product.imageUrl}"></td>
         <td>
             <a th:href="@{'/admin/products/' + ${product.id} + '/edit'}">수정</a>
@@ -48,6 +97,7 @@
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
 
 <!-- 페이징 -->

@@ -3,6 +3,7 @@ package gift.dto.product;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record CreateProductRequest(
@@ -14,12 +15,12 @@ public record CreateProductRequest(
         @NotBlank
         String imageUrl,
 
-        @NotNull
+        @NotEmpty(message = "옵션은 1개 이상 필요합니다.")
         @Valid
         List<CreateProductOptionRequest> options
 ) {
 
-    private static final CreateProductRequest EMPTY = new CreateProductRequest(null, null, null);
+    private static final CreateProductRequest EMPTY = new CreateProductRequest(null, null, new ArrayList<>());
 
     public static CreateProductRequest empty() {
         return EMPTY;
