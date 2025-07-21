@@ -3,6 +3,7 @@ package gift.exception;
 import java.util.List;
 
 public class ErrorResponse {
+
     private String code;
     private String message;
     private List<ValidationError> errors;
@@ -39,6 +40,7 @@ public class ErrorResponse {
     }
 
     public static class ValidationError {
+
         private final String field;
         private final String message;
 

@@ -23,6 +23,7 @@ import jakarta.validation.constraints.Pattern;
     )
 )
 public class ProductOption {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,7 +60,9 @@ public class ProductOption {
         this.product = product;
     }
 
-    protected ProductOption() { }
+    protected ProductOption() {
+    }
+
     public ProductOption(Long id, String name, int quantity, Product product) {
         this.id = id;
         this.name = name;

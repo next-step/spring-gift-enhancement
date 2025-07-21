@@ -91,7 +91,8 @@ public class ProductViewController {
         }
 
         productService.update(id,
-            new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.quantity(), requestDto.imageUrl(), List.of()));
+            new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.quantity(),
+                requestDto.imageUrl(), List.of()));
 
         return "redirect:/view/products";
     }

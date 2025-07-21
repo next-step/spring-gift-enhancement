@@ -57,7 +57,8 @@ public class ProductOptionRepositoryTest {
     @Test
     @DisplayName("상품 옵션 생성 실패2 - 1억 이상 quantity 값")
     void save_fail2() {
-        Product product = new Product("example4", 4700, 100000000, "https://www.starbucks.co.kr/index.do");
+        Product product = new Product("example4", 4700, 100000000,
+            "https://www.starbucks.co.kr/index.do");
 
         ProductOption expected = new ProductOption("option1", 100000000, product);
         product.addOption(expected);

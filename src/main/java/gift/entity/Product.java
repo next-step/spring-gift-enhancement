@@ -28,7 +28,7 @@ public class Product {
     private Long id;
 
     @NotBlank(message = "상품 이름은 필수입니다.")
-    @Size(max=15, message = "상품 이름은 공백 포함 최대 15자까지 입력할 수 있습니다.")
+    @Size(max = 15, message = "상품 이름은 공백 포함 최대 15자까지 입력할 수 있습니다.")
     @Pattern(
         regexp = "^$|^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]+$",
         message = "허용되지 않는 특수문자가 포함되어 있습니다."
@@ -44,7 +44,7 @@ public class Product {
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(name="quantity", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
     @NotBlank(message = "이미지 URL은 필수입니다.")
@@ -60,12 +60,13 @@ public class Product {
 
     @OneToMany(
         mappedBy = "product",
-        cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
+        cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
         orphanRemoval = true
     )
     private List<ProductOption> options = new ArrayList<>();
 
-    protected Product() { }
+    protected Product() {
+    }
 
     public Product(Long id, String name, int price, int quantity, String imageUrl) {
         this.id = id;
@@ -91,7 +92,9 @@ public class Product {
         return this.price;
     }
 
-    public int getQuantity() { return this.quantity; }
+    public int getQuantity() {
+        return this.quantity;
+    }
 
     public String getImageUrl() {
         return this.imageUrl;

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 @Import(Sha256Util.class)
 public class MemberRepositoryTest {
+
     @Autowired
     private MemberRepository memberRepository;
 
@@ -32,7 +33,8 @@ public class MemberRepositoryTest {
 
     @Test
     void findById() {
-        Member expected = new Member("example@naver.com", "f6f2ea8f45d8a057c9566a33f99474da2e5c6a6604d736121650e2730c6fb0a3");
+        Member expected = new Member("example@naver.com",
+            "f6f2ea8f45d8a057c9566a33f99474da2e5c6a6604d736121650e2730c6fb0a3");
         Member actual = memberRepository.findById(1L).get();
         assertAll(
             () -> assertThat(actual.getEmail()).isEqualTo(expected.getEmail()),

@@ -1,6 +1,7 @@
 package gift.exception;
 
 public class UnsupportedShaAlgorithmException extends RuntimeException {
+
     public UnsupportedShaAlgorithmException() {
 
     }

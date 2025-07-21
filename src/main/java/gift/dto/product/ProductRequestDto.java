@@ -11,7 +11,7 @@ import java.util.List;
 
 public record ProductRequestDto(
     @NotBlank(message = "상품 이름은 필수입니다.")
-    @Size(max=15, message = "상품 이름은 공백 포함 최대 15자까지 입력할 수 있습니다.")
+    @Size(max = 15, message = "상품 이름은 공백 포함 최대 15자까지 입력할 수 있습니다.")
     @Pattern(
         regexp = "^$|^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]+$",
         message = "허용되지 않는 특수문자가 포함되어 있습니다."
@@ -27,13 +27,16 @@ public record ProductRequestDto(
 
     @Min(value = 1, message = "1 이상 1억 미만의 값을 가져야 합니다.")
     @Max(value = 99999999, message = "1 이상 1억 미만의 값을 가져야 합니다.")
-    @Column(name="quantity", nullable = false)
+    @Column(name = "quantity", nullable = false)
     int quantity,
 
     @NotBlank(message = "이미지 URL은 필수입니다.")
     String imageUrl,
     List<ProductOptionRequestDto> options
 ) {
-    public record ProductOptionRequestDto(String name, int quantity) {}
+
+    public record ProductOptionRequestDto(String name, int quantity) {
+
+    }
 
 }

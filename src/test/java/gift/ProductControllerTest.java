@@ -38,7 +38,8 @@ public class ProductControllerTest {
     void createProduct_success() {
         var option1 = new ProductOptionRequestDto("option1", 1);
         var option2 = new ProductOptionRequestDto("option2", 2);
-        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com", List.of(option1, option2));
+        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com",
+            List.of(option1, option2));
 
         var response = client.post()
             .uri(BASE_URL)
@@ -148,7 +149,8 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 생성 - 실패 (상품 수량이 1억 이상인 경우)")
     void createProduct_fail_whenQuantityIs100000000More() {
-        var requestDto = new ProductRequestDto("test product", -1, 100000000, "www.example.com", List.of());
+        var requestDto = new ProductRequestDto("test product", -1, 100000000, "www.example.com",
+            List.of());
 
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
@@ -218,7 +220,8 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 수정 - 성공")
     void updateProduct_success() {
-        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com", List.of());
+        var requestDto = new ProductRequestDto("test product", 1000, 1, "www.example.com",
+            List.of());
 
         var response = client.put()
             .uri(BASE_URL + "/2")
