@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -31,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
+  @Transactional
   public MemberLoginResponseDto register(MemberLoginRequestDto memberLoginRequestDto) {
 
     String email = memberLoginRequestDto.email();
@@ -49,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public MemberLoginResponseDto login(MemberLoginRequestDto memberLoginRequestDto) {
 
     String email = memberLoginRequestDto.email();
@@ -65,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
 
     return new MemberLoginResponseDto(token);
   }
-
+  @Transactional(readOnly = true)
   public MemberInfoResponseDto searchMemberById(Long id){
     Optional<Member> optionalMember = memberRepository.findById(id);
 
@@ -75,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
 
     return new MemberInfoResponseDto(member);
   }
-
+  @Transactional(readOnly = true)
   public List<MemberInfoResponseDto> searchAllMembers(){
     return memberRepository.findAll()
         .stream()
@@ -83,6 +86,7 @@ public class MemberServiceImpl implements MemberService {
         .collect(Collectors.toList());
   }
 
+  @Transactional(readOnly = true)
   public MemberInfoResponseDto updateMember(Long id, MemberLoginRequestDto memberLoginRequestDto){
     String email = memberLoginRequestDto.email();
     String password = memberLoginRequestDto.password();
@@ -100,6 +104,7 @@ public class MemberServiceImpl implements MemberService {
     return new MemberInfoResponseDto(member);
   }
 
+  @Transactional(readOnly = true)
   public void deleteMember(Long id){
     searchMemberById(id);
     memberRepository.deleteById(id);

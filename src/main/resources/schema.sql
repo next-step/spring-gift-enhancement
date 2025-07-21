@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS product_option;
 DROP TABLE IF EXISTS wish_list;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS members;
@@ -24,4 +25,12 @@ CREATE TABLE wish_list (
   CONSTRAINT fk_wishlist_member FOREIGN KEY (member_id) REFERENCES members(id),
   CONSTRAINT fk_wishlist_product FOREIGN KEY (product_id) REFERENCES product(id),
   CONSTRAINT uq_member_product UNIQUE (member_id, product_id)
+);
+
+CREATE TABLE product_option (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  quantity INTEGER NOT NULL,
+  product_id BIGINT NOT NULL,
+  CONSTRAINT fk_option_product FOREIGN KEY (product_id) REFERENCES product(id)
 );

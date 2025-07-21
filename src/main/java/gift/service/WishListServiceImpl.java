@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class WishListServiceImpl implements WishListService {
 
   private final Integer ZERO_CNT = 0;
@@ -45,6 +44,7 @@ public class WishListServiceImpl implements WishListService {
   }
 
   @Override
+  @Transactional
   public WishListResponseDto addToWishList(Long memberId, WishListCreateRequestDto dto) {
     Long productId = dto.productId();
     Product product = productRepository.findById(productId)
@@ -70,6 +70,7 @@ public class WishListServiceImpl implements WishListService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Page<WishListResponseDto> getWishList(Long memberId, Pageable pageable) {
     Optional<Member> opMember = memberRepository.findById(memberId);
 
@@ -82,6 +83,7 @@ public class WishListServiceImpl implements WishListService {
   }
 
   @Override
+  @Transactional
   public WishListResponseDto updateQuantity(Long memberId, WishListUpdateRequestDto dto) {
     Long productId = dto.productId();
 
@@ -110,6 +112,7 @@ public class WishListServiceImpl implements WishListService {
   }
 
   @Override
+  @Transactional
   public void removeFromWishList(Long memberId, Long productId) {
     validateProductExists(productId);
 
@@ -128,6 +131,7 @@ public class WishListServiceImpl implements WishListService {
   }
 
   @Override
+  @Transactional
   public void clearWishList(Long memberId) {
     Optional<Member> opMember = memberRepository.findById(memberId);
 

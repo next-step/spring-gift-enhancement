@@ -110,4 +110,42 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
   }
+
+  @ExceptionHandler(DuplicateOptionNameException.class)
+  public ResponseEntity<ProblemDetail> handleDuplicateOptionName(DuplicateOptionNameException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+    problem.setType(URI.create("localhost:8080/api/products/duplicate-option-name"));
+    problem.setTitle("Duplicate Option Name");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
+  }
+
+  @ExceptionHandler(OptionNotFoundException.class)
+  public ResponseEntity<ProblemDetail> handleOptionsNotFound(OptionNotFoundException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    problem.setType(URI.create("localhost:8080/api/products/options-not-found"));
+    problem.setTitle("Options Not Found");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+  }
+
+  @ExceptionHandler(InvalidOptionQuantityException.class)
+  public ResponseEntity<ProblemDetail> handleInvalidOptionQuantity(
+      InvalidOptionQuantityException ex,
+      HttpServletRequest request) {
+
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+    problem.setType(URI.create("localhost:8080/api/options/invalid-quantity"));
+    problem.setTitle("Invalid Option Quantity");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.badRequest().body(problem);
+  }
 }

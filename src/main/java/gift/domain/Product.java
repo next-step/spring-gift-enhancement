@@ -24,6 +24,9 @@ public class Product {
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WishList> wishLists = new ArrayList<>();
 
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Option> options = new ArrayList<>();
+
   protected Product() {}
 
   public Product(Long id, String name, Integer price, String imageUrl){
@@ -49,4 +52,11 @@ public class Product {
   public String getName() { return name; }
   public Integer getPrice() { return price; }
   public String getImageUrl() { return imageUrl; }
+
+  public List<Option> getOptions() {
+    return options;
+  }
+  public void addOption(Option option) {
+    options.add(option);
+  }
 }
