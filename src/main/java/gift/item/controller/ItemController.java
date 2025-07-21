@@ -6,6 +6,7 @@ import gift.common.vo.PageSize;
 import gift.common.vo.SortDirection;
 import gift.item.ItemSortBy;
 import gift.item.dto.ItemCreateDto;
+import gift.item.dto.ItemDetailResponseDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.service.ItemService;
@@ -56,9 +57,9 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDto> createItem(
+    public ResponseEntity<ItemDetailResponseDto> createItem(
         @RequestBody @Valid ItemCreateDto itemCreateDto) {
-        ItemResponseDto dto = itemService.createItem(itemCreateDto);
+        ItemDetailResponseDto dto = itemService.createItem(itemCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
