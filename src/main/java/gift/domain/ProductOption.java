@@ -64,7 +64,7 @@ public class ProductOption {
         if (name.length() > 50) {
             throw new IllegalArgumentException("옵션 이름은 최대 50자까지 가능합니다.");
         }
-        if (!name.matches("^[\\w\\s()\\[\\]\\+\\-&/_]+$")) {
+        if (!name.matches("^[가-힣a-zA-Z0-9\\s()\\[\\]\\+\\-&/_]+$")) {
             throw new IllegalArgumentException("허용되지 않은 문자가 포함되었습니다.");
         }
     }
