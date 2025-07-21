@@ -19,5 +19,11 @@ public record ProductOptionRequest(
     @Max(value = 99_999_999, message = "수량은 1억 미만이어야 합니다.")
     Long quantity
 ) {
-    
+
+    public static ProductOptionRequest from(ProductOptionResponse response) {
+        return new ProductOptionRequest(
+            response.name(),
+            response.quantity()
+        );
+    }
 }

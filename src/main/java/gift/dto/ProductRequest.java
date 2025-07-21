@@ -1,10 +1,13 @@
 package gift.dto;
 
 import gift.common.annotation.ForbiddenKeyword;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 public record ProductRequest(
 
@@ -16,7 +19,10 @@ public record ProductRequest(
     @NotNull(message = "가격은 필수입니다.")
     Integer price,
     @NotBlank(message = "이미지 URL은 필수입니다.")
-    String imageUrl
+    String imageUrl,
+    @NotEmpty(message = "옵션은 1개 이상 입력해야 합니다.")
+    @Valid
+    List<ProductOptionRequest> options
 
 ) {
 
@@ -24,7 +30,10 @@ public record ProductRequest(
         return new ProductRequest(
             response.name(),
             response.price(),
-            response.imageUrl()
+            response.imageUrl(),
+            response.options().stream()
+                .map(ProductOptionRequest::from)
+                .toList()
         );
     }
 }

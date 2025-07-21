@@ -5,11 +5,15 @@ import gift.common.exception.CustomException;
 import gift.common.util.SortUtil;
 import gift.dto.PageResponse;
 import gift.dto.Pagination;
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.dto.ProductSortField;
 import gift.entity.Product;
+import gift.entity.ProductOption;
 import gift.repository.ProductRepository;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,11 +31,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ProductResponse create(ProductRequest request) {
-        Product savedProduct = productRepository.save(
-            new Product(request.name(), request.price(), request.imageUrl()));
+        Product product = new Product(
+            request.name(),
+            request.price(),
+            request.imageUrl()
+        );
 
+        if (request.options() == null || request.options().isEmpty()) {
+            throw new CustomException(CustomResponseCode.OPTION_REQUIRED);
+        }
+
+        Set<String> nameSet = new HashSet<>();
+        for (ProductOptionRequest optionRequest : request.options()) {
+            if (!nameSet.add(optionRequest.name())) {
+                throw new CustomException(CustomResponseCode.OPTION_DUPLICATED);
+            }
+
+            ProductOption option = ProductOption.of(
+                optionRequest.name(),
+                optionRequest.quantity(),
+                product
+            );
+            product.addOption(option);
+        }
+
+        Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
     }
 
