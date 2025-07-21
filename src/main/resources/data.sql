@@ -42,3 +42,9 @@ values (2, 5);
 
 insert into wish (member_id, product_id)
 values (2, 6);
+
+insert into product_option (name, quantity, product_id)
+values ('S size', 100, 2);
+
+insert into product_option (name, quantity, product_id)
+values ('M size', 100, 2);
