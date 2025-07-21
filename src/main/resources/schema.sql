@@ -19,7 +19,8 @@ CREATE TABLE wishes(id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
 DROP TABLE options IF EXISTS;
 CREATE TABLE options(id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                     name VARCHAR(255));
+                     name VARCHAR(255),
+                     option_value BIGINT);
 
 DROP TABLE product_options IF EXISTS;
 CREATE TABLE product_options(product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,

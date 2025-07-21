@@ -20,17 +20,20 @@ public class Option {
     @Pattern(regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$", message = "상품 이름의 특수문자는 ( ), [ ], +, -, &, /, _ 이외에는 허용되지 않습니다.")
     private String name;
 
+    private Long optionValue;
+
     @OneToMany(mappedBy = "option")
     private List<ProductOption> products = new ArrayList<>();
 
     protected Option() {}
 
-    public Option(String name) {
+    public Option(String name, Long optionValue) {
         this.name = name;
+        this.optionValue = optionValue;
     }
 
-    public void update (String name) {
-        this.name = name;
+    public void update (Long optionValue) {
+        this.optionValue = optionValue;
     }
 
     public long getId() { return id; }
