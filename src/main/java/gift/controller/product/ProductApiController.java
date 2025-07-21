@@ -46,8 +46,6 @@ public class ProductApiController {
         @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.ASC)
         Pageable pageable
     ) {
-        productService.validate(pageable);
-
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.getProductPage(pageable));
     }

@@ -34,6 +34,8 @@ public class ProductService {
 
     // 페이지네이션: product 목록 조회
     public Page<ProductResponse> getProductPage(Pageable pageable) {
+        validate(pageable);
+
         return productRepository.findAll(pageable)
             .map(ProductResponse::from);
     }
