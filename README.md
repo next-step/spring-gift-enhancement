@@ -51,6 +51,10 @@
 - [x] Option CRUD 기능 구현
   - [x] controller, service, repository 구현
   - [x] 요청을 위한 OptionReqeustDto, 응답을 위한 OptionResponseDto 구현
+    - OptionRequestDto에 Valid 적용
+      - 옵션 이름은 공백을 포함하여 최대 50자까지 입력 가능
+      - ( ), [ ], +, -, &, /, _ 그 외 특수 문자 사용 불가
+      - 옵션 수량은 최소 1개 이상 1억 개 미만
   - [x] 상품에 Option 추가 기능 구현
   - [x] 상품의 전체 Option 조회 기능 구현
   - [x] 옵션 수정 기능 구현

@@ -1,9 +1,6 @@
 package gift.option.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record OptionRequestDto(
         @NotNull(message = "옵션의 이름을 입력해주세요.")
@@ -16,6 +13,7 @@ public record OptionRequestDto(
 
         @NotNull(message = "옵션의 수량을 입력해주세요.")
         @Min(value = 1, message = "수량은 1이상이어야 합니다.")
+        @Max(value = 99_999_999, message = "수량은 1억개 미만까지 가능합니다.")
         Integer quantity
 ) {
 }
