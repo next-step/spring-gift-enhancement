@@ -1,11 +1,16 @@
 package gift.UnitTest.repository;
 
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.entity.User;
+import gift.repository.option.OptionRepository;
 import gift.repository.product.ProductRepository;
 import gift.repository.user.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +21,9 @@ public class ProductRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OptionRepository optionRepository;
 
     User testUser;
 
@@ -92,6 +100,30 @@ public class ProductRepositoryTest extends AbstractRepositoryTest {
         Product found = productRepository.findById(saved.getId()).orElse(null);
         assertAll(
                 () -> assertNull(found, "삭제된 상품은 조회되지 않아야 합니다.")
+        );
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("영속성 테스트")
+    public void persistenceTest() {
+        Product product = new Product(null, "Persistent Product", 1500L, "http://example.com/persistent_image.jpg", testUser);
+        List<Option> options = List.of(
+                new Option("Option 1", 10L),
+                new Option("Option 2", 20L)
+        );
+        product.setOptions(options);
+        Product savedProduct = productRepository.save(product);
+        assertNotNull(savedProduct);
+        // 저장된 상품의 옵션이 영속성 컨텍스트에 반영되었는지 확인
+        assertEquals(2, savedProduct.getOptions().size());
+        List<Option> searchedOptions = optionRepository.findAllByProductId(savedProduct.getId(), PageRequest.of(0, 10))
+                .getContent();
+        // 옵션이 2개가 저장되었는지 확인
+        assertAll(
+                () -> assertEquals(2, searchedOptions.size()),
+                () -> assertEquals("Option 1", searchedOptions.get(0).getName()),
+                () -> assertEquals("Option 2", searchedOptions.get(1).getName())
         );
     }
 }
