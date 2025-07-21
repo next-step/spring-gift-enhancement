@@ -37,13 +37,8 @@ public class WishListApiController {
         @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.ASC)
         Pageable pageable
     ) {
-        wishListService.validate(pageable);
-
-        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId,
-            pageable);
-
         return ResponseEntity.status(HttpStatus.OK)
-            .body(wishListsPage);
+            .body(wishListService.findAllPageByMemberId(memberId, pageable));
     }
 
     // wishList 단건 조회: memberId, productId로 조회

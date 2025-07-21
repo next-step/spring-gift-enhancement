@@ -47,6 +47,8 @@ public class WishListService {
 
     // wishList 페이지 조회
     public Page<WishListResponse> findAllPageByMemberId(Long memberId, Pageable pageable) {
+        validate(pageable);
+
         return wishListRepository.findAllPageByMemberId(memberId, pageable)
             .map(WishListResponse::from);
     }
