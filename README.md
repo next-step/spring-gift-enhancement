@@ -67,9 +67,8 @@ Content-Type: application/json
 - [x] 옵션 수량 차감 기능 (subtractOptionQuantity)
 
 5. Controller 구현
-- [ ] GET /api/products/{productId}/options → 옵션 목록 반환
-- [ ] 옵션 추가 API → 관리자 전용
-- [ ] 옵션 수량 차감 기능 (비공개 API or 내부 로직에서 호출)
+- [x] GET /api/products/{productId}/options → 옵션 목록 반환
+- [x] 옵션 추가 API → 관리자 전용
 
 6. 테스트
 - [ ] 옵션 이름 제약 검증 테스트
