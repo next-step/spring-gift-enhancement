@@ -6,6 +6,7 @@ import gift.dto.OptionRequest;
 import gift.dto.OptionResponse;
 import gift.entity.Item;
 import gift.entity.Member;
+import gift.entity.Option;
 import gift.entity.Role;
 import gift.exception.AuthorizationException;
 import gift.exception.ItemNotFoundException;
@@ -46,6 +47,12 @@ public class ItemService {
         validateAdminRoleForKakaoKeyword(request.name(), loginMember);
         Item item = new Item(null, request.name(), request.price(), request.imageUrl());
         Item savedItem = itemRepository.save(item);
+
+        List<Option> options = request.options().stream()
+            .map(optionRequest -> optionRequest.toEntity(savedItem))
+            .toList();
+        optionRepository.saveAll(options);
+
         return ItemResponse.from(savedItem);
     }
 
