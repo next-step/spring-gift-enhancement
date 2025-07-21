@@ -64,4 +64,11 @@ public class Option {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public void subtract(int quantity) {
+        if (this.quantity < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.quantity -= quantity;
+    }
 }
