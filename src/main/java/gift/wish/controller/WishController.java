@@ -29,7 +29,7 @@ public class WishController {
                                                                                  @PageableDefault(size = 5, sort = "quantity", direction = Sort.Direction.DESC) Pageable pageable) {
         WishRequestDto wishRequestDto = new WishRequestDto();
         wishRequestDto.setMemberId(member.getId());
-        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", WishPageDto.fromEntity(wishService.getWishlist(wishRequestDto,pageable))));
+        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", WishPageDto.from(wishService.getWishlist(wishRequestDto,pageable))));
     }
 
     @PostMapping
