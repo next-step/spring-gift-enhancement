@@ -14,8 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -31,16 +33,8 @@ public class ProductServiceImpl implements ProductService {
         // 상품명 유효한지 확인
         validateProductName(requestDto.name(), "admin/add");
 
-        // 옵션이 유효한지 확인
-        List<ProductOptionAddRequestDto> optionDtos = requestDto.options();
-        if (optionDtos == null || optionDtos.isEmpty()) {
-            throw new InvalidProductOptionException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
-        }
-
         // 옵션 생성
-        List<ProductOption> options = requestDto.options().stream()
-                .map(opt -> new ProductOption(opt.name(), opt.quantity()))
-                .toList();
+        List<ProductOption> options = createValidProductOptions(requestDto.options());
 
         // 상품 생성 후 옵션 할당
         Product product = new Product(requestDto.name(), requestDto.price(), requestDto.url());
@@ -71,7 +65,11 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
         Product product = findProductByIdOrElseThrow(id);
         validateProductName(requestDto.name(), "admin/edit");
+
+        List<ProductOption> options = createValidProductOptions(requestDto.options());
+
         product.update(requestDto);
+        product.addOptions(options);
     }
 
     @Override
@@ -93,5 +91,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+    }
+
+    private List<ProductOption> createValidProductOptions(List<ProductOptionAddRequestDto> optionDto) {
+        if (optionDto == null || optionDto.isEmpty()) {
+            throw new InvalidProductOptionException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
+        }
+
+        return optionDto.stream()
+                .filter(Objects::nonNull)
+                .map(opt -> new ProductOption(opt.name(), opt.quantity()))
+                .toList();
     }
 }

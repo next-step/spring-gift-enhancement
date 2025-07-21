@@ -23,3 +23,21 @@ padding: 4px;
 .form-row button {
 margin-left: auto;
 }
+
+#option-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-row {
+    display: none;
+    background-color: #f9f9f9;
+}
+.detail-content {
+    padding: 10px;
+}
+
+.option-group {
+    padding-bottom: 10px;
+}
