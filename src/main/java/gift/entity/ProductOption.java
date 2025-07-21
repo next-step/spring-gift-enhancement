@@ -20,5 +20,11 @@ public class ProductOption {
 
     protected ProductOption() {}
 
+    public ProductOption(String name, int quantity, Product product) {
+        this.name = name;
+        this.quantity = quantity;
+        this.product = product;
+    }
+
 
 }
