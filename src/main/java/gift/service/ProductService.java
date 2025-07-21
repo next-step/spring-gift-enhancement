@@ -51,14 +51,22 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
+        validateUniqueOptionNames(request);
+
         Product product = productRepository.findById(id)
                 .orElseThrow(
                         () -> new ProductNotFoundException(
                                 "해당 ID의 상품이 존재하지 않아 업데이트할 수 없습니다: " + id));
 
         product.update(request.name(), request.price(), request.imageUrl());
+        product.getOptions().clear();
 
-        return new ProductResponse(product);
+        request.options().stream()
+                .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+                .forEach(product::addOption);
+
+        Product updatedProduct = productRepository.save(product);
+        return new ProductResponse(updatedProduct);
     }
 
     @Transactional
