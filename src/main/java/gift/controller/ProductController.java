@@ -2,9 +2,10 @@ package gift.controller;
 
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
-import gift.dto.common.Page;
+import gift.dto.common.PageResponse;
 import gift.service.ProductManagementService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.net.URI;
 import java.util.List;
@@ -39,12 +40,15 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> getAllByPage(
-            @RequestParam(defaultValue = "1") @Min(1) Integer pageNumber,
-            @RequestParam(defaultValue = "10") @Min(1) Integer pageSize) {
+    public ResponseEntity<PageResponse<ProductResponse>> getAllWithPagination(
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) Integer size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
 
-        Page<ProductResponse> page = productService.getAllByPage(pageNumber, pageSize);
-        return ResponseEntity.ok(page);
+        PageResponse<ProductResponse> pageResponse = productService.getAllByPageWithSorting(
+                page, size, sortBy, sortDirection);
+        return ResponseEntity.ok(pageResponse);
     }
 
     @GetMapping("/{productId}")
