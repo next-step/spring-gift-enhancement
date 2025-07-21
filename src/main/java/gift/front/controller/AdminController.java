@@ -1,6 +1,5 @@
 package gift.front.controller;
 
-import gift.api.option.service.OptionService;
 import gift.api.product.dto.ProductRequestDto;
 import gift.api.product.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,11 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminController {
 
     private final ProductService productService;
-    private final OptionService optionService;
 
-    public AdminController(ProductService productService, OptionService optionService) {
+    public AdminController(ProductService productService) {
         this.productService = productService;
-        this.optionService = optionService;
     }
 
     @GetMapping
@@ -55,7 +52,7 @@ public class AdminController {
     public String productDetail(
             @PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findProductById(id));
-        model.addAttribute("options", optionService.getOptionsByProductId(id));
+        model.addAttribute("options", productService.getOptionsByProductId(id));
 
         return "admin/product-detail";
     }
