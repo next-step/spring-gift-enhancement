@@ -1,7 +1,7 @@
 package gift.controller;
 
 import gift.common.exception.InvalidUserException;
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;

@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.domain.Product;
+import gift.domain.product.Product;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

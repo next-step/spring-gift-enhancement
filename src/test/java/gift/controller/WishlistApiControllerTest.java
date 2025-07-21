@@ -1,7 +1,7 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.domain.User;
 import gift.domain.Wishlist;
 import gift.dto.product.CreateProductRequest;

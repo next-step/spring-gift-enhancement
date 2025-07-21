@@ -1,10 +1,9 @@
 package gift.repository;
 
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.domain.Role;
 import gift.domain.User;
 import gift.domain.Wishlist;
-import gift.dto.wishlist.WishlistResponse;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;

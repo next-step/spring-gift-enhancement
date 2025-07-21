@@ -1,6 +1,6 @@
 package gift.dto.wishlist;
 
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.domain.Wishlist;
 
 public class WishlistResponse {

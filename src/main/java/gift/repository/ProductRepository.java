@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.dto.product.ProductResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,6 @@
 package gift.domain;
 
+import gift.domain.product.Product;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.*;
