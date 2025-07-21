@@ -2,7 +2,7 @@ package gift.exception;
 
 import gift.exception.member.MemberException;
 import gift.exception.product.ProductException;
-import gift.exception.productOption.ProductOptionException;
+import gift.exception.product.option.OptionException;
 import gift.exception.wishList.WishException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,9 +64,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getHttpStatus()).body(errors);
     }
 
-    @ExceptionHandler(ProductOptionException.class)
+    @ExceptionHandler(OptionException.class)
     public ResponseEntity<Map<String, String>>
-    handlerValidationError(ProductOptionException e) {
+    handlerValidationError(OptionException e) {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", e.getMessage());
 
