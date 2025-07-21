@@ -16,7 +16,7 @@ public record CreateProductRequest(
 
         @NotNull
         @Valid
-        List<ProductOptionCreateRequest> options
+        List<CreateProductOptionRequest> options
 ) {
 
     private static final CreateProductRequest EMPTY = new CreateProductRequest(null, null, null);

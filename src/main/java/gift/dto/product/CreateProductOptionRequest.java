@@ -2,7 +2,7 @@ package gift.dto.product;
 
 import jakarta.validation.constraints.*;
 
-public record ProductOptionCreateRequest(
+public record CreateProductOptionRequest(
 
         @NotBlank(message = "이름은 필수 입력 값입니다.")
         @Size(max = 50, message = "옵션은 공백을 포함하여 50자까지 입력할 수 있습니다.")

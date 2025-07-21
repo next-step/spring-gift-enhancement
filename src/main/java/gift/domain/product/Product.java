@@ -1,7 +1,7 @@
 package gift.domain.product;
 
 import gift.common.exception.DuplicateOptionNameException;
-import gift.dto.product.ProductOptionCreateRequest;
+import gift.dto.product.CreateProductOptionRequest;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void addOption(ProductOptionCreateRequest ... request) {
-        for (ProductOptionCreateRequest r : request) {
+    public void addOption(CreateProductOptionRequest... request) {
+        for (CreateProductOptionRequest r : request) {
             if (existOptionName(r.name())) {
                 throw new DuplicateOptionNameException();
             }

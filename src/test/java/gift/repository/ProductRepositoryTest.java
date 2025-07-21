@@ -23,26 +23,24 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 저장")
     void test1() {
-        Product product = new Product("감자칩", "image", 10000, 100);
+        Product product = new Product("감자칩", "image");
         Product save = productRepository.save(product);
 
         assertThat(save.getId()).isNotNull();
         assertThat(save.getName()).isEqualTo("감자칩");
         assertThat(save.getImageUrl()).isEqualTo("image");
-        assertThat(save.getPrice()).isEqualTo(10000);
-        assertThat(save.getQuantity()).isEqualTo(100);
     }
 
     @Test
     @DisplayName("상품 수정")
     void test2() {
-        Product product = new Product("감자칩", "image", 10000, 100);
+        Product product = new Product("감자칩", "image");
         Product save = productRepository.save(product);
 
         em.flush();
 
         Product getProduct = productRepository.findById(save.getId()).get();
-        getProduct.update("고구마칩", "image2", 20000, 10000);
+        getProduct.update("고구마칩", "image2");
 
         em.flush();
         em.clear();
@@ -52,14 +50,12 @@ public class ProductRepositoryTest {
         assertThat(expected.getId()).isNotNull();
         assertThat(expected.getName()).isEqualTo("고구마칩");
         assertThat(expected.getImageUrl()).isEqualTo("image2");
-        assertThat(expected.getPrice()).isEqualTo(20000);
-        assertThat(expected.getQuantity()).isEqualTo(10000);
     }
 
     @Test
     @DisplayName("상품 조회")
     void test3() {
-        Product product = new Product("감자칩", "image", 10000, 100);
+        Product product = new Product("감자칩", "image");
         productRepository.save(product);
 
         em.flush();
@@ -69,14 +65,12 @@ public class ProductRepositoryTest {
         assertThat(getProduct.getId()).isNotNull();
         assertThat(getProduct.getName()).isEqualTo("감자칩");
         assertThat(getProduct.getImageUrl()).isEqualTo("image");
-        assertThat(getProduct.getPrice()).isEqualTo(10000);
-        assertThat(getProduct.getQuantity()).isEqualTo(100);
     }
 
     @Test
     @DisplayName("상품 삭제")
     void test4() {
-        Product product = new Product("감자칩", "image", 10000, 100);
+        Product product = new Product("감자칩", "image");
         productRepository.save(product);
 
         em.flush();

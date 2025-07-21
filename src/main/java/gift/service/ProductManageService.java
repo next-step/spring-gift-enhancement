@@ -4,7 +4,7 @@ import gift.common.exception.ProductNotFoundException;
 import gift.domain.product.Product;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductManageResponse;
-import gift.dto.product.ProductOptionCreateRequest;
+import gift.dto.product.CreateProductOptionRequest;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,7 @@ public class ProductManageService {
 
     public Product saveProduct(CreateProductRequest request) {
         Product product = new Product(request.name(), request.imageUrl());
-        product.addOption(request.options().toArray(new ProductOptionCreateRequest[0]));
+        product.addOption(request.options().toArray(new CreateProductOptionRequest[0]));
         return productRepository.save(product);
     }
 

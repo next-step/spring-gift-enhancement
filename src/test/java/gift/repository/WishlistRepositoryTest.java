@@ -38,7 +38,7 @@ public class WishlistRepositoryTest {
     @BeforeEach
     void setUp() {
         user = userRepository.save(new User("tkddnr@tkddnr.com", "1234", Role.USER));
-        product = productRepository.save(new Product("감자칩", "image", 10000, 100));
+        product = productRepository.save(new Product("감자칩", "image"));
     }
 
     @Test
@@ -121,7 +121,6 @@ public class WishlistRepositoryTest {
 
         assertThat(response.getProduct().getId()).isEqualTo(product.getId());
         assertThat(response.getProduct().getName()).isEqualTo(product.getName());
-        assertThat(response.getProduct().getPrice()).isEqualTo(product.getPrice());
         assertThat(response.getProduct().getImageUrl()).isEqualTo(product.getImageUrl());
     }
 }
