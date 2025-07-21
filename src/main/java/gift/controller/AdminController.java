@@ -33,7 +33,7 @@ public class AdminController {
 
   @GetMapping
   public String productList(Model model, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-    Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
+    Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
     Page<ProductResponseDto> productPage = productService.findAllProduct(fixedPageable);
     model.addAttribute("productPage", productPage);
     return "admin/list"; // templates/admin/list.html
