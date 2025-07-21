@@ -2,8 +2,11 @@ package gift.dto.product;
 
 import gift.domain.product.Product;
 
-public record ProductResponse(Long id, String name, String imageUrl) {
+import java.util.List;
+
+public record ProductResponse(Long id, String name, String imageUrl, List<ProductOptionResponse> options) {
     public static ProductResponse from(Product product) {
-        return new ProductResponse(product.getId(), product.getName(), product.getImageUrl());
+        return new ProductResponse(product.getId(), product.getName(), product.getImageUrl(), product.getOptions().stream().map(ProductOptionResponse::from).toList());
     }
+
 }
