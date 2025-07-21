@@ -50,5 +50,5 @@
 - [x] `Option` 엔티티에 수량 차감(`subtract`) 비즈니스 로직 구현
 - [x] Option 관련 DTO 생성 및 ProductRequest 수정
 - [x] `OptionService`에 특정 상품의 옵션 목록을 조회하는 기능 추가
-- [ ] 특정 상품의 모든 옵션을 조회하는 API 엔드포인트 구현 (`GET /api/products/{productId}/options`)
+- [x] 특정 상품의 모든 옵션을 조회하는 API 엔드포인트 구현 (`GET /api/products/{productId}/options`)
 - [ ] 옵션 기능 관련 단위 테스트 및 통합 테스트 작성
