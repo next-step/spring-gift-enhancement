@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -54,6 +57,25 @@ public class WishRepositoryTest {
     assertThat(actual2.getMember()).isEqualTo(actual.getMember());
     assertThat(actual2.getProduct()).isEqualTo(actual.getProduct());
     assertThat(actual2.getQuantity()).isEqualTo(actual.getQuantity());
+  }
+
+  @Test
+  void 위시리스트_페이지네이션테스트() {
+    Member member = new Member("member@naver.com", "qweqwe");
+    memberRepository.save(member);
+    for (int i = 1; i <= 21; i++) {
+      Product product = new Product("product", 100L, "https://naver.com");
+      productRepository.save(product);
+      Wish wish = new Wish(member, product, 3L);
+      wishRepository.save(wish);
+    }
+    Pageable pageable = PageRequest.of(0, 5);
+
+    Page<Wish> result = wishRepository.findByMemberId(member.getId(), pageable);
+
+    assertThat(result.getContent().size()).isEqualTo(5);
+    assertThat(result.getTotalElements()).isEqualTo(21);
+    assertThat(result.getTotalPages()).isEqualTo(5);
   }
 
   @Test

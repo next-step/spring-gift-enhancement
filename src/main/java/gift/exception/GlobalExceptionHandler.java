@@ -63,4 +63,20 @@ public class GlobalExceptionHandler {
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }
+
+  @ExceptionHandler(value = DuplicatedOptionException.class)
+  public ResponseEntity<CustomErrorResponse> handleDuplicateOptionException(
+      DuplicatedOptionException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.CONFLICT,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(value = CantSubtractException.class)
+  public ResponseEntity<CustomErrorResponse> handleCantSubtractException(
+      CantSubtractException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.BAD_REQUEST,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
 }

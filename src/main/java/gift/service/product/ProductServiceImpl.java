@@ -5,6 +5,7 @@ import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.NameHasKakaoException;
 import gift.exception.notfound.ProductNotFoundException;
+import gift.repository.option.OptionJpaRepository;
 import gift.repository.product.ProductJpaRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -16,14 +17,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-  private final ProductJpaRepository repository;
+  private final ProductJpaRepository productRepository;
+  private final OptionJpaRepository optionRepository;
 
-  public ProductServiceImpl(ProductJpaRepository repository) {
-    this.repository = repository;
+  public ProductServiceImpl(ProductJpaRepository productRepository,
+      OptionJpaRepository optionRepository) {
+    this.productRepository = productRepository;
+    this.optionRepository = optionRepository;
   }
 
   public List<ProductResponseDto> findAllProduct() {
-    List<Product> allProduct = repository.findAll();
+    List<Product> allProduct = productRepository.findAll();
     List<ProductResponseDto> responseDtoList = new ArrayList<>();
     for (Product product : allProduct) {
       ProductResponseDto responseDto = new ProductResponseDto(product);
@@ -34,11 +38,11 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public Page<ProductResponseDto> findAllProductAsPage(Pageable pageable) {
-    return repository.findAll(pageable).map(ProductResponseDto::new);
+    return productRepository.findAll(pageable).map(ProductResponseDto::new);
   }
 
   public ProductResponseDto findProductById(Long id) {
-    return repository.findById(id)
+    return productRepository.findById(id)
         .map(ProductResponseDto::new)
         .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
   }
@@ -50,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
     if (checkProduct.isNameHasWord("카카오") && !requestDto.getMdOk()) {
       throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
     }
-    Product product = repository.save(
+    Product product = productRepository.save(
         new Product(requestDto.getName(), requestDto.getPrice(),
             requestDto.getImageUrl()));
     return new ProductResponseDto(product);
@@ -58,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Transactional
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-    Product product = repository.findById(id)
+    Product product = productRepository.findById(id)
         .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
     if (product.isNameHasWord("카카오") && !requestDto.getMdOk()) {
       throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
@@ -70,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Transactional
   public void deleteProduct(Long id) {
-    repository.deleteById(id);
+    optionRepository.deleteByProductId(id);
+    productRepository.deleteById(id);
   }
 }

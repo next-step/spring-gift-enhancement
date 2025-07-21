@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -39,6 +42,20 @@ public class ProductRepositoryTest {
     assertThat(actual.getName()).isEqualTo(actual2.getName());
     assertThat(actual.getPrice()).isEqualTo(actual2.getPrice());
     assertThat(actual.getImageUrl()).isEqualTo(actual2.getImageUrl());
+  }
+
+  @Test
+  void 상품_페이지네이션테스트() {
+    for (int i = 1; i <= 21; i++) {
+      repository.save(new Product("이름", 1L, "https://asd"));
+    }
+    Pageable pageable = PageRequest.of(0, 5);
+
+    Page<Product> result = repository.findAll(pageable);
+
+    assertThat(result.getContent().size()).isEqualTo(5);
+    assertThat(result.getTotalElements()).isEqualTo(22);//datasql로 들어가는 초기데이터로 인해 +1
+    assertThat(result.getTotalPages()).isEqualTo(5);
   }
 
 
