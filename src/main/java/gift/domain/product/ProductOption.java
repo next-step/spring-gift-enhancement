@@ -45,10 +45,6 @@ public class ProductOption {
         return quantity;
     }
 
-    void setProduct(Product product) {
-        this.product = product;
-    }
-
     static ProductOption of(Product product, String name, Integer price, Integer quantity) {
         return new ProductOption(product, name, price, quantity);
     }
