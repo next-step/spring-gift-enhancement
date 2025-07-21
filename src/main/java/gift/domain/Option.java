@@ -1,5 +1,7 @@
 package gift.domain;
 
+import gift.global.exception.CustomException;
+import gift.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,10 +39,10 @@ public class Option {
 
     public void subtractQuantity(int amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("빼려는 수량은 0보다 커야 합니다.");
+            throw CustomException.from(ErrorCode.INVALID_SUBTRACT_AMOUNT);
         }
         if (this.quantity - amount < 0) {
-            throw new IllegalArgumentException("재고가 부족합니다.");
+            throw CustomException.from(ErrorCode.INVALID_SUBTRACT_MINUS);
         }
 
         this.quantity -= amount;
