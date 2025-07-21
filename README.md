@@ -21,4 +21,12 @@
 - 옵션 수량은 최소 1개 이상 1억개 미만
 - 동일한 상품 내에서 옵션 이름 중복 불가
 - 상품 옵션의 수량을 지정한 만큼 빼는 기능 구현
+- 옵션 API 구현 목록
+  - 옵션 추가: `POST /api/products/{productId}/options`
+  - 옵션 조회: `GET /api/products/{productId}/options`
+  - 옵션 수정: `PUT /api/products/{productId}/options/{optionId}`
+  - 옵션 삭제: `DELETE /api/products/{productId}/options{optionId}`
 - 관리자 화면에 옵션을 추가할 수 있도록 구현
+  - 옵션 조회 및 삭제 URL: `http://localhost:8080/admin/products/{productId}/options`
+  - 옵션 생성 URL: `http://localhost:8080/admin/products/{productId}/options/new`
+  - 옵션 수정 URL: `http://localhost:8080/admin/products/{productId}/options/{optionId}/edit`
