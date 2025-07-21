@@ -24,7 +24,7 @@ import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql(scripts = "/gift/sql/data.sql")
+@Sql(scripts = "/testData.sql")
 public class E2ETest {
 
     @LocalServerPort

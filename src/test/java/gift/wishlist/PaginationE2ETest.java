@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import gift.common.dto.PageResponseDto;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
+import gift.item.dto.OptionCreateDto;
 import gift.member.dto.LoginResponseDto;
 import gift.member.dto.MemberCreateDto;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,10 +68,20 @@ public class PaginationE2ETest {
             "www.vans.com", "www.reebok.com", "www.puma.com", "www.asics.com"
         };
 
+        String[] itemOptionNames = {
+            "빨강", "노랑", "파랑", "초록",
+            "주황", "핑크", "검정", "보라"
+        };
+
         for (int i = 0; i < 8; i++) {
             client.post()
                 .uri("http://localhost:" + port + "/api/items")
-                .body(new ItemCreateDto(itemNames[i], itemPrices[i], imageUrls[i]))
+                .body(new ItemCreateDto(
+                    itemNames[i],
+                    itemPrices[i],
+                    imageUrls[i],
+                    List.of(new OptionCreateDto(itemOptionNames[i], 5))
+                ))
                 .retrieve()
                 .toEntity(ItemResponseDto.class);
         }

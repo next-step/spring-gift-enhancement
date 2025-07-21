@@ -8,6 +8,8 @@ import gift.common.dto.PageResponseDto;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
+import gift.item.dto.OptionCreateDto;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -21,7 +23,7 @@ import org.springframework.web.client.RestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // 각 메서드 실행 전 스프링 컨텍스트, DB 초기화
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql(scripts = "/gift/sql/data.sql")
+@Sql(scripts = "/testData.sql")
 public class E2ETest {
 
     @LocalServerPort
@@ -74,7 +76,8 @@ public class E2ETest {
             .body(new ItemCreateDto(
                 "CK 티셔츠",
                 32000,
-                "www.ck.com"
+                "www.ck.com",
+                List.of(new OptionCreateDto("빨간색", 5))
             ))
             .retrieve()
             .toEntity(ItemResponseDto.class);
@@ -94,7 +97,8 @@ public class E2ETest {
             .body(new ItemCreateDto(
                 "([_&/_+- ])",
                 32000,
-                "www.allowedchar.com"
+                "www.allowedchar.com",
+                List.of(new OptionCreateDto("빨간색", 5))
             ))
             .retrieve()
             .toEntity(ItemResponseDto.class);
@@ -214,7 +218,8 @@ public class E2ETest {
                 .body(new ItemCreateDto(
                     "",
                     32000,
-                    "www.ck.com"
+                    "www.ck.com",
+                    List.of(new OptionCreateDto("빨간색", 5))
                 ))
                 .retrieve()
                 .toEntity(ItemResponseDto.class);
@@ -239,7 +244,8 @@ public class E2ETest {
                 .body(new ItemCreateDto(
                     "1234567890123456",
                     32000,
-                    "www.ck.com"
+                    "www.ck.com",
+                    List.of(new OptionCreateDto("빨간색", 5))
                 ))
                 .retrieve()
                 .toEntity(ItemResponseDto.class);
@@ -264,7 +270,8 @@ public class E2ETest {
                 .body(new ItemCreateDto(
                     "<CK>",
                     32000,
-                    "www.ck.com"
+                    "www.ck.com",
+                    List.of(new OptionCreateDto("빨간색", 5))
                 ))
                 .retrieve()
                 .toEntity(ItemResponseDto.class);
@@ -290,7 +297,8 @@ public class E2ETest {
                 .body(new ItemCreateDto(
                     "카카오 춘식이 인형",
                     32000,
-                    "www.kakao.com"
+                    "www.kakao.com",
+                    List.of(new OptionCreateDto("빨간색", 5))
                 ))
                 .retrieve()
                 .toEntity(ItemResponseDto.class);
