@@ -21,4 +21,31 @@ public class ItemOption {
     protected ItemOption() {
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public String getOptionName() {
+        return optionName;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public ItemOption(Item item, String optionName, Integer quantity) {
+        setItem(item);
+        this.optionName = optionName;
+        this.quantity = quantity;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+        item.addOption(this);
+    }
 }

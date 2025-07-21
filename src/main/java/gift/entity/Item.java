@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 public class Item {
@@ -25,6 +28,9 @@ public class Item {
 
     @Column(name = "image_url", length = 255, nullable = true)
     private String imageUrl;
+
+    @OneToMany(mappedBy = "item")
+    private List<ItemOption> options = new ArrayList<>();
 
     protected Item() {
 
@@ -94,5 +100,10 @@ public class Item {
     public Item changeName(String name) {
         this.name = name;
         return this;
+    }
+
+    public void addOption(ItemOption option) {
+        options.add(option);
+        option.setItem(this);
     }
 }
