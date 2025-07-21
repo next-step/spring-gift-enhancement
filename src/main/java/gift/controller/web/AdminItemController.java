@@ -8,6 +8,8 @@ import gift.service.ItemService;
 import gift.entity.Member;
 import gift.login.Login;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,7 +46,7 @@ public class AdminItemController {
 
     @GetMapping("/new")
     public String newItemForm(Model model) {
-        model.addAttribute("item", new ItemRequest(null, 0, null));
+        model.addAttribute("item", new ItemRequest(null, 0, null, new ArrayList<>()));
         return "admin/items/form";
     }
 
@@ -68,6 +70,9 @@ public class AdminItemController {
     @GetMapping("/{id}")
     public String detailItem(@PathVariable("id") Long id, Model model) {
         ItemResponse item = itemService.getItemById(id);
+        if (!model.containsAttribute("option")) {
+            model.addAttribute("option", new OptionRequest(null, 1));
+        }
         model.addAttribute("item", item);
         return "admin/items/detail";
     }
@@ -76,8 +81,14 @@ public class AdminItemController {
     @GetMapping("/{id}/edit")
     public String editItemForm(@PathVariable("id") Long id, Model model) {
         ItemResponse item = itemService.getItemById(id);
+
+        List<OptionRequest> optionRequests = item.options().stream()
+            .map(optionResponse -> new OptionRequest(optionResponse.name(), optionResponse.quantity()))
+            .toList();
+
         model.addAttribute("item",
-            new ItemRequest(item.name(), item.price(), item.imageUrl()));
+            new ItemRequest(item.name(), item.price(), item.imageUrl(), optionRequests));
+
         model.addAttribute("itemId", id);
         return "admin/items/form";
     }
