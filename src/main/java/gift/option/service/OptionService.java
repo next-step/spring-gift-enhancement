@@ -72,7 +72,7 @@ public class OptionService {
             throw new IllegalArgumentException(productId + "번 상품에 해당하는 상품 옵션이 아닙니다.");
         }
 
-        product.getOptions().remove(option);
+        product.removeOption(option);
     }
 
     private Product getProduct(Long productId) {

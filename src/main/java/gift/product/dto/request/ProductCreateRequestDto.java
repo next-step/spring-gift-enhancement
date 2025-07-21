@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.URL;
 import java.util.List;
 
 @KakaoInName
-public record ProductRequestDto(
+public record ProductCreateRequestDto(
         @NotBlank(message = "상품 이름을 입력해 주세요.")
         @Size(max = 15, message = "상품 이름은 최대 15자까지 입력 가능합니다." )
         @Pattern(
@@ -27,5 +27,8 @@ public record ProductRequestDto(
         @URL(message = "올바른 URL 형식이 아닙니다. 예시: http://....")
         String imageUrl,
 
-        Boolean isKakaoApprovedByMd
-                                )implements KakaoProductInfo { }
+        Boolean isKakaoApprovedByMd,
+
+        @Size(min = 1, message= "옵션은 하나 이상이어야 합니다.")
+        List<OptionRequestDto> optionRequestDtoList
+        )implements KakaoProductInfo { }

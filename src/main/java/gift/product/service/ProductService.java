@@ -1,5 +1,7 @@
 package gift.product.service;
 
+import gift.option.entity.Option;
+import gift.product.dto.request.ProductCreateRequestDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;
 import gift.product.entity.Product;
@@ -19,13 +21,21 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductResponseDto addProduct(ProductRequestDto requestDto){
+    public ProductResponseDto addProduct(ProductCreateRequestDto requestDto){
         Product product = new Product(
                 requestDto.name(),
                 requestDto.price(),
                 requestDto.imageUrl(),
                 requestDto.isKakaoApprovedByMd()
         );
+
+        requestDto.optionRequestDtoList()
+                .forEach(optionRequestDto -> {
+                    Option option = new Option(
+                            optionRequestDto.name(),
+                            optionRequestDto.quantity());
+                    product.addOption(option);
+                });
 
         return ProductResponseDto.from(productRepository.save(product));
     }

@@ -73,6 +73,13 @@ public class Product {
         checkDuplicateOptionName(streamExceptMine, name);
     }
 
+    public void removeOption(Option option){
+        if(this.options.size() <= 1){
+            throw new IllegalArgumentException("옵션이 한 개이기 때문에 삭제가 불가능합니다.");
+        }
+        this.options.remove(option);
+    }
+
     private void validateOptionForAdd(String name){
         checkDuplicateOptionName(this.options.stream(), name);
     }

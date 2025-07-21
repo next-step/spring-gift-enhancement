@@ -1,5 +1,6 @@
 package gift.product.controller;
 
+import gift.product.dto.request.ProductCreateRequestDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;
 import gift.product.service.ProductService;
@@ -23,7 +24,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
-            @Valid @RequestBody ProductRequestDto requestDto){
+            @Valid @RequestBody ProductCreateRequestDto requestDto){
         ProductResponseDto responseDto = productService.addProduct(requestDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
