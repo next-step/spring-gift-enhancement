@@ -16,4 +16,8 @@ public class ProductOption {
     @ManyToOne
     @JoinColumn(name = "option_id")
     private Option option;
+
+    private Long optionValue;
+
+    protected ProductOption() {}
 }
