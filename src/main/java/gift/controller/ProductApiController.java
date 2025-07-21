@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.common.exception.InvalidUserException;
 import gift.domain.product.Product;
+import gift.dto.product.CreateProductOptionRequest;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
@@ -54,6 +55,13 @@ public class ProductApiController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/options")
+    public ResponseEntity<ProductResponse> addProductOption(@PathVariable Long id, @RequestBody @Valid CreateProductOptionRequest request) {
+        Product product = productService.addOption(id, request);
+        ProductResponse response = ProductResponse.from(product);
+        return ResponseEntity.ok(response);
     }
 
     private void validProductName(String name) {

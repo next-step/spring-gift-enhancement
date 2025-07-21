@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.common.exception.ProductNotFoundException;
 import gift.domain.product.Product;
+import gift.dto.product.CreateProductOptionRequest;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
@@ -34,7 +35,7 @@ public class ProductService {
         if (cursor == null) {
             return productRepository.findAll(PageRequest.of(0, pageable.getPageSize(), pageable.getSort())).map(ProductResponse::from).stream().toList();
         }
-        return productRepository.findAllWithCursor(cursor, PageRequest.of(0, pageable.getPageSize(), pageable.getSort()));
+        return productRepository.findAllWithCursor(cursor, PageRequest.of(0, pageable.getPageSize(), pageable.getSort())).stream().map(ProductResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +52,12 @@ public class ProductService {
     public void deleteProduct(Long id) {
         Product product = getById(id);
         productRepository.delete(product);
+    }
+
+    public Product addOption(Long id, CreateProductOptionRequest request) {
+        Product product = getById(id);
+        product.addOption(request);
+        return product;
     }
 
     private Product getById(Long id) {
