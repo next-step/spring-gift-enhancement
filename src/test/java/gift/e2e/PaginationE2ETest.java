@@ -8,11 +8,13 @@ import gift.common.dto.CustomResponseBody;
 import gift.dto.AuthRequest;
 import gift.dto.AuthResponse;
 import gift.dto.PageResponse;
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import java.util.Comparator;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +72,7 @@ public class PaginationE2ETest {
         for (int i = 1; i <= 25; i++) {
             // 더미 상품 생성
             ProductRequest product = new ProductRequest("상품" + i, i * 100,
-                "https://img" + i + ".jpg");
+                "https://img" + i + ".jpg", createDummyOptions());
 
             ProductResponse created = client.post()
                 .uri("/products")
@@ -361,6 +363,10 @@ public class PaginationE2ETest {
         assertValidationError(response, "허용되지 않는 정렬 방향입니다.");
     }
 
+    private List<ProductOptionRequest> createDummyOptions() {
+        return List.of(new ProductOptionRequest("기본 옵션", 10L));
+    }
+    
     private void assertValidationError(ResponseEntity<String> response, String expectedMessage) {
         assertAll("응답 객체 검증",
             () -> assertThat(response).isNotNull(),
