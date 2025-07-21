@@ -126,6 +126,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     }
 
     ProductRequestDto getProductRequest(String name, int price, String imageUrl) {
-        return new ProductRequestDto(name, price, imageUrl, List.of(ProductOptionRequestDto.getEmpty()));
+        ProductOptionRequestDto defaultOption = new ProductOptionRequestDto("기본 옵션", 100);
+        return new ProductRequestDto(name, price, imageUrl, List.of(defaultOption));
     }
 }
