@@ -44,7 +44,7 @@ public class WishListController {
         return ResponseEntity.ok(ResponseWishItem.from(wishItemList));
     }
 
-    @PostMapping("/options")
+    @PostMapping("/option")
     public ResponseEntity<QuantityWishItemDto> controlWishItemQuantity(@LoginUser String userEmail, @RequestParam String itemName, @RequestParam Integer quantity) {
 
         WishItem wishItem = wishListService.controlWishItemQuantity(itemName, userEmail, quantity);
@@ -64,7 +64,7 @@ public class WishListController {
         return new ResponseEntity<>(ResponseWishItemDto.from(targetWishItem), HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/options")
+    @PutMapping("/option")
     public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestBody UpdateWishItemDto updateWishItemDto) {
 
         WishItem updatedWishItem = wishListService.updateWishItem(updateWishItemDto, userEmail);

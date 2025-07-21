@@ -1,5 +1,6 @@
 package gift.entity;
 
+import gift.exception.itemException.ItemQuantityException;
 import jakarta.persistence.*;
 
 @Entity
@@ -46,6 +47,14 @@ public class ItemOption {
 
     public void setItem(Item item) {
         this.item = item;
-        item.addOption(this);
+    }
+
+    public ItemOption quantityControl(Integer quantity) {
+        if (quantity < 0 || quantity > 100_000_000) {
+            throw new ItemQuantityException();
+        }
+        this.quantity = quantity;
+
+        return this;
     }
 }

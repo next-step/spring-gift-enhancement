@@ -1,12 +1,13 @@
 package gift.service.optionService;
 
-import gift.dto.optionDto.OptionCreateDto;
+import gift.dto.optionDto.OptionRequestDto;
 import gift.entity.Item;
 import gift.entity.ItemOption;
 import gift.exception.itemException.ItemNotFoundException;
 import gift.repository.itemRepository.ItemRepository;
 import gift.repository.optionRepository.OptionRepository;
 import gift.service.itemService.ItemService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +24,11 @@ public class OptionServiceImpl implements OptionService{
     }
 
     @Override
-    public ItemOption save(OptionCreateDto optionCreateDto, Long itemId) {
+    public ItemOption save(OptionRequestDto optionRequestDto, Long itemId) {
         Item item = itemService.findById(itemId)
                 .orElseThrow(ItemNotFoundException::new);
 
-        ItemOption itemOption = new ItemOption(item,optionCreateDto.OptionName(), optionCreateDto.quantity());
+        ItemOption itemOption = new ItemOption(item, optionRequestDto.optionName(), optionRequestDto.quantity());
 
         return optionRepository.save(itemOption);
     }
@@ -38,6 +39,18 @@ public class OptionServiceImpl implements OptionService{
                 .orElseThrow(ItemNotFoundException::new);
 
         return item.getOptions();
+    }
+
+    @Transactional
+    @Override
+    public ItemOption quantityControl(OptionRequestDto optionRequestDto, Long itemId) {
+        Item item = itemService.findById(itemId)
+                .orElseThrow(ItemNotFoundException::new);
+
+        ItemOption itemOption = optionRepository.findByItem(item);
+        ItemOption changedOption = itemOption.quantityControl(optionRequestDto.quantity());
+
+        return optionRepository.save(changedOption);
     }
 
 

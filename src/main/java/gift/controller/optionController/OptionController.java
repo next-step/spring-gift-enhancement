@@ -1,21 +1,18 @@
 package gift.controller.optionController;
 
-import gift.dto.optionDto.OptionCreateDto;
+import gift.dto.optionDto.OptionRequestDto;
 import gift.dto.optionDto.OptionDtoList;
 import gift.dto.optionDto.OptionResponseDto;
 import gift.entity.ItemOption;
 import gift.service.optionService.OptionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/options")
 public class OptionController {
 
     private final OptionService optionService;
@@ -24,20 +21,31 @@ public class OptionController {
         this.optionService = optionService;
     }
 
-    @PostMapping("/options")
-    public ResponseEntity<OptionResponseDto> addItemOption(@RequestBody OptionCreateDto optionCreateDto, @RequestParam Long itemId) {
+    @PostMapping
+    public ResponseEntity<OptionResponseDto> addItemOption(@RequestBody OptionRequestDto optionRequestDto, @RequestParam Long itemId) {
 
-        ItemOption itemOption = optionService.save(optionCreateDto,itemId);
+        System.out.println(1);
+        ItemOption itemOption = optionService.save(optionRequestDto, itemId);
         OptionResponseDto optionResponseDto = OptionResponseDto.from(itemOption);
 
         return new ResponseEntity<>(optionResponseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/options")
+    @GetMapping
     public ResponseEntity<OptionDtoList> getOptionList(@RequestParam Long itemId) {
-
+        System.out.println(2);
         List<ItemOption> optionList = optionService.getOptions(itemId);
 
         return ResponseEntity.ok(OptionDtoList.from(optionList));
+    }
+
+    @PutMapping
+    public ResponseEntity<OptionResponseDto> quantityControl(@RequestBody OptionRequestDto optionRequestDto, @RequestParam Long itemId) {
+
+        System.out.println(3);
+        ItemOption itemOption = optionService.quantityControl(optionRequestDto, itemId);
+        OptionResponseDto optionResponseDto = OptionResponseDto.from(itemOption);
+
+        return new ResponseEntity<>(optionResponseDto, HttpStatus.CREATED);
     }
 }
