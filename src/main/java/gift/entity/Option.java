@@ -61,10 +61,10 @@ public class Option {
     }
 
     public void subtractQuantity(int amount) {
-        int remainingQuantity = this.quantity - amount;
-        if (remainingQuantity < 0) {
+        if (this.quantity < amount) {
             throw new OutOfQuantityException("수량이 부족합니다. (남은 수량: " + this.quantity + ")");
         }
-        this.quantity = remainingQuantity;
+
+        this.quantity -= amount;
     }
 }
