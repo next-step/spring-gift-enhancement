@@ -22,6 +22,12 @@ public class ProductOptionService {
 
 
     public  void addOption(Long productId, ProductOptionRequestDto dto) {
+        boolean exists = productOptionRepository.existsByProductIdAndName(productId, dto.getName());
+        if (exists) {
+            throw new IllegalArgumentException("이미 동일한 이름의 옵션이 존재합니다.");
+        }
+
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("상품을 찾을 수 없습니다."));
 
