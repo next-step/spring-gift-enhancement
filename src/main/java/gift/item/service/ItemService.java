@@ -6,11 +6,13 @@ import gift.common.vo.PageSize;
 import gift.common.vo.SortDirection;
 import gift.item.ItemEntity;
 import gift.item.ItemSortBy;
+import gift.item.OptionEntity;
 import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -74,6 +76,15 @@ public class ItemService {
         );
 
         ItemEntity savedItemEntity = itemRepository.save(newItemEntity);
+
+        List<OptionEntity> options = itemCreateDto.options().stream()
+            .map(optionDto -> new OptionEntity(
+                optionDto.name(),
+                optionDto.quantity(),
+                savedItemEntity
+            )).toList();
+
+        savedItemEntity.getOptions().addAll(options);
 
         return new ItemResponseDto(
             savedItemEntity.getId(),

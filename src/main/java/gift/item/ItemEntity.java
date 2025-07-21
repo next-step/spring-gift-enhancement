@@ -62,6 +62,10 @@ public class ItemEntity {
         return imageUrl;
     }
 
+    public List<OptionEntity> getOptions() {
+        return options;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
