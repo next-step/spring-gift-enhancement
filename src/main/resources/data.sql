@@ -13,11 +13,20 @@ INSERT INTO members(email, password) VALUES('member5@mem', '$2a$10$cVqSwvAyY2P1R
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (1, 1, 5);
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (1, 2, 5);
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (1, 3, 5);
-
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (2, 1, 5);
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (2, 2, 5);
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (2, 3, 5);
-
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (3, 1, 5);
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (3, 2, 5);
 INSERT INTO wishlists(member_id, product_id, quantity) VALUES (3, 3, 5);
+
+INSERT INTO options(name, product_id, quantity) VALUES('option1', 1L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option2', 1L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option3', 2L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option4', 2L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option5', 3L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option6', 3L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option7', 4L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option8', 4L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option9', 5L, 10);
+INSERT INTO options(name, product_id, quantity) VALUES('option10', 5L, 10);
