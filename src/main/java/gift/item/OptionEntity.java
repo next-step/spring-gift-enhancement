@@ -1,5 +1,7 @@
 package gift.item;
 
+import gift.item.vo.OptionName;
+import gift.item.vo.Quantity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,10 +20,10 @@ public class OptionEntity {
     private Long id;
 
     @Column(name = "name", nullable = false, length = 50)
-    private String name;
+    private OptionName name;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private Quantity quantity;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
@@ -31,8 +33,8 @@ public class OptionEntity {
     }
 
     public OptionEntity(String name, Integer quantity, ItemEntity item) {
-        this.name = name;
-        this.quantity = quantity;
+        this.name = new OptionName(name);
+        this.quantity = new Quantity(quantity);
         this.item = item;
     }
 
@@ -41,11 +43,11 @@ public class OptionEntity {
     }
 
     public String getName() {
-        return name;
+        return name.toValue();
     }
 
     public Integer getQuantity() {
-        return quantity;
+        return quantity.toValue();
     }
 
     public ItemEntity getItem() {
@@ -53,11 +55,11 @@ public class OptionEntity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = new OptionName(name);
     }
 
     public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
 }
