@@ -1,11 +1,15 @@
 package gift.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -24,6 +28,9 @@ public class Product {
     @Column(nullable = false)
     private String imageUrl;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOption> options = new ArrayList<>();
+
     protected Product() {
     }
 
@@ -36,6 +43,15 @@ public class Product {
 
     public Product(String name, Integer price, String imageUrl) {
         this(null, name, price, imageUrl);
+    }
+
+    public void addOption(ProductOption option) {
+        options.add(option);
+        option.setProduct(this);
+    }
+
+    public List<ProductOption> getOptions() {
+        return options;
     }
 
     public Long getId() {
@@ -52,11 +68,5 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public void update(String name, int price, String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
     }
 }
