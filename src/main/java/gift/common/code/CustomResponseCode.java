@@ -22,7 +22,16 @@ public enum CustomResponseCode {
     INVALID_SORT_FIELD("허용되지 않는 정렬 필드입니다.", HttpStatus.BAD_REQUEST),
     INVALID_SORT_DIRECTION("허용되지 않는 정렬 방향입니다.", HttpStatus.BAD_REQUEST),
     DB_ERROR("데이터베이스 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    INTERNAL_ERROR("서버 내부 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    INTERNAL_ERROR("서버 내부 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    OPTION_NAME_REQUIRED("옵션 이름은 필수입니다.", HttpStatus.BAD_REQUEST),
+    OPTION_NAME_TOO_LONG("옵션 이름은 50자 이하여야 합니다.", HttpStatus.BAD_REQUEST),
+    OPTION_NAME_INVALID_CHAR("옵션 이름에 허용되지 않은 문자가 포함되어 있습니다.", HttpStatus.BAD_REQUEST),
+    OPTION_QUANTITY_INVALID("수량은 1 이상 1억 미만이어야 합니다.", HttpStatus.BAD_REQUEST),
+    OPTION_REQUIRED("상품에는 최소 1개의 옵션이 필요합니다.", HttpStatus.BAD_REQUEST),
+    OPTION_DUPLICATED("동일한 상품 내 옵션 이름은 중복될 수 없습니다.", HttpStatus.CONFLICT),
+    OPTION_DECREASE_AMOUNT_INVALID("감소 수량은 1 이상이어야 합니다.", HttpStatus.BAD_REQUEST),
+    OPTION_INSUFFICIENT_STOCK("옵션 수량이 부족합니다.", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

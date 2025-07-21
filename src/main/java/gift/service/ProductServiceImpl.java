@@ -5,6 +5,7 @@ import gift.common.exception.CustomException;
 import gift.common.util.SortUtil;
 import gift.dto.PageResponse;
 import gift.dto.Pagination;
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.dto.ProductSortField;
@@ -27,11 +28,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ProductResponse create(ProductRequest request) {
-        Product savedProduct = productRepository.save(
-            new Product(request.name(), request.price(), request.imageUrl()));
+        if (request.options() == null || request.options().isEmpty()) {
+            throw new CustomException(CustomResponseCode.OPTION_REQUIRED);
+        }
 
+        Product product = new Product(request.name(), request.price(), request.imageUrl());
+
+        for (ProductOptionRequest optionRequest : request.options()) {
+            product.addUniqueOption(optionRequest.name(), optionRequest.quantity());
+        }
+
+        Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
     }
 

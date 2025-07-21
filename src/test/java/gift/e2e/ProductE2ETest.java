@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import gift.auth.jwt.JwtUtil;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,10 @@ public class ProductE2ETest {
     @Test
     @DisplayName("상품 생성 테스트")
     void testCreateProduct() {
-        ProductRequest request = new ProductRequest("테스트 상품", 4500, "https://test.jpg");
+        List<ProductOptionRequest> optionRequests = List.of(
+            new ProductOptionRequest("테스트 옵션", 100L));
+        ProductRequest request = new ProductRequest("테스트 상품", 4500, "https://test.jpg",
+            optionRequests);
 
         CustomResponseBody<ProductResponse> response = client.post()
             .uri("")
@@ -65,7 +70,10 @@ public class ProductE2ETest {
         assertAll("응답 데이터 필드 검증",
             () -> assertThat(data.name()).isEqualTo("테스트 상품"),
             () -> assertThat(data.price()).isEqualTo(4500),
-            () -> assertThat(data.imageUrl()).isEqualTo("https://test.jpg")
+            () -> assertThat(data.imageUrl()).isEqualTo("https://test.jpg"),
+            () -> assertThat(data.options()).isNotEmpty(),
+            () -> assertThat(data.options().get(0).name()).isEqualTo("테스트 옵션"),
+            () -> assertThat(data.options().get(0).quantity()).isEqualTo(100)
         );
     }
 
@@ -101,7 +109,8 @@ public class ProductE2ETest {
     void testUpdateProduct() {
         Long id = createSampleProduct("테스트 기존 상품", 1000, "https://old.jpg");
 
-        ProductRequest update = new ProductRequest("테스트 수정 상품", 1500, "https://new.jpg");
+        ProductRequest update = new ProductRequest("테스트 수정 상품", 1500, "https://new.jpg",
+            createDummyOptions());
 
         CustomResponseBody<ProductResponse> response = client.put()
             .uri("/{id}", id)
@@ -143,7 +152,8 @@ public class ProductE2ETest {
     @Test
     @DisplayName("상품명 빈 값 유효성 검사")
     void testProductNameBlankValidation() {
-        ProductRequest invalidRequest = new ProductRequest("", 1000, "https://test.jpg");
+        ProductRequest invalidRequest = new ProductRequest("", 1000, "https://test.jpg",
+            createDummyOptions());
 
         ResponseEntity<String> response = client.post()
             .uri("")
@@ -161,7 +171,7 @@ public class ProductE2ETest {
     @DisplayName("상품명 최대 길이 유효성 검사")
     void testProductNameLengthValidation() {
         ProductRequest invalidRequest = new ProductRequest("일이삼사오육칠팔구십123456", 1000,
-            "https://test.jpg");
+            "https://test.jpg", createDummyOptions());
 
         ResponseEntity<String> response = client.post()
             .uri("")
@@ -178,7 +188,8 @@ public class ProductE2ETest {
     @Test
     @DisplayName("상품명 허용되지 않는 문자 유효성 검사")
     void testProductNamePatternValidation() {
-        ProductRequest invalidRequest = new ProductRequest("@@@!!!", 1000, "https://test.jpg");
+        ProductRequest invalidRequest = new ProductRequest("@@@!!!", 1000, "https://test.jpg",
+            createDummyOptions());
 
         ResponseEntity<String> response = client.post()
             .uri("")
@@ -195,7 +206,8 @@ public class ProductE2ETest {
     @Test
     @DisplayName("상품명에 카카오 포함 시 유효성 검사")
     void testProductNameForbiddenKeywordValidation() {
-        ProductRequest invalidRequest = new ProductRequest("카카오", 3000, "https://test.jpg");
+        ProductRequest invalidRequest = new ProductRequest("카카오", 3000, "https://test.jpg",
+            createDummyOptions());
 
         ResponseEntity<String> response = client.post()
             .uri("")
@@ -213,7 +225,8 @@ public class ProductE2ETest {
     @Test
     @DisplayName("가격 누락 유효성 검사")
     void testPriceRequiredValidation() {
-        ProductRequest invalidRequest = new ProductRequest("테스트 상품", null, "https://test.jpg");
+        ProductRequest invalidRequest = new ProductRequest("테스트 상품", null, "https://test.jpg",
+            createDummyOptions());
 
         ResponseEntity<String> response = client.post()
             .uri("")
@@ -230,7 +243,8 @@ public class ProductE2ETest {
     @Test
     @DisplayName("이미지 URL 누락 유효성 검사")
     void testImageUrlRequiredValidation() {
-        ProductRequest invalidRequest = new ProductRequest("테스트 상품", 1000, "");
+        ProductRequest invalidRequest = new ProductRequest("테스트 상품", 1000, "",
+            createDummyOptions());
 
         ResponseEntity<String> response = client.post()
             .uri("")
@@ -245,7 +259,7 @@ public class ProductE2ETest {
     }
 
     private Long createSampleProduct(String name, int price, String imageUrl) {
-        ProductRequest request = new ProductRequest(name, price, imageUrl);
+        ProductRequest request = new ProductRequest(name, price, imageUrl, createDummyOptions());
 
         CustomResponseBody<ProductResponse> response = client.post()
             .uri("")
@@ -256,6 +270,10 @@ public class ProductE2ETest {
             });
 
         return response.data().id();
+    }
+
+    private List<ProductOptionRequest> createDummyOptions() {
+        return List.of(new ProductOptionRequest("기본 옵션", 10L));
     }
 
     private <T> void assertResponse(CustomResponseBody<T> response,

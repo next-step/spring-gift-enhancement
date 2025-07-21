@@ -19,3 +19,12 @@ CREATE TABLE wish (
     FOREIGN KEY (member_id) REFERENCES member(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
+
+CREATE TABLE product_option (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    quantity BIGINT NOT NULL CHECK (quantity >= 1 AND quantity < 100000000),
+    product_id BIGINT NOT NULL,
+    CONSTRAINT fk_option_product FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    CONSTRAINT uc_product_option UNIQUE (product_id, name)
+);
