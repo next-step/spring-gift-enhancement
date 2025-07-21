@@ -9,6 +9,8 @@ import gift.repository.optionRepository.OptionRepository;
 import gift.service.itemService.ItemService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OptionServiceImpl implements OptionService{
 
@@ -28,6 +30,14 @@ public class OptionServiceImpl implements OptionService{
         ItemOption itemOption = new ItemOption(item,optionCreateDto.OptionName(), optionCreateDto.quantity());
 
         return optionRepository.save(itemOption);
+    }
+
+    @Override
+    public List<ItemOption> getOptions(Long itemId) {
+        Item item = itemService.findById(itemId)
+                .orElseThrow(ItemNotFoundException::new);
+
+        return item.getOptions();
     }
 
 

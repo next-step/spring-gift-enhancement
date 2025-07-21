@@ -106,4 +106,8 @@ public class Item {
         options.add(option);
         option.setItem(this);
     }
+
+    public List<ItemOption> getOptions() {
+        return this.options;
+    }
 }
