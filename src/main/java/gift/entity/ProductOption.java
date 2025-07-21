@@ -26,6 +26,17 @@ public class ProductOption {
         this.product = product;
     }
 
+    public void subtractQuantity(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("차감 수량은 0보다 커야 합니다.");
+        }
+        if (this.quantity < amount) {
+            throw new IllegalArgumentException("재고가 부족합니다. 현재 수량: " + this.quantity);
+        }
+
+        this.quantity -= amount;
+    }
+
     public Long getId() {
         return id;
     }
