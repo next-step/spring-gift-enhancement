@@ -2,11 +2,8 @@ package gift.item.dto;
 
 import gift.common.validation.OnlyPermittedSymbols;
 import gift.common.validation.RestrictedWords;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 
 public record ItemUpdateDto(
     @NotBlank(message = "상품명은 필수입니다.")
@@ -15,10 +12,7 @@ public record ItemUpdateDto(
     @RestrictedWords(words = {"카카오"})
     String name,
     Integer price,
-    String imageUrl,
-
-    @NotEmpty @Valid
-    List<OptionCreateDto> options
+    String imageUrl
 ) {
 
 }
