@@ -16,7 +16,7 @@ public record ProductOptionRequestDto(
         @Max(value = 99_999_999, message = "수량은 1억 미만이어야 합니다.")
         Integer quantity
 ) {
-    private static final String DEFAULT_NAME = "Default";
+    private static final String DEFAULT_NAME = "";
     private static final Integer DEFAULT_QUANTITY = 1;
 
     public ProductOption toEntity(){
