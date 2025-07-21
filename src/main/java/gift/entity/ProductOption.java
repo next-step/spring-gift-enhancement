@@ -77,9 +77,21 @@ public class ProductOption {
     public void change(String name, int quantity) {
         this.name = name;
         this.quantity = quantity;
+
+        if (product != null) {
+            this.product.recalculateQuantity();
+        }
     }
 
     public ProductOption withProduct(Product product) {
-        return new ProductOption(this.id, this.name, this.quantity, product);
+        return new ProductOption(null, this.name, this.quantity, product);
+    }
+
+    public void changeQuantity(int quantity) {
+        this.quantity = quantity;
+
+        if (product != null) {
+            this.product.recalculateQuantity();
+        }
     }
 }

@@ -52,12 +52,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto create(ProductRequestDto requestDto) {
-        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.quantity(),
-            requestDto.imageUrl());
+        List<ProductOption> productOptionList = requestDto.options().stream()
+            .map(option -> new ProductOption(option.name(), option.quantity()))
+            .toList();
 
-        requestDto.options().forEach(option ->
-            product.addOption(new ProductOption(option.name(), option.quantity(), product))
-        );
+        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl(),
+            productOptionList);
 
         Long id = productRepository.save(product).getId();
 

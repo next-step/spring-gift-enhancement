@@ -68,16 +68,23 @@ public class Product {
     protected Product() {
     }
 
-    public Product(Long id, String name, int price, int quantity, String imageUrl) {
+    public Product(Long id, String name, int price, String imageUrl, List<ProductOption> options) {
+        if (options == null || options.isEmpty()) {
+            throw new IllegalArgumentException("상품에 하나 이상의 옵션이 필요합니다.");
+        }
+
         this.id = id;
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
+        this.quantity = 0;
         this.imageUrl = imageUrl;
+        this.options = new ArrayList<>();
+
+        options.forEach(this::addOption);
     }
 
-    public Product(String name, int price, int quantity, String imageUrl) {
-        this(null, name, price, quantity, imageUrl);
+    public Product(String name, int price, String imageUrl, List<ProductOption> options) {
+        this(null, name, price, imageUrl, options);
     }
 
     public Long getId() {
@@ -136,16 +143,22 @@ public class Product {
     public void addOption(ProductOption option) {
         ProductOption linkedOption = option.withProduct(this);
         options.add(linkedOption);
-        this.quantity += linkedOption.getQuantity();
+        recalculateQuantity();
     }
 
     public void removeOption(ProductOption option) {
-        if (options.remove(option)) {
-            this.quantity -= option.getQuantity();
-
-            if (this.quantity < 0) {
-                this.quantity = 0;
-            }
+        if (options.size() <= 1) {
+            throw new IllegalArgumentException("상품에 하나 이상의 옵션이 필요합니다.");
         }
+
+        if (options.remove(option)) {
+            recalculateQuantity();
+        }
+    }
+
+    public void recalculateQuantity() {
+        this.quantity = this.options.stream()
+            .mapToInt(ProductOption::getQuantity)
+            .sum();
     }
 }
