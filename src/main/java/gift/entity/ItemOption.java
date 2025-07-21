@@ -3,17 +3,22 @@ package gift.entity;
 import gift.exception.itemException.ItemQuantityException;
 import jakarta.persistence.*;
 
+import java.util.regex.Pattern;
+
 @Entity
 public class ItemOption {
+
+    private static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣 ()\\[\\]+\\-\\&/_]{1,50}$");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private Item item;
 
+    @Column(length = 50, nullable = false)
     private String optionName;
 
     @Column(nullable = false)
@@ -21,7 +26,6 @@ public class ItemOption {
 
     protected ItemOption() {
     }
-    private Integer a;
 
     public Long getId() {
         return id;
