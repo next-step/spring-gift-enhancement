@@ -19,6 +19,7 @@ import java.util.List;
 
 @Service
 public class WishService {
+
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
 
@@ -36,13 +37,15 @@ public class WishService {
         return wishRepository.findByMemberIdAndProductId(member.getId(), productId)
             .map(existingWish -> {
                 int newQuantity = existingWish.getQuantity() + wishRequestDTO.quantity();
-                existingWish.setQuantity(newQuantity);  // JPA 엔티티 기반 업데이트
+                existingWish.setQuantity(newQuantity);
                 wishRepository.save(existingWish);
-                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), newQuantity);
+                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product),
+                    newQuantity);
             })
             .orElseGet(() -> {
                 wishRepository.save(new Wish(member, product, wishRequestDTO.quantity()));
-                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), wishRequestDTO.quantity());
+                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product),
+                    wishRequestDTO.quantity());
             });
     }
 
