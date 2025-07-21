@@ -44,4 +44,5 @@ public class Product {
     public String getName() { return name; }
     public Long getPrice() { return price; }
     public String getImageUrl() { return imageUrl; }
+    public List<ProductOption> getOptions() { return options; }
 }
