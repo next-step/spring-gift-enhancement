@@ -36,18 +36,6 @@ public class AdminProductController {
         return "admin/add";
     }
 
-    @PostMapping("/add")
-    public String addProduct(
-            @RequestBody @Valid ProductAddRequestDto requestDto,
-            BindingResult bindingResult,
-            HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            throwInvalidProductException(bindingResult);
-        }
-        productService.addProduct(requestDto);
-        return "redirect:/admin/products";
-    }
-
     @GetMapping("/edit/{id}")
     public String showEditForm(
             Model model,
@@ -78,13 +66,5 @@ public class AdminProductController {
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
         return "redirect:/admin/products";
-    }
-
-    private void throwInvalidProductException(BindingResult bindingResult) {
-        String field = bindingResult.getFieldErrors().getFirst().getField();
-        if (field.equals("name")) {
-            field = "productNameError";
-        }
-        throw new InvalidProductException(field, bindingResult.getFieldErrors().getFirst().getDefaultMessage());
     }
 }

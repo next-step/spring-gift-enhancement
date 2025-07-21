@@ -36,7 +36,6 @@
         //제출 버튼 눌렀을 때
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("productForm").addEventListener("submit", function (e) {
-                console.log("제출버튼 눌림")
                 e.preventDefault();
 
                 const optionRows = document.querySelectorAll(".option-group");
@@ -57,7 +56,6 @@
                     url: document.getElementById("url").value,
                     options: options
                 };
-
                 fetch("/admin/products/add", {
                     method: "POST",
                     headers: {
@@ -66,17 +64,14 @@
                     body: JSON.stringify(formData)
                 })
                     .then(async (res) => {
-                        if (!res.create) {
+                        if (!(res.status === 201)) {
                             const error = await res.json();
-                            console.log("서버 에러 응답:", error);
-                            console.log("찾으려는 필드 id:", error.field);
                             document.getElementById(error.field).innerText = error.message;
                         } else {
                             location.href = "/admin/products";
                         }
                     })
                     .catch((err) => {
-                        console.error("요청 실패", err);
                         alert("서버 오류가 발생했습니다.");
                     });
             });
