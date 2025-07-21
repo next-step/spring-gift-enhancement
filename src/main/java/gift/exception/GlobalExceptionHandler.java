@@ -56,4 +56,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValueObjectException(RuntimeException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
+
+    @ExceptionHandler(InvalidOptionQuantityException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidOptionQuantity(InvalidOptionQuantityException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
 }
