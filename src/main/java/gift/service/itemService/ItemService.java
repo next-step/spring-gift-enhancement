@@ -33,4 +33,6 @@ public interface ItemService {
     Page<Item> findItemsByPrice(Integer price, Pageable pageable);
 
     Page<Item> findItemsByNameAndPrice(String name, Integer price, Pageable pageable);
+
+    Item save(Item updatedItem);
 }

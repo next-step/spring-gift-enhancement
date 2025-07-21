@@ -105,4 +105,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
 
+    @Override
+    @Transactional
+    public Item save(Item updatedItem) {
+        Item savedItem = itemRepository.save(updatedItem);
+        System.out.println(savedItem.getName());
+        return savedItem;
+
+    }
+
+
 }

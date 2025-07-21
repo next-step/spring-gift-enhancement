@@ -90,4 +90,9 @@ public class Item {
 
         return new Item(this.id, item.getName(), item.getPrice(), item.getImageUrl());
     }
+
+    public Item changeName(String name) {
+        this.name = name;
+        return this;
+    }
 }

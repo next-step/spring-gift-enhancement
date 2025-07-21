@@ -117,8 +117,8 @@ public class WishListServiceImpl implements WishListService {
             throw new UserNotFoundException();
         }
 
-        String changeName = updateWishItemDto.name();
-        Optional<Item> findItem = itemService.findItemByName(changeName);
+        String itemName = updateWishItemDto.itemName();
+        Optional<Item> findItem = itemService.findItemByName(itemName);
 
         if (findItem.isEmpty()) {
             throw new ItemNotFoundException();
@@ -130,23 +130,28 @@ public class WishListServiceImpl implements WishListService {
             throw new ItemNotFoundException();
         }
 
-        if (changeName.equals(findItem.get().getName())) {
+        String changedName = updateWishItemDto.name();
+
+        if (changedName.equals(findItem.get().getName())) {
             return updatedQuantity(updateWishItemDto, userEmail, findItem);
         }
 
         return updatedQuantityAndName(updateWishItemDto, userEmail, findItem);
     }
 
-    private WishItem updatedQuantityAndName(UpdateWishItemDto updateWishItemDto, String userEmail, Optional<Item> findItem) {
+    @Transactional
+    protected WishItem updatedQuantityAndName(UpdateWishItemDto updateWishItemDto, String userEmail, Optional<Item> findItem) {
         Item changedItem = findItem.get();
 
-        WishItem wishItem = wishListRepository.findByUserEmailAndItemName(userEmail, updateWishItemDto.itemName());
+        WishItem wishItem = wishListRepository.findByUserEmailAndItem(userEmail, Optional.of(changedItem));
 
         if (wishItem == null) {
             throw new ItemNotFoundException();
         }
+        Item updatedItem = changedItem.changeName(updateWishItemDto.name());
+        Item item = itemService.save(updatedItem);
 
-        wishItem.changeItem(changedItem);
+        wishItem.changeItem(item);
         wishItem.changeQuantity(updateWishItemDto.quantity());
 
         return wishListRepository.save(wishItem);
