@@ -3,10 +3,10 @@ package gift.product.dto;
 import gift.product.domain.Product;
 
 public record ProductInfoDto (
-    Long id,
-    String name,
-    int price,
-    String imageUrl
+        Long id,
+        String name,
+        int price,
+        String imageUrl
 
 ) {
     public static ProductInfoDto productFrom(Product product){

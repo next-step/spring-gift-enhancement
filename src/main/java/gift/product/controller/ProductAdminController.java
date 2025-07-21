@@ -76,7 +76,11 @@ public class ProductAdminController {
     public String editProductForm(@PathVariable("id") Long id, Model model){
         Product product = productService.getProduct(id);
 
-        model.addAttribute("product", new ProductEditDto(product.getName(), product.getPrice(), product.getImageUrl()));
+        model.addAttribute("product", new ProductEditDto(
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        ));
         model.addAttribute("productId", id);
 
         return "admin/product-edit-form";
