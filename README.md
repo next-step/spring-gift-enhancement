@@ -55,9 +55,9 @@ Content-Type: application/json
 - [x] ProductOptionRequestDto, ProductOptionResponseDto 등 옵션 관련 DTO 설계 및 구현
 
 3. Repository 생성
-- [ ] ProductOptionRepository 생성 (JpaRepository 상속)
-- [ ] List<ProductOption> findByProductId(Long productId)
-- [ ] boolean existsByProductIdAndName(Long productId, String name)
+- [x] ProductOptionRepository 생성 (JpaRepository 상속)
+- [x] Page<ProductOption> findByProductId(Long productId, Pageable pageable)
+- [x] boolean existsByProductIdAndName(Long productId, String name)
 
 4. Service 구현
 - [ ] 옵션 추가 로직 (addOption)
