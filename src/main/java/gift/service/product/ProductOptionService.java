@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ProductOptionService {
 
-    public ProductOptionResponseDto save(Long productId, String name, int quantity);
+    public ProductOptionResponseDto add(Long productId, String name, int quantity);
 
     public List<ProductOptionResponseDto> findAllById(Long productId);
 

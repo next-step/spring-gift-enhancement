@@ -23,7 +23,7 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     }
 
     @Override
-    public ProductOptionResponseDto save(Long productId, String name, int quantity) {
+    public ProductOptionResponseDto add(Long productId, String name, int quantity) {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
