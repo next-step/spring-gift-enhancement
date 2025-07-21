@@ -3,6 +3,7 @@ package gift.common.exception;
 import gift.common.security.exception.InvalidTokenException;
 import gift.common.security.exception.MissingTokenException;
 import gift.item.exception.ItemNotFoundException;
+import gift.item.exception.LastOptionCannotBeDeletedException;
 import gift.member.exception.DuplicateEmailException;
 import gift.member.exception.InvalidLoginException;
 import gift.member.exception.MemberNotFoundException;
@@ -88,9 +89,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ErrorResponseDto> handleDuplicateEmailException(
-        DuplicateEmailException e,
+    @ExceptionHandler({
+        DuplicateEmailException.class,
+        LastOptionCannotBeDeletedException.class
+    })
+    public ResponseEntity<ErrorResponseDto> handleConflictException(
+        RuntimeException e,
         HttpServletRequest request
     ) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(

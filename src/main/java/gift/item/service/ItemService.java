@@ -6,11 +6,15 @@ import gift.common.vo.PageSize;
 import gift.common.vo.SortDirection;
 import gift.item.ItemEntity;
 import gift.item.ItemSortBy;
+import gift.item.OptionEntity;
 import gift.item.dto.ItemCreateDto;
+import gift.item.dto.ItemDetailResponseDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
+import gift.item.dto.OptionResponseDto;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -66,20 +70,36 @@ public class ItemService {
     }
 
     @Transactional
-    public ItemResponseDto createItem(ItemCreateDto itemCreateDto) {
+    public ItemDetailResponseDto createItem(ItemCreateDto itemCreateDto) {
         ItemEntity newItemEntity = new ItemEntity(
             itemCreateDto.name(),
             itemCreateDto.price(),
             itemCreateDto.imageUrl()
         );
 
+        List<OptionEntity> optionEntities = itemCreateDto.options().stream()
+            .map(optionDto -> new OptionEntity(
+                optionDto.name(),
+                optionDto.quantity(),
+                newItemEntity
+            )).toList();
+
+        newItemEntity.getOptions().addAll(optionEntities);
+
         ItemEntity savedItemEntity = itemRepository.save(newItemEntity);
 
-        return new ItemResponseDto(
+        return new ItemDetailResponseDto(
             savedItemEntity.getId(),
             savedItemEntity.getName(),
             savedItemEntity.getPrice(),
-            savedItemEntity.getImageUrl()
+            savedItemEntity.getImageUrl(),
+            savedItemEntity.getOptions().stream().map(
+                optionEntity -> new OptionResponseDto(
+                    optionEntity.getId(),
+                    optionEntity.getName(),
+                    optionEntity.getQuantity()
+                )
+            ).toList()
         );
     }
 

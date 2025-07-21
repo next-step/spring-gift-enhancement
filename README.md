@@ -20,6 +20,16 @@
 - [x] Wishlist 페이지네이션 구현
 - [x] 페이지네이션 테스트 작성
 
+### step3 구현 기능
+
+- [x] option 엔티티 구현
+- [x] 연관관계 설정
+- [x] DTO 생성 및 변경
+- [x] option crud 구현
+- [x] 기존 API 수정
+- [x] option 수량 감소 기능 구현
+- [x] 테스트코드 작성
+
 # spring-gift-wishlist
 
 ## 구현 기능
