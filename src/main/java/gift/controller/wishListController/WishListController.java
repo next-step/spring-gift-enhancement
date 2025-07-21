@@ -1,10 +1,7 @@
 package gift.controller.wishListController;
 
 import gift.config.LoginUser;
-import gift.dto.wishListDto.CreateWishItemRequestDto;
-import gift.dto.wishListDto.QuantityWishItemDto;
-import gift.dto.wishListDto.ResponseWishItem;
-import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.dto.wishListDto.*;
 import gift.entity.WishItem;
 import gift.service.wishListService.WishListService;
 import jakarta.validation.Valid;
@@ -67,10 +64,10 @@ public class WishListController {
         return new ResponseEntity<>(ResponseWishItemDto.from(targetWishItem), HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping
-    public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestParam Integer quantity, @RequestParam String name) {
+    @PutMapping("/options")
+    public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestBody UpdateWishItemDto updateWishItemDto) {
 
-        WishItem updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
+        WishItem updatedWishItem = wishListService.updateWishItem(updateWishItemDto, userEmail);
 
         return new ResponseEntity<>(ResponseWishItemDto.from(updatedWishItem), HttpStatus.ACCEPTED);
     }

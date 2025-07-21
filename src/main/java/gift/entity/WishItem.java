@@ -65,4 +65,8 @@ public class WishItem {
         }
         return new WishItem(this.id, this.user, this.item, quantity);
     }
+
+    public void changeItem(Item changedItem) {
+        this.item = changedItem;
+    }
 }

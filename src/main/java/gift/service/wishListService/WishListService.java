@@ -1,6 +1,7 @@
 package gift.service.wishListService;
 
 import gift.dto.wishListDto.CreateWishItemRequestDto;
+import gift.dto.wishListDto.UpdateWishItemDto;
 import gift.entity.WishItem;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ public interface WishListService {
 
     WishItem deleteWishItem(String name, String userEmail);
 
-    WishItem updateWishItem(Integer quantity, String name, String userEmail);
+    WishItem updateWishItem(UpdateWishItemDto updateWishItemDto, String userEmail);
 
     WishItem controlWishItemQuantity(String itemName, String userEmail, Integer quantity);
 }
