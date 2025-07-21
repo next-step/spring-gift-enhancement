@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.OptionRequest;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
@@ -13,7 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -30,13 +33,13 @@ public class ProductAdminController {
                                   @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ProductResponse> productsPage = productService.findAllProducts(pageable);
         model.addAttribute("productsPage", productsPage);
-        model.addAttribute("productRequest", new ProductRequest("", 0, ""));
+        model.addAttribute("productRequest", new ProductRequest("", 0, "", new ArrayList<>()));
         return "admin/product-list";
     }
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("productRequest", new ProductRequest("", 0, ""));
+        model.addAttribute("productRequest", new ProductRequest("", 0, "", new ArrayList<>()));
         return "admin/product-form";
     }
 
@@ -48,14 +51,17 @@ public class ProductAdminController {
             model.addAttribute("productsPage", productsPage);
             return "admin/product-list";
         }
-        productService.addProduct(productRequest);
+        productService.addProductWithOptions(productRequest);
         return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        ProductResponse product = productService.findProductById(id);
-        model.addAttribute("productRequest", new ProductRequest(product.name(), product.price(), product.imageUrl()));
+        ProductResponse product = productService.findProductResponseById(id);
+        List<OptionRequest> optionRequests = product.options().stream()
+                .map(opt -> new OptionRequest(opt.name(), opt.quantity()))
+                .collect(Collectors.toList());
+        model.addAttribute("productRequest", new ProductRequest(product.name(), product.price(), product.imageUrl(), optionRequests));
         model.addAttribute("productId", id);
         return "admin/product-edit-form";
     }
@@ -68,7 +74,7 @@ public class ProductAdminController {
             model.addAttribute("productId", id);
             return "admin/product-edit-form";
         }
-        productService.updateProduct(id, productRequest);
+        productService.updateProductWithOptions(id, productRequest);
         return "redirect:/admin/products";
     }
 

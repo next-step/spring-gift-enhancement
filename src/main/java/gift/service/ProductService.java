@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.entity.vo.Money;
 import gift.entity.vo.ProductName;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -24,21 +26,39 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponse addProduct(ProductRequest request) {
-        Product product = request.toEntity();
+    public ProductResponse addProductWithOptions(ProductRequest request) {
+        Product product = new Product(
+                new ProductName(request.name()),
+                new Money(request.price()),
+                request.imageUrl()
+        );
+
+        List<Option> options = request.options().stream()
+                .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+                .collect(Collectors.toList());
+
+        product.setOptions(options);
+
         Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
     }
 
     @Transactional
-    public ProductResponse updateProduct(Long id, ProductRequest request) {
-        Product product = findProductEntityById(id);
+    public ProductResponse updateProductWithOptions(Long id, ProductRequest request) {
+        Product product = findProductById(id);
 
         product.update(
                 new ProductName(request.name()),
                 new Money(request.price()),
                 request.imageUrl()
         );
+
+        List<Option> newOptions = request.options().stream()
+                .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+                .collect(Collectors.toList());
+
+        product.setOptions(newOptions);
+
         return ProductResponse.from(product);
     }
 
@@ -49,15 +69,16 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ProductResponse findProductById(Long id) {
-        Product product = findProductEntityById(id);
-        return ProductResponse.from(product);
+    public ProductResponse findProductResponseById(Long id) {
+        return ProductResponse.from(findProductById(id));
     }
 
     @Transactional
     public void deleteProduct(Long id) {
-        Product product = findProductEntityById(id);
-        productRepository.delete(product);
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException("삭제하려는 상품을 찾을 수 없습니다: " + id);
+        }
+        productRepository.deleteById(id);
     }
 
     @Transactional
@@ -65,7 +86,7 @@ public class ProductService {
         productRepository.deleteAllById(ids);
     }
 
-    private Product findProductEntityById(Long id) {
+    private Product findProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + id));
     }

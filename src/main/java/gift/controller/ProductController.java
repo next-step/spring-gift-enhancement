@@ -11,13 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,20 +42,9 @@ public class ProductController {
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(new ErrorResponse(errorMsg));
         }
-        ProductResponse response = productService.addProduct(request);
-        return ResponseEntity.created(URI.create("/api/products/" + response.id())).body(response);
-    }
-    @GetMapping
-    public ResponseEntity<Page<ProductResponse>> findAllProducts(@LoginMember Member member, Pageable pageable) {
-        Page<ProductResponse> productPage = productService.findAllProducts(pageable);
-        return ResponseEntity.ok(productPage);
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> findProduct(@LoginMember Member member, @PathVariable Long id) {
-        log.info("특정 상품 조회 요청 - 사용자: {}, 상품 ID: {}", member.getEmail(), id);
-        ProductResponse productResponse = productService.findProductById(id);
-        return ResponseEntity.ok(productResponse);
+        ProductResponse response = productService.addProductWithOptions(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
@@ -72,8 +60,23 @@ public class ProductController {
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(new ErrorResponse(errorMsg));
         }
-        ProductResponse updatedProduct = productService.updateProduct(id, request);
-        return ResponseEntity.ok(updatedProduct);
+
+        ProductResponse response = productService.updateProductWithOptions(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProductResponse>> findAllProducts(@LoginMember Member member, Pageable pageable) {
+        log.info("전체 상품 조회 요청 - 사용자: {}", member.getEmail());
+        Page<ProductResponse> productPage = productService.findAllProducts(pageable);
+        return ResponseEntity.ok(productPage);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> findProductById(@LoginMember Member member, @PathVariable Long id) {
+        log.info("특정 상품 조회 요청 - 사용자: {}, 상품 ID: {}", member.getEmail(), id);
+        ProductResponse productResponse = productService.findProductResponseById(id);
+        return ResponseEntity.ok(productResponse);
     }
 
     @DeleteMapping("/{id}")
