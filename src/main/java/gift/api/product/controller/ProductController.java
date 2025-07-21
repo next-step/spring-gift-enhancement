@@ -99,7 +99,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedOption);
     }
 
-    @DeleteMapping("/{productId}/options//{optionId}")
+    @DeleteMapping("/{productId}/options/{optionId}")
     public ResponseEntity<Void> deleteOption(
             @PathVariable Long productId,
             @PathVariable Long optionId) {

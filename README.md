@@ -756,8 +756,9 @@ alter table wish
 
 - AuthE2ETest
   - 관리자/일반 사용자 로그인, 페이지 접근 권한 등 인증/인가 테스트
-- ProductE2ETest
+- ProductOptionE2ETest
   - 상품 조회, 추가, 수정, 삭제 및 유효성 검사(이름 길이, 특수문자, 가격) 테스트
+  - 상품 옵션 조회, 추가, 수정, 삭제 및 유효성 검사(이름 길이, 특수문자) 테스트
 - PaginationE2ETest
   - 관리자/사용자 상품 목록, 위시리스트의 페이지네이션 및 정렬 기능 테스트
 </details>
@@ -780,8 +781,6 @@ alter table wish
   - 회원가입, 로그인 성공/실패(이메일 중복, 비밀번호 불일치) 케이스 테스트
 - ProductServiceTest
   - 상품 생성, 조회, 수정, 삭제 기능 테스트
-- OptionServiceTest
-  - 옵션 추가, 삭제(마지막 옵션 방지, 다른 상품 옵션 접근) 및 이름 중복 방지 테스트
 - WishServiceTest
   - 위시리스트 추가, 삭제 및 예외(중복, 권한 없음) 처리 테스트
 </details>
