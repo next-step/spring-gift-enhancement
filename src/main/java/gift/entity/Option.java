@@ -70,4 +70,15 @@ public class Option {
     public Product getProduct() {
         return product;
     }
+
+    public void subtract(int count) {
+        if(count < 1) {
+            throw new IllegalArgumentException("차감 수량은 1 이상이어야 합니다.");
+        }
+
+        if(this.quantity < count) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.quantity -= count;
+    }
 }
