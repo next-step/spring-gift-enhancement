@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 
 
 public record ProductUpdateRequest (
-    @NotBlank(message = "상품명은 빈칸일 수 없습니다.")
     @ValidCharSet
     @KakaoNotContained(groups = {AuthenticationGroups.UserGroup.class})
     @Size(max = 15, message = "상품명은 최대 15자까지 입력 가능합니다.")
