@@ -58,6 +58,5 @@ public class OptionController {
         optionService.deleteOption(optionId);
         return ResponseEntity.noContent().build();
     }
-
-
+    
 }
