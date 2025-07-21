@@ -1,6 +1,8 @@
 package gift.entity;
 
+import gift.dto.OptionRequestDto;
 import gift.exception.DuplicateOptionNameException;
+import gift.exception.InvalidEntityDataException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,17 +37,17 @@ public class Product {
 
     protected Product() {}
 
-    public Product(String name, BigDecimal price, String imageUrl) {
+    public Product(String name, BigDecimal price, String imageUrl, List<OptionRequestDto> optionRequestDtoList) {
+        if (optionRequestDtoList == null || optionRequestDtoList.isEmpty()) {
+            throw new InvalidEntityDataException("상품에는 최소 한 개 이상의 옵션이 필요합니다.");
+        }
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-    }
 
-    public Product(Long id, String name, BigDecimal price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
+        optionRequestDtoList.forEach(optionRequestDto -> {
+            this.addOption(new Option(optionRequestDto.name(), optionRequestDto.quantity(), this));
+        });
     }
 
     public Long getId() {

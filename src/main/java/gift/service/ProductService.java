@@ -4,7 +4,6 @@ import gift.dto.OptionRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
-import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.DuplicateOptionNameException;
 import gift.exception.ResourceNotFoundException;
@@ -40,12 +39,9 @@ public class ProductService {
         Product product = new Product(
                 productRequestDto.name(),
                 productRequestDto.price(),
-                productRequestDto.imageUrl()
+                productRequestDto.imageUrl(),
+                productRequestDto.options()
         );
-
-        productRequestDto.options().forEach(optionRequestDto -> {
-            product.addOption(new Option(optionRequestDto.name(), optionRequestDto.quantity(), product));
-        });
 
         Product saveProduct = productRepository.save(product);
         return new ProductResponseDto(
