@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.NoSuchElementException;
 
@@ -55,5 +56,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<String> handlerException(HttpRequestMethodNotSupportedException ex) {
         return new ResponseEntity<>(ex.getMethod() + " method는 지원되지 않습니다.", HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handlerException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

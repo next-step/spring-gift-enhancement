@@ -6,11 +6,13 @@ import gift.dto.WishResponse;
 import gift.entity.Product;
 import gift.entity.User;
 import gift.entity.Wish;
+import gift.enums.WishSortKey;
 import gift.exception.DuplicateWishException;
 import gift.repository.ProductRepository;
 import gift.repository.UserRepository;
 import gift.repository.WishRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,15 @@ public class WishService {
 
     public List<WishResponse> getAllWishes(Long userId) {
         return wishRepository.findAllByUserId(userId)
+                .stream()
+                .map(row -> new WishResponse(ProductResponse.of(row.getProduct()), row.getQuantity()))
+                .toList();
+    }
+
+    public List<WishResponse> getWishPage(Long userId, int page, int size, WishSortKey sortKey) {
+        PageRequest pageRequest = PageRequest.of(page, size, sortKey.getSort());
+
+        return wishRepository.findAllByUserId(userId, pageRequest)
                 .stream()
                 .map(row -> new WishResponse(ProductResponse.of(row.getProduct()), row.getQuantity()))
                 .toList();

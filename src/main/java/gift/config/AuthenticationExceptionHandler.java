@@ -2,6 +2,7 @@ package gift.config;
 
 import gift.exception.EmailAlreadyExistsException;
 import gift.exception.InvalidLoginException;
+import gift.exception.InvalidRegisterParameterException;
 import gift.exception.UnauthenticatedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,9 @@ public class AuthenticationExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handlerException(IllegalArgumentException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    @ExceptionHandler(InvalidRegisterParameterException.class)
+    public ResponseEntity<String> handlerException(InvalidRegisterParameterException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnauthenticatedException.class)

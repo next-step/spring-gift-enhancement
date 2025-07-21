@@ -1,9 +1,12 @@
 package gift.service;
 
 import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.entity.Product;
+import gift.enums.ProductSortKey;
 import gift.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,15 @@ public class ProductService {
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    public List<ProductResponse> getProductPage(int page, int size, ProductSortKey sortKey) {
+        PageRequest pageRequest = PageRequest.of(page, size, sortKey.getSort());
+
+        return productRepository.findAll(pageRequest)
+                .stream()
+                .map(ProductResponse::of)
+                .toList();
     }
 
     public Optional<Product> getProductById(Long id) {

@@ -1,7 +1,9 @@
 package gift.controller;
 
 import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.entity.Product;
+import gift.enums.ProductSortKey;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,10 +23,14 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // 상품 전체 조회
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    public ResponseEntity<List<ProductResponse>> getProductPage(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size,
+                                                                @RequestParam(defaultValue = "name-asc") String sortKey)
+    {
+
+        List<ProductResponse> productPage = productService.getProductPage(page, size, ProductSortKey.from(sortKey));
+        return new ResponseEntity<>(productPage, HttpStatus.OK);
     }
 
     // 상품 id 기반 조회
