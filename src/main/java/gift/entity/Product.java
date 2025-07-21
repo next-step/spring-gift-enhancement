@@ -133,17 +133,19 @@ public class Product {
         wish.setProduct(null);
     }
 
-    public ProductOption addOption(ProductOption option) {
-        options.add(option);
-        option.setProduct(this);
-        this.quantity += option.getQuantity();
-        return option;
+    public void addOption(ProductOption option) {
+        ProductOption linkedOption = option.withProduct(this);
+        options.add(linkedOption);
+        this.quantity += linkedOption.getQuantity();
     }
 
     public void removeOption(ProductOption option) {
-        options.remove(option);
-        this.quantity -= option.getQuantity();
-        option.change(option.getName(), 0);
-        option.setProduct(null);
+        if (options.remove(option)) {
+            this.quantity -= option.getQuantity();
+
+            if (this.quantity < 0) {
+                this.quantity = 0;
+            }
+        }
     }
 }

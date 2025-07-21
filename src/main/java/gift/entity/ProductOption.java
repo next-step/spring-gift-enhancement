@@ -56,10 +56,6 @@ public class ProductOption {
         return quantity;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     protected ProductOption() {
     }
 
@@ -81,5 +77,9 @@ public class ProductOption {
     public void change(String name, int quantity) {
         this.name = name;
         this.quantity = quantity;
+    }
+
+    public ProductOption withProduct(Product product) {
+        return new ProductOption(this.id, this.name, this.quantity, product);
     }
 }
