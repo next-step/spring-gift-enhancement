@@ -17,7 +17,7 @@ public enum WishSortOption {
 
 
     public static boolean isValid(String value) {
-        for (ProductSortOption option : ProductSortOption.values()) {
+        for (WishSortOption option : WishSortOption.values()) {
             if (option.getValue().equalsIgnoreCase(value)) {
                 return true;
             }
