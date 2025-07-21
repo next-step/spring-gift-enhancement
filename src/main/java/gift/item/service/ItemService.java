@@ -77,14 +77,14 @@ public class ItemService {
 
         ItemEntity savedItemEntity = itemRepository.save(newItemEntity);
 
-        List<OptionEntity> options = itemCreateDto.options().stream()
+        List<OptionEntity> optionEntities = itemCreateDto.options().stream()
             .map(optionDto -> new OptionEntity(
                 optionDto.name(),
                 optionDto.quantity(),
                 savedItemEntity
             )).toList();
 
-        savedItemEntity.getOptions().addAll(options);
+        savedItemEntity.getOptions().addAll(optionEntities);
 
         return new ItemResponseDto(
             savedItemEntity.getId(),
