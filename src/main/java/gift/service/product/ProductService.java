@@ -38,12 +38,12 @@ public class ProductService {
             .map(ProductResponse::from);
     }
 
-    public Long insert(ProductRequest request) {
+    public ProductResponse insert(ProductRequest request) {
         if (request.name().contains("카카오")) {
             throw CustomException.from(ErrorCode.INVALID_KAKAO_NAME);
         }
 
-        return productRepository.save(Product.from(request)).getId();
+        return ProductResponse.from(productRepository.save(Product.from(request)));
     }
 
     @Transactional

@@ -155,10 +155,10 @@ public class ProductApiTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
-            .toEntity(IdResponse.class);
+            .toEntity(ProductResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().id()).isNotNull();
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test

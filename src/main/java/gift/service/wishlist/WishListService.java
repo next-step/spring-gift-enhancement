@@ -60,7 +60,7 @@ public class WishListService {
     }
 
     @Transactional
-    public Long update(Long memberId, WishListRequest wishListRequest) {
+    public WishListResponse update(Long memberId, WishListRequest wishListRequest) {
 
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
@@ -73,12 +73,13 @@ public class WishListService {
 
         // wishList가 존재하지 않으면 새로 생성
         if (wishList.isEmpty()) {
-            return wishListRepository.save(WishList.of(member, product, wishListRequest.quantity()))
-                .getId();
+            return WishListResponse.from(
+                wishListRepository.save(WishList.of(member, product, wishListRequest.quantity())));
         }
 
+
         wishList.get().update(wishListRequest.quantity());
-        return wishList.get().getId();
+        return WishListResponse.from(wishList.get());
     }
 
     public void delete(Long memberId, WishListRequest wishListRequest) {

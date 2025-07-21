@@ -4,6 +4,7 @@ import gift.domain.Member;
 import gift.dto.jwt.TokenResponse;
 import gift.dto.member.MemberRequest;
 import gift.dto.IdResponse;
+import gift.dto.member.MemberResponse;
 import gift.service.member.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -41,9 +42,8 @@ public class MemberApiController {
     public ResponseEntity<?> createMember(
         @Valid @RequestBody MemberRequest memberRequest
     ){
-        Long memberId = memberService.insert(memberRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(IdResponse.from(memberId));
+            .body(IdResponse.from(memberService.insert(memberRequest)));
     }
 
     // member 조회: 관리자용 기능

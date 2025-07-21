@@ -54,12 +54,11 @@ public class ProductApiController {
 
     // 상품 생성
     @PostMapping
-    public ResponseEntity<IdResponse> createProduct(
+    public ResponseEntity<ProductResponse> createProduct(
         @Valid @RequestBody ProductRequest request
     ) {
-        Long id = productService.insert(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(IdResponse.from(id));
+            .body(productService.insert(request));
     }
 
     // 상품 수정
