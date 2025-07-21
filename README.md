@@ -41,3 +41,6 @@ step 1
 
 step 2 
     - 페이지네이션 구현
+
+step 3 
+    - Option 구현
