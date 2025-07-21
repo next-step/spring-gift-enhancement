@@ -29,7 +29,7 @@ public class WishService {
     }
 
     public Page<WishResponse> getWishes(Member member, Pageable pageable) {
-        Page<Wish> wishesPage = wishRepository.findAllByMemberWithProduct(member, pageable);
+        Page<Wish> wishesPage = wishRepository.findAllByMember(member, pageable);
         return wishesPage.map(wish -> WishResponse.from(wish, wish.getProduct()));
     }
 
