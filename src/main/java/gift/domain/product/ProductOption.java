@@ -1,5 +1,6 @@
 package gift.domain.product;
 
+import gift.common.exception.NotEnoughQuantityException;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.*;
@@ -50,6 +51,14 @@ public class ProductOption {
 
     static ProductOption of(Product product, String name, Integer price, Integer quantity) {
         return new ProductOption(product, name, price, quantity);
+    }
+
+    public void subtractQuantity(int quantity) {
+        Integer q = this.quantity;
+        if (q - quantity < 0) {
+            throw new NotEnoughQuantityException();
+        }
+        this.quantity -= quantity;
     }
 
     private ProductOption(Product product, String name, Integer price, Integer quantity) {
