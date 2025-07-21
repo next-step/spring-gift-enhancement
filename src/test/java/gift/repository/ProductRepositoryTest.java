@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.domain.product.Product;
+import gift.domain.product.ProductOption;
 import gift.dto.product.CreateProductOptionRequest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
@@ -22,15 +23,38 @@ public class ProductRepositoryTest {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    ProductOptionRepository optionRepository;
+
     @Test
     @DisplayName("상품 저장")
-    void test1() {
+    void test1_1() {
         Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
         Product save = productRepository.save(product);
 
         assertThat(save.getId()).isNotNull();
         assertThat(save.getName()).isEqualTo("감자칩");
         assertThat(save.getImageUrl()).isEqualTo("image");
+    }
+
+    @Test
+    @DisplayName("상품 저장 시 옵션도 같이 저장")
+    void test1_2() {
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product save = productRepository.save(product);
+
+        em.flush();
+        em.clear();
+
+        Product getProduct = productRepository.findById(save.getId()).get();
+
+        List<ProductOption> options = getProduct.getOptions();
+
+        assertThat(options.get(0).getId()).isNotNull();
+        assertThat(options.get(0).getProduct()).isNotNull();
+        assertThat(options.get(0).getName()).isEqualTo("양파맛");
+        assertThat(options.get(0).getPrice()).isEqualTo(1000);
+        assertThat(options.get(0).getQuantity()).isEqualTo(10);
     }
 
     @Test
@@ -71,7 +95,7 @@ public class ProductRepositoryTest {
 
     @Test
     @DisplayName("상품 삭제")
-    void test4() {
+    void test4_1() {
         Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
         productRepository.save(product);
 
@@ -84,6 +108,40 @@ public class ProductRepositoryTest {
 
         Optional<Product> getProduct = productRepository.findById(product.getId());
         assertThat(getProduct).isEmpty();
+    }
+
+    @Test
+    @DisplayName("상품 삭제시 옵션도 같이 삭제")
+    void test4_2() {
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        productRepository.save(product);
+        Long optionId = product.getOptions().get(0).getId();
+
+        em.flush();
+        em.clear();
+
+        productRepository.delete(product);
+
+        em.flush();
+
+        Optional<ProductOption> byId = optionRepository.findById(optionId);
+        assertThat(byId).isEmpty();
+    }
+
+    @Test
+    @DisplayName("상품에서 관리하는 옵션 리스트의 데이터를 제거할 경우 옵션은 삭제된다")
+    void test4_3() {
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product save = productRepository.save(product);
+
+        save.removeOption(save.getOptions().get(0));
+
+        em.flush();
+        em.clear();
+
+        Product getProduct = productRepository.findById(save.getId()).get();
+
+        assertThat(getProduct.getOptions()).isEmpty();
     }
 
 }

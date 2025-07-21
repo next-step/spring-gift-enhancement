@@ -41,6 +41,10 @@ public class Product {
         return name;
     }
 
+    public List<ProductOption> getOptions() {
+        return options;
+    }
+
     public void update(String name, String imageUrl) {
         this.name = name;
         this.imageUrl = imageUrl;
@@ -54,6 +58,10 @@ public class Product {
             ProductOption option = ProductOption.of(this, r.name(), r.price(), r.quantity());
             options.add(option);
         }
+    }
+
+    public void removeOption(ProductOption option) {
+        options.remove(option);
     }
 
     private boolean existOptionName(String name) { // N+1문제
