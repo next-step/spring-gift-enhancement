@@ -21,7 +21,7 @@ public class ItemOption {
 
     protected ItemOption() {
     }
-
+    private Integer a;
 
     public Long getId() {
         return id;
