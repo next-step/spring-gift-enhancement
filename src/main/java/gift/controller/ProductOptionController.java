@@ -4,6 +4,7 @@ import gift.config.LoginMember;
 import gift.dto.ProductOptionRequestDto;
 import gift.dto.ProductOptionResponseDto;
 import gift.entity.Member;
+import gift.entity.MemberRole;
 import gift.service.ProductOptionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -38,7 +39,7 @@ public class ProductOptionController {
             @PathVariable Long productId,
             @Valid @RequestBody ProductOptionRequestDto dto,
             @LoginMember Member member) { // ✅ JwtAuthFilter에서 세팅된 Member 주입
-        if (!"ADMIN".equals(member.getRole())) {
+        if (member.getRole() != MemberRole.ADMIN) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
 
