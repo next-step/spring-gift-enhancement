@@ -3,7 +3,7 @@ package gift.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "wish")
+@Table(name = "wishes")
 public class Wish {
 
     @Id

@@ -3,7 +3,7 @@ package gift.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -16,7 +16,7 @@ public class Product {
     @Column(nullable = false)
     private Integer price;
 
-    @Column(name = "imageUrl", length = 512, nullable = false)
+    @Column(name = "image_url", length = 512, nullable = false)
     private String imageUrl;
 
     protected Product() {
