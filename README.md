@@ -47,12 +47,12 @@ Content-Type: application/json
 - [ ] 옵션 목록 조회 API 구현 (GET /api/products/{productId}/options)
 
 2. DB 설계 & 엔티티 생성
-- [ ] ProductOption 엔티티 생성
-- [ ] 필드: id, product(연관관계), name, quantity
-- [ ] 검증 로직 추가 (이름 길이, 특수문자 허용, 수량 범위)
-- [ ] subtract() 메서드 구현 (수량 감소)
-- [ ] Product 엔티티에 @OneToMany 매핑 추가
-- [ ] ProductOptionRequestDto, ProductOptionResponseDto 등 옵션 관련 DTO 설계 및 구현
+- [x] ProductOption 엔티티 생성
+- [x] 필드: id, product(연관관계), name, quantity
+- [x] 검증 로직 추가 (이름 길이, 특수문자 허용, 수량 범위)
+- [x] subtract() 메서드 구현 (수량 감소)
+- [x] Product 엔티티에 @OneToMany 매핑 추가
+- [x] ProductOptionRequestDto, ProductOptionResponseDto 등 옵션 관련 DTO 설계 및 구현
 
 3. Repository 생성
 - [ ] ProductOptionRepository 생성 (JpaRepository 상속)
