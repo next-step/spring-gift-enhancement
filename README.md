@@ -103,6 +103,7 @@
 - [x] Option service 구현
 - [x] Option controller 구현
 - [x] (선택) 상품 옵션 서비스 화면 추가
+- [x] Option Api 요청 테스트 코드 추가
 
 # spring-gift-product (Mission 1)
 
