@@ -1,14 +1,18 @@
 package gift.product.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import gift.exception.GlobalExceptionHandler.ApiResponse;
+import gift.product.dto.ProductPageDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
-import gift.exception.GlobalExceptionHandler.ApiResponse;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static gift.product.dto.ProductPageDto.fromEntity;
 
 @RestController
 @RequestMapping("/api/products")
@@ -29,9 +33,9 @@ public class ProductController {
 
     //전체 조회
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        List<ProductResponseDto> productResponseDtos = productService.getAllProducts();
-        return  ResponseEntity.ok(productResponseDtos);
+    public ResponseEntity<ProductPageDto<ProductResponseDto>> getAllProducts(@PageableDefault(size = 5, sort = "name") Pageable pageable) {
+        Page<ProductResponseDto> productResponseDtos = productService.getAllProducts(pageable);
+        return  ResponseEntity.ok(fromEntity(productResponseDtos));
     }
 
     //특정 상품 추가

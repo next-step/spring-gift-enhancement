@@ -1,17 +1,19 @@
 package gift.wish.controller;
 
 import gift.auth.LoginMember;
+import gift.exception.GlobalExceptionHandler.ApiResponse;
 import gift.member.entity.Member;
+import gift.wish.dto.WishPageDto;
 import gift.wish.dto.WishRequestDto;
 import gift.wish.dto.WishResponseDto;
-import gift.wish.entity.Wish;
 import gift.wish.service.WishService;
-import gift.exception.GlobalExceptionHandler.ApiResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/api/wishlists")
@@ -23,10 +25,11 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<WishResponseDto>>> getWishlist(@LoginMember Member member) {
+    public ResponseEntity<ApiResponse<WishPageDto<WishResponseDto>>> getWishlist(@LoginMember Member member ,
+                                                                                 @PageableDefault(size = 5, sort = "quantity", direction = Sort.Direction.DESC) Pageable pageable) {
         WishRequestDto wishRequestDto = new WishRequestDto();
         wishRequestDto.setMemberId(member.getId());
-        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", wishService.getWishlist(wishRequestDto)));
+        return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", WishPageDto.fromEntity(wishService.getWishlist(wishRequestDto,pageable))));
     }
 
     @PostMapping

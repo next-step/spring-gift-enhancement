@@ -8,10 +8,11 @@ import gift.wish.dto.WishRequestDto;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.entity.Wish;
 import gift.wish.repository.WishRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import static gift.wish.dto.WishResponseDto.fromEntity;
@@ -31,10 +32,10 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    public List<WishResponseDto> getWishlist(WishRequestDto dto) {
+    public Page<WishResponseDto> getWishlist(WishRequestDto dto, Pageable pageable) {
 
-        return wishRepository.findByMemberId(dto.getMemberId())
-                .stream().map(WishResponseDto::fromEntity).toList();
+        return wishRepository.findByMemberId(dto.getMemberId() , pageable)
+                .map(WishResponseDto::fromEntity);
     }
 
     public WishResponseDto addWish(WishRequestDto dto) {

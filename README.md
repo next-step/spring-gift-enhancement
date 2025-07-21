@@ -38,3 +38,6 @@ step 1
     - Repository 리펙터링
     - Service 리펙터링
     - 테스트 코드 작성
+
+step 2 
+    - 페이지네이션 구현

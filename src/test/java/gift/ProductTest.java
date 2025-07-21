@@ -1,6 +1,11 @@
 package gift;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.jwt.JwtProvider;
+import gift.member.dto.MemberRequestDto;
+import gift.member.dto.MemberResponseDto;
+import gift.member.entity.Member;
+import gift.product.dto.ProductPageDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.entity.Product;
@@ -16,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -28,13 +34,34 @@ public class ProductTest {
 
     private RestClient restClient;
     private String baseUrl;
+    private String token;
+
     @Autowired
     private ObjectMapper objectMapper;
+    private JwtProvider jwtProvider;
 
     @BeforeEach
     void setUp() {
+
+        String email = "test";
+        String password = "1234";
+        String role = "admin";
+        Member member = new Member(null , email, password, role);
+        MemberRequestDto memberRequestDto = MemberRequestDto.fromEntity(member);
+        RestClient firstClient = RestClient.builder().baseUrl("http://localhost:" + port).build();
+
+        var response = firstClient.post()
+                .uri("http://localhost:" + port + "/api/members/register")
+                .body(memberRequestDto)
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<ApiResponse<MemberResponseDto>>() {});
+
+        token = Objects.requireNonNull(response.getBody()).data().token();
+
         baseUrl = "http://localhost:" + port + "/api/products";
-        restClient = RestClient.builder().baseUrl(baseUrl).build();
+        restClient = RestClient.builder().baseUrl(baseUrl)
+                .defaultHeader("Authorization", token)
+                .build();
     }
 
     @Test
@@ -175,20 +202,20 @@ public class ProductTest {
         //when
         var response = restClient.get()
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {});
+                .toEntity(new ParameterizedTypeReference<ProductPageDto<ProductResponseDto>>() {});
 
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        List<ProductResponseDto> listDto = response.getBody();
+        List<ProductResponseDto> listDto = response.getBody().getContent();
 
-        assertThat(listDto.get(6).getName()).isEqualTo(product1.getName());
-        assertThat(listDto.get(6).getPrice()).isEqualTo(product1.getPrice());
-        assertThat(listDto.get(6).getImageUrl()).isEqualTo(product1.getImageUrl());
+        assertThat(listDto.get(1).getName()).isEqualTo(product1.getName());
+        assertThat(listDto.get(1).getPrice()).isEqualTo(product1.getPrice());
+        assertThat(listDto.get(1).getImageUrl()).isEqualTo(product1.getImageUrl());
 
-        assertThat(listDto.get(7).getName()).isEqualTo(product2.getName());
-        assertThat(listDto.get(7).getPrice()).isEqualTo(product2.getPrice());
-        assertThat(listDto.get(7).getImageUrl()).isEqualTo(product2.getImageUrl());
+        assertThat(listDto.get(2).getName()).isEqualTo(product2.getName());
+        assertThat(listDto.get(2).getPrice()).isEqualTo(product2.getPrice());
+        assertThat(listDto.get(2).getImageUrl()).isEqualTo(product2.getImageUrl());
 
     }
 
@@ -197,7 +224,7 @@ public class ProductTest {
 
         //given
         Product product = new Product();
-        product.setId(5L);
+        product.setId(1L);
         product.setName("상품 이름 수정");
         product.setPrice(10000);
         product.setImageUrl("image.jpg");
