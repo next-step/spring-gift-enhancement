@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleProductNotFound(ProductNotFoundException ex) {
         ErrorResponseDto responseDto = ErrorResponseDto.of(
@@ -38,21 +39,23 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidProductException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidProduct(InvalidProductException ex) {
-        ErrorResponseDto responseDto = ErrorResponseDto.of(
+    public ResponseEntity<FieldErrorResponseDto> handleInvalidProduct(InvalidProductException ex) {
+        FieldErrorResponseDto responseDto = FieldErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid Product",
-                ex.getMessage()
+                ex.getMessage(),
+                ex.getField()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
     @ExceptionHandler(InvalidProductOptionException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidProductOption(InvalidProductOptionException ex) {
-        ErrorResponseDto responseDto = ErrorResponseDto.of(
+    public ResponseEntity<FieldErrorResponseDto> handleInvalidProductOption(InvalidProductOptionException ex) {
+        FieldErrorResponseDto responseDto = FieldErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid ProductOption",
-                ex.getMessage()
+                ex.getMessage(),
+                ex.getField()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }

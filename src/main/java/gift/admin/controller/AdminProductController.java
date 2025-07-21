@@ -3,6 +3,7 @@ package gift.admin.controller;
 import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.dto.ProductUpdateRequestDto;
+import gift.product.exception.InvalidProductException;
 import gift.product.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -32,19 +33,17 @@ public class AdminProductController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("product", new ProductAddRequestDto());
         return "admin/add";
     }
 
     @PostMapping("/add")
     public String addProduct(
-            @Valid @ModelAttribute("product") ProductAddRequestDto requestDto,
+            @RequestBody @Valid ProductAddRequestDto requestDto,
             BindingResult bindingResult,
             HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            return "admin/add";
+            throwInvalidProductException(bindingResult);
         }
-        request.setAttribute("product", requestDto);
         productService.addProduct(requestDto);
         return "redirect:/admin/products";
     }
@@ -79,5 +78,13 @@ public class AdminProductController {
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
         return "redirect:/admin/products";
+    }
+
+    private void throwInvalidProductException(BindingResult bindingResult) {
+        String field = bindingResult.getFieldErrors().getFirst().getField();
+        if (field.equals("name")) {
+            field = "productNameError";
+        }
+        throw new InvalidProductException(field, bindingResult.getFieldErrors().getFirst().getDefaultMessage());
     }
 }

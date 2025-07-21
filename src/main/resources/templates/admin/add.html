@@ -15,11 +15,11 @@
             optionDiv.innerHTML = `
                 <div class="form-row">
                     <label>옵션 이름:</label>
-                    <input type="text" name="options[${optionIndex}].name" maxlength="50" required />
+                    <input class="optionName" type="text" name="options[${optionIndex}].name" maxlength="50" required />
                 </div>
                 <div class="form-row">
                     <label>수량:</label>
-                    <input type="number" name="options[${optionIndex}].quantity" min="1" max="99999999" required />
+                    <input class="optionQuantity" type="number" name="options[${optionIndex}].quantity" min="1" max="99999999" required />
                 </div>
                 <button type="button" onclick="removeOptionField(this)">삭제</button>
                 <hr/>
@@ -32,28 +32,78 @@
         function removeOptionField(button) {
             button.closest('.option-group').remove();
         }
+
+        //제출 버튼 눌렀을 때
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("productForm").addEventListener("submit", function (e) {
+                console.log("제출버튼 눌림")
+                e.preventDefault();
+
+                const optionRows = document.querySelectorAll(".option-group");
+                const options = [];
+
+                optionRows.forEach(row => {
+                    const name = row.querySelector("input[class='optionName']").value.trim();
+                    const quantity = parseInt(row.querySelector("input[class='optionQuantity']").value, 10);
+
+                    if (name && !isNaN(quantity)) {
+                        options.push({name, quantity});
+                    }
+                });
+
+                const formData = {
+                    name: document.getElementById("name").value,
+                    price: document.getElementById("price").value,
+                    url: document.getElementById("url").value,
+                    options: options
+                };
+
+                fetch("/admin/products/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                })
+                    .then(async (res) => {
+                        if (!res.create) {
+                            const error = await res.json();
+                            console.log("서버 에러 응답:", error);
+                            console.log("찾으려는 필드 id:", error.field);
+                            document.getElementById(error.field).innerText = error.message;
+                        } else {
+                            location.href = "/admin/products";
+                        }
+                    })
+                    .catch((err) => {
+                        console.error("요청 실패", err);
+                        alert("서버 오류가 발생했습니다.");
+                    });
+            });
+        });
+
     </script>
 </head>
 <body>
 <h1>상품 추가</h1>
 
-<form th:action="@{/admin/products/add}" th:object="${product}" method="post">
+<form id="productForm" method="post">
     <div class="form-row">
         <label>상품명: </label>
-        <input type="text" th:field="*{name}"/>
+        <input id="name" type="text"/>
     </div>
-    <div class="form-row" th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></div>
-    <div class="form-row" th:if="${globalErrorMessage}" th:text="${globalErrorMessage}" style="color: red;"></div>
+    <div class="form-row" id="productNameError" style="color: red;"></div>
     <div class="form-row">
         <label>가격: </label>
-        <input type="number" th:field="*{price}"/>
+        <input id="price" type="number"/>
     </div>
     <div class="form-row">
         <label>이미지: </label>
-        <input type="text" th:field="*{url}"/>
+        <input id="url" type="text"/>
     </div>
     <hr>
     <h3>옵션 추가</h3>
+    <div class="form-row" id="optionError" style="color: red;"></div>
     <div id="option-container" class="form-row"></div>
     <button type="button" onclick="addOptionField()">+ 옵션 추가</button>
     <div class="form-row">

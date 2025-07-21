@@ -47,13 +47,13 @@ public class Product {
 
     public void addOptions(List<ProductOption> options) {
         if (options == null || options.isEmpty()) {
-            throw new InvalidProductOptionException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
+            throw new InvalidProductOptionException("optionError","상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
         }
 
         Set<String> optionNames = new HashSet<>();
         for (ProductOption option : options) {
             if (!optionNames.add(option.getName())) {
-                throw new InvalidProductOptionException("옵션 이름이 중복됩니다: " + option.getName());
+                throw new InvalidProductOptionException("optionNameError","옵션 이름이 중복됩니다: " + option.getName());
             }
             option.setProduct(this);
         }

@@ -18,7 +18,7 @@ public interface ProductService {
 
     void updateProductById(Long id, ProductUpdateRequestDto requestDto);
     void deleteProductById(Long id);
-    void validateProductName(String name, String viewName);
+    void validateProductName(String name);
 
     Product findProductByIdOrElseThrow(Long id);
 }

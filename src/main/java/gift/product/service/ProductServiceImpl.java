@@ -31,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(ProductAddRequestDto requestDto) {
         // 상품명 유효한지 확인
-        validateProductName(requestDto.name(), "admin/add");
+        validateProductName(requestDto.name());
 
         // 옵션 생성
         List<ProductOption> options = createValidProductOptions(requestDto.options());
@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
         Product product = findProductByIdOrElseThrow(id);
-        validateProductName(requestDto.name(), "admin/edit");
+        validateProductName(requestDto.name());
 
         List<ProductOption> options = createValidProductOptions(requestDto.options());
 
@@ -78,13 +78,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void validateProductName(String name, String viewName) {
+    public void validateProductName(String name) {
         if (!name.matches("^[a-zA-Z0-9ㄱ-ㅎ가-힣 ()\\[\\]+\\-&/_]*$")) {
-            throw new InvalidProductException("상품명에 허용되지 않는 특수 문자가 포함되어 있습니다.", viewName);
+            throw new InvalidProductException("productNameError","상품명에 허용되지 않는 특수 문자가 포함되어 있습니다.");
         }
 
         if (name.contains("카카오")) {
-            throw new InvalidProductException("\"카카오\"가 포함된 상품명은 MD 협의 후 사용할 수 있습니다.", viewName);
+            throw new InvalidProductException("productNameError","\"카카오\"가 포함된 상품명은 MD 협의 후 사용할 수 있습니다.");
         }
     }
 
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 
     private List<ProductOption> createValidProductOptions(List<ProductOptionAddRequestDto> optionDto) {
         if (optionDto == null || optionDto.isEmpty()) {
-            throw new InvalidProductOptionException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
+            throw new InvalidProductOptionException("optionError","상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
         }
 
         return optionDto.stream()

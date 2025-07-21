@@ -33,23 +33,23 @@ public class ProductOption {
 
     private void validateName(String name) {
         if (name == null || name.length() > 50) {
-            throw new InvalidProductOptionException("옵션 이름은 50자 이하여야 합니다.");
+            throw new InvalidProductOptionException("optionError","옵션 이름은 50자 이하여야 합니다.");
         }
 
         if (!name.matches("^[a-zA-Z0-9가-힣()\\[\\]+\\-\\&/_ ]+$")) {
-            throw new InvalidProductOptionException("옵션 이름에는 영어, 한글, 숫자와 특수문자 (), [], +, -, &, /, _ 만 사용할 수 있습니다.");
+            throw new InvalidProductOptionException("optionError","옵션 이름에는 영어, 한글, 숫자와 특수문자 (), [], +, -, &, /, _ 만 사용할 수 있습니다.");
         }
     }
 
     private void validateQuantity(Long quantity) {
         if (quantity == null || quantity < 1 || quantity >= 100_000_000L) {
-            throw new InvalidProductOptionException("옵션 수량은 1개 이상 1억 미만이어야 합니다.");
+            throw new InvalidProductOptionException("optionError","옵션 수량은 1개 이상 1억 미만이어야 합니다.");
         }
     }
 
     protected void decreaseQuantity(Long amount) {
         if (amount == null || amount <= 0) {
-            throw new InvalidProductOptionException("수량이 잘못 입력되었습니다.");
+            throw new InvalidProductOptionException("optionError","수량이 잘못 입력되었습니다.");
         }
 
         if (this.quantity < amount) {

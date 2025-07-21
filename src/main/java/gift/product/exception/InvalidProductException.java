@@ -2,18 +2,14 @@ package gift.product.exception;
 
 public class InvalidProductException extends RuntimeException {
 
-    private String viewName;
+    private String field;
 
-    public InvalidProductException(String message) {
+    public InvalidProductException(String field, String message) {
         super(message);
+        this.field = field;
     }
 
-    public InvalidProductException(String message, String viewName) {
-        super(message);
-        this.viewName = viewName;
-    }
-
-    public String getViewName() {
-        return this.viewName;
+    public String getField() {
+        return field;
     }
 }

@@ -34,7 +34,7 @@ public class ProductController {
             @Valid @RequestBody ProductAddRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidProductException(getDefaultMessage(bindingResult));
+            throw new InvalidProductException(bindingResult.getFieldErrors().getFirst().getField(),getDefaultMessage(bindingResult));
         }
         productService.addProduct(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -62,7 +62,7 @@ public class ProductController {
             @Valid @RequestBody ProductUpdateRequestDto requestDto, BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
-            throw new InvalidProductException(getDefaultMessage(bindingResult));
+            throw new InvalidProductException(bindingResult.getFieldErrors().getFirst().getField(), getDefaultMessage(bindingResult));
         }
         productService.updateProductById(id, requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
