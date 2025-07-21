@@ -8,8 +8,10 @@ import gift.item.ItemEntity;
 import gift.item.ItemSortBy;
 import gift.item.OptionEntity;
 import gift.item.dto.ItemCreateDto;
+import gift.item.dto.ItemDetailResponseDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
+import gift.item.dto.OptionResponseDto;
 import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
 import java.util.List;
@@ -68,7 +70,7 @@ public class ItemService {
     }
 
     @Transactional
-    public ItemResponseDto createItem(ItemCreateDto itemCreateDto) {
+    public ItemDetailResponseDto createItem(ItemCreateDto itemCreateDto) {
         ItemEntity newItemEntity = new ItemEntity(
             itemCreateDto.name(),
             itemCreateDto.price(),
@@ -86,11 +88,18 @@ public class ItemService {
 
         savedItemEntity.getOptions().addAll(optionEntities);
 
-        return new ItemResponseDto(
+        return new ItemDetailResponseDto(
             savedItemEntity.getId(),
             savedItemEntity.getName(),
             savedItemEntity.getPrice(),
-            savedItemEntity.getImageUrl()
+            savedItemEntity.getImageUrl(),
+            savedItemEntity.getOptions().stream().map(
+                optionEntity -> new OptionResponseDto(
+                    optionEntity.getId(),
+                    optionEntity.getName(),
+                    optionEntity.getQuantity()
+                )
+            ).toList()
         );
     }
 
