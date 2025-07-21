@@ -37,9 +37,6 @@ public class WishlistServiceTest {
     @Mock
     private ProductRepository productRepository;
 
-    @Mock
-    private Wishlist wishlist;
-
     @InjectMocks
     private WishlistService wishlistService;
 

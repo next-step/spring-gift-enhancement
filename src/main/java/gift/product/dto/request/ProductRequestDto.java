@@ -1,13 +1,11 @@
 package gift.product.dto.request;
 
 
-import gift.option.dto.OptionRequestDto;
 import gift.product.validator.KakaoInName;
 import gift.product.validator.KakaoProductInfo;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
-import java.util.List;
 
 @KakaoInName
 public record ProductRequestDto(
