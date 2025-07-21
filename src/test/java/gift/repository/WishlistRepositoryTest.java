@@ -4,6 +4,7 @@ import gift.domain.product.Product;
 import gift.domain.Role;
 import gift.domain.User;
 import gift.domain.Wishlist;
+import gift.dto.product.CreateProductOptionRequest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +40,7 @@ public class WishlistRepositoryTest {
     @BeforeEach
     void setUp() {
         user = userRepository.save(new User("tkddnr@tkddnr.com", "1234", Role.USER));
-        product = productRepository.save(new Product("감자칩", "image"));
+        product = productRepository.save(new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10))));
     }
 
     @Test

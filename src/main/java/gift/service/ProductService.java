@@ -26,8 +26,7 @@ public class ProductService {
     }
 
     public Product saveProduct(CreateProductRequest request) {
-        Product product = new Product(request.name(), request.imageUrl());
-        product.addOption(request.options().toArray(new CreateProductOptionRequest[0]));
+        Product product = new Product(request.name(), request.imageUrl(), request.options());
         return productRepository.save(product);
     }
 

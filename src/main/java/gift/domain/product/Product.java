@@ -23,7 +23,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProductOption> options = new ArrayList<>();
 
-    public Product(String name, String imageUrl) {
+    public Product(String name, String imageUrl, List<CreateProductOptionRequest> options) {
+        addOption(options.toArray(new CreateProductOptionRequest[0]));
         this.name = name;
         this.imageUrl = imageUrl;
     }

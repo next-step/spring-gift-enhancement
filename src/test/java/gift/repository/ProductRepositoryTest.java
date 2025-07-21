@@ -1,12 +1,14 @@
 package gift.repository;
 
 import gift.domain.product.Product;
+import gift.dto.product.CreateProductOptionRequest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +25,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 저장")
     void test1() {
-        Product product = new Product("감자칩", "image");
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
         Product save = productRepository.save(product);
 
         assertThat(save.getId()).isNotNull();
@@ -34,7 +36,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 수정")
     void test2() {
-        Product product = new Product("감자칩", "image");
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
         Product save = productRepository.save(product);
 
         em.flush();
@@ -55,7 +57,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 조회")
     void test3() {
-        Product product = new Product("감자칩", "image");
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
         productRepository.save(product);
 
         em.flush();
@@ -70,7 +72,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 삭제")
     void test4() {
-        Product product = new Product("감자칩", "image");
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
         productRepository.save(product);
 
         em.flush();
