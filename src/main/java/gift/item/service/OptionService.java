@@ -90,4 +90,34 @@ public class OptionService {
         optionRepository.delete(oldOptionEntity);
     }
 
+    @Transactional
+    public OptionResponseDto decreaseQuantity(Long optionId, Integer decrement) {
+        OptionEntity optionEntity = optionRepository.findById(optionId)
+            .orElseThrow(() -> new OptionNotFoundException(optionId));
+
+        if (decrement <= 0) {
+            throw new IllegalArgumentException("감소량(decrement)은 양수여야 합니다.");
+        }
+
+        if (optionEntity.getQuantity() < decrement) {
+            throw new IllegalArgumentException("현재 수량을 초과하는 decrement 입니다.");
+        }
+
+        if (optionEntity.getQuantity() == decrement) {
+            Long itemId = optionEntity.getItem().getId();
+            List<OptionEntity> itemOptions = optionRepository.findByItemId(itemId);
+            if (itemOptions.size() <= 1) {
+                throw new LastOptionCannotBeDeletedException(itemId);
+            }
+        }
+        optionEntity.setQuantity(optionEntity.getQuantity() - decrement);
+        OptionEntity updatedOptionEntity = optionRepository.save(optionEntity);
+        return new OptionResponseDto(
+            updatedOptionEntity.getId(),
+            updatedOptionEntity.getName(),
+            updatedOptionEntity.getQuantity()
+        );
+
+    }
+
 }

@@ -27,6 +27,7 @@
 - [x] DTO 생성 및 변경
 - [x] option crud 구현
 - [x] 기존 API 수정
+- [x] option 수량 감소 기능 구현
 - [ ] 테스트코드 작성
 
 # spring-gift-wishlist
