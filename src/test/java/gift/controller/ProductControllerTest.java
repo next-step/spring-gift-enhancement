@@ -1,14 +1,22 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.config.TestSecurityConfig;
 import gift.domain.Product;
+import gift.dto.PageResponse;
 import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import gift.util.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProductController.class)
+@Import(TestSecurityConfig.class)
 class ProductControllerTest {
 
     @Autowired
@@ -27,6 +36,9 @@ class ProductControllerTest {
 
     @MockBean
     ProductService productService;
+
+    @MockBean
+    JwtUtil jwtUtil;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -50,16 +62,27 @@ class ProductControllerTest {
     @Test
     @DisplayName("전체 상품 조회")
     void getAllProducts() throws Exception {
-        List<Product> products = List.of(
-                new Product(1L, "커피", 4000, "http://image.url/1"),
-                new Product(2L, "녹차", 4200, "http://image.url/2")
+        List<ProductResponse> products = List.of(
+                new ProductResponse(1L, "커피", 4000, "http://image.url/1"),
+                new ProductResponse(2L, "녹차", 4200, "http://image.url/2")
         );
-        when(productService.getAll()).thenReturn(products);
 
-        mockMvc.perform(get("/api/products"))
+        Page<ProductResponse> mockPage = new PageImpl<>(products);
+
+        PageResponse<ProductResponse> pageResponse = PageResponse.of(mockPage, products);
+
+        when(productService.getProductPage(any(Pageable.class))).thenReturn(pageResponse);
+
+        mockMvc.perform(get("/api/products")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(1L))
+                .andExpect(jsonPath("$.content[0].name").value("커피"))
+                .andExpect(jsonPath("$.content[1].id").value(2L))
+                .andExpect(jsonPath("$.content[1].name").value("녹차"));
     }
+
 
     @Test
     @DisplayName("단일 상품 조회 성공")
