@@ -50,4 +50,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
+    @ExceptionHandler(InvalidEntityDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidEntityDataException(InvalidEntityDataException ex) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto("INVALID_ENTITY_DATA", ex.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
 }
