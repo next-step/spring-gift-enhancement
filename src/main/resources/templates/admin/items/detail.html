@@ -20,16 +20,59 @@
       <img th:src="${item.imageUrl()}" alt="상품 이미지" class="detail-item-image">
     </div>
 
+    <div class="options-section">
+      <h2>상품 옵션</h2>
+      <table class="item-table">
+        <thead>
+        <tr>
+          <th>옵션 ID</th>
+          <th>옵션 이름</th>
+          <th>수량</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${item.options().isEmpty()}">
+          <td colspan="3" class="no-data">등록된 옵션이 없습니다.</td>
+        </tr>
+        <tr th:each="option : ${item.options()}">
+          <td th:text="${option.id()}"></td>
+          <td th:text="${option.name()}"></td>
+          <td th:text="${option.quantity()}"></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="add-option-form">
+        <h3>새 옵션 추가</h3>
+        <form th:action="@{/admin/items/{id}/options(id=${item.id()})}"
+              th:object="${option}" method="post">
+          <div class="form-group">
+            <label for="name">옵션 이름</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="옵션 이름 (최대 50자)">
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></span>
+          </div>
+          <div class="form-group">
+            <label for="quantity">수량</label>
+            <input type="number" id="quantity" th:field="*{quantity}" placeholder="재고 수량">
+            <span th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="error-message"></span>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn primary">옵션 추가</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div class="detail-actions">
       <a th:href="@{/admin/items}" class="btn secondary">목록으로</a>
       <a th:href="@{/admin/items/{id}/edit(id=${item.id()})}" class="btn primary">수정</a>
-      <form th:action="@{/admin/items/{id}(id=${item.id()})}" method="post" style="display:inline;"
+      <form th:action="@{/admin/items/{id}/delete(id=${item.id})}" method="post" style="display:inline;"
             onsubmit="return confirm('정말 이 상품을 삭제하시겠습니까?');">
-        <input type="hidden" name="_method" value="delete"/>
         <button type="submit" class="btn danger">삭제</button>
       </form>
     </div>
   </div>
+
   <div th:unless="${item != null}" class="detail-container">
     <p>요청하신 상품을 찾을 수 없습니다.</p>
     <a th:href="@{/admin/items}" class="btn secondary">목록으로 돌아가기</a>

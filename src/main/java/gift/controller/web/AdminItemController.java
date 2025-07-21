@@ -2,6 +2,7 @@ package gift.controller.web;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.dto.OptionRequest;
 import gift.login.Authenticated;
 import gift.service.ItemService;
 import gift.entity.Member;
@@ -108,5 +109,24 @@ public class AdminItemController {
         itemService.deleteItem(id, loginMember);
         redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 삭제되었습니다!");
         return "redirect:/admin/items";
+    }
+
+    @Authenticated
+    @PostMapping("/{productId}/options")
+    public String addOption(
+        @PathVariable("productId") Long productId,
+        @Valid @ModelAttribute("option") OptionRequest optionRequest,
+        BindingResult bindingResult,
+        Model model,
+        @Login Member loginMember
+    ) {
+        if (bindingResult.hasErrors()) {
+            ItemResponse item = itemService.getItemById(productId);
+            model.addAttribute("item", item);
+            return "admin/items/detail";
+        }
+
+        itemService.addOptionToItem(productId, optionRequest);
+        return "redirect:/admin/items/" + productId;
     }
 }

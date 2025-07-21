@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.dto.OptionRequest;
 import gift.dto.OptionResponse;
 import gift.entity.Item;
 import gift.entity.Member;
@@ -9,6 +10,7 @@ import gift.entity.Role;
 import gift.exception.AuthorizationException;
 import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
+import gift.repository.OptionRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final OptionRepository optionRepository;
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository, OptionRepository optionRepository) {
         this.itemRepository = itemRepository;
+        this.optionRepository = optionRepository;
     }
 
     public Page<ItemResponse> getAllItems(Pageable pageable) {
@@ -78,5 +82,18 @@ public class ItemService {
         return item.getOptions().stream()
             .map(OptionResponse::from)
             .collect(Collectors.toList());
+    }
+
+    public void addOptionToItem(Long productId, OptionRequest optionRequest) {
+        Item item = itemRepository.findById(productId)
+            .orElseThrow(() -> new ItemNotFoundException("옵션을 추가할 상품을 찾을 수 없습니다: " + productId));
+
+        boolean isDuplicate = item.getOptions().stream()
+            .anyMatch(option -> option.getName().equals(optionRequest.name()));
+        if (isDuplicate) {
+            throw new IllegalArgumentException("동일한 이름의 옵션이 이미 존재합니다.");
+        }
+
+        optionRepository.save(optionRequest.toEntity(item));
     }
 }
