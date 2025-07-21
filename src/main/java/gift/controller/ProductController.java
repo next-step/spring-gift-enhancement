@@ -1,9 +1,12 @@
 package gift.controller;
 
-import gift.dto.RequestDto;
-import gift.dto.ResponseDto;
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,29 +31,36 @@ public class ProductController {
 
     // 1. 상품 추가
     @PostMapping
-    public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody RequestDto dto) {
+    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto dto) {
 
-        ResponseDto response = productService.create(dto);
+        ProductResponseDto response = productService.create(dto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // 2. 상품 조회
+    // 2-1. 상품 전체 조회
+    @GetMapping
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductResponseDto> products = productService.findAll(pageable);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    // 2-2. 상품 단건 조회
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getProduct(@PathVariable Long id) {
-        ResponseDto response = productService.findById(id);
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long id) {
+        ProductResponseDto response = productService.findById(id);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 3. 상품 수정
-
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto> updateProduct(@Valid
+    public ResponseEntity<ProductResponseDto> updateProduct(@Valid
     @PathVariable Long id,
-            @RequestBody RequestDto dto
+            @RequestBody ProductRequestDto dto
     ) {
-        ResponseDto response = productService.update(id, dto);
+        ProductResponseDto response = productService.update(id, dto);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

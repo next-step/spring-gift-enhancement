@@ -1,8 +1,11 @@
 package gift.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class CreateWishRequest {
 
-    Long productId;
+    @NotNull
+    private final Long productId;
 
     public CreateWishRequest(Long productId) {
         this.productId = productId;

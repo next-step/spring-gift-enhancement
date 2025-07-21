@@ -1,22 +1,31 @@
 package gift.dto;
 
+import gift.entity.Product;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class RequestDto {
+public class ProductResponseDto {
 
-    private Long id;
+    private final Long id;
 
     @NotNull
     @Size(max = 15, message = "공백 포함 최대 15자까지만 입력 가능합니다.")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$", message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다.")
+    private final  String name;
 
-    private String name;
+    @NotNull
+    private final String imageUrl;
 
-    private String imageUrl;
+    @NotNull
+    private final Long price;
 
-    private Long price;
+    public ProductResponseDto(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.imageUrl = product.getImageUrl();
+        this.price = product.getPrice();
+    }
 
     public Long getId() {
         return id;
@@ -32,21 +41,5 @@ public class RequestDto {
 
     public Long getPrice() {
         return price;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void setPrice(Long price) {
-        this.price = price;
     }
 }

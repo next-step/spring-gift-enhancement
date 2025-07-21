@@ -2,12 +2,13 @@ package gift.controller;
 
 import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
+import gift.dto.ProductResponseDto;
 import gift.entity.Member;
-import gift.entity.Product;
 import gift.jwt.Authenticated;
-import gift.repository.ProductRepository;
 import gift.service.WishService;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,8 +44,9 @@ public class WishRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getMyWishes(@Authenticated Member member) {
-        List<Product> wishes = wishService.getAllWish(member);
-        return ResponseEntity.ok(wishes);
+    public ResponseEntity<Page<ProductResponseDto>> getMyWishes(@Authenticated Member member, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductResponseDto> wishes = wishService.getAllWish(member, pageable);
+        return new ResponseEntity<>(wishes, HttpStatus.OK);
     }
 }

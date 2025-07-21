@@ -55,4 +55,26 @@ public class ProductControllerImplTest {
         Assertions.assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(() -> client.get().uri(url).retrieve().toEntity(Void.class));
     }
+
+    @Test
+    @DisplayName("페이지 테스트")
+    void pageTest() {
+        // given
+        products.save(Product.of("블루베리", "blueberry.com", 88L));
+        products.save(Product.of("귤", "gyul.com", 900L));
+
+        var url = "http://localhost:" + port + "/api/products?page=0&size=2";
+
+        // when
+        var response = client.get().uri(url).retrieve().toEntity(String.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        String actual = response.getBody();
+
+        System.out.println(actual);
+
+        assertThat(actual).contains("블루베리");
+        assertThat(actual).contains("귤");
+    }
 }
