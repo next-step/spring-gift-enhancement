@@ -75,8 +75,11 @@ public class MemberFrontController {
 
     @GetMapping("/products/{id}")
     public String productDetail(
-            @PathVariable Long id, Model model) {
+            @PathVariable Long id,
+            Model model
+    ) {
         model.addAttribute("product", productService.findProductById(id));
+        model.addAttribute("options", productService.getOptionsByProductId(id));
 
         return "member/product-detail";
     }

@@ -1,5 +1,7 @@
 package gift.api.product.controller;
 
+import gift.api.option.dto.OptionRequestDto;
+import gift.api.option.dto.OptionResponseDto;
 import gift.api.product.dto.ProductRequestDto;
 import gift.api.product.dto.ProductResponseDto;
 import gift.api.product.service.ProductService;
@@ -62,6 +64,46 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping({"/{productId}/options"})
+    public ResponseEntity<List<OptionResponseDto>> getOptionsForProduct(
+            @PathVariable Long productId) {
+        List<OptionResponseDto> options = productService.getOptionsByProductId(productId);
+
+        return ResponseEntity.ok(options);
+    }
+
+    @PostMapping("/{productId}/options")
+    public ResponseEntity<OptionResponseDto> addOptionToProduct(
+            @PathVariable Long productId,
+            @Valid @RequestBody OptionRequestDto requestDto) {
+        OptionResponseDto responseDto = productService.addOption(productId, requestDto);
+
+        URI location = URI.create(
+                String.format("/api/products/%d/options/%d", productId, responseDto.id()));
+
+        return ResponseEntity.created(location).body(responseDto);
+    }
+
+    @PutMapping("/{productId}/options/{optionId}")
+    public ResponseEntity<OptionResponseDto> updateOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            @Valid @RequestBody OptionRequestDto requestDto) {
+        OptionResponseDto updatedOption = productService.updateOption(productId, optionId,
+                requestDto);
+
+        return ResponseEntity.ok(updatedOption);
+    }
+
+    @DeleteMapping("/{productId}/options/{optionId}")
+    public ResponseEntity<Void> deleteOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId) {
+        productService.deleteOption(productId, optionId);
 
         return ResponseEntity.noContent().build();
     }

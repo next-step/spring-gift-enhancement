@@ -5,6 +5,8 @@ import gift.exception.auth.AuthorizationException;
 import gift.exception.conflict.DataConflictException;
 import gift.exception.dto.ErrorResponseDto;
 import gift.exception.notfound.EntityNotFoundException;
+import gift.exception.option.InvalidOptionAccessException;
+import gift.exception.option.OptionPolicyException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class FrontExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public String handleEntityNotFound(
+    public String handleEntityNotFoundException(
             EntityNotFoundException ex,
             Model model,
             HttpServletRequest request) {
@@ -33,7 +35,7 @@ public class FrontExceptionHandler {
     }
 
     @ExceptionHandler(DataConflictException.class)
-    public String handleDataConflict(
+    public String handleDataConflictException(
             DataConflictException ex,
             Model model,
             HttpServletRequest request) {
@@ -84,14 +86,48 @@ public class FrontExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleMethodArgumentNotValid(
-            Exception ex,
+    public String handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex,
             Model model,
             HttpServletRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(InvalidOptionAccessException.class)
+    public String handleInvalidOptionAccessException(
+            InvalidOptionAccessException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(OptionPolicyException.class)
+    public String handleOptionPolicyException(
+            OptionPolicyException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );

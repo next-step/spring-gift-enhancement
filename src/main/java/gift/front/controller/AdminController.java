@@ -52,6 +52,7 @@ public class AdminController {
     public String productDetail(
             @PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findProductById(id));
+        model.addAttribute("options", productService.getOptionsByProductId(id));
 
         return "admin/product-detail";
     }

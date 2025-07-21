@@ -6,7 +6,7 @@ import gift.api.member.dto.MemberRequestDto;
 import gift.api.member.dto.TokenResponseDto;
 import gift.api.member.repository.MemberRepository;
 import gift.exception.auth.LoginFailedException;
-import gift.exception.conflict.DuplicateEmailException;
+import gift.exception.conflict.EmailDuplicateException;
 import gift.util.JwtUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class MemberService {
     @Transactional
     public TokenResponseDto registerMember(MemberRequestDto memberRequestDto) {
         memberRepository.findByEmail(memberRequestDto.email()).ifPresent(member -> {
-            throw new DuplicateEmailException(memberRequestDto.email());
+            throw new EmailDuplicateException(memberRequestDto.email());
         });
 
         String encodedPassword = BCrypt.hashpw(memberRequestDto.password(), BCrypt.gensalt());

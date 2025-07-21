@@ -8,7 +8,7 @@ import gift.api.wish.domain.Wish;
 import gift.api.wish.dto.WishResponseDto;
 import gift.api.wish.repository.WishRepository;
 import gift.exception.auth.AuthorizationException;
-import gift.exception.conflict.DuplicateWishException;
+import gift.exception.conflict.WishDuplicateException;
 import gift.exception.notfound.MemberNotFoundException;
 import gift.exception.notfound.ProductNotFoundException;
 import gift.exception.notfound.WishNotFoundException;
@@ -52,7 +52,7 @@ public class WishService {
 
         wishRepository.findByMemberAndProduct(member, product)
                 .ifPresent(wish -> {
-                    throw new DuplicateWishException(wish.getProduct().getName());
+                    throw new WishDuplicateException(wish.getProduct().getName());
                 });
 
         Wish newWish = new Wish(member, product);

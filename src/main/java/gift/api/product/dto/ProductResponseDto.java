@@ -9,12 +9,12 @@ public record ProductResponseDto(
         String imageUrl
 ) {
 
-    public static ProductResponseDto from(Product produt) {
+    public static ProductResponseDto from(Product product) {
         return new ProductResponseDto(
-                produt.getId(),
-                produt.getName(),
-                produt.getPrice(),
-                produt.getImageUrl()
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
         );
     }
 }
