@@ -1,6 +1,7 @@
 package gift.api.option.domain;
 
 import gift.api.product.domain.Product;
+import gift.exception.option.InvalidOptionAccessException;
 import gift.exception.option.InvalidOptionQuantityException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,6 +57,12 @@ public class Option {
 
     public Product getProduct() {
         return product;
+    }
+
+    public void validateProduct(Long productId) {
+        if (!this.product.getId().equals(productId)) {
+            throw new InvalidOptionAccessException("해당 상품에 속한 옵션이 아닙니다.");
+        }
     }
 
     public void update(String name, int quantity) {

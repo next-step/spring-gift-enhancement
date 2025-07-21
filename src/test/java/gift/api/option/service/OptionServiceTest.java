@@ -145,4 +145,24 @@ class OptionServiceTest {
                 .isInstanceOf(InvalidOptionAccessException.class)
                 .hasMessage("해당 상품에 속한 옵션이 아닙니다.");
     }
+
+    @Test
+    @DisplayName("옵션 수정 실패 - 중복된 이름")
+    void updateOption_fail_duplicateName() {
+        // given
+        // 'option2'("추가")의 이름을 'option1'의 이름("기본")으로 바꾸려고 시도
+        OptionRequestDto requestDto = new OptionRequestDto("기본", 30);
+
+        given(productRepository.findById(1L)).willReturn(Optional.of(product));
+        given(optionRepository.findById(101L)).willReturn(Optional.of(option2));
+
+        // "기본"이라는 이름으로 옵션을 찾으려고 할 때, 이미 존재하는 option1을 반환하도록 설정
+        given(optionRepository.findByProductAndName(product, "기본")).willReturn(
+                Optional.of(option1));
+
+        // when & then
+        assertThatThrownBy(() -> optionService.updateOption(1L, 101L, requestDto))
+                .isInstanceOf(OptionNameDuplicateException.class)
+                .hasMessage("이미 존재하는 옵션 이름입니다: 기본");
+    }
 }
