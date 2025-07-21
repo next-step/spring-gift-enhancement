@@ -2,10 +2,12 @@ package gift.controller;
 
 import gift.dto.PageResponse;
 import gift.dto.Pagination;
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,7 +40,8 @@ public class AdminProductController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("product", new ProductRequest("", null, ""));
+        List<ProductOptionRequest> defaultOptions = List.of(new ProductOptionRequest("", 1L));
+        model.addAttribute("product", new ProductRequest("", null, "", defaultOptions));
         return "admin/product-form";
     }
 
