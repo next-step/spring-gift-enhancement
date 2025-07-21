@@ -4,6 +4,7 @@ import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.Collections;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,7 +40,7 @@ public class AdminProductController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("product", new ProductRequest(null, "", 0, ""));
+        model.addAttribute("product", new ProductRequest(null, "", 0, "", Collections.emptyList()));
         return "admin/product/new-form";
     }
 
