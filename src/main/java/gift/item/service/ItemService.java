@@ -77,16 +77,16 @@ public class ItemService {
             itemCreateDto.imageUrl()
         );
 
-        ItemEntity savedItemEntity = itemRepository.save(newItemEntity);
-
         List<OptionEntity> optionEntities = itemCreateDto.options().stream()
             .map(optionDto -> new OptionEntity(
                 optionDto.name(),
                 optionDto.quantity(),
-                savedItemEntity
+                newItemEntity
             )).toList();
 
-        savedItemEntity.getOptions().addAll(optionEntities);
+        newItemEntity.getOptions().addAll(optionEntities);
+
+        ItemEntity savedItemEntity = itemRepository.save(newItemEntity);
 
         return new ItemDetailResponseDto(
             savedItemEntity.getId(),
