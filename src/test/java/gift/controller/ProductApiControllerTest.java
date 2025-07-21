@@ -52,7 +52,7 @@ class ProductApiControllerTest {
 
     @Test
     @DisplayName("상품 생성을 할 수 있다.")
-    void test1() throws Exception {
+    void test1_1() throws Exception {
 
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("샤프", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
@@ -63,6 +63,20 @@ class ProductApiControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 없이 상품 생성을 할 수 없다.")
+    void test1_2() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("샤프", "image", List.of())
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -190,64 +204,8 @@ class ProductApiControllerTest {
     }
 
     @Test
-    @DisplayName("상품 생성 dto 유효성 검증6 - 상품 가격이 음수로 들어올 경우 상태코드 400을 반환한다.")
+    @DisplayName("상품 생성 dto 유효성 검증6 - 상품 이미지 값이 들어오지 않을 경우 상태코드 400을 반환한다.")
     void test5_6() throws Exception {
-        String body = mapper.writeValueAsString(
-                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", -1, 10)))
-        );
-
-        mvc.perform(post("/api/products")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("상품 생성 dto 유효성 검증7 - 상품 가격이 1억을 넘어갈 경우 상태코드 400을 반환한다.")
-    void test5_7() throws Exception {
-        String body = mapper.writeValueAsString(
-                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 100_000_001, 10)))
-        );
-
-        mvc.perform(post("/api/products")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("상품 생성 dto 유효성 검증8 - 상품 수량이 음수로 들어올 경우 상태코드 400을 반환한다.")
-    void test5_8() throws Exception {
-        String body = mapper.writeValueAsString(
-                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, -1)))
-        );
-
-        mvc.perform(post("/api/products")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("상품 생성 dto 유효성 검증9 - 상품 수량이 1억 이상일 경우 상태코드 400을 반환한다.")
-    void test5_9() throws Exception {
-        String body = mapper.writeValueAsString(
-                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 100_000_000)))
-        );
-
-        mvc.perform(post("/api/products")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("상품 생성 dto 유효성 검증10 - 상품 이미지 값이 들어오지 않을 경우 상태코드 400을 반환한다.")
-    void test5_10() throws Exception {
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("맛동산", null, List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
         );
@@ -260,7 +218,7 @@ class ProductApiControllerTest {
     }
 
     @Test
-    @DisplayName("상품 생성 dto 유효성 검증11 - 상품 이미지 값이 빈 문자열로 들어올 경우 상태코드 400을 반환한다.")
+    @DisplayName("상품 생성 dto 유효성 검증7 - 상품 이미지 값이 빈 문자열로 들어올 경우 상태코드 400을 반환한다.")
     void test5_11() throws Exception {
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("맛동산", "", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
@@ -292,6 +250,104 @@ class ProductApiControllerTest {
     @DisplayName("없는 아이디의 상품 삭제를 요청할 경우 상태코드 400을 반환한다.")
     void test7() throws Exception {
         mvc.perform(delete("/api/products/" + 333)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증1 - 옵션 가격이 음수로 들어올 경우 상태코드 400을 반환한다.")
+    void test8_1() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", -1, 10)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증2 - 옵션 가격이 1억을 넘어갈 경우 상태코드 400을 반환한다.")
+    void test8_2() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 100_000_001, 10)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증3- 옵션 수량이 음수로 들어올 경우 상태코드 400을 반환한다.")
+    void test8_3() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, -1)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증4 - 옵션 수량이 1억 이상일 경우 상태코드 400을 반환한다.")
+    void test8_4() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 100_000_000)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증5 - 옵션 수량이 0으로 들어오는 경우 상태코드 400을 반환한다.")
+    void test8_5() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("맛도리", 10000, 0)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증6 - 옵션 이름에 허용된 특수문자를 사용할 경우 상품을 생성할 수 있다.")
+    void test8_6() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("( ) [ ] + - & / _", 10000, 1111)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        ).andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("상품 옵션 dto 유효성 검증7 - 옵션 이름에 허용되지 않은 특수문자를 사용할 경우 상품을 생성할 수 없다.")
+    void test8_7() throws Exception {
+        String body = mapper.writeValueAsString(
+                new CreateProductRequest("맛동산", "image", List.of(new CreateProductOptionRequest("??", 10000, 1111)))
+        );
+
+        mvc.perform(post("/api/products")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
