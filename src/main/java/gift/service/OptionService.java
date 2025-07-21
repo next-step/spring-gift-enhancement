@@ -5,6 +5,7 @@ import gift.dto.OptionResponseDto;
 import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.DuplicateOptionNameException;
+import gift.exception.InvalidEntityDataException;
 import gift.exception.ResourceNotFoundException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
@@ -92,6 +93,10 @@ public class OptionService {
         // 해당 상품에 존재하는 옵션이 맞는지 확인
         if (!option.getProduct().getId().equals(product.getId())) {
             throw new ResourceNotFoundException("해당 상품에 속한 옵션이 아닙니다.");
+        }
+
+        if (product.getOptions().size() <= 1) {
+            throw new InvalidEntityDataException("상품에는 최소 한 개의 옵션이 존재해야 하므로 삭제할 수 없습니다.");
         }
 
         optionRepository.delete(option);
