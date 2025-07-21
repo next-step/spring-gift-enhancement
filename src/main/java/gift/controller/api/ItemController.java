@@ -2,12 +2,14 @@ package gift.controller.api;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.dto.OptionResponse;
 import gift.entity.Member;
 import gift.login.Authenticated;
 import gift.login.Login;
 import gift.service.ItemService;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -75,5 +77,11 @@ public class ItemController {
     ) {
         itemService.deleteItem(id, loginMember);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{productId}/options")
+    public ResponseEntity<List<OptionResponse>> getOptionsByProductId(@PathVariable("productId") Long productId) {
+        List<OptionResponse> options = itemService.getOptionsByProductId(productId);
+        return ResponseEntity.ok(options);
     }
 }

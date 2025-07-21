@@ -2,12 +2,15 @@ package gift.service;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.dto.OptionResponse;
 import gift.entity.Item;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.AuthorizationException;
 import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -66,5 +69,14 @@ public class ItemService {
         if (productName.contains("카카오") && member.getRole() != Role.ADMIN) {
             throw new AuthorizationException("카카오 관련 상품은 ADMIN만 등록할 수 있습니다.");
         }
+    }
+
+    public List<OptionResponse> getOptionsByProductId(Long productId) {
+        Item item = itemRepository.findById(productId)
+            .orElseThrow(() -> new ItemNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
+
+        return item.getOptions().stream()
+            .map(OptionResponse::from)
+            .collect(Collectors.toList());
     }
 }
