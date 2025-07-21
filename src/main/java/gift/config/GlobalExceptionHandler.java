@@ -1,8 +1,6 @@
 package gift.config;
 
-import gift.exception.DuplicateWishException;
-import gift.exception.InsertFailedException;
-import gift.exception.UpdateFailedException;
+import gift.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
@@ -10,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.NoSuchElementException;
 
@@ -44,7 +41,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handlerException(EntityNotFoundException ex)  {
+    public ResponseEntity<String> handlerException(EntityNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
@@ -61,5 +58,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handlerException(IllegalArgumentException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidOptionCreateException.class)
+    public ResponseEntity<String> handlerException(InvalidOptionCreateException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateOptionException.class)
+    public ResponseEntity<String> handlerException(DuplicateOptionException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 }
