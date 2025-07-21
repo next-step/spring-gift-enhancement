@@ -30,7 +30,7 @@ public class ProductOptionController {
         optionService.addOptionToProduct(productId, request.getName(), request.getQuantity());
     }
 
-    @PostMapping("/{optionId}/subtract")
+    @PatchMapping("/{optionId}/subtract")
     public void subtractQuantity(@PathVariable Long optionId, @RequestParam Long quantity) {
         optionService.subtractQuantity(optionId, quantity);
     }

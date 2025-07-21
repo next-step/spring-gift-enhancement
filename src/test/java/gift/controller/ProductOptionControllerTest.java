@@ -70,7 +70,7 @@ class ProductOptionControllerTest {
         Long optionId = 1L;
         Long quantity = 10L;
 
-        mockMvc.perform(post("/api/options/{optionId}/subtract", optionId)
+        mockMvc.perform(patch("/api/options/{optionId}/subtract", optionId)
                         .param("quantity", quantity.toString())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
