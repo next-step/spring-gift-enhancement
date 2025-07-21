@@ -3,7 +3,6 @@ package gift.service;
 import gift.common.exception.ProductNotFoundException;
 import gift.domain.product.Product;
 import gift.dto.product.CreateProductRequest;
-import gift.dto.product.CreateProductOptionRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;

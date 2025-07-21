@@ -2,8 +2,8 @@ package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.domain.product.Product;
-import gift.dto.product.CreateProductRequest;
 import gift.dto.product.CreateProductOptionRequest;
+import gift.dto.product.CreateProductRequest;
 import gift.dto.user.CreateUserRequest;
 import gift.dto.user.LoginRequest;
 import gift.service.ProductService;
@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
