@@ -1,0 +1,16 @@
+package gift.service.product.option;
+
+import gift.dto.product.option.OptionRequestDto;
+import gift.dto.product.option.OptionResponseDto;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
+
+import java.util.List;
+
+public interface OptionService {
+
+    List<OptionResponseDto> findAllOptionByProductId(Long productId);
+    OptionResponseDto saveOption(Long productId, OptionRequestDto dto);
+    OptionResponseDto updateOption(Long optionId, OptionRequestDto dto);
+    void deleteOption(Long optionId);
+}

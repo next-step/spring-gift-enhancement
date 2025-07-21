@@ -4,7 +4,9 @@ import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.product.ProductNotFoundException;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
+import gift.service.product.option.OptionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,11 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, OptionRepository optionRepository) {
         this.productRepository = productRepository;
+        this.optionRepository = optionRepository;
     }
 
     public List<ProductResponseDto> findAllProducts(){
@@ -147,6 +151,7 @@ public class ProductServiceImpl implements ProductService{
         );
     }
 
+    @Transactional
     @Override
     public void deleteProduct(Long id) {
 
@@ -156,6 +161,7 @@ public class ProductServiceImpl implements ProductService{
             );
         }
 
+        optionRepository.deleteAllByProductId(id);
         productRepository.deleteById(id);
     }
 }

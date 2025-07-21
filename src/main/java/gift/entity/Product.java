@@ -27,10 +27,6 @@ public class Product extends BaseTimeEntity{
 
     private String description;
 
-//    @OneToMany(mappedBy = "product")
-//    @JoinColumn(name = "product_option_id")
-//    private List<ProductOption> productOptions = new ArrayList<>();
-
     protected Product() {}
 
     public Product(String name,
