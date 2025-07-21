@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 @DataJpaTest
 class WishRepositoryTest {
@@ -36,15 +36,16 @@ class WishRepositoryTest {
     }
 
     @Test
-    @DisplayName("회원으로 위시리스트 조회 (Fetch Join 및 페이지네이션 적용)")
-    void findByMemberWithProduct() {
+    @DisplayName("회원으로 위시리스트 조회 (@EntityGraph 및 Slice 적용)")
+    void findAllByMember() {
         wishRepository.save(new Wish(testMember, testItem, 1));
         Pageable pageable = PageRequest.of(0, 10);
 
-        Page<Wish> wishPage = wishRepository.findAllByMemberWithProduct(testMember, pageable);
+        Slice<Wish> wishSlice = wishRepository.findAllByMember(testMember, pageable);
 
-        List<Wish> wishes = wishPage.getContent();
+        List<Wish> wishes = wishSlice.getContent();
         assertThat(wishes).hasSize(1);
         assertThat(wishes.get(0).getProduct().getName()).isEqualTo("test item");
+        assertThat(wishSlice.hasNext()).isFalse();
     }
 }
