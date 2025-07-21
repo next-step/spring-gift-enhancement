@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -105,7 +106,7 @@ class WishControllerTest {
                         .header("Authorization", "Bearer test-token"))
                 .andExpect(status().isOk());
 
-        verify(wishService).getWishes(eq(memberId));
+        verify(wishService).getWishesPage(eq(memberId), any(Pageable.class));
     }
 }
 
