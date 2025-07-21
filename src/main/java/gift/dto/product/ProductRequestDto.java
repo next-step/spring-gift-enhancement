@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 public record ProductRequestDto(
     @NotBlank(message = "상품 이름은 필수입니다.")
@@ -30,5 +31,9 @@ public record ProductRequestDto(
     int quantity,
 
     @NotBlank(message = "이미지 URL은 필수입니다.")
-    String imageUrl
-) {}
+    String imageUrl,
+    List<ProductOptionRequestDto> options
+) {
+    public record ProductOptionRequestDto(String name, int quantity) {}
+
+}
