@@ -30,4 +30,30 @@ public class OptionEntity {
     protected OptionEntity() {
     }
 
+    public OptionEntity(String name, Integer quantity, ItemEntity item) {
+        this.name = name;
+        this.quantity = quantity;
+        this.item = item;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
 }
