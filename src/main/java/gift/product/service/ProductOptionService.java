@@ -8,10 +8,12 @@ import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductOptionRepository;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductOptionService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;

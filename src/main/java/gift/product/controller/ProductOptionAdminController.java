@@ -1,13 +1,13 @@
 package gift.product.controller;
 
 import gift.product.domain.Product;
-import gift.product.domain.ProductOption;
 import gift.product.dto.ProductOptionRequestDto;
 import gift.product.service.ProductOptionService;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,14 +29,24 @@ public class ProductOptionAdminController {
     public String optionsPage(@PathVariable Long productId, Model model) {
         Product product = productService.getProduct(productId);
         model.addAttribute("product", product);
-        model.addAttribute("options", product.getProductOptions());
         model.addAttribute("newOption", ProductOptionRequestDto.getEmpty());
 
         return "admin/product-options";
     }
 
     @PostMapping("/add")
-    public String addOption(@PathVariable Long productId, @Valid @ModelAttribute("newOption") ProductOptionRequestDto optionRequestDto) {
+    public String addOption(
+            @PathVariable Long productId,
+            @Valid @ModelAttribute("newOption") ProductOptionRequestDto optionRequestDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            Product product = productService.getProduct(productId);
+            model.addAttribute("product", product);
+            return "admin/product-options";
+        }
+
         optionService.addNewOption(productId, optionRequestDto);
 
         return "redirect:/admin/products/" + productId + "/options";
