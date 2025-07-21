@@ -23,7 +23,6 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    @Transactional(readOnly = true)
     public PageResponse<WishResponse> getWishesPage(Long memberId, Pageable pageable) {
         Page<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
         List<WishResponse> content = wishes.stream()
