@@ -61,7 +61,7 @@ class ItemControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").isArray())
             .andExpect(jsonPath("$.content", hasSize(2)))
-            .andExpect(jsonPath("$.totalElements").value(3));
+            .andExpect(jsonPath("$.totalElements").value(15));
     }
 
     @Test
