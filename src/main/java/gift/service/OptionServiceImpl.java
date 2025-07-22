@@ -6,7 +6,6 @@ import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.OptionNameDuplicationException;
 import gift.exception.OptionNotFoundException;
-import gift.exception.ProductNotFoundException;
 import gift.repository.OptionRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -25,14 +24,8 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public void productExist(Long productId) {
-        if (productService.getProduct(productId) == null) {
-            throw new ProductNotFoundException("상품을 찾을 수 없습니다");
-        }
-    }
-
-    @Override
     public Option toOption(Long productId, OptionRequestDto request) {
+
         Product product = productService.getProduct(productId);
         Option option = new Option();
         option.setName(request.optionName());
@@ -44,7 +37,8 @@ public class OptionServiceImpl implements OptionService {
     @Override
     @Transactional
     public OptionResponseDto addOption(Long productId, OptionRequestDto optionRequestDto) {
-        productExist(productId);
+
+        productService.productExist(productId);
         Option option = toOption(productId, optionRequestDto);
         if (optionRepository.existsByProduct_IdAndName(productId, option.getName())) {
             throw new OptionNameDuplicationException("이미 존재하는 옵션명입니다: " + option.getName());
@@ -58,7 +52,8 @@ public class OptionServiceImpl implements OptionService {
     @Transactional
     public OptionResponseDto updateOption(Long productId, Long optionId,
         OptionRequestDto optionRequestDto) {
-        productExist(productId);
+
+        productService.productExist(productId);
         Option option = optionRepository.findById(optionId)
             .orElseThrow(() -> new OptionNotFoundException("옵션이 존재하지 않습니다"));
         if (optionRepository.existsByProduct_IdAndNameAndIdNot(productId, option.getName(),
@@ -74,7 +69,8 @@ public class OptionServiceImpl implements OptionService {
     @Override
     @Transactional
     public void deleteOption(Long productId, Long optionId) {
-        productExist(productId);
+
+        productService.productExist(productId);
         Option option = optionRepository.findById(optionId)
             .orElseThrow(() -> new OptionNotFoundException("옵션이 존재하지 않습니다"));
         optionRepository.delete(option);
@@ -82,7 +78,8 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public List<OptionResponseDto> getOptions(Long productId) {
-        productExist(productId);
+
+        productService.productExist(productId);
         return optionRepository.findAllByProduct_Id(productId)
             .stream()
             .map(OptionResponseDto::new)
