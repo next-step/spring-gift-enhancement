@@ -1,13 +1,13 @@
 package gift.common.validation.validator;
 
 import gift.common.validation.annotation.AllowedSortFields;
+import gift.dto.CustomPageRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import java.util.Set;
 
-public class AllowedSortFieldsValidator implements ConstraintValidator<AllowedSortFields, Pageable> {
+public class AllowedSortFieldsValidator implements ConstraintValidator<AllowedSortFields, CustomPageRequest> {
     private String[] allowedFields;
     private String message;
     private boolean showAllowedFields;
@@ -20,14 +20,13 @@ public class AllowedSortFieldsValidator implements ConstraintValidator<AllowedSo
     }
 
     @Override
-    public boolean isValid(Pageable pageable, ConstraintValidatorContext context) {
-        if (pageable == null || pageable.getSort().isUnsorted() || pageable.getSort().isEmpty()) {
-            return true; // pageable이 null 이거나 정렬이 없는 경우 유효함
+    public boolean isValid(CustomPageRequest request, ConstraintValidatorContext context) {
+        if (request == null || request.getSort().isUnsorted() || request.getSort().isEmpty()) {
+            return true; // request이 null 이거나 정렬이 없는 경우 유효함
         }
-
         Set<String> fieldsSet = Set.of(allowedFields);
 
-        for(Sort.Order order : pageable.getSort()) {
+        for(Sort.Order order : request.getSort()) {
             String field = order.getProperty();
             if (!fieldsSet.contains(field)) {
                 if (showAllowedFields) {

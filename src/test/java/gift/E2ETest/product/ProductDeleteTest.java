@@ -14,7 +14,7 @@ public class ProductDeleteTest extends AbstractProductTest {
     @Test
     @DisplayName("제품 삭제 성공 테스트")
     public void Product_Delete_Success() {
-        Long testProductId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+        Long testProductId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
         String url = getRequestUrl() + "/{id}";
         RestAssured.given(this.spec)
                 .filter(document("상품 삭제 성공",
@@ -27,7 +27,7 @@ public class ProductDeleteTest extends AbstractProductTest {
                 .then()
                 .statusCode(204);
 
-        this.testProductIds.removeIf(product -> product.id().equals(testProductId));
+        this.testProducts.removeIf(product -> product.id().equals(testProductId));
     }
 
     @Test

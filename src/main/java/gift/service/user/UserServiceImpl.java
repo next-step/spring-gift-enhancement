@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         // 역할 업데이트
         if (user.getRoles() != null) {
-            existingUser.setRoles(user.getRoles());
+            existingUser.setRoles(user.getUserRoles());
         }
         return userRepository.save(existingUser);
     }

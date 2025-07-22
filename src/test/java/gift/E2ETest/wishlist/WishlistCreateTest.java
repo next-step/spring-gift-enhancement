@@ -1,7 +1,7 @@
 package gift.E2ETest.wishlist;
 
-import gift.dto.product.ProductDefaultResponse;
-import gift.dto.wishlist.CreateWishedProductRequest;
+import gift.dto.product.ProductResponse;
+import gift.dto.wishlist.WishedProductCreateRequest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +38,8 @@ public class WishlistCreateTest extends AbstractWishlistTest {
     @DisplayName("위시리스트에 제품 추가 성공 테스트")
     public void Wishlist_Create_Success() {
         // 위시리스트에 제품 추가 성공 테스트
-        ProductDefaultResponse product = this.testProducts.getFirst();
-        CreateWishedProductRequest request = new CreateWishedProductRequest(product.id(), 3);
+        ProductResponse product = this.testProducts.getFirst();
+        WishedProductCreateRequest request = new WishedProductCreateRequest(product.id(), 3);
 
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 추가 성공",
@@ -66,7 +66,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
                 .body("subtotal", notNullValue())
                 .body("subtotal", equalTo(3 * product.price().intValue()));
 
-        CreateWishedProductRequest defaultRequest = new CreateWishedProductRequest(
+        WishedProductCreateRequest defaultRequest = new WishedProductCreateRequest(
                 this.testProducts.get(2).id(), null);
 
         RestAssured.given(this.spec)
@@ -85,9 +85,9 @@ public class WishlistCreateTest extends AbstractWishlistTest {
     @Test
     @DisplayName("위시리스트에 제품 추가 실패 - 유효성 관련 에러(400 Bad Request)")
     public void Wishlist_Create_Failure_MissingFields() {
-        List<CreateWishedProductRequest> requests = List.of(
-                new CreateWishedProductRequest(null, 2) // 제품 ID 누락
-                , new CreateWishedProductRequest(1L, -1) // 수량이 음수인 경우
+        List<WishedProductCreateRequest> requests = List.of(
+                new WishedProductCreateRequest(null, 2) // 제품 ID 누락
+                , new WishedProductCreateRequest(1L, -1) // 수량이 음수인 경우
         );
         requests.forEach(request ->
             RestAssured.given(this.spec)
@@ -103,7 +103,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
     @DisplayName("위시리스트에 제품 추가 실패 - 권한이 없는 경우(403 Forbidden)")
     public void Wishlist_Create_Failure_Unauthorized() {
         // 위시리스트에 제품 추가 실패 - 권한이 없는 경우
-        CreateWishedProductRequest request = new CreateWishedProductRequest(this.testProducts.getFirst().id(), 2);
+        WishedProductCreateRequest request = new WishedProductCreateRequest(this.testProducts.getFirst().id(), 2);
 
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 추가 실패 - 권한 없음",
@@ -122,7 +122,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
     @DisplayName("위시리스트에 제품 추가 실패 - 제품이 존재하지 않는 경우(404 Not Found)")
     public void Wishlist_Create_Failure_ProductNotFound() {
         // 위시리스트에 제품 추가 실패 - 제품이 존재하지 않는 경우
-        CreateWishedProductRequest request = new CreateWishedProductRequest(9999L, 2);
+        WishedProductCreateRequest request = new WishedProductCreateRequest(9999L, 2);
 
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 추가 실패 - 제품 없음",

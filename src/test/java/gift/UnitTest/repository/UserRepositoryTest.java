@@ -9,8 +9,9 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserRepositoryTest extends AbstractRepositoryTest {
 
@@ -33,18 +34,27 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     @Order(1)
     @DisplayName("단건 유저 저장 테스트")
     public void save_user_test() {
-        User user = new User();
+        User user = new User(
+                "test1234@test.com",
+                "test1234!",
+                Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+        );
         user.setEmail("test1234@test.com");
         user.setPassword("test1234!");
-        user.setRoles(List.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow()));
+        user.setRoles(Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName()));
         User savedUser = userRepository.save(user);
+        UserRole role = savedUser.getRoles()
+                .stream()
+                .findFirst()
+                .orElseThrow()
+                .getName();
 
         Assertions.assertAll(
                 () -> Assertions.assertNotNull(savedUser.getId()),
                 () -> Assertions.assertEquals(savedUser.getEmail(), user.getEmail()),
                 () -> Assertions.assertEquals(savedUser.getPassword(), user.getPassword()),
                 () -> Assertions.assertFalse(savedUser.getRoles().isEmpty()),
-                () -> Assertions.assertEquals(UserRole.ROLE_USER, savedUser.getRoles().getFirst().getName())
+                () -> Assertions.assertEquals(UserRole.ROLE_USER, role)
         );
     }
 
@@ -52,20 +62,28 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     @Order(2)
     @DisplayName("유저 ID로 조회 테스트")
     public void findById_test() {
-        User user = new User();
-        user.setEmail("test1234@test.com");
-        user.setPassword("test1234!");
-        user.setRoles(List.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow()));
+        User user = new User(
+                "test1234@test.com",
+                "test1234!",
+                Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+        );
         User savedUser = userRepository.save(user);
 
         User foundUser = userRepository.findById(savedUser.getId()).orElse(null);
         Assertions.assertNotNull(foundUser);
+
+        UserRole role = foundUser.getRoles()
+                .stream()
+                .findFirst()
+                .orElseThrow()
+                .getName();
+
         Assertions.assertAll(
                 () -> Assertions.assertEquals(savedUser.getId(), foundUser.getId()),
                 () -> Assertions.assertEquals(savedUser.getEmail(), foundUser.getEmail()),
                 () -> Assertions.assertEquals(savedUser.getPassword(), foundUser.getPassword()),
                 () -> Assertions.assertFalse(foundUser.getRoles().isEmpty()),
-                () -> Assertions.assertEquals(UserRole.ROLE_USER, foundUser.getRoles().getFirst().getName())
+                () -> Assertions.assertEquals(UserRole.ROLE_USER, role)
         );
     }
 
@@ -73,20 +91,27 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     @Order(3)
     @DisplayName("유저 이메일로 조회 테스트")
     public void findByEmail_test() {
-        User user = new User();
-        user.setEmail("test1234@test.com");
-        user.setPassword("test1234!");
-        user.setRoles(List.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow()));
+        User user = new User(
+                "test1234@test.com",
+                "test1234!",
+                Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+        );
         User savedUser = userRepository.save(user);
-
         User foundUser = userRepository.findByEmail(savedUser.getEmail()).orElse(null);
         Assertions.assertNotNull(foundUser);
+
+        UserRole role = foundUser.getRoles()
+                .stream()
+                .findFirst()
+                .orElseThrow()
+                .getName();
+
         Assertions.assertAll(
                 () -> Assertions.assertEquals(savedUser.getId(), foundUser.getId()),
                 () -> Assertions.assertEquals(savedUser.getEmail(), foundUser.getEmail()),
                 () -> Assertions.assertEquals(savedUser.getPassword(), foundUser.getPassword()),
                 () -> Assertions.assertFalse(foundUser.getRoles().isEmpty()),
-                () -> Assertions.assertEquals(UserRole.ROLE_USER, foundUser.getRoles().getFirst().getName())
+                () -> Assertions.assertEquals(UserRole.ROLE_USER, role)
         );
     }
 
@@ -94,22 +119,30 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     @Order(4)
     @DisplayName("유저 정보 수정 테스트")
     public void update_user_test() {
-        User user = new User();
-        user.setEmail("test1234@test.com");
-        user.setPassword("test1234!");
-        user.setRoles(List.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow()));
+        User user = new User(
+                "test1234@test.com",
+                "test1234!",
+                Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+        );
         User savedUser = userRepository.save(user);
         // 유저 정보 수정
         savedUser.setEmail("modified1234@test.com");
         savedUser.setPassword("modified1234!");
-        var roles = new ArrayList<Role>(List.of(roleRepository.findByName(UserRole.ROLE_MD).orElseThrow()));
-        savedUser.setRoles(roles);
+        var roles = Set.of(roleRepository.findByName(UserRole.ROLE_MD).orElseThrow().getName());
+        savedUser.setRoles(new HashSet<>(roles));
         User updatedUser = userRepository.save(savedUser);
+
+        UserRole updatedRole = updatedUser.getRoles()
+                .stream()
+                .findFirst()
+                .orElseThrow()
+                .getName();
+
         Assertions.assertAll(
                 () -> Assertions.assertEquals(updatedUser.getEmail(), savedUser.getEmail()),
                 () -> Assertions.assertEquals(updatedUser.getPassword(), savedUser.getPassword()),
                 () -> Assertions.assertFalse(updatedUser.getRoles().isEmpty()),
-                () -> Assertions.assertEquals(UserRole.ROLE_MD, updatedUser.getRoles().getFirst().getName())
+                () -> Assertions.assertEquals(UserRole.ROLE_MD, updatedRole)
         );
     }
 
@@ -117,10 +150,11 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     @Order(5)
     @DisplayName("유저 삭제 테스트")
     public void delete_user_test() {
-        User user = new User();
-        user.setEmail("test1234@test.com");
-        user.setPassword("test1234!");
-        user.setRoles(List.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow()));
+        User user = new User(
+                "test1234@test.com",
+                "test1234!",
+                Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+        );
         User savedUser = userRepository.save(user);
         // 저장된 유저 삭제
         userRepository.deleteById(savedUser.getId());
@@ -135,10 +169,11 @@ public class UserRepositoryTest extends AbstractRepositoryTest {
     public void findAllByPageable_test() {
         // 여러 유저 저장
         for (int i = 0; i < 10; i++) {
-            User user = new User();
-            user.setEmail("test" + i + "@test.com");
-            user.setPassword("test" + i + "!");
-            user.setRoles(List.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow()));
+            User user = new User(
+                    "test" + i + "@test.com",
+                    "test" + i + "!",
+                    Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+            );
             userRepository.save(user);
         }
 

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class WishedProductRepositoryTest extends AbstractRepositoryTest {
 
@@ -38,17 +39,17 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
         ));
 
         if (this.testUser == null) {
-            User user = new User();
-            user.setEmail("testuser@test.com");
-            user.setPassword("testuser123!");
-            var roles = new ArrayList<>(List.of((roleRepository.findByName(UserRole.ROLE_USER).orElseThrow())));
-            user.setRoles(roles);
+            User user = new User(
+                    "testuser@test.com",
+                    "testuser123!",
+                    Set.of(roleRepository.findByName(UserRole.ROLE_USER).orElseThrow().getName())
+            );
             this.testUser = userRepository.save(user);
         }
         if (this.testProducts == null) {
             this.testProducts = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
-                Product product = new Product(null, "Test Product " + i, 1000L + (i * 100), "http://example.com/image" + i + ".jpg", this.testUser.getId());
+                Product product = new Product(null, "Test Product " + i, 1000L + (i * 100), "http://example.com/image" + i + ".jpg", this.testUser);
                 this.testProducts.add(productRepository.save(product));
             }
         }
@@ -58,11 +59,11 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
     @Order(1)
     @DisplayName("위시리스트에 상품 추가 테스트")
     public void save_test() {
-        WishedProduct wishedProduct = new WishedProduct();
-        wishedProduct.setUser(this.testUser);
-        wishedProduct.setProduct(this.testProducts.getFirst());
-        wishedProduct.setQuantity(2);
-
+        WishedProduct wishedProduct = new WishedProduct(
+                this.testUser,
+                this.testProducts.getFirst(),
+                2
+        );
         WishedProduct saved = wishedProductRepository.save(wishedProduct);
 
         Assertions.assertAll(
@@ -77,10 +78,11 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
     @Order(2)
     @DisplayName("위시리스트 상품 조회 테스트")
     public void findById_test() {
-        WishedProduct wishedProduct = new WishedProduct();
-        wishedProduct.setUser(this.testUser);
-        wishedProduct.setProduct(this.testProducts.getFirst());
-        wishedProduct.setQuantity(2);
+        WishedProduct wishedProduct = new WishedProduct(
+                this.testUser,
+                this.testProducts.getFirst(),
+                2
+        );
         WishedProduct saved = wishedProductRepository.save(wishedProduct);
 
         WishedProduct found = wishedProductRepository.findById(saved.getId()).orElse(null);
@@ -97,10 +99,11 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
     @Order(3)
     @DisplayName("위시리스트 상품 수정 테스트")
     public void update_test() {
-        WishedProduct wishedProduct = new WishedProduct();
-        wishedProduct.setUser(this.testUser);
-        wishedProduct.setProduct(this.testProducts.getFirst());
-        wishedProduct.setQuantity(2);
+        WishedProduct wishedProduct = new WishedProduct(
+                this.testUser,
+                this.testProducts.getFirst(),
+                2
+        );
         WishedProduct saved = wishedProductRepository.save(wishedProduct);
 
         saved.setQuantity(3);
@@ -118,10 +121,11 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
     @Order(4)
     @DisplayName("위시리스트 단건 삭제 테스트")
     public void delete_test() {
-        WishedProduct wishedProduct = new WishedProduct();
-        wishedProduct.setUser(this.testUser);
-        wishedProduct.setProduct(this.testProducts.getFirst());
-        wishedProduct.setQuantity(2);
+        WishedProduct wishedProduct = new WishedProduct(
+                this.testUser,
+                this.testProducts.getFirst(),
+                2
+        );
         WishedProduct saved = wishedProductRepository.save(wishedProduct);
 
         wishedProductRepository.delete(saved);
@@ -133,10 +137,11 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
     @DisplayName("위시리스트 전체 삭제 테스트")
     public void deleteAll_test() {
         testProducts.forEach(product -> {
-            WishedProduct wishedProduct = new WishedProduct();
-            wishedProduct.setUser(this.testUser);
-            wishedProduct.setProduct(product);
-            wishedProduct.setQuantity(1);
+            WishedProduct wishedProduct = new WishedProduct(
+                    this.testUser,
+                    product,
+                    1
+            );
             wishedProductRepository.save(wishedProduct);
         });
         wishedProductRepository.deleteAll();
@@ -151,15 +156,19 @@ public class WishedProductRepositoryTest extends AbstractRepositoryTest {
         long totalPrice = 0;
         long totalQuantity = 0;
         for (Product product : testProducts) {
-            WishedProduct wishedProduct = new WishedProduct();
-            wishedProduct.setUser(this.testUser);
-            wishedProduct.setProduct(product);
-            wishedProduct.setQuantity(quantity++);
+            WishedProduct wishedProduct = new WishedProduct(
+                    this.testUser,
+                    product,
+                    quantity++
+            );
             wishedProductRepository.save(wishedProduct);
             totalPrice += product.getPrice() * wishedProduct.getQuantity();
             totalQuantity += wishedProduct.getQuantity();
         }
-        var pagedProducts = wishedProductRepository.findAllByUserId(this.testUser.getId(), PageRequest.of(0, 5)).getContent();
+        var pagedProducts = wishedProductRepository.findAllByUserId(
+                this.testUser.getId(),
+                PageRequest.of(0, 5)
+            ).getContent();
 
         Assertions.assertFalse(pagedProducts.isEmpty());
         Assertions.assertAll(

@@ -91,7 +91,7 @@ public class WishListReadTest extends AbstractWishlistTest {
 
 
     @Test
-    @DisplayName("위시리스트 전체 조회 성공 테스트 : 음수 페이지와 크기 요청 시 기본값 적용")
+    @DisplayName("위시리스트 전체 조회 실패 테스트 : 음수 페이지와 크기 요청 시 (400 Bad Request)")
     public void find_All_Wishlist_Success_Negative_Page_And_Size_Request_Default_Returned() {
         // 위시리스트 전체 조회 실패 테스트 : 잘못된 페이지 요청 시 400 반환
         RestAssured.given()
@@ -101,9 +101,8 @@ public class WishListReadTest extends AbstractWishlistTest {
                 .when()
                 .get(getRequestUrl())
                 .then()
-                .statusCode(200)
-                .body("page", equalTo(0)) // 기본 페이지 0
-                .body("size", equalTo(5)); // 기본 크기 5
+                .statusCode(400)
+                .body("validationErrors", notNullValue());
     }
 
     @Test

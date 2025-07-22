@@ -2,9 +2,12 @@ package gift.controller.api;
 
 
 import gift.common.aop.annotation.PreAuthorize;
-import gift.common.mapper.EntityDtoMapper;
+import gift.common.mapper.DtoToEntityMapper;
+import gift.common.mapper.EntityToDtoMapper;
+import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomAuth;
 import gift.common.validation.annotation.AllowedSortFields;
+import gift.dto.CustomPageRequest;
 import gift.dto.user.UserCreateRequest;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserDefaultResponse;
@@ -17,8 +20,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,11 +38,11 @@ public class UserController {
     @PreAuthorize(UserRole.ROLE_ADMIN)
     public ResponseEntity<CustomPage<UserAdminResponse>> getAllUsers(
             @AllowedSortFields(value = { "id", "email", "createdAt", "updatedAt" }, showAllowedFields = true)
-            @PageableDefault(size = 5) Pageable pageable
+            @Valid @ModelAttribute CustomPageRequest request
     ) {
-        CustomPage<User> userPage = userService.findAllBy(pageable);
+        CustomPage<User> userPage = userService.findAllBy(ModelMapper.toPageRequest(request));
         return new ResponseEntity<>(
-                CustomPage.convert(userPage, EntityDtoMapper::toAdminDto), HttpStatus.OK
+                CustomPage.convert(userPage, EntityToDtoMapper::toAdminDto), HttpStatus.OK
         );
     }
 
@@ -52,7 +53,7 @@ public class UserController {
             @PathVariable Long id
     ) {
         var user = userService.findById(id);
-        return new ResponseEntity<>(EntityDtoMapper.toAdminDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toAdminDto(user), HttpStatus.OK);
     }
 
     @GetMapping("/me")
@@ -61,7 +62,7 @@ public class UserController {
             @RequestAttribute("auth")CustomAuth auth
         ) {
         var user = userService.findById(auth.userId());
-        return new ResponseEntity<>(EntityDtoMapper.toDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(user), HttpStatus.OK);
     }
 
     @PostMapping
@@ -72,9 +73,9 @@ public class UserController {
         log.info("사용자 생성 요청: {}", request);
 
 
-        var user = userService.create(EntityDtoMapper.toEntity(request));
+        var user = userService.create(DtoToEntityMapper.toEntity(request));
         log.info("사용자 생성 완료: {}", user);
-        return new ResponseEntity<>(EntityDtoMapper.toAdminDto(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(EntityToDtoMapper.toAdminDto(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -84,11 +85,11 @@ public class UserController {
             @Valid @RequestBody UserUpdateRequest request
     ) {
         log.info("사용자 업데이트 요청: {}", request);
-        User updateRequest = EntityDtoMapper.toEntity(request);
+        User updateRequest = DtoToEntityMapper.toEntity(request);
         updateRequest.setId(id);
         var user = userService.update(updateRequest);
         log.info("사용자 업데이트 완료: {}", user);
-        return new ResponseEntity<>(EntityDtoMapper.toAdminDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toAdminDto(user), HttpStatus.OK);
     }
 
     @PutMapping("/me")
@@ -98,11 +99,11 @@ public class UserController {
             @Valid @RequestBody UserUpdateRequest request
     ) {
         log.info("현재 사용자 업데이트 요청: {}", request);
-        User updateRequest = EntityDtoMapper.toEntity(request);
+        User updateRequest = DtoToEntityMapper.toEntity(request);
         updateRequest.setId(auth.userId());
         var user = userService.update(updateRequest);
         log.info("현재 사용자 업데이트 완료: {}", user);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

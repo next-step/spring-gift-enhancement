@@ -44,19 +44,17 @@ CREATE TABLE IF NOT EXISTS  wished_products (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
-
-
-INSERT INTO roles (name) VALUES
-      ('ROLE_USER'),
-      ('ROLE_MD'),
-      ('ROLE_ADMIN');
-
--- test 어드민 사용자 test@test.com qwerty1234@
-INSERT INTO users (email, password) VALUES
-      ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785');
--- 관리자 계정 부여
-INSERT INTO user_roles(user_id, role_name) VALUES
-      (1, 'ROLE_ADMIN');
+CREATE TABLE IF NOT EXISTS options (
+    id BIGINT AUTO_INCREMENT,
+    product_id BIGINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    quantity BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    UNIQUE (product_id, name)
+);
 
 INSERT INTO products (name, price, image_url, owner_id) VALUES
       ('Product 01', 1000, 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"', 1),
@@ -75,4 +73,41 @@ INSERT INTO wished_products (user_id, product_id, quantity) VALUES
       (1, 2, 2),
       (1, 3, 3),
       (1, 4, 4),
-      (1, 5, 5);
+      (1, 5, 5),
+      (1, 6, 6),
+      (1, 7, 7),
+      (1, 8, 8),
+      (1, 9, 9),
+      (1, 10, 10);
+
+INSERT INTO options (product_id, name, quantity) VALUES
+      (1, 'Option 1-1', 10),
+      (1, 'Option 1-2', 20),
+      (1, 'Option 1-3', 30),
+      (2, 'Option 2-1', 10),
+      (2, 'Option 2-2', 20),
+      (2, 'Option 2-3', 30),
+      (3, 'Option 3-1', 10),
+      (3, 'Option 3-2', 20),
+      (3, 'Option 3-3', 30),
+      (4, 'Option 4-1', 10),
+      (4, 'Option 4-2', 20),
+      (4, 'Option 4-3', 30),
+      (5, 'Option 5-1', 10),
+      (5, 'Option 5-2', 20),
+      (5, 'Option 5-3', 30),
+        (6, 'Option 6-1', 10),
+        (6, 'Option 6-2', 20),
+        (6, 'Option 6-3', 30),
+        (7, 'Option 7-1', 10),
+        (7, 'Option 7-2', 20),
+        (7, 'Option 7-3', 30),
+        (8, 'Option 8-1', 10),
+        (8, 'Option 8-2', 20),
+        (8, 'Option 8-3', 30),
+        (9, 'Option 9-1', 10),
+        (9, 'Option 9-2', 20),
+        (9, 'Option 9-3', 30),
+        (10, 'Option 10-1', 10),
+        (10, 'Option 10-2', 20),
+        (10, 'Option 10-3', 30);

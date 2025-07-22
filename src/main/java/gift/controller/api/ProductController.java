@@ -1,10 +1,13 @@
 package gift.controller.api;
 
 import gift.common.aop.annotation.PreAuthorize;
-import gift.common.mapper.EntityDtoMapper;
+import gift.common.mapper.DtoToEntityMapper;
+import gift.common.mapper.EntityToDtoMapper;
+import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomAuth;
 import gift.common.validation.annotation.AllowedSortFields;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.CustomPageRequest;
+import gift.dto.product.ProductResponse;
 import gift.common.model.CustomPage;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
@@ -15,8 +18,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,47 +34,47 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<CustomPage<ProductDefaultResponse>> getAllProducts(
+    public ResponseEntity<CustomPage<ProductResponse>> getAllProducts(
             @AllowedSortFields(value = { "id", "name", "price", "createdAt", "updatedAt" }, showAllowedFields = true)
-            @PageableDefault(size = 5) Pageable  pageable
+            @Valid @ModelAttribute CustomPageRequest request
     ) {
-        CustomPage<Product> productPage = productService.findAllBy(pageable);
+        CustomPage<Product> productPage = productService.findAllBy(ModelMapper.toPageRequest(request));
         return new ResponseEntity<>(CustomPage.convert(
-                productPage, EntityDtoMapper::toDto), HttpStatus.OK
+                productPage, EntityToDtoMapper::toDto), HttpStatus.OK
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDefaultResponse> getProductById(
+    public ResponseEntity<ProductResponse> getProductById(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
     ) {
         Product product = productService.findById(id);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(product), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(product), HttpStatus.OK);
     }
 
     @PostMapping
     @PreAuthorize(UserRole.ROLE_USER)
-    public ResponseEntity<ProductDefaultResponse> createProduct(
+    public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductCreateRequest dto,
             @RequestAttribute("auth") CustomAuth auth
     ) {
-        Product product = productService.create(EntityDtoMapper.toEntity(dto), auth.role(), auth.userId());
+        Product product = productService.create(DtoToEntityMapper.toEntity(dto), auth.role(), auth.userId());
         log.info("상품 생성 성공: {}", product);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(product), HttpStatus.CREATED);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(product), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(UserRole.ROLE_USER)
-    public ResponseEntity<ProductDefaultResponse> updateProduct(
+    public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestAttribute("auth") CustomAuth auth
     ) {
-        var product = EntityDtoMapper.toEntity(dto);
+        var product = DtoToEntityMapper.toEntity(dto);
         product.setId(id);
         Product updatedProduct = productService.update(product, auth.role(), auth.userId());
         log.info("상품 업데이트 성공: {}", updatedProduct);
-        return new ResponseEntity<>(EntityDtoMapper.toDto(updatedProduct), HttpStatus.OK);
+        return new ResponseEntity<>(EntityToDtoMapper.toDto(updatedProduct), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

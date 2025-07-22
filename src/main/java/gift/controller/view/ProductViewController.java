@@ -1,16 +1,18 @@
 package gift.controller.view;
 
 import gift.common.aop.annotation.PreAuthorize;
-import gift.common.mapper.EntityDtoMapper;
+import gift.common.mapper.DtoToEntityMapper;
+import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
+import gift.dto.CustomPageRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.entity.Product;
 import gift.entity.UserRole;
 import gift.service.product.ProductService;
+import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +44,9 @@ public class ProductViewController {
     @GetMapping
     public String showProductList(
         Model model,
-        @RequestParam(value = "page", defaultValue = "0")
-        @Min(value = 0, message = "페이지 번호는 0 이상이여야 합니다.") Integer page,
-        @RequestParam(value = "size", defaultValue = "5")
-        @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
+        @Valid @ModelAttribute CustomPageRequest request
     ) {
-        CustomPage<Product> currentPage = productService.findAllBy(PageRequest.of(page, size));
+        CustomPage<Product> currentPage = productService.findAllBy(ModelMapper.toPageRequest(request));
         int start = Math.max(0, currentPage.getPage() - 2);
         int end = Math.min(currentPage.getTotalPages() - 1, currentPage.getPage() + 2);
 
@@ -88,7 +87,7 @@ public class ProductViewController {
     ) {
         try {
             validateRequest(request);
-            Product product = EntityDtoMapper.toEntity(request);
+            Product product = DtoToEntityMapper.toEntity(request);
             Product createdProduct = productService.create(product, auth.role(), auth.userId());
             return "redirect:/admin/products/" + createdProduct.getId();
         } catch (Exception e) {

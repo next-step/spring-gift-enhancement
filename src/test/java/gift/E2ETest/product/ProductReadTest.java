@@ -1,7 +1,7 @@
 package gift.E2ETest.product;
 
 import gift.common.model.CustomPage;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
@@ -69,7 +69,7 @@ public class ProductReadTest extends AbstractProductTest {
     public void find_All_Products_Success_With_Page_And_Sort_Parameters() {
         // 페이지와 정렬 파라미터를 포함한 URL
         String url = getBaseUrl() + "/api/products";
-        CustomPage<ProductDefaultResponse> res = RestAssured.given()
+        CustomPage<ProductResponse> res = RestAssured.given()
                 .queryParam("page", 0)
                 .queryParam("size", 5)
                 .queryParam("sort", "price,desc")
@@ -81,7 +81,7 @@ public class ProductReadTest extends AbstractProductTest {
                 .as(new TypeRef<>() {});
 
         Long prevPrice = Long.MAX_VALUE;
-        for (ProductDefaultResponse product : res.getContents()) {
+        for (ProductResponse product : res.getContents()) {
             Long currentPrice = product.price();
             // 가격이 내림차순으로 정렬되어 있는지 확인
             if (currentPrice != null) {
@@ -92,27 +92,25 @@ public class ProductReadTest extends AbstractProductTest {
     }
 
     @Test
-    @DisplayName("전체 제품 조회 성공 테스트 : 음수 페이지 요청 시 400 반환")
+    @DisplayName("전체 제품 조회 실패 테스트 : 음수 페이지 요청 시  오류 발생(400 Bad Request)")
     public void find_All_Products_Success_Negative_Page_Request_default_page_Returned() {
         RestAssured.given()
                 .when()
                 .queryParam("page", -1)
                 .get(getBaseUrl() + "/api/products")
                 .then()
-                .statusCode(200)
-                .body("page", equalTo(0)); // 페이지 번호가 0으로 처리되어야 함
+                .statusCode(400);
     }
 
     @Test
-    @DisplayName("전체 제품 조회 성공 테스트 : 음수 크기 요청 default 5으로 처리")
+    @DisplayName("전체 제품 조회 성공 테스트 : 음수 크기 요청 시 오류 발생(400 Bad Request)")
     public void find_All_Products_Success_Negative_Size_Request_default_size_Returned() {
         RestAssured.given()
                 .queryParam("size", -1)
                 .when()
                 .get(getBaseUrl() + "/api/products")
                 .then()
-                .statusCode(200)
-                .body("size", equalTo(5)); // 기본 크기 5로 처리되어야 함
+                .statusCode(400);
     }
 
     @Test
@@ -141,7 +139,7 @@ public class ProductReadTest extends AbstractProductTest {
     @DisplayName("특정 제품 조회 성공 테스트")
     public void find_Specific_Product_Success() {
         String url = getBaseUrl() + "/api/products/{id}"; // 존재하는 제품 ID
-        Long testProductId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+        Long testProductId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
         RestAssured
                 .given(this.spec)
                 .filter(document("상품 특정 조회 성공",

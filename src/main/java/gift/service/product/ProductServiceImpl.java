@@ -6,6 +6,7 @@ import gift.common.model.CustomPage;
 import gift.entity.Product;
 import gift.entity.UserRole;
 import gift.repository.product.ProductRepository;
+import gift.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +20,11 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
     private final ProductRepository productRepository;
+    private final UserService userService;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, UserService userService) {
         this.productRepository = productRepository;
+        this.userService = userService;
     }
 
     private void validateProduct(Product product, UserRole role, Long userId) {
@@ -29,9 +32,9 @@ public class ProductServiceImpl implements ProductService {
             log.info("관리자 권한으로 상품 검증을 건너뜁니다.");
             return;
         }
-        if (!product.getOwnerId().equals(userId)){
+        if (!product.getOwner().getId().equals(userId)) {
             log.error("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다. 소유자 ID: {}, 인증된 사용자 ID: {}",
-                      product.getOwnerId(), userId);
+                      product.getOwner(), userId);
             throw new AccessDeniedException("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다.");
         }
     }
@@ -60,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product product, UserRole role, Long userId) {
-        product.setOwnerId(userId);
+        product.setOwner(userService.getReference(userId));
         return productRepository.save(product);
     }
 
