@@ -12,9 +12,6 @@ import gift.model.Member;
 import gift.repository.MemberRepository;
 import java.util.List;
 import java.util.Optional;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service

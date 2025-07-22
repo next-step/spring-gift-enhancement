@@ -25,7 +25,7 @@ public class ProductRepositoryTest {
     @Test
     void save() {
         // given
-        Product expected = new Product("coffee", 2500, "https://coffee.jpg");
+        Product expected = new Product("coffee", 2500, "https://coffee.jpg", false);
 
         // when
         Product actual = productRepository.save(expected);
@@ -42,7 +42,7 @@ public class ProductRepositoryTest {
     @Test
     void findById() {
         // given
-        Product expected = new Product("coffee", 2500, "https://coffee.jpg");
+        Product expected = new Product("coffee", 2500, "https://coffee.jpg", false);
         Product saved = productRepository.save(expected);
 
         // when
@@ -60,8 +60,8 @@ public class ProductRepositoryTest {
     @Test
     void findAll() {
         // given
-        Product product1 = new Product("test_coffee", 2500, "https://test_coffee.jpg");
-        Product product2 = new Product("test_tea", 2000, "https://test_tea.jpg");
+        Product product1 = new Product("test_coffee", 2500, "https://test_coffee.jpg", false);
+        Product product2 = new Product("test_tea", 2000, "https://test_tea.jpg", false);
         productRepository.save(product1);
         productRepository.save(product2);
 
@@ -80,7 +80,7 @@ public class ProductRepositoryTest {
     @Test
     void update() {
         // given
-        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg");
+        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg", false);
         Product savedProduct = productRepository.save(product);
 
         // when
@@ -101,7 +101,7 @@ public class ProductRepositoryTest {
     @Test
     void deleteById() {
         // given
-        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg");
+        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg", false);
         Product savedProduct = productRepository.save(product);
 
         // when

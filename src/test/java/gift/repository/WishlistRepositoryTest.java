@@ -41,7 +41,7 @@ class WishlistRepositoryTest {
     }
 
     private Product saveProduct() {
-        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg");
+        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg", false);
         return productRepository.save(product);
     }
 

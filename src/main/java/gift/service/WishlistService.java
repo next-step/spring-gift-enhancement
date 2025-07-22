@@ -34,7 +34,7 @@ public class WishlistService {
 
     public WishResponse create(WishRequest request, LoginMemberDto memberDto) {
         Member member = memberService.findByEmail(memberDto.getEmail());
-        Product product = productService.getProduct(request.getProductId());
+        Product product = productService.findById(request.getProductId());
 
         if (wishlistRepository.existsByMemberAndProduct(member, product)) {
             throw new IllegalStateException("해당 상품은 이미 위시리스트에 존재합니다.");
@@ -47,12 +47,8 @@ public class WishlistService {
             saved.getQuantity());
     }
 
-    public Page<WishResponse> findAllByMemberId(int page, LoginMemberDto memberDto) {
+    public Page<WishResponse> findAllByMemberId(Pageable pageable, LoginMemberDto memberDto) {
         Member member = memberService.findByEmail(memberDto.getEmail());
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.asc("id"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-
         Page<Wishlist> wishlists = wishlistRepository.findAllByMember(pageable, member);
 
         return wishlists.map(w -> new WishResponse(
@@ -63,7 +59,7 @@ public class WishlistService {
     @Transactional
     public void deleteWishlist(LoginMemberDto memberDto, Long productId) {
         Member member = memberService.findByEmail(memberDto.getEmail());
-        Product product = productService.getProduct(productId);
+        Product product = productService.findById(productId);
 
         wishlistRepository.deleteByMemberAndProduct(member, product);
     }

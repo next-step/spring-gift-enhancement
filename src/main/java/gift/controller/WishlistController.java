@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,9 +41,9 @@ public class WishlistController {
 
     @GetMapping()
     public ResponseEntity<Page<WishResponse>> findAll(
-        @RequestParam(value = "page", defaultValue = "0") int page,
+        Pageable pageable,
         @LoginMember LoginMemberDto memberDto) {
-        Page<WishResponse> wishResponses = wishlistService.findAllByMemberId(page, memberDto);
+        Page<WishResponse> wishResponses = wishlistService.findAllByMemberId(pageable, memberDto);
         return ResponseEntity.status(HttpStatus.OK).body(wishResponses);
     }
 

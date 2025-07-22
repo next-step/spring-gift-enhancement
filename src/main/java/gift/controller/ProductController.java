@@ -1,10 +1,11 @@
 package gift.controller;
 
-import gift.model.Product;
+import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,25 +30,24 @@ public class ProductController {
 
     // 상품 저장
     @PostMapping
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody Product product) {
-        Product savedProduct = productService.addProduct(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+    public ResponseEntity<ProductResponse> addProduct(@Valid @RequestBody ProductRequest request) {
+        ProductResponse response = productService.addProduct(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 상품 목록 조회
     @GetMapping
-    public ResponseEntity<Page<Product>> getAllProducts(
-        @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Product> products = productService.getAllProducts(page);
-        return ResponseEntity.ok(products); // 200 OK
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(Pageable pageable) {
+        Page<ProductResponse> responsePage = productService.getAllProducts(pageable);
+        return ResponseEntity.ok(responsePage); // 200 OK
     }
 
     // 상품 단건 조회
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
         try {
-            Product product = productService.getProduct(id);
-            return ResponseEntity.ok(product); // 200 OK
+            ProductResponse response = productService.getProductResponse(id);
+            return ResponseEntity.ok(response); // 200 OK
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
         }
@@ -57,10 +56,9 @@ public class ProductController {
     // 상품 수정
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateProduct(@PathVariable Long id,
-        @Valid @RequestBody Product product) {
+        @Valid @RequestBody ProductRequest request) {
         try {
-            product.setId(id);
-            productService.updateProduct(id, product);
+            productService.updateProduct(id, request);
             return ResponseEntity.noContent().build(); // 204 No Content
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found

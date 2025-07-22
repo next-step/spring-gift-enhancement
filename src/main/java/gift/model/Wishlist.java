@@ -20,18 +20,14 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "멤버 ID는 필수 입력 값입니다.")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @NotNull(message = "상품 ID는 필수 입력 값입니다.")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @NotNull(message = "수량은 필수 입력 값입니다.")
-    @PositiveOrZero(message = "수량은 음수가 될 수 없습니다.")
     @Column(name = "quantity")
     private Integer quantity;
 

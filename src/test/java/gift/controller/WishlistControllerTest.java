@@ -65,7 +65,7 @@ public class WishlistControllerTest {
     }
 
     private Product saveProduct() {
-        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg");
+        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg", false);
         return productRepository.save(product);
     }
 
@@ -195,14 +195,18 @@ public class WishlistControllerTest {
         }
 
         // then
-        //전체 조회시, 10개만 나옴
-        mockMvc.perform(get("/api/wishes").contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", tokenResponse.getToken())).andExpect(status().isOk())
+        // 0번 페이지 (최대 10개)
+        mockMvc.perform(get("/api/wishes?page=0&size=10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", tokenResponse.getToken()))
+            .andExpect(status().isOk())
             .andExpect(jsonPath("$.content.length()").value(10));
 
-        //페이지 1은 나머지 5개
-        mockMvc.perform(get("/api/wishes?page=1").contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", tokenResponse.getToken())).andExpect(status().isOk())
+        // 1번 페이지 (나머지 5개)
+        mockMvc.perform(get("/api/wishes?page=1&size=10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", tokenResponse.getToken()))
+            .andExpect(status().isOk())
             .andExpect(jsonPath("$.content.length()").value(5));
     }
 }

@@ -43,7 +43,7 @@ public class ProductControllerTest {
 
 
     private Product saveProduct() {
-        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg");
+        Product product = new Product("test_coffee", 2500, "https://test_coffee.jpg", false);
         return productRepository.save(product);
     }
 
@@ -157,8 +157,8 @@ public class ProductControllerTest {
     @Test
     void 전체_상품_조회() throws Exception {
         // given
-        productRepository.save(new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg"));
-        productRepository.save(new Product(null, "아이스티", 3000, "http://iceTea.jpg"));
+        productRepository.save(new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg", false));
+        productRepository.save(new Product(null, "아이스티", 3000, "http://iceTea.jpg", false));
 
         // when & then
         mockMvc.perform(get("/api/products")).andExpect(status().isOk())
@@ -168,7 +168,7 @@ public class ProductControllerTest {
     @Test
     void 특정_상품_조회() throws Exception {
         Product saved = productRepository.save(
-            new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg"));
+            new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg", false));
 
         mockMvc.perform(get("/api/products/" + saved.getId())).andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("아이스 아메리카노"));
@@ -184,23 +184,31 @@ public class ProductControllerTest {
     @Test
     void 상품_수정() throws Exception {
         Product saved = productRepository.save(
-            new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg"));
+            new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg", false));
 
         Product updated = new Product();
         updated.setName("핫 아메리카노");
         updated.setPrice(2000);
-        updated.setImageUrl("http://americano.jpg");
+        updated.setImageUrl("http://hot_americano.jpg");
 
+        //수정요청
         mockMvc.perform(
                 put("/api/products/" + saved.getId()).contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(updated)))
             .andExpect(status().isNoContent());
+
+        //조회
+        mockMvc.perform(get("/api/products/" + saved.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is("핫 아메리카노")))
+            .andExpect(jsonPath("$.price", is(2000)))
+            .andExpect(jsonPath("$.imageUrl", is("http://hot_americano.jpg")));
     }
 
     @Test
     void 상품_삭제() throws Exception {
         Product saved = productRepository.save(
-            new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg"));
+            new Product(null, "아이스 아메리카노", 2500, "http://americano.jpg", false));
 
         mockMvc.perform(delete("/api/products/" + saved.getId())).andExpect(status().isNoContent());
     }
@@ -213,12 +221,12 @@ public class ProductControllerTest {
         }
 
         // when & then
-        //전체 조회시, 10개만 나옴
-        mockMvc.perform(get("/api/products")).andExpect(status().isOk())
+        // 0번 페이지 (최대 10개)
+        mockMvc.perform(get("/api/products?page=0&size=10")).andExpect(status().isOk())
             .andExpect(jsonPath("$.content.length()", is(10)));
 
-        //페이지 1은 나머지 5개
-        mockMvc.perform(get("/api/products?page=1")).andExpect(status().isOk())
+        // 1번 페이지 (나머지 5개)
+        mockMvc.perform(get("/api/products?page=1&size=10")).andExpect(status().isOk())
             .andExpect(jsonPath("$.content.length()", is(5)));
     }
 
