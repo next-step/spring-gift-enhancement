@@ -6,6 +6,7 @@ import gift.product.status.OptionStatus;
 import gift.shared.exception.option.SameNameException;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +39,7 @@ public class Product {
     // 다른 상품에서 이에 대해 정보를 가지고 있을 수 없으니까, REMOVE 로 설정하게 되었다.
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private List<Option> options;
+    private final List<Option> options = new ArrayList<>();
 
     public Product(Long giftId, String giftName, Integer giftPrice, String giftPhotoUrl) {
         this.giftId = giftId;
