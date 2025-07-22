@@ -1,5 +1,7 @@
 package gift.exception;
 
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -37,11 +39,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(DuplicateKeyException e) { return e.getMessage(); }
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(ConstraintViolationException e) { return e.getMessage(); }
 
     // CONFLICT 응답하는 예외처리 핸들러
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public String handleConflict(DuplicateKeyException e) { return e.getMessage(); }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleConflict(DataIntegrityViolationException e) { return e.getMessage(); }
 
     // UNPROCESSABLE_ENTITY 응답하는 예외처리 핸들러
     @ExceptionHandler(EncryptFailedException.class)

@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "options")
+@Table(name = "option")
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     @NotNull(message = "이름은 필수입니다.")
     @Size(max=50, message = "옵션명은 최대 50자까지 입력 가능합니다.")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$", message = "상품 이름의 특수문자는 ( ), [ ], +, -, &, /, _ 이외에는 허용되지 않습니다.")

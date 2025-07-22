@@ -58,10 +58,10 @@ public class ProductOptionRepositoryTest {
     public void duplicateProductOption() {
         Product expactProduct = productRepository.save(new Product("과자", 1000L, "http://snack"));
         Option expactOption = optionRepository.save(new Option("할인율"));
-        ProductOption po1 = productOptionRepository.saveAndFlush(new ProductOption(expactProduct, expactOption, 30L));
+        ProductOption po1 = productOptionRepository.save(new ProductOption(expactProduct, expactOption, 30L));
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            productOptionRepository.saveAndFlush(new ProductOption(expactProduct, expactOption, 30L));
+            productOptionRepository.save(new ProductOption(expactProduct, expactOption, 30L));
         });
 
     }
