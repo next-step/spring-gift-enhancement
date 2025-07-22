@@ -26,7 +26,6 @@ public class Wish {
     private Product product;
 
     protected Wish() {
-        // JPA 기본 생성자
     }
 
     public Wish(Member member, Product product) {

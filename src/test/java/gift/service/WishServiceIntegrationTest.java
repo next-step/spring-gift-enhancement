@@ -12,20 +12,17 @@ import gift.dto.WishResponse;
 import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
 import gift.repository.MemberJpaRepository;
-import gift.repository.MemberRepositoryImpl;
 import gift.repository.ProductJpaRepository;
-import gift.repository.ProductRepositoryImpl;
 import gift.repository.WishJpaRepository;
-import gift.repository.WishRepositoryImpl;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-@DataJpaTest
-@Import({WishService.class, MemberRepositoryImpl.class, ProductRepositoryImpl.class, WishRepositoryImpl.class})
+@SpringBootTest
 @DisplayName("위시 서비스 통합 테스트")
 class WishServiceIntegrationTest {
 

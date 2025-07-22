@@ -7,18 +7,19 @@ import gift.dto.MemberRegisterResponse;
 import gift.dto.MemberResponse;
 import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
-import gift.repository.MemberRepository;
+import gift.repository.MemberJpaRepository;
 import gift.util.PasswordEncoder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
     private final JwtProvider jwtProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
-        this.memberRepository = memberRepository;
+    public MemberService(MemberJpaRepository memberJpaRepository, JwtProvider jwtProvider) {
+        this.memberJpaRepository = memberJpaRepository;
         this.jwtProvider = jwtProvider;
     }
 
@@ -28,14 +29,19 @@ public class MemberService {
                 request.email(),
                 hashedPassword
         );
-        Member savedMember = memberRepository.save(member);
-        String token = jwtProvider.generateToken(savedMember.email());
-        return MemberRegisterResponse.of(token, savedMember);
+        
+        try {
+            Member savedMember = memberJpaRepository.save(member);
+            String token = jwtProvider.generateToken(savedMember.email());
+            return MemberRegisterResponse.of(token, savedMember);
+        } catch (DataIntegrityViolationException ex) {
+            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
+        }
     }
 
     public AuthorizationResponse login(AuthorizationRequest request) {
         String email = request.email();
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberJpaRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_EMAIL_NOT_FOUND));
         if (!PasswordEncoder.checkPassword(request.password(), member.password())) {
             throw new BusinessException(ErrorCode.USER_PASSWORD_MISMATCH);
@@ -46,13 +52,13 @@ public class MemberService {
     }
 
     public MemberResponse getByEmail(String email) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberJpaRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_EMAIL_NOT_FOUND));
         return MemberResponse.from(member);
     }
 
     public MemberResponse getById(Long id) {
-        Member member = memberRepository.findById(id)
+        Member member = memberJpaRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return MemberResponse.from(member);
     }

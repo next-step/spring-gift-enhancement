@@ -28,7 +28,6 @@ public class Member {
     private List<Wish> wishes = new ArrayList<>();
 
     protected Member() {
-        // JPA 기본 생성자
     }
 
     private Member(Long id, String email, String password) {
