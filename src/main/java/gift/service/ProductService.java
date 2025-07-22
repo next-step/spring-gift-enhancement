@@ -9,6 +9,7 @@ import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +32,11 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAllProducts(Long cursor, Pageable pageable) {
+    public List<ProductResponse> getAllProducts(Long cursor, int size) {
         if (cursor == null) {
-            return productRepository.findAll(PageRequest.of(0, pageable.getPageSize(), pageable.getSort())).map(ProductResponse::from).stream().toList();
+            return productRepository.findAll(PageRequest.of(0, size, Sort.by("id").descending())).map(ProductResponse::from).stream().toList();
         }
-        return productRepository.findAllWithCursor(cursor, PageRequest.of(0, pageable.getPageSize(), pageable.getSort())).stream().map(ProductResponse::from).toList();
+        return productRepository.findAllWithCursor(cursor, PageRequest.ofSize(size)).stream().map(ProductResponse::from).toList();
     }
 
     @Transactional(readOnly = true)

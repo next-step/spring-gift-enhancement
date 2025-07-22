@@ -38,9 +38,9 @@ public class ProductApiController {
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getProducts(
             @RequestParam(required = false) Long cursor,
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        List<ProductResponse> products = productService.getAllProducts(cursor, pageable);
+        List<ProductResponse> products = productService.getAllProducts(cursor, size);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
