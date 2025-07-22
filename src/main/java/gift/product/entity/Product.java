@@ -87,16 +87,28 @@ public class Product {
         checkDuplicateOptionName(name, optionId);
     }
 
-    public void removeOption(Long optionId) {
+    public void decreaseOptionQuantity(Long optionId, int quantity) {
+        Option option = getOptionByOptionId(optionId);
+
+        option.decreaseQuantity(quantity);
+
+        if(option.getQuantity() <= 0){
+            this.removeOption(option);
+        }
+    }
+
+    public void removeOptionById(Long optionId) {
+        Option option = getOptionByOptionId(optionId);
+
+        removeOption(option);
+    }
+
+    private void removeOption(Option option) {
         if (this.options.size() <= 1) {
             throw new IllegalArgumentException("상품의 옵션이 한 개이기 때문에 삭제가 불가능합니다.");
         }
 
-        boolean isRemoved = this.options.removeIf(option -> !option.getId().equals(optionId));
-
-        if (isRemoved) {
-            throw new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다.");
-        }
+        this.options.remove(option);
     }
 
     public Option getOptionByOptionId(Long optionId) {

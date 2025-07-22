@@ -44,7 +44,6 @@
 
 ## 3단계 - 상품옵션
 - [x] 상품의 옵션(Option) entity 구현
-- [x] Option에 상품 옵션의 수량을 지정된 숫자만큼 빼는 기능을 하는 메서드 추가
 - [x] Product와 Option의 양방향 연관관계 설정
   - [x] Product에 Option 객체들을 저장하는 options 필드 추가
   - [x] Product에 연관관계 편의 메서드 추가
@@ -65,3 +64,4 @@
   - [x] OptionRepository 테스트 코드 작성
   - [x] Option 도메인 테스트 코드 작성
 - [x] 미사용 코드 제거
+- [x] OptionService에 옵션의 수량을 줄이는 기능 구현

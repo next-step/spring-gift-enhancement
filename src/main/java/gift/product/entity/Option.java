@@ -22,6 +22,7 @@ public class Option {
     protected Option() {}
 
     public Option(Long id, String name, int quantity, Product product) {
+        validateQuantity(quantity);
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -50,11 +51,18 @@ public class Option {
     }
 
     public void updateOption(String name, int quantity){
+        validateQuantity(quantity);
         this.name = name;
         this.quantity = quantity;
     }
 
     public boolean isEqualProduct(Product product) {
         return this.product.equals(product);
+    }
+
+    private void validateQuantity(int quantity) {
+        if(quantity < 1) {
+            throw new IllegalArgumentException("옵션의 최소 수량은 1개입니다.");
+        }
     }
 }
