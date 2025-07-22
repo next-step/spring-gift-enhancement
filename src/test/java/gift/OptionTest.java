@@ -1,6 +1,6 @@
 package gift;
 
-import gift.option.entity.Option;
+import gift.product.entity.Option;
 import gift.product.entity.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,6 @@
 package gift.product.entity;
 
 
-import gift.option.entity.Option;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 

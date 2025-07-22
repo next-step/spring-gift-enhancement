@@ -1,6 +1,5 @@
-package gift.option.entity;
+package gift.product.entity;
 
-import gift.product.entity.Product;
 import jakarta.persistence.*;
 
 @Entity

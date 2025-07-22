@@ -1,6 +1,6 @@
 package gift.product.service;
 
-import gift.option.entity.Option;
+import gift.product.entity.Option;
 import gift.product.dto.request.ProductCreateRequestDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;

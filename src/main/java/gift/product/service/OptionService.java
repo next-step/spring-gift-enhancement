@@ -1,10 +1,10 @@
-package gift.option.service;
+package gift.product.service;
 
 import gift.exception.ProductNotFoundException;
-import gift.option.dto.OptionRequestDto;
-import gift.option.dto.OptionResponseDto;
-import gift.option.entity.Option;
-import gift.option.repository.OptionRepository;
+import gift.product.dto.request.OptionRequestDto;
+import gift.product.dto.response.OptionResponseDto;
+import gift.product.entity.Option;
+import gift.product.repository.OptionRepository;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;

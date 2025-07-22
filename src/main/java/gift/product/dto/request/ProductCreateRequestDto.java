@@ -1,7 +1,6 @@
 package gift.product.dto.request;
 
 
-import gift.option.dto.OptionRequestDto;
 import gift.product.validator.KakaoInName;
 import gift.product.validator.KakaoProductInfo;
 import jakarta.validation.constraints.*;

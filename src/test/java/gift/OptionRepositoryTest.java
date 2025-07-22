@@ -1,8 +1,8 @@
 package gift;
 
 
-import gift.option.entity.Option;
-import gift.option.repository.OptionRepository;
+import gift.product.entity.Option;
+import gift.product.repository.OptionRepository;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;

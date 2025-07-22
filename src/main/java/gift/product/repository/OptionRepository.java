@@ -1,6 +1,6 @@
-package gift.option.repository;
+package gift.product.repository;
 
-import gift.option.entity.Option;
+import gift.product.entity.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

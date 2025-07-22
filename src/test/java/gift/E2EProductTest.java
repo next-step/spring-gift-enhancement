@@ -2,7 +2,7 @@ package gift;
 
 
 import gift.dto.PageDto;
-import gift.option.dto.OptionRequestDto;
+import gift.product.dto.request.OptionRequestDto;
 import gift.product.dto.request.ProductCreateRequestDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;

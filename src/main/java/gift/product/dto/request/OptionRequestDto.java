@@ -1,4 +1,4 @@
-package gift.option.dto;
+package gift.product.dto.request;
 
 import jakarta.validation.constraints.*;
 
