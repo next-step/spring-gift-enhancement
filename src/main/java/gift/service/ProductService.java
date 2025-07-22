@@ -27,15 +27,11 @@ public class ProductService {
         String name = requestDto.getName();
         // validateUsingKakaoName(name); 추후 수정
 
-        Product product = new Product(
-                requestDto.getName(),
-                requestDto.getPrice(),
-                requestDto.getImageUrl()
-        );
+        Product product = requestDto.convertToProductEntity();
 
         Product addedProduct = productRepository.save(product);
 
-        return new ProductResponseDto(addedProduct.getId(), addedProduct.getName(), addedProduct.getPrice(), addedProduct.getImageUrl());
+        return new ProductResponseDto(addedProduct);
     }
 
     public Page<Product> getProductsByPage(Pageable pageable) {
@@ -46,19 +42,14 @@ public class ProductService {
         List<Product> productList = productRepository.findAll();
         List<ProductResponseDto> products = new ArrayList<>();
         for (Product product : productList) {
-            products.add(new ProductResponseDto(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getImageUrl()
-            ));
+            products.add(new ProductResponseDto(product));
         }
         return products;
     }
 
     public ProductResponseDto findProductById(Long id) {
         Product product = findById(id);
-        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
+        return new ProductResponseDto(product);
     }
 
     public Product findById(Long id) {
@@ -81,8 +72,7 @@ public class ProductService {
         );
 
         Product updatedProduct = productRepository.save(product);
-        return Optional.of(new ProductResponseDto(updatedProduct.getId(), updatedProduct.getName(),
-                                        updatedProduct.getPrice(), updatedProduct.getImageUrl()));
+        return Optional.of(new ProductResponseDto(updatedProduct));
     }
 
     public void deleteProduct(Long id) {

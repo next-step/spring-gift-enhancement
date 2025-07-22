@@ -1,5 +1,6 @@
 package gift.dto;
 
+import gift.entity.Product;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -28,4 +29,8 @@ public class ProductRequestDto {
     public Integer getPrice() { return price; }
 
     public String getImageUrl() { return imageUrl; }
+
+    public Product convertToProductEntity() {
+        return new Product(this.name, this.price, this.imageUrl);
+    }
 }

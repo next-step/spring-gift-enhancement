@@ -1,8 +1,9 @@
-package gift;
+package gift.RepositoryTest;
 
 
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,6 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
+
+    @BeforeEach
+    void setUp() {
+        DBinit();
+    }
+
+    private void DBinit() {
+        productRepository.deleteAll();
+    }
 
     @Test
     void 상품_저장_정상_테스트() {

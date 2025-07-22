@@ -1,5 +1,6 @@
-package gift;
+package gift.ControllerTest;
 
+import gift.Application;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.repository.ProductRepository;
@@ -15,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
-
 
 import java.util.List;
 
@@ -38,9 +38,15 @@ public class ProductControllerTest {
     private ProductRepository productRepository;
 
     private Long savedProduct1Id;
+    private String baseUrl;
 
     @BeforeEach
     void setUp() {
+        DBinit();
+        baseUrl = "http://localhost:" + port + "/api/products";
+    }
+
+    private void DBinit(){
         productRepository.deleteAll();
 
         ProductResponseDto saveProduct1 = productService.addProduct(new ProductRequestDto("초코송이", 1000, "https://img.danawa.com/prod_img/500000/826/577/img/3577826_1.jpg?_v=20161108161614&shrink=360:360"));
@@ -53,7 +59,7 @@ public class ProductControllerTest {
     @Test
     void 상품_전체_조회_테스트() {
         System.out.println("getAll test");
-        var url = "http://localhost:" + port + "/api/products/all";
+        String url = baseUrl + "/all";
         var response = client.get()
                 .uri(url)
                 .retrieve()
@@ -72,7 +78,7 @@ public class ProductControllerTest {
     @Test
     void 상품_단건_조회_정상_테스트(){
         System.out.println("getProductById test");
-        var url = "http://localhost:" + port + "/api/products/" + savedProduct1Id;
+        String url = baseUrl + "/" + savedProduct1Id;
         var response = client.get()
                 .uri(url)
                 .retrieve()
@@ -90,7 +96,7 @@ public class ProductControllerTest {
     @Test
     void 상품_단건_조회_없는_ID_상품_조회_시_Not_Found_테스트(){
         System.out.println("getProductById test");
-        var url = "http://localhost:" + port + "/api/products/5";
+        String url = baseUrl + "/-1";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> client.get()
@@ -104,9 +110,9 @@ public class ProductControllerTest {
     void 상품_추가_정상_테스트(){
         System.out.println("addProduct test");
         ProductRequestDto requestDto = new ProductRequestDto("아이스 카페 아메리카노 T", 4500, "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
-        var url = "http://localhost:" + port + "/api/products";
+
         var response = client.post()
-                .uri(url)
+                .uri(baseUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(requestDto)
                 .retrieve()
@@ -123,7 +129,7 @@ public class ProductControllerTest {
     void 상품_수정_정상_테스트(){
         System.out.println("updateProduct test");
         ProductRequestDto requestDto = new ProductRequestDto("아이스 카페 아메리카노 T", 5000, "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
-        var url = "http://localhost:" + port + "/api/products/" + savedProduct1Id;
+        String url = baseUrl + "/" + savedProduct1Id;
         var response = client.put()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +148,7 @@ public class ProductControllerTest {
     void 상품_삭제_정상_테스트() {
         System.out.println("deleteProduct test");
 
-        String deleteUrl = "http://localhost:" + port + "/api/products/" + savedProduct1Id;
+        String deleteUrl = baseUrl + "/" + savedProduct1Id;
         var deleteResponse = client.delete()
                 .uri(deleteUrl)
                 .retrieve()
@@ -164,11 +170,11 @@ public class ProductControllerTest {
     void 승인되지_않은_카카오_이름_사용(){
         System.out.println("Not Approved Using Kakao Name test");
         ProductRequestDto requestDto = new ProductRequestDto("카카오톡", 5000, "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
-        var url = "http://localhost:" + port + "/api/products";
+
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> client.post()
-                                .uri(url)
+                                .uri(baseUrl)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(requestDto)
                                 .retrieve()
@@ -180,11 +186,11 @@ public class ProductControllerTest {
     void 승인되지_않은_특수문자_포함된_이름_사용(){
         System.out.println("Not Approved Special Character in Name test");
         ProductRequestDto requestDto = new ProductRequestDto("포스틱.", 5000, "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
-        var url = "http://localhost:" + port + "/api/products";
+
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> client.post()
-                                .uri(url)
+                                .uri(baseUrl)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(requestDto)
                                 .retrieve()
@@ -196,11 +202,11 @@ public class ProductControllerTest {
     void 최대_15자_길이_제한_초과_이름_사용(){
         System.out.println("Exceed Name length limit test");
         ProductRequestDto requestDto = new ProductRequestDto("포스틱포스틱포스틱포스틱포스틱포스틱", 5000, "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
-        var url = "http://localhost:" + port + "/api/products";
+
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> client.post()
-                                .uri(url)
+                                .uri(baseUrl)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(requestDto)
                                 .retrieve()

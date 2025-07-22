@@ -19,7 +19,7 @@ public class JdbcProductRepository{
     }
 
     public Product addProduct(Product product) {
-        String sql = "INSERT INTO product (name, price, imageUrl) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO product (name, price, image_url) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl());
 
         return product;
@@ -47,7 +47,7 @@ public class JdbcProductRepository{
     }
 
     public Optional<Product> updateProduct(Long id, Product product) {
-        String sql = "UPDATE product SET name = ?, price = ?, imageUrl = ? WHERE id = ?";
+        String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
 
         int affectedRows = jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
         if (affectedRows > 0) {
@@ -81,7 +81,7 @@ public class JdbcProductRepository{
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getInt("price"),
-                rs.getString("imageUrl")
+                rs.getString("image_url")
         );
         return product;
     }

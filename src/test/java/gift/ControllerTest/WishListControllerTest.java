@@ -1,11 +1,9 @@
-package gift;
+package gift.ControllerTest;
 
+import gift.Application;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishListProductRequestDto;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,12 +29,18 @@ public class WishListControllerTest {
 
     // abcd@pusan.ac.kr 계정 토큰
     private String testJWTToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkQHB1c2FuLmFjLmtyIiwiZW1haWwiOiJhYmNkQHB1c2FuLmFjLmtyIn0.WGDriDkB5paOlUxALdjM4cZqo8ZE2YZ0yN8nwu5VjRk";
+    private String baseUrl;
+
+    @BeforeEach
+    void setUp() {
+        baseUrl = "http://localhost:" + port + "/api/wishlist";
+    }
 
     @Test
     @Order(1)
     void 위시_리스트_조회_테스트(){
         System.out.println("Get WishList Product test");
-        var url = "http://localhost:" + port + "/api/wishlist";
+        String url = baseUrl + "/all";
         var response = client.get()
                 .uri(url)
                 .header("Authorization", "Bearer " + testJWTToken)
@@ -60,10 +64,9 @@ public class WishListControllerTest {
     @Order(2)
     void 위시_리스트_상품_추가_정상_테스트(){
         System.out.println("Add Product to WishList success test");
-        var url = "http://localhost:" + port + "/api/wishlist";
         WishListProductRequestDto wishListProductRequestDto = new WishListProductRequestDto(2L);
         var response = client.post()
-                .uri(url)
+                .uri(baseUrl)
                 .header("Authorization", "Bearer " + testJWTToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(wishListProductRequestDto)
@@ -87,7 +90,7 @@ public class WishListControllerTest {
     @Order(3)
     void 위시_리스트_상품_삭제_정상_테스트(){
         System.out.println("Delete Product to WishList success test");
-        var url = "http://localhost:" + port + "/api/wishlist/" + 1;
+        String url = baseUrl + "/" + 1;
         var response = client.delete()
                 .uri(url)
                 .header("Authorization", "Bearer " + testJWTToken)
@@ -110,7 +113,7 @@ public class WishListControllerTest {
     @Order(4)
     void 위시_리스트_없는_상품_삭제_NOT_FOUND_테스트(){
         System.out.println("Delete Product to WishList NOT FOUND test");
-        var url = "http://localhost:" + port + "/api/wishlist/" + 1;
+        String url = baseUrl + "/" + 1;
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> client.delete()

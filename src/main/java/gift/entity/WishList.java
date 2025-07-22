@@ -3,7 +3,7 @@ package gift.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "WishList")
+@Table(name = "wishlist")
 public class WishList {
 
     @Id
@@ -13,7 +13,7 @@ public class WishList {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "product_id")
     private Long productId;
 
     public WishList() {}

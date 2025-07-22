@@ -1,4 +1,4 @@
-package gift;
+package gift.RepositoryTest;
 
 import gift.entity.WishList;
 import gift.repository.WishListRepository;
