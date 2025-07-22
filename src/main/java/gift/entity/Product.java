@@ -62,11 +62,21 @@ public class Product {
         return imageUrl;
     }
 
-    public List<Option> getOptions() {
-        return options;
+    public void addOption(Option option) {
+        this.options.add(option);
+        option.setProduct(this);
     }
 
-    public void setOptions(List<Option> options) {
-        this.options = options;
+    public void removeOption(Option option) {
+        if (this.options.size() <= 1) {
+            throw new IllegalStateException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
+        }
+        this.options.remove(option);
+        option.setProduct(null);
+    }
+
+    public boolean hasOptionWithName(String name) {
+        return this.options.stream()
+            .anyMatch(option -> option.getName().equals(name));
     }
 }

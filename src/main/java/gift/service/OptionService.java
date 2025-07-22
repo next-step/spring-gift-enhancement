@@ -37,7 +37,12 @@ public class OptionService {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
 
+        if (product.hasOptionWithName(optionRequestDTO.name())) {
+            throw new IllegalArgumentException("동일한 상품 내에서 옵션 이름이 중복될 수 없습니다.");
+        }
+
         Option option = new Option(optionRequestDTO.name(), optionRequestDTO.quantity(), product);
+        product.addOption(option);
         Option savedOption = optionRepository.save(option);
         return new OptionResponseDTO(savedOption.getId(), savedOption.getName(),
             savedOption.getQuantity());
@@ -52,6 +57,11 @@ public class OptionService {
 
         if (!option.getProduct().getId().equals(product.getId())) {
             throw new IllegalArgumentException("상품에 해당 옵션이 존재하지 않습니다.");
+        }
+
+        if (!option.getName().equals(optionRequestDTO.name()) &&
+            product.hasOptionWithName(optionRequestDTO.name())) {
+            throw new IllegalArgumentException("동일한 상품 내에서 옵션 이름이 중복될 수 없습니다.");
         }
 
         option.setName(optionRequestDTO.name());
@@ -70,11 +80,12 @@ public class OptionService {
             throw new IllegalArgumentException("상품에 해당 옵션이 존재하지 않습니다.");
         }
 
-        if (optionRepository.findByProductId(productId).size() == 1) {
-            throw new IllegalArgumentException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
+        try {
+            product.removeOption(option);
+            optionRepository.delete(option);
+        } catch (IllegalStateException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
-
-        optionRepository.delete(option);
     }
 
     @Transactional
@@ -85,4 +96,3 @@ public class OptionService {
         optionRepository.save(option);
     }
 }
-
