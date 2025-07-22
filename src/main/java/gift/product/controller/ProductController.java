@@ -1,5 +1,8 @@
 package gift.product.controller;
 
+import gift.option.dto.OptionCreateCommand;
+import gift.option.dto.OptionCreateResponseDto;
+import gift.option.entity.OptionName;
 import gift.product.dto.ProductCreateCommand;
 import gift.product.dto.ProductCreateRequestDto;
 import gift.product.dto.ProductCreateResponseDto;
@@ -7,8 +10,12 @@ import gift.product.dto.ProductGetResponseDto;
 import gift.product.dto.ProductPageResponseDto;
 import gift.product.dto.ProductUpdateCommand;
 import gift.product.dto.ProductUpdateRequestDto;
+import gift.product.entity.Product;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -38,15 +45,34 @@ public class ProductController {
     public ResponseEntity<ProductCreateResponseDto> createProduct(
         @Valid @RequestBody ProductCreateRequestDto requestDto) {
 
-        ProductCreateCommand dto = new ProductCreateCommand(requestDto.name(), requestDto.price(),
-            requestDto.imageUrl(), requestDto.mdConfirmed());
+        Set<OptionCreateCommand> options = requestDto.options().stream()
+            .map(optionDto -> {
+                OptionName optionName = new OptionName(optionDto.name());
+                return new OptionCreateCommand(optionName, optionDto.quantity());
+            })
+            .collect(Collectors.toSet());
 
-        return new ResponseEntity<>(productService.saveProduct(dto), HttpStatus.CREATED);
+        ProductCreateCommand dto = new ProductCreateCommand(requestDto.name(), requestDto.price(),
+            requestDto.imageUrl(), requestDto.mdConfirmed(), options);
+
+        Product product = productService.saveProduct(dto);
+
+        List<OptionCreateResponseDto> optionResponseDtos = product.getOptions().stream()
+            .map(optionDto -> new OptionCreateResponseDto(optionDto.getOptionId(),
+                optionDto.getName().toString(),
+                optionDto.getQuantity()))
+            .collect(Collectors.toList());
+
+        ProductCreateResponseDto responseDto = new ProductCreateResponseDto(product.getProductId(),
+            product.getName(), product.getPrice(), product.getImageUrl(), product.getMdConfirmed(),
+            optionResponseDtos);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ProductPageResponseDto getProducts(
-        @PageableDefault(page = 0, size = 10, sort = "productId", direction = Sort.Direction.DESC) Pageable pageable) {
+        @PageableDefault(sort = "productId", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return productService.findAllProducts(pageable);
     }
@@ -54,7 +80,9 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<ProductGetResponseDto> getProductById(@PathVariable Long productId) {
 
-        return new ResponseEntity<>(productService.findProductById(productId), HttpStatus.OK);
+        ProductGetResponseDto responseDto = productService.findProductById(productId);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PutMapping("/{productId}")

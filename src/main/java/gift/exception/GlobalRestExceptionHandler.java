@@ -3,6 +3,9 @@ package gift.exception;
 import gift.exception.member.EmailAlreadyExistsException;
 import gift.exception.member.LoginFailedException;
 import gift.exception.member.MemberNotFoundException;
+import gift.exception.option.DuplicateOptionNameException;
+import gift.exception.option.OptionNotFoundException;
+import gift.exception.product.ProductMismatchException;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.product.UnapprovedProductException;
 import gift.exception.wish.InvalidAuthorizationException;
@@ -20,7 +23,7 @@ public class GlobalRestExceptionHandler {
 
     // 404 리소스 없음
     @ExceptionHandler({ProductNotFoundException.class, MemberNotFoundException.class,
-        WishNotFoundException.class})
+        WishNotFoundException.class, OptionNotFoundException.class})
     public ResponseEntity<String> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.NOT_FOUND);
     }
@@ -30,6 +33,12 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler({UnapprovedProductException.class, EmailAlreadyExistsException.class,
         InvalidPageException.class})
     public ResponseEntity<String> handleBadRequestException(RuntimeException ex) {
+        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 400 입력 값 검증 실패 - 옵션 이름 중복, 잘못된 옵션 ID
+    @ExceptionHandler({DuplicateOptionNameException.class, ProductMismatchException.class})
+    public ResponseEntity<String> handleDuplicateOptionNameException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

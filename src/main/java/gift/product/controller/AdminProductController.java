@@ -1,5 +1,7 @@
 package gift.product.controller;
 
+import gift.option.dto.OptionCreateCommand;
+import gift.option.entity.OptionName;
 import gift.product.dto.ProductCreateCommand;
 import gift.product.dto.ProductCreateRequestDto;
 import gift.product.dto.ProductGetResponseDto;
@@ -9,6 +11,8 @@ import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -49,8 +53,15 @@ public class AdminProductController {
             return "product/create-product";
         }
 
+        Set<OptionCreateCommand> options = requestDto.options().stream()
+            .map(option -> {
+                OptionName optionName = new OptionName(option.name());
+                return new OptionCreateCommand(optionName, option.quantity());
+            })
+            .collect(Collectors.toSet());
+
         ProductCreateCommand dto = new ProductCreateCommand(requestDto.name(), requestDto.price(),
-            requestDto.imageUrl(), requestDto.mdConfirmed());
+            requestDto.imageUrl(), requestDto.mdConfirmed(), options);
 
         try {
             productService.saveProduct(dto);
@@ -63,7 +74,7 @@ public class AdminProductController {
 
     @GetMapping
     public String getProductsPage(
-        @PageableDefault(page = 0, size = 10, sort = "productId", direction = Sort.Direction.DESC) Pageable pageable,
+        @PageableDefault(sort = "productId", direction = Sort.Direction.DESC) Pageable pageable,
         Model model) {
 
         ProductPageResponseDto products = productService.findAllProducts(pageable);
