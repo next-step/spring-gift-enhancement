@@ -3,6 +3,7 @@ package gift.entity;
 import jakarta.persistence.*;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -19,6 +20,9 @@ public class Product {
 
     @Column(nullable = false, name = "image_url")
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
+    private List<Option> options;
 
     protected Product() {}
 
@@ -49,5 +53,17 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public boolean hasOptionWithName(String name) {
+        return options != null &&
+                options.stream().anyMatch(option -> option
+                                .getName()
+                                .equals(name)
+                );
     }
 }
