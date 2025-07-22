@@ -35,7 +35,8 @@ public class ProductController {
 
         ProductResponseDto response = productService.create(dto);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
     // 2-1. 상품 전체 조회
@@ -43,7 +44,8 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductResponseDto> products = productService.findAll(pageable);
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(products);
     }
 
     // 2-2. 상품 단건 조회
@@ -51,7 +53,8 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long id) {
         ProductResponseDto response = productService.findById(id);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
     // 3. 상품 수정
@@ -62,7 +65,8 @@ public class ProductController {
     ) {
         ProductResponseDto response = productService.update(id, dto);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
     // 4. 상품 삭제
@@ -70,6 +74,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.delete(id);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .build();
     }
 }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -31,11 +33,20 @@ public class ProductControllerImplTest {
 
     private RestClient client = RestClient.builder().build();
 
+    @BeforeEach
+    void setup() {
+        Product product1 = Product.of("단호박", "donhobak.com", 500L);
+        Product product2 = Product.of("블루베리", "blueberry.com", 88L);
+        Product product3 = Product.of("귤", "gyul.com", 900L);
+        products.save(product1);
+        products.save(product2);
+        products.save(product3);
+    }
+
     @Test
     @DisplayName("아이디로 조회가 되는지를 테스트")
     void findByIdTest() {
-        Product product = Product.of("단호박", "donhobak.com", 500L);
-        products.save(product);
+
 
         var url = "http://localhost:" + port + "/api/products/1";
 
@@ -48,9 +59,9 @@ public class ProductControllerImplTest {
     }
 
     @Test
-    @DisplayName("// 존재하지 않는 아이디로 조회 시 404 반환")
+    @DisplayName("존재하지 않는 아이디로 조회 시 404 반환")
     void notFoundHandlerTest() {
-        var url = "http://localhost:" + port + "/api/products/3";
+        var url = "http://localhost:" + port + "/api/products/999";
 
         Assertions.assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(() -> client.get().uri(url).retrieve().toEntity(Void.class));
@@ -60,8 +71,6 @@ public class ProductControllerImplTest {
     @DisplayName("페이지 테스트")
     void pageTest() {
         // given
-        products.save(Product.of("블루베리", "blueberry.com", 88L));
-        products.save(Product.of("귤", "gyul.com", 900L));
 
         var url = "http://localhost:" + port + "/api/products?page=0&size=2";
 
@@ -74,7 +83,7 @@ public class ProductControllerImplTest {
 
         System.out.println(actual);
 
+        assertThat(actual).contains("단호박");
         assertThat(actual).contains("블루베리");
-        assertThat(actual).contains("귤");
     }
 }
