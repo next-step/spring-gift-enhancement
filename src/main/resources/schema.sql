@@ -30,7 +30,8 @@ create table options
     product_id bigint       not null,
     name       varchar(255) not null,
     quantity   integer      not null,
-    primary key (id)
+    primary key (id),
+    unique (product_id, name)
 );
 
 alter table if exists wishes
