@@ -1,6 +1,7 @@
 package gift.Controller;
 
 import gift.dto.ProductDto;
+import gift.dto.ProductOptionDto;
 import gift.exception.ValidationException;
 import gift.model.Product;
 import gift.service.ProductService;
@@ -79,6 +80,8 @@ public class AdminProductController {
     containsProhibitedName(productDto, bindingResult);
 
     if (bindingResult.hasErrors()) {
+      System.out.println("Validation errors found:");
+      bindingResult.getAllErrors().forEach(err -> System.out.println(err.toString())); // 검증 오류 log 확인용
       model.addAttribute("product", productDto); // 검증 오류가 있을 경우, 모델에 product를 담아줌
       throw new ValidationException(bindingResult); // 검증 예외를 던짐
     }

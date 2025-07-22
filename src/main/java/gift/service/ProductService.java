@@ -3,6 +3,7 @@ package gift.service;
 import gift.model.Product;
 import gift.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ public class ProductService {
     return productRepository.findById(id);
   }
 
+  @Transactional
   public Product save(Product product) {
     return productRepository.save(product);
   }

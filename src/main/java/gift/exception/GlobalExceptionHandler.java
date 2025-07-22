@@ -2,7 +2,9 @@ package gift.exception;
 
 import gift.dto.MemberRequestDto;
 import gift.model.Member;
+import gift.model.ProductOption;
 import gift.model.WishItem;
+import gift.service.ProductOptionService;
 import gift.service.WishlistService;
 import gift.util.LoginMember;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,9 +25,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
   private final WishlistService wishlistService;
+  private final ProductOptionService productOptionService;
 
-  public GlobalExceptionHandler(WishlistService wishlistService) {
+  public GlobalExceptionHandler(WishlistService wishlistService,  ProductOptionService productOptionService) {
     this.wishlistService = wishlistService;
+    this.productOptionService = productOptionService;
   }
 
   // 잘못된 상품형식을 입력하는 경우
@@ -174,6 +178,30 @@ public class GlobalExceptionHandler {
   }
 
 
+  @ExceptionHandler(DuplicateOptionException.class)
+  public String handleDuplicateOptionException(DuplicateOptionException ex,
+      Model model,
+      HttpServletResponse response) {
+    response.setStatus(HttpServletResponse.SC_CONFLICT);
+    model.addAttribute("errorMessage", ex.getMessage());
+    return "admin/options/new";  // 옵션 입력 form 페이지 경로
+  }
+
+  @ExceptionHandler(InsufficientStockException.class)
+  public String handleInsufficientStock(InsufficientStockException ex,
+      Model model,
+      HttpServletResponse response) {
+    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+    // 예외 객체에 optionId가 포함되어 있다고 가정
+    Long optionId = ex.getOptionId();
+    ProductOption option = productOptionService.findById(optionId);  // 서비스에서 조회
+
+    model.addAttribute("option", option);  // 필수
+    model.addAttribute("error", ex.getMessage());  // 템플릿에 맞게 "error"로 전달
+
+    return "admin/options/edit";
+  }
 }
 
 

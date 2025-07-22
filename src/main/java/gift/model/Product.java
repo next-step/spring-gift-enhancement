@@ -1,6 +1,15 @@
 package gift.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -19,7 +28,10 @@ public class Product {
   @Column(name = "image_url", nullable = false)
   private String imageUrl;
 
-  public Product() {
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ProductOption> options = new ArrayList<ProductOption>();
+
+  protected Product() {
   }
 
   public Product(Long id, String name, int price, String imageUrl) {
@@ -73,5 +85,19 @@ public class Product {
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
+  }
+
+  public List<ProductOption> getOptions() {
+    return options;
+  }
+
+  public void addOption(ProductOption option) {
+    boolean duplicated = options.stream()
+        .anyMatch(o -> o.getName().equals(option.getName()));
+    if (duplicated) {
+      throw new IllegalArgumentException("동일한 이름의 옵션은 추가할 수 없습니다.");
+    }
+    options.add(option);
+    option.setProduct(this);
   }
 }

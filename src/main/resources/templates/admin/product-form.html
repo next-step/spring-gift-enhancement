@@ -38,6 +38,13 @@
       <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">오류</div>
     </div>
 
+    <!-- 옵션 이름 및 수량 입력 예시 -->
+    <div class="mb-3">
+      <label class="form-label">옵션 이름</label>
+      <input type="text" name="options[0].name" class="form-control" required>
+      <input type="number" name="options[0].quantity" class="form-control mt-2" placeholder="수량" required>
+    </div>
+
     <!-- 이미지 URL 입력 필드 -->
     <div class="mb-3">
       <label class="form-label">이미지 URL</label>

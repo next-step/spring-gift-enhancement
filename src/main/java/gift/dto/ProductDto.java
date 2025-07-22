@@ -1,7 +1,16 @@
 package gift.dto;
 
 import gift.model.Product;
-import jakarta.validation.constraints.*;
+import gift.model.ProductOption;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductDto {
 
@@ -17,34 +26,45 @@ public class ProductDto {
 
   @PositiveOrZero(message = "가격은 0 이상이어야 합니다")
   private int price;
+
   private String imageUrl;
 
-  public ProductDto() {
-  }
+  @Valid
+  @NotEmpty(message = "최소 하나 이상의 옵션이 필요합니다.")
+  private List<ProductOptionDto> options = new ArrayList<>();
 
-  public ProductDto(Long id, String name, int price, String imageUrl) {
+  public ProductDto() {}
+
+  public ProductDto(Long id, String name, int price, String imageUrl, List<ProductOptionDto> options) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
+    this.options = options;
   }
 
-  // 도메인 객체를 DTO로 변환 (null 방지 포함)
   public static ProductDto from(Product product) {
-    if (product == null) {
-      return null;  // 또는 throw new IllegalArgumentException("null product");
-    }
+    if (product == null) return null;
+
+    List<ProductOptionDto> optionDtos = product.getOptions().stream()
+        .map(ProductOptionDto::from)
+        .collect(Collectors.toList());
+
     return new ProductDto(
         product.getId(),
         product.getName(),
         product.getPrice(),
-        product.getImageUrl()
+        product.getImageUrl(),
+        optionDtos
     );
   }
 
-  // DTO를 도메인 객체로 변환
   public Product toEntity() {
-    return new Product(id, name, price, imageUrl);
+    Product product = new Product(id, name, price, imageUrl);
+    for (ProductOptionDto dto : options) {
+      product.addOption(new ProductOption(product, dto.getName(), dto.getQuantity()));
+    }
+    return product;
   }
 
   // getter & setter
@@ -79,4 +99,9 @@ public class ProductDto {
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
   }
+  public List<ProductOptionDto> getOptions() {
+    return options;
+  }
+
 }
+
