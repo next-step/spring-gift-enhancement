@@ -12,7 +12,8 @@ public enum ErrorCode {
     OTHERS(HttpStatus.INTERNAL_SERVER_ERROR, "기타 오류입니다."),
     INVALID_SORT_NAMES(HttpStatus.BAD_REQUEST, "정렬 조건을 다시 확인해 주세요"),
     INVALID_SUBTRACT_AMOUNT(HttpStatus.BAD_REQUEST, "빼려는 수량은 0보다 커야 합니다."),
-    INVALID_SUBTRACT_MINUS(HttpStatus.BAD_REQUEST, "옵션의 수량은 0 이하가 될 수 없습니다.");
+    INVALID_SUBTRACT_MINUS(HttpStatus.BAD_REQUEST, "옵션의 수량은 0 이하가 될 수 없습니다."),
+    ALREADY_EXISTS_NAME(HttpStatus.BAD_REQUEST, "이미 존재하는 이름입니다.");
 
 
     private final HttpStatus httpStatus;
