@@ -3,6 +3,7 @@ package gift.product.controller;
 import gift.product.domain.Product;
 import gift.product.dto.ProductEditDto;
 import gift.product.dto.ProductInfoDto;
+import gift.product.dto.ProductOptionRequestDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -75,7 +76,11 @@ public class ProductAdminController {
     public String editProductForm(@PathVariable("id") Long id, Model model){
         Product product = productService.getProduct(id);
 
-        model.addAttribute("product", new ProductEditDto(product.getName(), product.getPrice(), product.getImageUrl()));
+        model.addAttribute("product", new ProductEditDto(
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        ));
         model.addAttribute("productId", id);
 
         return "admin/product-edit-form";
@@ -93,7 +98,12 @@ public class ProductAdminController {
             return "/admin/product-edit-form";
         }
 
-        ProductRequestDto requestDto = new ProductRequestDto(editDto.name(), editDto.price(),editDto.imageUrl());
+        ProductRequestDto requestDto = new ProductRequestDto(
+                editDto.name(),
+                editDto.price(),
+                editDto.imageUrl(),
+                List.of(ProductOptionRequestDto.getEmpty())
+        );
         productService.update(id, requestDto);
 
         return "redirect:/admin/products/" + id;

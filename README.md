@@ -90,6 +90,21 @@
 - [x] wish Thymeleaf 페이지 기반으로 수정하기
 - [x] 페이지네이션 기능 확인용 DB에 테스트 데이터 추가하기
 
+### 2단계 - 코드 리뷰 반영
+
+- [x] 페이지네이션 sort 필드 유효성 검증 로직 추가
+- [ ] 페이지네이션 ID 값 기준으로 다음 데이터 찾는 메서드 구현
+
+### 3단계 - 상품 옵션
+
+- [x] Option 엔티티 생성 및 Product 연관 관계 설정
+- [x] Option 재고 차감, 중복 이름 검증 구현
+- [x] Option repository 구현
+- [x] Option service 구현
+- [x] Option controller 구현
+- [x] (선택) 상품 옵션 서비스 화면 추가
+- [x] Option Api 요청 테스트 코드 추가
+
 # spring-gift-product (Mission 1)
 
 ## 상품관리 - 스프링 입문

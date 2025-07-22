@@ -4,6 +4,7 @@ import gift.member.domain.Member;
 import gift.member.domain.RoleType;
 import gift.member.repository.MemberRepository;
 import gift.product.domain.Product;
+import gift.product.dto.ProductOptionRequestDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
@@ -24,7 +25,13 @@ public class ProductService {
     }
 
     public Product saveProduct(ProductRequestDto requestDto){
-        return productRepository.save(new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
+        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        requestDto.options()
+                .stream()
+                .map(ProductOptionRequestDto::toEntity)
+                .forEach(product::addProductOption);
+
+        return productRepository.save(product);
     }
 
     public Page<Product> getProducts(Pageable pageable){

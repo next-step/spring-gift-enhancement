@@ -4,6 +4,8 @@ import gift.common.ControllerTestTemplate;
 import gift.member.dto.MemberRegisterRequest;
 import gift.member.service.MemberService;
 import gift.product.domain.Product;
+import gift.product.dto.ProductOptionRequestDto;
+import gift.product.dto.ProductOptionResponseDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -58,8 +62,8 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
         getWithToken("/api/admin/products", adminToken)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name", is("Test1")))
-                .andExpect(jsonPath("$[1].name", is("Test2")))
+                .andExpect(jsonPath("$.content[0].name", is("Test2")))
+                .andExpect(jsonPath("$.content[1].name", is("Test1")))
                 .andDo(print());
     }
 
@@ -122,6 +126,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     }
 
     ProductRequestDto getProductRequest(String name, int price, String imageUrl) {
-        return new ProductRequestDto(name, price, imageUrl);
+        ProductOptionRequestDto defaultOption = new ProductOptionRequestDto("기본 옵션", 100);
+        return new ProductRequestDto(name, price, imageUrl, List.of(defaultOption));
     }
 }

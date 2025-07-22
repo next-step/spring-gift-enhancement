@@ -2,7 +2,9 @@ package gift.advice;
 
 import gift.product.exception.ProductNotFoundException;
 import gift.wish.exception.WishOwnerException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,8 +21,8 @@ import java.util.NoSuchElementException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleProductNotFound(ProductNotFoundException ex){
-        return makeErrorResponseEntity(ex, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, Object>> handleProductNotFound(ProductNotFoundException ex){
+        return makeErrorResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -39,29 +41,49 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return makeErrorResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return makeErrorResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Map<String, String>> handleNoSuchElementException(NoSuchElementException ex) {
-        return makeErrorResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, Object>> handleNoSuchElementException(NoSuchElementException ex) {
+        return makeErrorResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(WishOwnerException.class)
-    public ResponseEntity<Map<String, String>> handleWishOwnerException(WishOwnerException ex) {
-        return makeErrorResponseEntity(ex, HttpStatus.FORBIDDEN);
+    public ResponseEntity<Map<String, Object>> handleWishOwnerException(WishOwnerException ex) {
+        return makeErrorResponseEntity(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<Map<String, String>> handleDataAccessException(DataAccessException ex) {
-        return makeErrorResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Map<String, Object>> handleDataAccessException(DataAccessException ex) {
+        return makeErrorResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    ResponseEntity<Map<String, String>> makeErrorResponseEntity(Exception ex, HttpStatus status) {
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<Map<String, Object>> handlePropertyReferenceException(
+            PropertyReferenceException ex,
+            HttpServletRequest request
+    ) {
+        String sortParam = request.getParameter("sort");
+
+        if(sortParam != null && sortParam.contains(ex.getPropertyName())){
+            String errMsg = ex.getPropertyName() + "는 유효하지 않은 정렬 속성입니다.";
+            return makeErrorResponseEntity(errMsg, HttpStatus.BAD_REQUEST);
+        }
+
+        return makeErrorResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    ResponseEntity<Map<String, Object>> makeErrorResponseEntity(String msg, HttpStatus status) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("message", msg);
+
         return ResponseEntity
                 .status(status)
-                .body(Map.of("error", ex.getMessage()));
+                .body(body);
     }
 
 }
