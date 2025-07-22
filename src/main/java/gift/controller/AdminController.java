@@ -5,9 +5,10 @@ import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,15 +30,16 @@ public class AdminController {
   }
 
   @GetMapping
-  public String productList(Model model, @PageableDefault(size = 5, sort = "id") Pageable pageable) {
-    Page<ProductResponseDto> productPage = productService.findAllProduct(pageable);
+  public String productList(Model model, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+    Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+    Page<ProductResponseDto> productPage = productService.findAllProduct(fixedPageable);
     model.addAttribute("productPage", productPage);
     return "admin/list"; // templates/admin/list.html
   }
 
   @GetMapping("/add")
   public String addForm(Model model) {
-    model.addAttribute("product", new ProductRequestDto("", BigDecimal.ZERO, "", false));
+    model.addAttribute("product", ProductRequestDto.EMPTY);
     model.addAttribute("mode", "add");
     return "admin/form";
   }

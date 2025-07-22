@@ -1,11 +1,16 @@
 package gift.service;
 
+import gift.dto.OptionRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
+import gift.exception.DuplicateOptionNameException;
 import gift.exception.ResourceNotFoundException;
 import gift.repository.ProductRepository;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,10 +27,20 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto) {
+        // 중복된 이름의 옵션이 있는지 확인
+        List<String> optionNames = productRequestDto.options().stream()
+                .map(OptionRequestDto::name)
+                .toList();
+        Set<String> uniqueOptionNames = new HashSet<>(optionNames);
+        if (optionNames.size() != uniqueOptionNames.size()) {
+            throw new DuplicateOptionNameException("요청에 중복된 옵션 이름이 존재할 수 없습니다.");
+        }
+
         Product product = new Product(
                 productRequestDto.name(),
                 productRequestDto.price(),
-                productRequestDto.imageUrl()
+                productRequestDto.imageUrl(),
+                productRequestDto.options()
         );
 
         Product saveProduct = productRepository.save(product);

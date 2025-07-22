@@ -5,9 +5,12 @@ import gift.validator.ProductPolicyProvider;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 @ProductPolicy
 public record ProductRequestDto (
@@ -20,6 +23,15 @@ public record ProductRequestDto (
     @Max(value = 1000000000000L, message = "가격이 비정상적으로 큰 값입니다.")
     BigDecimal price,
     String imageUrl,
-    boolean merchandiserApproved
+    boolean merchandiserApproved,
+    @NotEmpty(message = "상품에는 하나 이상의 옵션이 반드시 포함되어야 합니다.")
+    List<OptionRequestDto> options
 ) implements ProductPolicyProvider {
+    public static final ProductRequestDto EMPTY = new ProductRequestDto(
+            "",
+            BigDecimal.ZERO,
+            "",
+            false,
+            Collections.emptyList()
+    );
 }

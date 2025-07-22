@@ -3,6 +3,7 @@ package gift;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import gift.dto.OptionRequestDto;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -34,10 +35,15 @@ public class WishRepositoryTest {
     private Member member;
     private Product product;
 
+    private List<OptionRequestDto> options = List.of(
+            new OptionRequestDto("테스트용 옵션", 100),
+            new OptionRequestDto("테스트용 옵션2", 100)
+    );
+
     @BeforeEach
     void Setup() {
         member = memberRepository.saveAndFlush(new Member("test@naver.com", "qwe123"));
-        product = productRepository.saveAndFlush(new Product("test 상품", BigDecimal.valueOf(3000), "testurl@naver.com"));
+        product = productRepository.saveAndFlush(new Product("test 상품", BigDecimal.valueOf(3000), "testurl@naver.com", options));
     }
 
     @Test

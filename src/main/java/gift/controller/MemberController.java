@@ -22,11 +22,11 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<MemberResponseDto> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        return new ResponseEntity<>(memberService.registerMember(memberRequestDto), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.registerMember(memberRequestDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<MemberResponseDto> loginMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        return new ResponseEntity<>(memberService.loginMember(memberRequestDto), HttpStatus.OK);
+        return ResponseEntity.ok(memberService.loginMember(memberRequestDto));
     }
 }

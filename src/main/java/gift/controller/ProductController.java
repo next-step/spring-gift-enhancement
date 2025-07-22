@@ -3,10 +3,14 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
+import gift.exception.InvalidSortOptionException;
 import gift.service.ProductService;
+import gift.util.ProductSortOption;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,26 +34,34 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.addProduct(productRequestDto), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.addProduct(productRequestDto));
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDto>> findAllProduct(@PageableDefault(size = 5, sort = "id") Pageable pageable) {
-        return new ResponseEntity<>(productService.findAllProduct(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<ProductResponseDto>> findAllProduct(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        for (Sort.Order order : pageable.getSort()) {
+            if (!ProductSortOption.isValid(order.getProperty())) {
+                throw new InvalidSortOptionException("Product의 유효한 정렬 기준이 아닙니다.");
+            }
+        }
+
+        Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
+        return ResponseEntity.ok(productService.findAllProduct(fixedPageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> findProductById(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
+        return ResponseEntity.ok(productService.findProductById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@Valid @RequestBody UpdateProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.updateProduct(productRequestDto), HttpStatus.OK);
+        return ResponseEntity.ok(productService.updateProduct(productRequestDto));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
     }
 }

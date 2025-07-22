@@ -8,6 +8,19 @@
 ### (step2) 페이지네이션
 - [X] 상품 조회 페이지네이션 구현  
 - [X] 위시리스트 조회 페이지네이션 구현  
+
+### (step3) 상품 옵션
+- [X] 상품 정보에 옵션 추가  
+- [X] 옵션 CRUD 구현  
+- [X] 옵션의 수량 빼는 기능 구현  
+- [X] 옵션 관련 기능 테스트 코드 작성  
+
+| URL                                            | Method | Description              |
+|------------------------------------------------|------|--------------------------|
+| `/api/products/{productId}/options`            | GET | (옵션 조회) 특정 상품의 모든 옵션 목록을 조회한다.   |
+| `/api/products/{productId}/options`            | POST | (옵션 추가) 특정 상품에 새로운 옵션을 추가한다.|
+| `/api/products/{productId}/options/{optionId}` | PUT | (옵션 수정) 특정 상품의 특정 옵션을 수정한다.|
+| `/api/products/{productId}/options/{optionId}` | DELETE | (옵션 삭제) 특정 상품의 특정 옵션을 삭제한다.|
 ---
 # 위시 리스트
 ### (step1) 유효성 검사 및 예외 처리

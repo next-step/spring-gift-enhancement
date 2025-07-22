@@ -4,10 +4,14 @@ import gift.auth.Login;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Member;
+import gift.exception.InvalidSortOptionException;
 import gift.service.WishService;
+import gift.util.WishSortOption;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +33,15 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<WishResponseDto>> getWishes(@Login Member member, @PageableDefault(size = 5, sort = "id") Pageable pageable) {
-        return new ResponseEntity<>(wishService.getWishes(member.getId(), pageable), HttpStatus.OK);
+    public ResponseEntity<Page<WishResponseDto>> getWishes(@Login Member member, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        for (Sort.Order order : pageable.getSort()) {
+            if (!WishSortOption.isValid(order.getProperty())) {
+                throw new InvalidSortOptionException("WishList의 유효한 정렬 기준이 아닙니다.");
+            }
+        }
+
+        Pageable fixedPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
+        return ResponseEntity.ok(wishService.getWishes(member.getId(), fixedPageable));
     }
 
     @PostMapping
@@ -48,7 +59,7 @@ public class WishController {
             @PathVariable Long productId
     ) {
         wishService.deleteWish(member.getId(), productId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 }
