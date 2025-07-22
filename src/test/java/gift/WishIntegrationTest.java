@@ -2,6 +2,7 @@ package gift;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.dto.ProductOptionRequest;
 import gift.dto.WishRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,6 +36,9 @@ class WishIntegrationTest {
 
     private String token;
     private Long productId;
+    private static final List<ProductOptionRequest> DEFAULT_OPTIONS = List.of(
+            new ProductOptionRequest("기본 옵션", 10)
+    );
 
     @BeforeEach
     void setUp() throws Exception {
@@ -61,6 +66,7 @@ class WishIntegrationTest {
         product.put("name", name);
         product.put("price", price);
         product.put("imageUrl", imageUrl);
+        product.put("options", DEFAULT_OPTIONS);
 
         MvcResult productResult = mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)

@@ -15,6 +15,12 @@ public class ProductOptionResponse {
         this.quantity = quantity;
     }
 
+    public ProductOptionResponse(ProductOption productOption) {
+        this.id = productOption.getId();
+        this.name = productOption.getName();
+        this.quantity = productOption.getQuantity();
+    }
+
     public static ProductOptionResponse from(ProductOption option) {
         return new ProductOptionResponse(
                 option.getId(),

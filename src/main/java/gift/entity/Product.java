@@ -80,6 +80,12 @@ public class Product {
         option.setProduct(this);
     }
 
+    public void validateOptions() {
+        if (options == null || options.isEmpty()) {
+            throw new IllegalStateException("상품에는 최소 한 개 이상의 옵션이 필요합니다.");
+        }
+    }
+
     public List<ProductOption> getOptions() { return options; }
     public void setOptions(List<ProductOption> options) { this.options = options; }
 }

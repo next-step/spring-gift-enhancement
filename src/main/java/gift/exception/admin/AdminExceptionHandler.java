@@ -24,7 +24,7 @@ public class AdminExceptionHandler {
 
         if (requestUri.contains("/products-add")) {
             if (!model.containsAttribute("product")) {
-                model.addAttribute("product", new ProductRequestDto(null, null, null));
+                model.addAttribute("product", new ProductRequestDto(null, null, null, null));
             }
             return "admin/product-add";
         } else {
@@ -36,7 +36,7 @@ public class AdminExceptionHandler {
                 }
             }
             if (!model.containsAttribute("product")) {
-                model.addAttribute("product", new ProductRequestDto(null, null, null));
+                model.addAttribute("product", new ProductRequestDto(null, null, null, null));
             }
             return "admin/product-edit";
         }
