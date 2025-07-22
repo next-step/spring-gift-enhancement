@@ -1,6 +1,10 @@
 package gift.product.entity;
 
+import gift.product.dto.request.OptionCreateRequest;
+import gift.shared.exception.option.OverQuantityException;
 import jakarta.persistence.*;
+
+import static gift.product.status.OptionStatus.*;
 
 @Entity
 @Table(name = "options")
@@ -23,6 +27,11 @@ public class Option {
         this.quantity = quantity;
     }
 
+    public Option(OptionCreateRequest request){
+        this.name = request.name();
+        this.quantity = request.quantity();
+    }
+
     protected Option() {
     }
 
@@ -39,6 +48,9 @@ public class Option {
     }
 
     public void substract(Integer quantity){
+        if(this.quantity - quantity < 0){
+            throw new OverQuantityException(OVER_QUANTITY.getMessage());
+        }
         this.quantity -= quantity;
     }
 }
