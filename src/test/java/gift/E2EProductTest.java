@@ -1,7 +1,9 @@
 package gift;
 
 
-import gift.test_dto.PageDto;
+import gift.dto.PageDto;
+import gift.product.dto.request.OptionRequestDto;
+import gift.product.dto.request.ProductCreateRequestDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.RestClient;
+
+
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,11 +42,18 @@ public class E2EProductTest {
 
     @Test
     void 이름에_카카오가_포함되지_않은_상품_성공적으로_추가() {
-        var newProduct = new ProductRequestDto(
+        var newProduct = new ProductCreateRequestDto(
                 "새로운 상품",
                 10000L,
                 "http://image.url",
-                false);
+                false,
+                List.of(
+                        new OptionRequestDto("name1", 3),
+                        new OptionRequestDto("name2", 3),
+                        new OptionRequestDto("name3", 3),
+                        new OptionRequestDto("name4", 3)
+                )
+        );
 
         var response = client.post()
                 .uri("/api/products")
@@ -59,11 +70,17 @@ public class E2EProductTest {
 
     @Test
     void 이름에_카카오가_포함된_상품_성공적으로_추가(){
-        var newProduct = new ProductRequestDto(
+        var newProduct = new ProductCreateRequestDto(
                 "카카오 상품",
                 10000L,
                 "http://image.url",
-                true
+                true,
+                List.of(
+                        new OptionRequestDto("name1", 3),
+                        new OptionRequestDto("name2", 3),
+                        new OptionRequestDto("name3", 3),
+                        new OptionRequestDto("name4", 3)
+                )
         );
 
         var response = client.post()

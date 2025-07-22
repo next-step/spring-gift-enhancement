@@ -1,6 +1,7 @@
 package gift.product.controller;
 
 
+import gift.product.dto.request.ProductCreateRequestDto;
 import gift.product.dto.request.ProductRequestDto;
 import gift.product.dto.response.ProductResponseDto;
 import gift.product.dto.view.ProductFormDto;
@@ -46,7 +47,7 @@ public class ProductAdminController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@Valid @ModelAttribute("product") ProductRequestDto productRequestDto,
+    public String addProduct(@Valid @ModelAttribute("product") ProductCreateRequestDto productRequestDto,
                              BindingResult bindingResult,
                              Model model){
         if(bindingResult.hasErrors()){

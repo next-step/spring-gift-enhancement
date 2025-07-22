@@ -22,7 +22,7 @@ public class Wishlist {
     @Column(nullable = false)
     private int quantity;
 
-    public Wishlist() {}
+    protected Wishlist() {}
 
     public Wishlist(Long id, Member member, Product product, int quantity) {
         this.id = id;
@@ -41,4 +41,8 @@ public class Wishlist {
     public int getQuantity() {return this.quantity;}
 
     public void addQuantity(int quantity) {this.quantity += quantity;}
+
+    public boolean isOwner(Member member) {
+        return this.member.equals(member);
+    }
 }

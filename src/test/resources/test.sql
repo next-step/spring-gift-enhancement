@@ -1,3 +1,4 @@
+DELETE FROM option;
 DELETE FROM wishlist;
 DELETE FROM member;
 DELETE FROM product;
@@ -5,6 +6,7 @@ DELETE FROM product;
 ALTER TABLE product ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE member ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE wishlist ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE option ALTER COLUMN id RESTART WITH 1;
 
 INSERT INTO product (name, price, image_url, is_kakao_approved_by_md)
 VALUES

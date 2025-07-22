@@ -3,7 +3,7 @@ package gift.wishlist.service;
 
 import gift.exception.ProductNotFoundException;
 import gift.exception.WishNotFoundById;
-import gift.exception.WishNotFoundByMemberIdAndWishId;
+import gift.exception.WishlistAccessDeniedException;
 import gift.member.entity.Member;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
@@ -54,8 +54,8 @@ public class WishlistService {
         Wishlist wishlist = wishlistRepository.findById(wishId)
                         .orElseThrow(() -> new WishNotFoundById(wishId));
 
-        if(!wishlist.getMember().equals(member)) {
-            throw new WishNotFoundByMemberIdAndWishId(wishId, member.getId());
+        if(!wishlist.isOwner(member)) {
+            throw new WishlistAccessDeniedException(wishId);
         }
 
         wishlistRepository.delete(wishlist);

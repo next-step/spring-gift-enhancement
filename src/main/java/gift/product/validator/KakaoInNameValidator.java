@@ -1,12 +1,12 @@
 package gift.product.validator;
 
-import gift.product.dto.request.ProductRequestDto;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class KakaoInNameValidator implements ConstraintValidator<KakaoInName, ProductRequestDto> {
+public class KakaoInNameValidator implements ConstraintValidator<KakaoInName, KakaoProductInfo> {
     @Override
-    public boolean isValid(ProductRequestDto dto, ConstraintValidatorContext context) {
+    public boolean isValid(KakaoProductInfo dto, ConstraintValidatorContext context) {
 
         if(dto.name() == null || dto.name().isBlank()){
             return true;
