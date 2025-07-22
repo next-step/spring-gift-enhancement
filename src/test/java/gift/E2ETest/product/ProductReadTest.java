@@ -92,27 +92,25 @@ public class ProductReadTest extends AbstractProductTest {
     }
 
     @Test
-    @DisplayName("전체 제품 조회 성공 테스트 : 음수 페이지 요청 시 400 반환")
+    @DisplayName("전체 제품 조회 실패 테스트 : 음수 페이지 요청 시  오류 발생(400 Bad Request)")
     public void find_All_Products_Success_Negative_Page_Request_default_page_Returned() {
         RestAssured.given()
                 .when()
                 .queryParam("page", -1)
                 .get(getBaseUrl() + "/api/products")
                 .then()
-                .statusCode(200)
-                .body("page", equalTo(0)); // 페이지 번호가 0으로 처리되어야 함
+                .statusCode(400);
     }
 
     @Test
-    @DisplayName("전체 제품 조회 성공 테스트 : 음수 크기 요청 default 5으로 처리")
+    @DisplayName("전체 제품 조회 성공 테스트 : 음수 크기 요청 시 오류 발생(400 Bad Request)")
     public void find_All_Products_Success_Negative_Size_Request_default_size_Returned() {
         RestAssured.given()
                 .queryParam("size", -1)
                 .when()
                 .get(getBaseUrl() + "/api/products")
                 .then()
-                .statusCode(200)
-                .body("size", equalTo(5)); // 기본 크기 5로 처리되어야 함
+                .statusCode(400);
     }
 
     @Test

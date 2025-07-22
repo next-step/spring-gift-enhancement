@@ -2,9 +2,11 @@ package gift.controller.api;
 
 import gift.common.aop.annotation.PreAuthorize;
 import gift.common.mapper.EntityToDtoMapper;
+import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.common.validation.annotation.AllowedSortFields;
+import gift.dto.CustomPageRequest;
 import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionPatchRequest;
@@ -12,8 +14,6 @@ import gift.dto.option.OptionUpdateRequest;
 import gift.entity.UserRole;
 import gift.service.option.OptionService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +33,12 @@ public class OptionController {
     public ResponseEntity<CustomPage<OptionResponse>> getOptions(
             @PathVariable Long productId,
             @AllowedSortFields(value = { "id", "name", "quantity", "createdAt", "updatedAt" }, showAllowedFields = true)
-            @PageableDefault(size = 5)
-            Pageable pageable
+            @Valid @ModelAttribute CustomPageRequest request
     ) {
-        var pagedOptions = CustomPage.convert(optionService.findAllBy(productId, pageable), EntityToDtoMapper::toDto);
+        var pagedOptions = CustomPage.convert(
+                optionService.findAllBy(productId, ModelMapper.toPageRequest(request)),
+                EntityToDtoMapper::toDto
+        );
         return ResponseEntity.ok(pagedOptions);
     }
 

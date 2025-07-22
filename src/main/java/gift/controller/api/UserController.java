@@ -4,8 +4,10 @@ package gift.controller.api;
 import gift.common.aop.annotation.PreAuthorize;
 import gift.common.mapper.DtoToEntityMapper;
 import gift.common.mapper.EntityToDtoMapper;
+import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomAuth;
 import gift.common.validation.annotation.AllowedSortFields;
+import gift.dto.CustomPageRequest;
 import gift.dto.user.UserCreateRequest;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserDefaultResponse;
@@ -18,8 +20,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +38,9 @@ public class UserController {
     @PreAuthorize(UserRole.ROLE_ADMIN)
     public ResponseEntity<CustomPage<UserAdminResponse>> getAllUsers(
             @AllowedSortFields(value = { "id", "email", "createdAt", "updatedAt" }, showAllowedFields = true)
-            @PageableDefault(size = 5) Pageable pageable
+            @Valid @ModelAttribute CustomPageRequest request
     ) {
-        CustomPage<User> userPage = userService.findAllBy(pageable);
+        CustomPage<User> userPage = userService.findAllBy(ModelMapper.toPageRequest(request));
         return new ResponseEntity<>(
                 CustomPage.convert(userPage, EntityToDtoMapper::toAdminDto), HttpStatus.OK
         );

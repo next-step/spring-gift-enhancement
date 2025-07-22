@@ -2,9 +2,11 @@ package gift.controller.api;
 
 import gift.common.aop.annotation.PreAuthorize;
 import gift.common.mapper.EntityToDtoMapper;
+import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.common.validation.annotation.AllowedSortFields;
+import gift.dto.CustomPageRequest;
 import gift.dto.wishlist.WishedProductCreateRequest;
 import gift.dto.wishlist.WishedProductPatchRequest;
 import gift.dto.wishlist.UpdateWishedProductRequest;
@@ -13,8 +15,6 @@ import gift.entity.UserRole;
 import gift.entity.WishedProduct;
 import gift.service.wishlist.WishedProductService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +37,13 @@ public class WishlistController {
                 value = {"id", "product.price", "product.name", "quantity", "createdAt", "updatedAt"},
                 showAllowedFields = true
             )
-            @PageableDefault(size = 5) Pageable pageable,
+            @Valid @ModelAttribute CustomPageRequest request,
             @RequestAttribute("auth") CustomAuth auth
     ) {
-        CustomPage<WishedProduct> wishlistPage = wishedProductService.findAllBy(auth.userId(), pageable);
+        CustomPage<WishedProduct> wishlistPage = wishedProductService.findAllBy(
+                auth.userId(),
+                ModelMapper.toPageRequest(request)
+        );
         return new ResponseEntity<>(
                 CustomPage.convert(wishlistPage, EntityToDtoMapper::toDto), HttpStatus.OK
         );

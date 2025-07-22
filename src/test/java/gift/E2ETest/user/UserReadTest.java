@@ -114,7 +114,7 @@ public class UserReadTest extends  AbstractUserTest{
     }
 
     @Test
-    @DisplayName("다건 사용자 성공 테스트: page, size 파라미터가 음수인 경우(기본값 적용)")
+    @DisplayName("다건 사용자 실패 테스트: page, size 파라미터가 음수인 경우 (400 Bad Request)")
     public void find_All_Users_Success_Negative_Page_And_Size_Request() {
         String url = getRequestUrl();
         RestAssured.given()
@@ -125,9 +125,8 @@ public class UserReadTest extends  AbstractUserTest{
                 .when()
                 .get(url)
                 .then()
-                .statusCode(200)
-                .body("page", equalTo(0)) // 기본값 0으로 설정
-                .body("size", equalTo(5));// 기본값 5로 설정
+                .statusCode(400) // 유효성 검사 오류 발생
+                .body("validationErrors", notNullValue()); // 유효성 검사 오류가 발생해야 함
     }
 
     @Test
