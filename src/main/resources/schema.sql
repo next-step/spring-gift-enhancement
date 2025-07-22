@@ -21,4 +21,13 @@ CREATE TABLE wish(
      FOREIGN KEY (product_id) REFERENCES product(id),
      UNIQUE(member_id, product_id)
 
-)
+);
+
+CREATE TABLE option(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL ,
+    quantity BIGINT NOT NULL ,
+    product_id BIGINT NOT NULL ,
+    FOREIGN KEY (product_id) REFERENCES product(id)
+
+);

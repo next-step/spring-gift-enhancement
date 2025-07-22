@@ -30,7 +30,7 @@ public class WishPageDto<T> {
 
     }
 
-    public static <T> WishPageDto<T> fromEntity(Page<T> page) {
+    public static <T> WishPageDto<T> from(Page<T> page) {
         return new WishPageDto<>(
                 page.getContent(),
                 page.getNumber() + 1,
