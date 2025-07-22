@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.product;
 
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;

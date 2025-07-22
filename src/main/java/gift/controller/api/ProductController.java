@@ -1,10 +1,14 @@
-package gift.controller;
+package gift.controller.api;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.service.ProductService;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
+import gift.dto.product.option.OptionRequestDto;
+import gift.dto.product.option.OptionResponseDto;
+import gift.service.product.ProductService;
+import gift.service.product.option.OptionService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,9 +23,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final OptionService optionService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, OptionService optionService) {
         this.productService = productService;
+        this.optionService = optionService;
     }
 
     @GetMapping("/all")
@@ -34,7 +40,12 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductResponseDto>> findProducts(
             @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<ProductResponseDto> productPage = productService.findProducts(pageable);
+
+        int pageNumber = Math.max(pageable.getPageNumber() - 1, 0);
+
+        Pageable adjustedPageable = PageRequest.of(pageNumber, pageable.getPageSize(), pageable.getSort());
+
+        Page<ProductResponseDto> productPage = productService.findProducts(adjustedPageable);
         return ResponseEntity.ok(productPage);
     }
 
@@ -67,6 +78,44 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("{id}/options")
+    public ResponseEntity<List<OptionResponseDto>> findAllOptions(
+            @PathVariable Long id
+    ) {
+
+        return ResponseEntity.ok(optionService.findAllOptionByProductId(id));
+    }
+
+    @PostMapping("{id}/options")
+    public ResponseEntity<OptionResponseDto> createOption(
+            @PathVariable Long id,
+            @Valid @RequestBody OptionRequestDto dto
+            ) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(optionService.saveOption(id, dto));
+    }
+
+    @PutMapping("{productId}/options/{optionId}")
+    public ResponseEntity<OptionResponseDto> updateOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            @Valid @RequestBody OptionRequestDto dto
+    ) {
+
+        return ResponseEntity.ok(optionService.updateOption(optionId, dto));
+    }
+
+    @DeleteMapping("{productId}/options/{optionId}")
+    public ResponseEntity<Void> deleteOption(
+            @PathVariable Long productId,
+            @PathVariable Long optionId
+    ) {
+
+        optionService.deleteOption(optionId);
         return ResponseEntity.noContent().build();
     }
 

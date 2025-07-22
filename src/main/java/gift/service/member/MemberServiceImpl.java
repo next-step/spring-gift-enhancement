@@ -1,9 +1,9 @@
-package gift.service;
+package gift.service.member;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.MemberRoleRequestDto;
-import gift.dto.TokenResponseDto;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
+import gift.dto.member.MemberRoleRequestDto;
+import gift.dto.member.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.RoleType;
 import gift.exception.member.InvalidCredentialsException;
@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional(readOnly = true)
 @Service
 public class MemberServiceImpl implements MemberService {
 
@@ -31,7 +30,6 @@ public class MemberServiceImpl implements MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Transactional
     @Override
     public TokenResponseDto registerMember(MemberRequestDto dto) {
 
@@ -118,7 +116,6 @@ public class MemberServiceImpl implements MemberService {
                 );
     }
 
-    @Transactional
     @Override
     public MemberResponseDto saveMember(MemberRequestDto dto) {
 
@@ -155,7 +152,6 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-    @Transactional
     @Override
     public void deleteMember(Long id) {
         if (!memberRepository.existsById(id)) {

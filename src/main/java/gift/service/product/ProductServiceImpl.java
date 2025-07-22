@@ -1,10 +1,12 @@
-package gift.service;
+package gift.service.product;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.product.ProductNotFoundException;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
+import gift.service.product.option.OptionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,14 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional(readOnly = true)
 @Service
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, OptionRepository optionRepository) {
         this.productRepository = productRepository;
+        this.optionRepository = optionRepository;
     }
 
     public List<ProductResponseDto> findAllProducts(){
@@ -91,7 +94,6 @@ public class ProductServiceImpl implements ProductService{
                 );
     }
 
-    @Transactional
     @Override
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
 
@@ -159,6 +161,7 @@ public class ProductServiceImpl implements ProductService{
             );
         }
 
+        optionRepository.deleteAllByProductId(id);
         productRepository.deleteById(id);
     }
 }

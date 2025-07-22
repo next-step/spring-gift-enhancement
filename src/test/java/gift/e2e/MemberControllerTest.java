@@ -1,8 +1,8 @@
-package gift.controller;
+package gift.e2e;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.TokenResponseDto;
-import gift.service.MemberService;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.TokenResponseDto;
+import gift.service.member.MemberService;
 import gift.util.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.member;
 
 import gift.entity.RoleType;
 

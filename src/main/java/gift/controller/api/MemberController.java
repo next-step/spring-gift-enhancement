@@ -1,7 +1,10 @@
-package gift.controller;
+package gift.controller.api;
 
-import gift.dto.*;
-import gift.service.MemberService;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
+import gift.dto.member.MemberRoleRequestDto;
+import gift.dto.member.TokenResponseDto;
+import gift.service.member.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

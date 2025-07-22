@@ -1,9 +1,9 @@
-package gift.controller;
+package gift.controller.admin;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.MemberRoleRequestDto;
-import gift.service.MemberService;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
+import gift.dto.member.MemberRoleRequestDto;
+import gift.service.member.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,10 +1,10 @@
-package gift.controller;
+package gift.e2e;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.TokenResponseDto;
-import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
-import gift.service.MemberService;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.TokenResponseDto;
+import gift.dto.wish.WishRequestDto;
+import gift.dto.wish.WishResponseDto;
+import gift.service.member.MemberService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
