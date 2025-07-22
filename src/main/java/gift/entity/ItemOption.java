@@ -1,6 +1,7 @@
 package gift.entity;
 
 import gift.exception.itemException.ItemQuantityException;
+import gift.exception.itemException.OptionExceptionException;
 import jakarta.persistence.*;
 
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ public class ItemOption {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private Item item;
+
 
     @Column(length = 50, nullable = false)
     private String optionName;
@@ -45,6 +47,9 @@ public class ItemOption {
 
     public ItemOption(Item item, String optionName, Integer quantity) {
         setItem(item);
+        if (!PATTERN.matcher(optionName).matches()) {
+            throw new OptionExceptionException();
+        }
         this.optionName = optionName;
         this.quantity = quantity;
     }
