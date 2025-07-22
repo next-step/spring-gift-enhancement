@@ -3,7 +3,7 @@ package gift.product.controller.api;
 import gift.product.domain.Product;
 import gift.product.dto.ProductPatchRequestDto;
 import gift.product.dto.ProductSaveRequestDto;
-import gift.product.dto.ResponseDto;
+import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -26,41 +26,41 @@ public class ProductController {
     }
 
     @GetMapping("/product/list")
-    public ResponseEntity<List<ResponseDto>> findAll() {
-        List<ResponseDto> responseDtoList = productService.findAll()
+    public ResponseEntity<List<ProductResponseDto>> findAll() {
+        List<ProductResponseDto> productResponseDtoList = productService.findAll()
                 .stream()
-                .map(ResponseDto::new)
+                .map(ProductResponseDto::new)
                 .toList();
-        return ResponseEntity.ok(responseDtoList);
+        return ResponseEntity.ok(productResponseDtoList);
     }
 
     @GetMapping("/product/page")
-    public ResponseEntity<Page<ResponseDto>> findAllByPage(
+    public ResponseEntity<Page<ProductResponseDto>> findAllByPage(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
             ) {
-        Page<ResponseDto> responseDtoPage = productService.findAllByPage(pageable)
-                .map(ResponseDto::new);
+        Page<ProductResponseDto> responseDtoPage = productService.findAllByPage(pageable)
+                .map(ProductResponseDto::new);
         return ResponseEntity.ok(responseDtoPage);
     }
 
     @PostMapping("/product/add")
-    public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid ProductSaveRequestDto productSaveRequestDto) {
+    public ResponseEntity<ProductResponseDto> saveProduct(@RequestBody @Valid ProductSaveRequestDto productSaveRequestDto) {
         Product product =  productService.createProduct(productSaveRequestDto);
         return ResponseEntity
                 .created(URI.create("/api/product/" + product.getId()))
-                .body(new ResponseDto(product));
+                .body(new ProductResponseDto(product));
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<ResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponseDto> findById(@PathVariable Long id) {
         Product product = productService.findById(id);
-        return ResponseEntity.ok(new ResponseDto(product));
+        return ResponseEntity.ok(new ProductResponseDto(product));
     }
 
     @PatchMapping("/product/{id}/update")
-    public ResponseEntity<ResponseDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductPatchRequestDto productPatchRequestDto) {
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductPatchRequestDto productPatchRequestDto) {
         Product product = productService.updateProduct(id, productPatchRequestDto);
-        return ResponseEntity.ok(new ResponseDto(product));
+        return ResponseEntity.ok(new ProductResponseDto(product));
     }
 
     @DeleteMapping("/product/{id}/delete")

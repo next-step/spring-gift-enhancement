@@ -1,7 +1,6 @@
 package gift.wishlist;
 
 import gift.auth.LoginUser;
-import gift.product.dto.ResponseDto;
 import gift.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

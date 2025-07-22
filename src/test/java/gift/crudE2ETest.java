@@ -3,7 +3,7 @@ package gift;
 import gift.product.dto.ProductOptionSaveRequestDto;
 import gift.product.dto.ProductPatchRequestDto;
 import gift.product.dto.ProductSaveRequestDto;
-import gift.product.dto.ResponseDto;
+import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import org.springframework.web.client.RestClientResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -50,12 +49,12 @@ class crudE2ETest {
         List<ProductOptionSaveRequestDto> options = new ArrayList<>();
         options.add(new ProductOptionSaveRequestDto("option2", 200));
         ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2", 2000, "imageUrl2", options);
-        ResponseEntity<ResponseDto> response = restClient
+        ResponseEntity<ProductResponseDto> response = restClient
                 .post()
                 .uri(url)
                 .body(productSaveRequestDto)
                 .retrieve()
-                .toEntity(ResponseDto.class);
+                .toEntity(ProductResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody())
@@ -88,11 +87,11 @@ class crudE2ETest {
     @Test
     void 상품이_정상적으로_조회() {
         String url = "http://localhost:" + port + "/api/product/" + lastId;
-        ResponseEntity<ResponseDto> response = restClient
+        ResponseEntity<ProductResponseDto> response = restClient
                 .get()
                 .uri(url)
                 .retrieve()
-                .toEntity(ResponseDto.class);
+                .toEntity(ProductResponseDto.class);
 
         assertThat(response.getBody())
                 .extracting("name", "price", "imageUrl")
@@ -119,12 +118,12 @@ class crudE2ETest {
     void 상품이_정상적으로_수정() {
         String url = "http://localhost:" + port + "/api/product/" + lastId + "/update";
         ProductPatchRequestDto productPatchRequestDto = new ProductPatchRequestDto("updatedName", 10, "updatedUrl");
-        ResponseEntity<ResponseDto> response = restClient
+        ResponseEntity<ProductResponseDto> response = restClient
                 .patch()
                 .uri(url)
                 .body(productPatchRequestDto)
                 .retrieve()
-                .toEntity(ResponseDto.class);
+                .toEntity(ProductResponseDto.class);
 
         assertThat(response.getBody())
                 .extracting("name", "price", "imageUrl")
@@ -152,11 +151,11 @@ class crudE2ETest {
     @Test
     void 상품이_정상적으로_삭제() {
         String url = "http://localhost:" + port + "/api/product/" + lastId + "/delete";
-        ResponseEntity<ResponseDto> response = restClient
+        ResponseEntity<ProductResponseDto> response = restClient
                 .delete()
                 .uri(url)
                 .retrieve()
-                .toEntity(ResponseDto.class);
+                .toEntity(ProductResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }

@@ -4,21 +4,21 @@ import gift.product.domain.Product;
 
 import java.util.List;
 
-public class ResponseDto {
+public class ProductResponseDto {
     private String name;
     private int price;
     private String imageUrl;
     private List<ProductOptionResponseDto> options;
 
-    public ResponseDto() {}
+    public ProductResponseDto() {}
 
-    public ResponseDto(String name, Integer price, String imageUrl) {
+    public ProductResponseDto(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
     }
 
-    public ResponseDto(Product product) {
+    public ProductResponseDto(Product product) {
         this.name = product.getName();
         this.price = product.getPrice();
         this.imageUrl = product.getImageUrl();
