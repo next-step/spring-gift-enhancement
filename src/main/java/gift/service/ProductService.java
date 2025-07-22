@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDTO;
 import gift.dto.ProductResponseDTO;
 import gift.entity.Product;
+import gift.entity.Option;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
@@ -25,13 +27,19 @@ public class ProductService {
     public ProductResponseDTO create(ProductRequestDTO dto) {
         Product product = new Product();
         product.updateFromProductRequestDTO(dto);
-        return new ProductResponseDTO(productRepository.save(product));
+        Product savedProduct = productRepository.save(product);
+
+        Option defaultOption = new Option("기본", 100, savedProduct);
+        savedProduct.addOption(defaultOption);
+
+        return new ProductResponseDTO(productRepository.save(savedProduct));
     }
 
     @Transactional
     public Optional<ProductResponseDTO> update(Long id, ProductRequestDTO dto) {
         return productRepository.findById(id).map(product -> {
             product.updateFromProductRequestDTO(dto);
+            product.validateHasOptions();
             return productRepository.save(product);
         }).map(ProductResponseDTO::new);
     }

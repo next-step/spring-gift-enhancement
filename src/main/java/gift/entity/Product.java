@@ -80,4 +80,14 @@ public class Product {
         return this.options.stream()
             .anyMatch(option -> option.getName().equals(name));
     }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void validateHasOptions() {
+        if (this.options.isEmpty()) {
+            throw new IllegalStateException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
+        }
+    }
 }
