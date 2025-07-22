@@ -97,7 +97,7 @@ public class Product {
         }
     }
 
-    public void removeOptionById(Long optionId) {
+    public void removeOptionByOptionId(Long optionId) {
         Option option = getOptionByOptionId(optionId);
 
         removeOption(option);

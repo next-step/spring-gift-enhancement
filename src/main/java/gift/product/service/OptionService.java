@@ -67,7 +67,7 @@ public class OptionService {
     public void deleteOption(Long productId, Long optionId) {
         Product product = getProduct(productId);
 
-        product.removeOptionById(optionId);
+        product.removeOptionByOptionId(optionId);
     }
 
     private Product getProduct(Long productId) {
