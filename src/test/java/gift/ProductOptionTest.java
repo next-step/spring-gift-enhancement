@@ -55,7 +55,7 @@ class ProductOptionTest {
 
         assertThatThrownBy(() -> new ProductOption(name, quantity))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("옵션 이름에 허용되지 않는 특수문자가 포함되어 있습니다.");
+                .hasMessageContaining("옵션 이름에 허용되지 않는 특수문자가 포함되어 있습니다: [@#$%]");
     }
 
     @Test

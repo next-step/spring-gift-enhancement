@@ -108,7 +108,8 @@ public class ProductIntegrationTest {
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("옵션 이름에 허용되지 않는 특수문자가 포함되어 있습니다: [@]"));
     }
 
     @DisplayName("상품명에 허용된 특수문자 포함 시 성공")
