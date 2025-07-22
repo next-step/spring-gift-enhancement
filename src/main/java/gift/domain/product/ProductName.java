@@ -7,6 +7,7 @@ import java.util.Objects;
 public class ProductName {
     private static final int MAX_PRODUCT_NAME_LENGTH = 15;
     private static final String ALLOWED_NAME_PATTERN = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ()\\[\\]+\\-&/_\\s]*$";
+    private static final String ALLOWED_CHAR_PATTERN = "[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ()\\[\\]+\\-&/_\\s]";
 
     private String productName;
 
@@ -24,8 +25,14 @@ public class ProductName {
         if (name.length() > MAX_PRODUCT_NAME_LENGTH) {
             throw new IllegalArgumentException("상품명은 " + MAX_PRODUCT_NAME_LENGTH + "자를 초과할 수 없습니다.");
         }
-        if (!name.matches(ALLOWED_NAME_PATTERN)) {
-            throw new IllegalArgumentException("상품명에 허용되지 않은 특수문자가 포함되어 있습니다.");
+        if (!name.matches(ALLOWED_NAME_PATTERN)){
+            String invalidChars = name.chars()
+                    .mapToObj(c -> (char) c)
+                    .filter(c -> !String.valueOf(c).matches(ALLOWED_CHAR_PATTERN))
+                    .distinct()
+                    .map(String::valueOf)
+                    .reduce("", (a, b) -> a + b);
+            throw new IllegalArgumentException("옵션 이름에 허용되지 않는 특수문자가 포함되어 있습니다: [" + invalidChars + "]");
         }
     }
 

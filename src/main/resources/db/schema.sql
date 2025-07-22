@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS product_options;
 DROP TABLE IF EXISTS wishes;
 DROP TABLE IF EXISTS products;
 

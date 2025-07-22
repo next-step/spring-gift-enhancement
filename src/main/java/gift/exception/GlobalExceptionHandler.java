@@ -7,11 +7,14 @@ import gift.exception.product.MdApprovalMissingException;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.wish.WishAlreadyExistsException;
 import gift.exception.wish.WishNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -74,11 +77,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
     @ExceptionHandler(MdApprovalMissingException.class)
     public ResponseEntity<String> handleMdApprovalMissingException(MdApprovalMissingException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
@@ -87,5 +85,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<String> handleMemberNotFoundException(MemberNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        if (ex.getCause() instanceof ConstraintViolationException cve &&
+                cve.getConstraintName().contains("product_options_product_id_name_key")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("해당 상품에 이미 존재하는 옵션명입니다.");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("데이터 무결성 오류");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return Map.of("message", ex.getMessage());
     }
 }

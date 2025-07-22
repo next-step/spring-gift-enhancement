@@ -1,8 +1,10 @@
 package gift.service;
 
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.entity.ProductOption;
 import gift.exception.product.MdApprovalException;
 import gift.exception.product.MdApprovalMissingException;
 import gift.exception.product.ProductNotFoundException;
@@ -49,7 +51,18 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
         validateMdApprovalForSave(dto);
+        if (dto.options() == null || dto.options().isEmpty()) {
+            throw new IllegalArgumentException("상품에는 하나 이상의 옵션이 있어야 합니다.");
+        }
+
         Product product = new Product(dto.name(), dto.price(), dto.imageUrl());
+
+        for (ProductOptionRequest optionRequest : dto.options()) {
+            ProductOption option = new ProductOption(optionRequest.getName(), optionRequest.getQuantity());
+            product.addOption(option);
+        }
+        product.validateOptions();
+
         Product savedProduct = productRepository.save(product);
         return new ProductResponseDto(savedProduct);
     }

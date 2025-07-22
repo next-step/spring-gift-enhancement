@@ -2,6 +2,7 @@ package gift;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.dto.ProductOptionRequest;
 import gift.dto.ProductRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,6 +35,9 @@ public class ProductIntegrationTest {
     private ObjectMapper objectMapper;
 
     private String token;
+    private static final List<ProductOptionRequest> DEFAULT_OPTIONS = List.of(
+            new ProductOptionRequest("기본 옵션", 10)
+    );
 
     @BeforeEach
     void setUp() throws Exception {
@@ -56,7 +61,7 @@ public class ProductIntegrationTest {
     @DisplayName("상품 생성 - 성공")
     @Test
     void createProduct_success() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("테스트상품", 1000L, "image.jpg");
+        ProductRequestDto dto = new ProductRequestDto("테스트상품", 1000L, "image.jpg", DEFAULT_OPTIONS);
 
         mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
@@ -71,7 +76,7 @@ public class ProductIntegrationTest {
     @DisplayName("상품명 15자 초과 시 실패")
     @Test
     void createProduct_nameTooLong() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("이것은15자를초과한상품이름입니다", 1000L, "image.jpg");
+        ProductRequestDto dto = new ProductRequestDto("이것은15자를초과한상품이름입니다", 1000L, "image.jpg", DEFAULT_OPTIONS);
 
         mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
@@ -83,7 +88,7 @@ public class ProductIntegrationTest {
     @DisplayName("상품명 15자 이하로 생성 성공")
     @Test
     void createProduct_nameWithinLimit() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("이것은열다섯글자상품이름입니다", 1000L, "image.jpg");
+        ProductRequestDto dto = new ProductRequestDto("이것은열다섯글자상품이름입니다", 1000L, "image.jpg", DEFAULT_OPTIONS);
         mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,19 +102,20 @@ public class ProductIntegrationTest {
     @DisplayName("상품명에 특수문자 포함 시 실패")
     @Test
     void createProduct_specialCharInName() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("잘못된@상품이름", 1000L, "image.jpg");
+        ProductRequestDto dto = new ProductRequestDto("잘못된@상품이름", 1000L, "image.jpg", DEFAULT_OPTIONS);
 
         mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("옵션 이름에 허용되지 않는 특수문자가 포함되어 있습니다: [@]"));
     }
 
     @DisplayName("상품명에 허용된 특수문자 포함 시 성공")
     @Test
     void createProduct_allowedSpecialChars() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("()[]+-&/_", 1000L, "image.jpg");
+        ProductRequestDto dto = new ProductRequestDto("()[]+-&/_", 1000L, "image.jpg", DEFAULT_OPTIONS);
 
         mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
@@ -132,7 +138,7 @@ public class ProductIntegrationTest {
     @DisplayName("상품 단건 조회")
     @Test
     void findProductById() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("단건상품", 2000L, "image.jpg");
+        ProductRequestDto dto = new ProductRequestDto("단건상품", 2000L, "image.jpg", DEFAULT_OPTIONS);
 
         MvcResult result = mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
@@ -153,7 +159,7 @@ public class ProductIntegrationTest {
     @DisplayName("상품 수정")
     @Test
     void updateProduct() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("수정전", 3000L, "img.jpg");
+        ProductRequestDto dto = new ProductRequestDto("수정전", 3000L, "img.jpg", DEFAULT_OPTIONS);
 
         MvcResult result = mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
@@ -164,7 +170,7 @@ public class ProductIntegrationTest {
 
         Long id = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
 
-        ProductRequestDto updateDto = new ProductRequestDto("수정후", 5000L, "img2.jpg");
+        ProductRequestDto updateDto = new ProductRequestDto("수정후", 5000L, "img2.jpg", DEFAULT_OPTIONS);
 
         mockMvc.perform(put("/api/products/" + id)
                         .header("Authorization", "Bearer " + token)
@@ -178,7 +184,7 @@ public class ProductIntegrationTest {
     @DisplayName("상품 삭제")
     @Test
     void deleteProduct() throws Exception {
-        ProductRequestDto dto = new ProductRequestDto("삭제상품", 1000L, "img.jpg");
+        ProductRequestDto dto = new ProductRequestDto("삭제상품", 1000L, "img.jpg", DEFAULT_OPTIONS);
 
         MvcResult result = mockMvc.perform(post("/api/products")
                         .header("Authorization", "Bearer " + token)
