@@ -2,9 +2,11 @@ package gift.controller.view;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+import gift.dto.api.OptionResponseDto;
 import gift.dto.api.ProductUpdateRequestDto;
 import gift.dto.view.ProductViewRequestDto;
 import gift.entity.Product;
+import gift.service.OptionService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.NoSuchElementException;
@@ -26,9 +28,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminProductViewController {
 
     private final ProductService productService;
+    private final OptionService optionService;
 
-    public AdminProductViewController(ProductService productService) {
+    public AdminProductViewController(ProductService productService, OptionService optionService) {
         this.productService = productService;
+        this.optionService = optionService;
     }
 
     // 상품 목록 화면
@@ -79,10 +83,13 @@ public class AdminProductViewController {
     @GetMapping("/{id}")
     public String viewProductDetail(@PathVariable Long id,
         Model model,
-        RedirectAttributes ra) {
+        RedirectAttributes ra
+    ) {
         try {
             Product product = productService.getProductById(id);
+            Page<OptionResponseDto> options = optionService.getOptionList(id, Pageable.unpaged());
             model.addAttribute("product", product);
+            model.addAttribute("options", options.getContent());
             return "products/admin/detail";
         } catch (NoSuchElementException e) {
             ra.addFlashAttribute("errorMsg", "상품을 찾을 수 없습니다.");
