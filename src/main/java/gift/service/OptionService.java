@@ -4,8 +4,6 @@ import gift.dto.OptionRequestDto;
 import gift.dto.OptionResponseDto;
 import gift.entity.Option;
 import gift.entity.Product;
-import gift.exception.DuplicateOptionNameException;
-import gift.exception.InvalidEntityDataException;
 import gift.exception.ResourceNotFoundException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
@@ -60,46 +58,23 @@ public class OptionService {
     @Transactional
     public OptionResponseDto updateOption(Long productId, Long optionId, OptionRequestDto optionRequestDto) {
         Product product = findProductById(productId);
-        Option option = findOptionById(optionId);
 
-        // 해당 상품에 존재하는 옵션이 맞는지 확인
-        if (!option.getProduct().getId().equals(product.getId())) {
-            throw new ResourceNotFoundException("해당 상품에 속한 옵션이 아닙니다.");
-        }
+        product.updateOption(optionId, optionRequestDto.name(), optionRequestDto.quantity());
 
-        // 옵션을 수정하기 전에 이름이 중복되지 않는지 확인
-        if (!option.getName().equals(optionRequestDto.name())) {
-            boolean isDuplicate = product.getOptions().stream()
-                    .anyMatch(opt -> opt.getName().equals(optionRequestDto.name()));
-            if (isDuplicate) {
-                throw new DuplicateOptionNameException("이미 존재하는 옵션 이름입니다.");
-            }
-        }
-
-        option.updateOption(optionRequestDto.name(), optionRequestDto.quantity());
+        Option updateOption = findOptionById(optionId);
 
         return new OptionResponseDto(
-                option.getId(),
-                option.getName(),
-                option.getQuantity()
+                updateOption.getId(),
+                updateOption.getName(),
+                updateOption.getQuantity()
         );
     }
 
     @Transactional
     public void deleteOption(Long productId, Long optionId) {
         Product product = findProductById(productId);
-        Option option = findOptionById(optionId);
 
-        // 해당 상품에 존재하는 옵션이 맞는지 확인
-        if (!option.getProduct().getId().equals(product.getId())) {
-            throw new ResourceNotFoundException("해당 상품에 속한 옵션이 아닙니다.");
-        }
-
-        if (product.getOptions().size() <= 1) {
-            throw new InvalidEntityDataException("상품에는 최소 한 개의 옵션이 존재해야 하므로 삭제할 수 없습니다.");
-        }
-
-        optionRepository.delete(option);
+        product.removeOption(optionId);
     }
 
     private Product findProductById(Long productId) {

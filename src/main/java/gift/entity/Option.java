@@ -63,6 +63,10 @@ public class Option {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public void updateOption(String name, int quantity) {
         validate(name, quantity);
         this.name = name;
