@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.OptionRequestDTO;
 import gift.dto.ProductRequestDTO;
 import gift.dto.ProductResponseDTO;
 import gift.entity.Product;
@@ -29,8 +30,10 @@ public class ProductService {
         product.updateFromProductRequestDTO(dto);
         Product savedProduct = productRepository.save(product);
 
-        Option defaultOption = new Option("기본", 100, savedProduct);
-        savedProduct.addOption(defaultOption);
+        for (OptionRequestDTO optionDto : dto.getOptions()) {
+            Option option = new Option(optionDto.name(), optionDto.quantity(), savedProduct);
+            savedProduct.addOption(option);
+        }
 
         return new ProductResponseDTO(productRepository.save(savedProduct));
     }
