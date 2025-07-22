@@ -1,11 +1,14 @@
 package gift.wishproduct.service;
 
 import gift.domain.Member;
+import gift.domain.Option;
 import gift.domain.Product;
 import gift.domain.WishProduct;
 import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.service.MemberService;
+import gift.option.dto.OptionResponse;
+import gift.option.service.OptionService;
 import gift.product.service.ProductService;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.dto.WishProductResponse;
@@ -26,28 +29,33 @@ import java.util.UUID;
 public class WishProductServiceV1 implements WishProductService {
 
     private final WishProductRepository wishProductRepository;
-    private final ProductService productService;
     private final MemberService memberService;
+    private final OptionService optionService;
 
-    public WishProductServiceV1(WishProductRepository wishProductRepository, ProductService productService, MemberService memberService, EntityManager em) {
+    public WishProductServiceV1(WishProductRepository wishProductRepository, MemberService memberService, EntityManager em, OptionService optionService) {
         this.wishProductRepository = wishProductRepository;
-        this.productService = productService;
         this.memberService = memberService;
+        this.optionService = optionService;
     }
 
 
     @Override
     public Long save(WishProductCreateReq dto, String email) {
 
-        Product product = productService.findById(dto.getProductId());
+        Option option = optionService.findByIdWithProduct(dto.getOptionId());
+
+        Product product = option.getProduct();
+
+        if (!product.getId().equals(dto.getProductId()))
+            throw new BadRequestEntityException("상품과 옵션이 정보가 일치하지 않습니다.");
 
         Member owner = memberService.findByEmail(email);
 
-        WishProduct wishProduct = wishProductRepository.findByOwnerIdAndProductId(owner.getId(), product.getId())
+        WishProduct wishProduct = wishProductRepository.findByOwnerIdAndOptionId(owner.getId(), option.getId())
                 .orElse(null);
 
         if (wishProduct == null) {
-            WishProduct saved = wishProductRepository.save(new WishProduct(dto.getQuantity(), owner, product));
+            WishProduct saved = wishProductRepository.save(new WishProduct(dto.getQuantity(), owner, product, option));
 
             return saved.getId();
         }
@@ -61,7 +69,7 @@ public class WishProductServiceV1 implements WishProductService {
 
         Member owner = memberService.findByEmail(email);
 
-        return wishProductRepository.findWithProductByOwnerId(owner.getId())
+        return wishProductRepository.findByOwnerIdWithFetch(owner.getId())
                 .stream().map(WishProductResponse::new)
                 .toList();
     }
@@ -70,7 +78,7 @@ public class WishProductServiceV1 implements WishProductService {
     public Page<WishProductResponse> findByEmailWithPage(String email, Pageable pageable) {
         Member owner = memberService.findByEmail(email);
 
-        return wishProductRepository.findWithProductByOwnerIdWithPage(owner.getId(), pageable)
+        return wishProductRepository.findByOwnerIdWithPageAndFetch(owner.getId(), pageable)
                 .map(WishProductResponse::new);
     }
 

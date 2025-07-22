@@ -6,11 +6,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.PageResponse;
 import gift.domain.Member;
+import gift.domain.Option;
 import gift.domain.Product;
 import gift.domain.Role;
 import gift.global.error.ErrorResponse;
 import gift.jwt.JWTUtil;
 import gift.member.repository.MemberRepository;
+import gift.option.dto.OptionCreateRequest;
+import gift.option.repository.OptionRepository;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -27,6 +30,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -41,6 +46,9 @@ class ProductControllerTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OptionRepository optionRepository;
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -66,6 +74,7 @@ class ProductControllerTest {
     }
     @AfterEach
     void clear() {
+        optionRepository.deleteAll();
         productRepository.deleteAll();
         memberRepository.deleteAll();
     }
@@ -75,7 +84,8 @@ class ProductControllerTest {
     @DisplayName("상품 등록 성공")
     void addProductSuccess() {
 
-        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,");
+        OptionCreateRequest options = new OptionCreateRequest("옵션1", 10);
+        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,", List.of(options));
 
         ResponseEntity<Void> response = restClient.post()
                 .body(productDto)
@@ -88,7 +98,8 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 등록 성공 - 상품 이름에 카카오 포함")
     void addProductFailCase1() {
-        ProductCreateRequest productDto = new ProductCreateRequest("카카오", 3000, "data:image/~base64,");
+        OptionCreateRequest options = new OptionCreateRequest("옵션1", 10);
+        ProductCreateRequest productDto = new ProductCreateRequest("카카오", 3000, "data:image/~base64,", List.of(options));
 
         assertThatThrownBy(()->restClient.post()
                 .body(productDto)
@@ -100,7 +111,8 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 등록 실패 - 상품 가격이 0이하")
     void addProductFailCase2() {
-        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 0, "data:image/~base64,");
+        OptionCreateRequest options = new OptionCreateRequest("옵션1", 10);
+        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 0, "data:image/~base64,", List.of(options));
 
         assertThatThrownBy(()->restClient.post()
                 .body(productDto)
@@ -112,7 +124,20 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 등록 실패 - url이 빈 칸")
     void addProductFailCase3() {
-        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 1000, " ");
+        OptionCreateRequest options = new OptionCreateRequest("옵션1", 10);
+        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 1000, " ", List.of(options));
+
+        assertThatThrownBy(()->restClient.post()
+                .body(productDto)
+                .retrieve()
+                .body(ErrorResponse.class))
+                .isInstanceOf(HttpClientErrorException.BadRequest.class);
+    }
+
+    @Test
+    @DisplayName("상품 등록 실패 - option이 존재하지 않음")
+    void addProductFailCase4() {
+        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 1000, " ", List.of());
 
         assertThatThrownBy(()->restClient.post()
                 .body(productDto)
@@ -166,7 +191,6 @@ class ProductControllerTest {
     @DisplayName("상품 업데이트 성공")
     void updateProductSuccess() {
         Product product = addProductCase();
-
         ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data:image/~base64,");
         ResponseEntity<Void> response = restClient.put()
                 .uri("/{id}",product.getId())
@@ -195,7 +219,6 @@ class ProductControllerTest {
     void updateProductFailCase2() {
 
         Product product = addProductCase();
-
         ProductUpdateRequest productDto = new ProductUpdateRequest("카카오", -1, "data:image/~base64,");
         assertThatThrownBy(()->restClient.put()
                 .uri("/{id}", product.getId())
@@ -229,6 +252,7 @@ class ProductControllerTest {
 
 
     @Test
+    @DisplayName("상품 삭제 실패 - 존재하지 않는 상품")
     void deleteProductFail() {
         assertThatThrownBy(()-> {
             restClient.delete()
@@ -238,10 +262,26 @@ class ProductControllerTest {
         }).isInstanceOf(HttpClientErrorException.NotFound.class);
     }
 
+
+    @Test
+    @DisplayName("특정 상품의 옵션 조회")
+    void getOptionSuccess() {
+        Product product = addProductCase();
+
+        ResponseEntity<List> response = restClient.get()
+                .uri("/{id}/options",product.getId())
+                .retrieve()
+                .toEntity(List.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().size()).isEqualTo(1);
+    }
+
+
     private Product addProductCase() {
         Product product = new Product("스윙칩", 3000, "data:image/~base64,", saved);
         Product save = productRepository.save(product);
+        optionRepository.save(new Option("옵션1", 200, product));
         return save;
     }
-
 }

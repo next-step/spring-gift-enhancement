@@ -11,4 +11,7 @@ public final class PatternUtil {
 
     public static final String PRODUCT_NAME_PATTERN
             = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]*$";
+
+    public static final String OPTION_NAME_PATTERN
+            = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]*$";
 }

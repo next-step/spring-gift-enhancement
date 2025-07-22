@@ -8,6 +8,7 @@ public class WishProductResponse {
 
     private Long id;
     private String productName;
+    private String optionName;
     private int price;
     private int quantity;
     private String imageUrl;
@@ -15,6 +16,7 @@ public class WishProductResponse {
     public WishProductResponse(WishProduct wishProduct) {
         this.id = wishProduct.getId();
         this.productName = wishProduct.getProduct().getName();
+        this.optionName = wishProduct.getOption().getName();
         this.price = wishProduct.getProduct().getPrice();
         this.quantity = wishProduct.getQuantity();
         this.imageUrl = wishProduct.getProduct().getImageUrl();
@@ -40,5 +42,9 @@ public class WishProductResponse {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getOptionName() {
+        return optionName;
     }
 }

@@ -34,4 +34,6 @@ public interface MemberService {
     MemberResponse validate(String email, String password);
 
     Member findByEmail(String email);
+
+    void isOwnerOrAdmin(String email, Long memberId);
 }

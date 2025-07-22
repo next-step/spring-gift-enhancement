@@ -1,8 +1,10 @@
 package gift.wishproduct.repository;
 
+import gift.domain.Option;
 import gift.domain.WishProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,13 +15,15 @@ import java.util.UUID;
 public interface WishProductRepository extends JpaRepository<WishProduct, Long> {
 
 
-    @Query("select w from WishProduct w where w.product.id = :productId and w.owner.id = :ownerId")
-    Optional<WishProduct> findByOwnerIdAndProductId(Long ownerId, Long productId);
+    @Query("select w from WishProduct w where w.option.id = :optionId and w.owner.id = :ownerId")
+    Optional<WishProduct> findByOwnerIdAndOptionId(Long ownerId, Long optionId);
 
-    @Query("select w from WishProduct w join fetch w.product where w.owner.id = :ownerId")
-    List<WishProduct> findWithProductByOwnerId(Long ownerId);
+    @EntityGraph(attributePaths = {"product", "option"})
+    @Query("select w from WishProduct w where w.owner.id = :ownerId")
+    List<WishProduct> findByOwnerIdWithFetch(Long ownerId);
 
-    @Query(value = "select w from WishProduct w join fetch w.product where w.owner.id = :ownerId",
+    @EntityGraph(attributePaths = {"product", "option"})
+    @Query(value = "select w from WishProduct w  where w.owner.id = :ownerId",
             countQuery = "select count(w.id) from WishProduct w where w.owner.id = :ownerId")
-    Page<WishProduct> findWithProductByOwnerIdWithPage(Long ownerId, Pageable pageable);
+    Page<WishProduct> findByOwnerIdWithPageAndFetch(Long ownerId, Pageable pageable);
 }

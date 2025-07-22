@@ -2,6 +2,7 @@ package gift.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,10 @@ public class Product {
     private Member member;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WishProduct> wishProducts;
+    private List<Option> options = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WishProduct> wishProducts = new ArrayList<>();
 
     protected Product() {}
 
@@ -76,5 +80,13 @@ public class Product {
 
     public void changeImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public List<WishProduct> getWishProducts() {
+        return wishProducts;
     }
 }

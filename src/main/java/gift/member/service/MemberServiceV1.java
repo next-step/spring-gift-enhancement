@@ -140,6 +140,16 @@ public class MemberServiceV1 implements MemberService{
     }
 
     @Override
+    public void isOwnerOrAdmin(String loginEmail, Long ownerId) {
+        Member loginMember = memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
+
+        if (loginMember.getRole().equals(Role.ADMIN)) return;
+
+        if (!loginMember.getId().equals(ownerId)) throw new BadRequestEntityException("본인의 상품이 아닙니다.");
+    }
+
+    @Override
     public MemberResponse validate(String email, String encodedPassword) {
 
         Member findMember = memberRepository.findByEmail(email)

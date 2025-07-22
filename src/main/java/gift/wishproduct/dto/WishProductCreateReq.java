@@ -9,11 +9,15 @@ public class WishProductCreateReq {
 
     @NotNull
     private Long productId;
+    @NotNull
+    private Long optionId;
+
     @Min(value = 1, message = "1개 이상 주문이 가능합니다.")
     private int quantity;
 
-    public WishProductCreateReq(Long productId, int quantity) {
+    public WishProductCreateReq(Long productId, Long optionId, int quantity) {
         this.productId = productId;
+        this.optionId = optionId;
         this.quantity = quantity;
     }
 
@@ -26,5 +30,9 @@ public class WishProductCreateReq {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public Long getOptionId() {
+        return optionId;
     }
 }

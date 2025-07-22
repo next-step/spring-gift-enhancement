@@ -1,11 +1,14 @@
 package gift.product.dto;
 
 import gift.global.annotation.ImageURLConstraint;
+import gift.option.dto.OptionCreateRequest;
 import gift.product.annotation.ProductNameConstraint;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 import static gift.util.PatternUtil.PRODUCT_NAME_PATTERN;
 
@@ -24,12 +27,16 @@ public class ProductCreateRequest {
     @ImageURLConstraint
     private String imageURL;
 
+    @Size(min = 1, message = "옵션은 최소 1개 이상 입력하셔야합니다.")
+    private List<OptionCreateRequest> options;
+
     protected ProductCreateRequest() {}
 
-    public ProductCreateRequest(String name, int price, String imageURL) {
+    public ProductCreateRequest(String name, int price, String imageURL, List<OptionCreateRequest> options) {
         this.name = name;
         this.price = price;
         this.imageURL = imageURL;
+        this.options = options;
     }
 
     public String getName() {
@@ -42,5 +49,9 @@ public class ProductCreateRequest {
 
     public String getImageURL() {
         return imageURL;
+    }
+
+    public List<OptionCreateRequest> getOptions() {
+        return options;
     }
 }

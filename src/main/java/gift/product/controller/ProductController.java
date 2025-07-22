@@ -2,6 +2,7 @@ package gift.product.controller;
 
 import gift.member.annotation.MyAuthenticalPrincipal;
 import gift.member.dto.AuthMember;
+import gift.option.dto.OptionResponse;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -78,5 +79,13 @@ public class ProductController {
         productService.updateProduct(id, dto, authMember);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/{id}/options")
+    public ResponseEntity<List<OptionResponse>> getOptions(@MyAuthenticalPrincipal AuthMember authMember, @PathVariable Long id) {
+
+        List<OptionResponse> response = productService.findAllOptions(authMember, id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

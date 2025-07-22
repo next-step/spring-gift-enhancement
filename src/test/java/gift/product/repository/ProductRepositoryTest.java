@@ -51,7 +51,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("상품 저장 & 회원 아이디로 조회")
-    void findByMemberId() {
+    void findByMemberIdWithOptions() {
 
         // given
         Member member = new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
@@ -60,7 +60,7 @@ class ProductRepositoryTest {
         productRepository.save(product);
 
         // when
-        List<Product> result = productRepository.findByMemberId(member.getId());
+        List<Product> result = productRepository.findByMemberIdWithOptions(member.getId());
 
         // then
         assertThat(result.size()).isEqualTo(1);
@@ -99,7 +99,7 @@ class ProductRepositoryTest {
         }
 
         // when
-        Page<Product> result = productRepository.findByMemberIdWithPage(member.getId(), PageRequest.of(0, 5));
+        Page<Product> result = productRepository.findByMemberIdWithOptionsAndPage(member.getId(), PageRequest.of(0, 5));
 
         // then
         assertThat(result.getSize()).isEqualTo(5);

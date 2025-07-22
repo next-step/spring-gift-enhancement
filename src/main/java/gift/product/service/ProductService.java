@@ -3,6 +3,7 @@ package gift.product.service;
 
 import gift.domain.Product;
 import gift.member.dto.AuthMember;
+import gift.option.dto.OptionResponse;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -23,4 +24,5 @@ public interface ProductService {
     List<ProductResponse> findByEmail(AuthMember authMember);
     Page<ProductResponse> findByEmailWithPage(AuthMember authMember, Pageable pageable);
     Product findById(Long id);
+    List<OptionResponse> findAllOptions(AuthMember authMember, Long id);
 }

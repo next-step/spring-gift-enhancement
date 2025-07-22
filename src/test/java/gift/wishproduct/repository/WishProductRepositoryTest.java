@@ -1,10 +1,8 @@
 package gift.wishproduct.repository;
 
-import gift.domain.Member;
-import gift.domain.Product;
-import gift.domain.Role;
-import gift.domain.WishProduct;
+import gift.domain.*;
 import gift.member.repository.MemberRepository;
+import gift.option.repository.OptionRepository;
 import gift.product.repository.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -37,15 +35,20 @@ class WishProductRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private OptionRepository optionRepository;
+
     @Test
     @DisplayName("위시 상품 저장 & 조회")
     void save() {
         // given
         Member member = new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
         Product product = new Product("스윙칩", 3000, "image", member);
+        Option option = new Option("옵션1", 10, product);
         memberRepository.save(member);
         productRepository.save(product);
-        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product));
+        optionRepository.save(option);
+        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product,option ));
 
         // when
         WishProduct findWishProduct = wishProductRepository.findById(saved.getId()).get();
@@ -64,12 +67,14 @@ class WishProductRepositoryTest {
         // given
         Member member = new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
         Product product = new Product("스윙칩", 3000, "image", member);
+        Option option = new Option("옵션1", 10, product);
         memberRepository.save(member);
         productRepository.save(product);
-        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product));
+        optionRepository.save(option);
+        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product,option));
 
         // when
-        WishProduct findWishProduct = wishProductRepository.findByOwnerIdAndProductId(member.getId(), product.getId()).get();
+        WishProduct findWishProduct = wishProductRepository.findByOwnerIdAndOptionId(member.getId(), option.getId()).get();
 
         // then
         assertThat(saved.getId()).isEqualTo(findWishProduct.getId());
@@ -85,12 +90,14 @@ class WishProductRepositoryTest {
         // given
         Member member = new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
         Product product = new Product("스윙칩", 3000, "image", member);
+        Option option = new Option("옵션1", 10, product);
         memberRepository.save(member);
         productRepository.save(product);
-        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product));
+        optionRepository.save(option);
+        wishProductRepository.save(new WishProduct(30, member, product,option));
 
         // when
-        List<WishProduct> result = wishProductRepository.findWithProductByOwnerId(member.getId());
+        List<WishProduct> result = wishProductRepository.findByOwnerIdWithFetch(member.getId());
 
         // then
         assertThat(result.size()).isEqualTo(1);
@@ -102,9 +109,11 @@ class WishProductRepositoryTest {
         // given
         Member member = new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
         Product product = new Product("스윙칩", 3000, "image", member);
+        Option option = new Option("옵션1", 10, product);
         memberRepository.save(member);
         productRepository.save(product);
-        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product));
+        optionRepository.save(option);
+        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product, option));
 
         // when
         wishProductRepository.deleteById(saved.getId());
@@ -121,12 +130,14 @@ class WishProductRepositoryTest {
         // given
         Member member = new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
         Product product = new Product("스윙칩", 3000, "image", member);
+        Option option = new Option("옵션1", 10, product);
         memberRepository.save(member);
         productRepository.save(product);
-        wishProductRepository.save(new WishProduct(30, member, product));
+        optionRepository.save(option);
+        WishProduct saved = wishProductRepository.save(new WishProduct(30, member, product, option));
 
         // when
-        Page<WishProduct> result = wishProductRepository.findWithProductByOwnerIdWithPage(member.getId(), PageRequest.of(0, 1));
+        Page<WishProduct> result = wishProductRepository.findByOwnerIdWithPageAndFetch(member.getId(), PageRequest.of(0, 1));
 
         // then
         assertThat(result.getSize()).isEqualTo(1);

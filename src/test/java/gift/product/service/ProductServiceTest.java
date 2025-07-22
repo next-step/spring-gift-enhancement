@@ -7,6 +7,7 @@ import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.dto.AuthMember;
 import gift.member.repository.MemberRepository;
+import gift.option.dto.OptionCreateRequest;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -169,8 +170,6 @@ class ProductServiceTest {
         Member member = addMemberCase();
         Product product = addProductCase(member);
 
-
-
         ProductUpdateRequest updateDto = new ProductUpdateRequest("스윙칩", 3500, "data:image/~base64,");
 
         assertThatThrownBy(()->productService.updateProduct(1L, updateDto,  new AuthMember(member.getEmail(), member.getRole())))
@@ -182,7 +181,8 @@ class ProductServiceTest {
     }
 
     private Product addProductCase(Member member) {
-        Long id = productService.save(new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,"), member.getEmail());
-        return new Product(id, "스윙칩", 3000, "data:image/~base64,",member);
+        OptionCreateRequest options = new OptionCreateRequest("옵션1", 10);
+        Long id = productService.save(new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,", List.of(options)), member.getEmail());
+        return productService.findById(id);
     }
 }

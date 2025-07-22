@@ -95,34 +95,7 @@
 
             $('#result').on('click', '.addBtn', function () {
                 const productId = $(this).data('id');
-                const quantity = prompt("수량을 입력하세요:", "1");
-
-                $.ajax({
-                    url: '/api/wish-products',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        productId: productId,
-                        quantity: Number(quantity)
-                    }),
-                    success: function () {
-                        alert("위시리스트에 추가되었습니다.");
-                    },
-                    error: function (xhr) {
-                        const response = xhr.responseJSON;
-                        let message = "추가 실패";
-
-                        if (response) {
-                            if (response.fieldErrors) {
-                                message = Object.values(response.fieldErrors).join('\n');
-                            } else if (response.globalErrors) {
-                                message = response.globalErrors.map(err => err.message).join('\n');
-                            }
-                        }
-
-                        alert(message);
-                    }
-                });
+                window.location.href = `/products/${productId}/select-option`;
             });
 
             fetchProducts(currentPage);

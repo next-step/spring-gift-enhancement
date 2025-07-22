@@ -5,12 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.PageResponse;
-import gift.domain.Member;
-import gift.domain.Product;
-import gift.domain.Role;
-import gift.domain.WishProduct;
+import gift.domain.*;
 import gift.jwt.JWTUtil;
 import gift.member.repository.MemberRepository;
+import gift.option.repository.OptionRepository;
 import gift.product.dto.ProductResponse;
 import gift.product.repository.ProductRepository;
 import gift.wishproduct.dto.WishProductCreateReq;
@@ -51,6 +49,9 @@ class WishProductControllerTest {
     private WishProductRepository wishProductRepository;
 
     @Autowired
+    private OptionRepository optionRepository;
+
+    @Autowired
     private JWTUtil jwtUtil;
   
     @Autowired
@@ -58,6 +59,7 @@ class WishProductControllerTest {
   
     private Member member;
     private Product product;
+    private Option option;
 
     RestClient restClient;
 
@@ -67,6 +69,7 @@ class WishProductControllerTest {
         member = memberRepository.save(new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR));
         Product save = productRepository.save(new Product("스윙칩", 3000, "data:image/~base64", member));
         product = save;
+        option = optionRepository.save(new Option("옵션1", 10, product));
 
         String token = jwtUtil
                 .createJWT(member.getEmail(), member.getRole().toString(), 1000 * 60L);
@@ -79,9 +82,10 @@ class WishProductControllerTest {
 
     @AfterEach
     void clear() {
-        memberRepository.deleteAll();
-        productRepository.deleteAll();
         wishProductRepository.deleteAll();
+        optionRepository.deleteAll();
+        productRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @Test
@@ -89,7 +93,7 @@ class WishProductControllerTest {
     void addWishProductSuccess() {
 
         // given
-        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
+        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), option.getId(),10);
 
         // when
         ResponseEntity<Void> response = restClient.post()
@@ -194,7 +198,7 @@ class WishProductControllerTest {
 
 
     private WishProduct addWishProduct() {
-        WishProduct wishProduct = new WishProduct(10, member, product);
+        WishProduct wishProduct = new WishProduct(10, member, product,option);
 
         return wishProductRepository.save(wishProduct);
     }

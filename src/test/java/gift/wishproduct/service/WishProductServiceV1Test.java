@@ -1,12 +1,10 @@
 package gift.wishproduct.service;
 
-import gift.domain.Member;
-import gift.domain.Product;
-import gift.domain.Role;
-import gift.domain.WishProduct;
+import gift.domain.*;
 import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.service.MemberService;
+import gift.option.service.OptionService;
 import gift.product.service.ProductService;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.dto.WishProductResponse;
@@ -41,7 +39,7 @@ class WishProductServiceV1Test {
     private MemberService memberService;
 
     @Mock
-    private ProductService productService;
+    private OptionService optionService;
 
     @Test
     @DisplayName("위시 상품 추가 성공 - 새로운 위시 상품")
@@ -50,17 +48,18 @@ class WishProductServiceV1Test {
         // given
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
-        WishProduct wishProduct = addWishProduct(product, member, dto.getQuantity());
+        Option option = addOptionCase(product);
+        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), option.getId(), 10);
+        WishProduct wishProduct = addWishProduct(product, member, option,dto.getQuantity());
 
 
-        given(productService.findById(product.getId()))
-            .willReturn(product);
+        given(optionService.findByIdWithProduct(option.getId()))
+            .willReturn(option);
 
         given(memberService.findByEmail(member.getEmail()))
                 .willReturn(member);
 
-        given(wishProductRepository.findByOwnerIdAndProductId(member.getId(), product.getId()))
+        given(wishProductRepository.findByOwnerIdAndOptionId(member.getId(), option.getId()))
                 .willReturn(Optional.empty());
 
         given(wishProductRepository.save(any(WishProduct.class)))
@@ -73,10 +72,10 @@ class WishProductServiceV1Test {
         // then
         assertThat(savedId).isEqualTo(wishProduct.getId());
         verify(wishProductRepository).save(any(WishProduct.class));
-        verify(productService).findById(product.getId());
+        verify(optionService).findByIdWithProduct(option.getId());
         verify(memberService).findByEmail(member.getEmail());
-        verify(wishProductRepository).findByOwnerIdAndProductId(member.getId(), product.getId());
-        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
+        verify(wishProductRepository).findByOwnerIdAndOptionId(member.getId(), option.getId());
+        verifyNoMoreInteractions(wishProductRepository, optionService, memberService);
     }
 
     @Test
@@ -85,16 +84,17 @@ class WishProductServiceV1Test {
         // given
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
-        WishProduct wishProduct = addWishProduct(product, member, 15);
+        Option option = addOptionCase(product);
+        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), option.getId(), 10);
+        WishProduct wishProduct = addWishProduct(product, member, option,15);
 
-        given(productService.findById(product.getId()))
-                .willReturn(product);
+        given(optionService.findByIdWithProduct(option.getId()))
+                .willReturn(option);
 
         given(memberService.findByEmail(member.getEmail()))
                 .willReturn(member);
 
-        given(wishProductRepository.findByOwnerIdAndProductId(member.getId(), product.getId()))
+        given(wishProductRepository.findByOwnerIdAndOptionId(member.getId(), option.getId()))
                 .willReturn(Optional.of(wishProduct));
 
         // when
@@ -102,10 +102,10 @@ class WishProductServiceV1Test {
 
         // then
         assertThat(updatedId).isEqualTo(wishProduct.getId());
-        verify(productService).findById(product.getId());
+        verify(optionService).findByIdWithProduct(option.getId());
         verify(memberService).findByEmail(member.getEmail());
-        verify(wishProductRepository).findByOwnerIdAndProductId(member.getId(), product.getId());
-        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
+        verify(wishProductRepository).findByOwnerIdAndOptionId(member.getId(), option.getId());
+        verifyNoMoreInteractions(wishProductRepository, optionService, memberService);
     }
 
     @Test
@@ -114,11 +114,12 @@ class WishProductServiceV1Test {
         // given
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
+        Option option = addOptionCase(product);
+        WishProductCreateReq dto = new WishProductCreateReq(product.getId(),option.getId(), 10);
 
 
-        given(productService.findById(product.getId()))
-                .willReturn(product);
+        given(optionService.findByIdWithProduct(option.getId()))
+                .willReturn(option);
 
         given(memberService.findByEmail(member.getEmail()))
                 .willThrow(new NotFoundEntityException("존재하지 않는 회원입니다."));
@@ -126,30 +127,31 @@ class WishProductServiceV1Test {
         // when & then
         assertThatThrownBy(() -> wishProductService.save(dto, member.getEmail()))
                 .isInstanceOf(NotFoundEntityException.class);
-        verify(productService).findById(product.getId());
+        verify(optionService).findByIdWithProduct(option.getId());
         verify(memberService).findByEmail(member.getEmail());
-        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
+        verifyNoMoreInteractions(wishProductRepository, optionService, memberService);
 
     }
 
     @Test
-    @DisplayName("위시 상품 추가 실패 - 존재하지 않는 상품")
+    @DisplayName("위시 상품 추가 실패 - 존재하지 않는 옵션")
     void addWishProductFail2() {
         // given
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
+        Option option = addOptionCase(product);
+        WishProductCreateReq dto = new WishProductCreateReq(product.getId(),option.getId(), 10);
 
 
-        given(productService.findById(product.getId()))
-                .willThrow(new NotFoundEntityException("존재하지 않는 상품입니다."));
+        given(optionService.findByIdWithProduct(option.getId()))
+                .willThrow(new NotFoundEntityException("존재하지 않는 옵션입니다."));
 
 
         // when & then
         assertThatThrownBy(() -> wishProductService.save(dto, member.getEmail()))
                 .isInstanceOf(NotFoundEntityException.class);
-        verify(productService).findById(product.getId());
-        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
+        verify(optionService).findByIdWithProduct(option.getId());
+        verifyNoMoreInteractions(wishProductRepository, optionService, memberService);
 
     }
 
@@ -159,12 +161,13 @@ class WishProductServiceV1Test {
         // given
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProduct wishProduct = addWishProduct(product, member, 15);
+        Option option = addOptionCase(product);
+        WishProduct wishProduct = addWishProduct(product, member, option, 15);
 
         given(memberService.findByEmail(member.getEmail()))
                 .willReturn(member);
 
-        given(wishProductRepository.findWithProductByOwnerId(member.getId()))
+        given(wishProductRepository.findByOwnerIdWithFetch(member.getId()))
                 .willReturn(List.of(wishProduct));
 
         // when
@@ -173,8 +176,8 @@ class WishProductServiceV1Test {
         // then
         assertThat(result.size()).isEqualTo(1);
         verify(memberService).findByEmail(member.getEmail());
-        verify(wishProductRepository).findWithProductByOwnerId(member.getId());
-        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
+        verify(wishProductRepository).findByOwnerIdWithFetch(member.getId());
+        verifyNoMoreInteractions(wishProductRepository, memberService, optionService);
 
     }
 
@@ -183,7 +186,8 @@ class WishProductServiceV1Test {
     void deleteWishProductSuccess() {
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProduct wishProduct = addWishProduct(product, member, 15);
+        Option option = addOptionCase(product);
+        WishProduct wishProduct = addWishProduct(product, member, option,15);
 
         // given
 
@@ -201,7 +205,7 @@ class WishProductServiceV1Test {
         verify(memberService).findByEmail(member.getEmail());
         verify(wishProductRepository).findById(wishProduct.getId());
         verify(wishProductRepository).deleteById(wishProduct.getId());
-        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
+        verifyNoMoreInteractions(wishProductRepository, memberService, optionService);
     }
 
     @Test
@@ -209,7 +213,8 @@ class WishProductServiceV1Test {
     void deleteWishProductFail() {
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProduct wishProduct = addWishProduct(product, member, 15);
+        Option option = addOptionCase(product);
+        WishProduct wishProduct = addWishProduct(product, member, option,15);
 
         // given
 
@@ -227,7 +232,7 @@ class WishProductServiceV1Test {
         // then
         verify(memberService).findByEmail(member.getEmail());
         verify(wishProductRepository).findById(wishProduct.getId());
-        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
+        verifyNoMoreInteractions(wishProductRepository, memberService, optionService);
     }
 
     @Test
@@ -237,7 +242,8 @@ class WishProductServiceV1Test {
 
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProduct wishProduct = addWishProduct(product, member, 15);
+        Option option = addOptionCase(product);
+        WishProduct wishProduct = addWishProduct(product, member, option,15);
 
         given(wishProductRepository.findById(wishProduct.getId()))
                 .willReturn(Optional.of(wishProduct));
@@ -254,7 +260,7 @@ class WishProductServiceV1Test {
 
         verify(wishProductRepository).findById(wishProduct.getId());
         verify(memberService).findByEmail(member.getEmail());
-        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
+        verifyNoMoreInteractions(wishProductRepository, memberService, optionService);
     }
 
     @Test
@@ -264,7 +270,8 @@ class WishProductServiceV1Test {
 
         Member member = addMemberCase();
         Product product = addProductCase(member);
-        WishProduct wishProduct = addWishProduct(product, member, 15);
+        Option option = addOptionCase(product);
+        WishProduct wishProduct = addWishProduct(product, member, option, 15);
 
         given(wishProductRepository.findById(wishProduct.getId()))
                 .willReturn(Optional.of(wishProduct));
@@ -283,7 +290,7 @@ class WishProductServiceV1Test {
 
         verify(wishProductRepository).findById(wishProduct.getId());
         verify(memberService).findByEmail(member.getEmail());
-        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
+        verifyNoMoreInteractions(wishProductRepository, memberService, optionService);
     }
 
 
@@ -296,9 +303,14 @@ class WishProductServiceV1Test {
         return new Product(1L,"스윙칩",3000, "data:image/~base64,",member);
     }
 
-    private WishProduct addWishProduct(Product product, Member member, int quantity) {
-        return new WishProduct(1L, quantity,
-                member, product);
+    private Option addOptionCase(Product product) {
+        return new Option(1L, "옵션1",1000, product);
     }
+    private WishProduct addWishProduct(Product product, Member member,Option option, int quantity) {
+        return new WishProduct(1L, quantity,
+                member, product,option);
+    }
+
+
 
 }

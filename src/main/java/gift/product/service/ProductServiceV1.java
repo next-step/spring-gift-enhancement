@@ -7,6 +7,8 @@ import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.dto.AuthMember;
 import gift.member.service.MemberService;
+import gift.option.dto.OptionResponse;
+import gift.option.service.OptionService;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -25,36 +27,51 @@ public class ProductServiceV1 implements ProductService{
 
     private final ProductRepository productRepository;
     private final MemberService memberService;
+    private final OptionService optionService;
 
-    public ProductServiceV1(ProductRepository productRepository, MemberService memberService) {
+    public ProductServiceV1(ProductRepository productRepository, MemberService memberService, OptionService optionService) {
         this.productRepository = productRepository;
         this.memberService = memberService;
+        this.optionService = optionService;
     }
 
 
     public Long save(ProductCreateRequest dto, String email) {
         Member findMember = memberService.findByEmail(email);
         Product save = productRepository.save(new Product(dto.getName(), dto.getPrice(), dto.getImageURL(), findMember));
+
+        optionService.save(dto.getOptions(), save, new AuthMember(findMember.getEmail(), findMember.getRole()));
+
         return save.getId();
     }
 
     public List<ProductResponse> findAllProducts() {
         return productRepository.findAll()
-                .stream().map(ProductResponse::new)
+                .stream().map(p-> new ProductResponse(p, p.getOptions()
+                        .stream().map(o->new OptionResponse(o.getId(), o.getName(), o.getQuantity()))
+                        .toList()))
                 .toList();
     }
 
     @Override
     public Page<ProductResponse> findAllProductsWithPage(Pageable pageable) {
-        return productRepository.findAllWithPage(pageable)
-                .map(ProductResponse::new);
+        Page<Product> products = productRepository.findAllWithOptionsAndPage(pageable);
+
+        return products.map(
+                p-> new ProductResponse(p, p.getOptions()
+                        .stream().map(o->new OptionResponse(o.getId(), o.getName(), o.getQuantity()))
+                        .toList())
+        );
     }
 
 
     public ProductResponse findProduct(Long id) {
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
-        return new ProductResponse(findProduct);
+        return new ProductResponse(findProduct, findProduct.getOptions()
+                .stream().map(o->new OptionResponse(o.getId(), o.getName(), o.getQuantity()))
+                .toList()
+        );
     }
 
     public void deleteProduct(Long id, AuthMember authMember) {
@@ -62,9 +79,8 @@ public class ProductServiceV1 implements ProductService{
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
 
-        Member findMember = memberService.findByEmail(authMember.getEmail());
 
-        checkIsAdminOrOwner(authMember,findMember, findProduct.getMember().getId());
+        memberService.isOwnerOrAdmin(authMember.getEmail(),findProduct.getMember().getId());
 
         productRepository.deleteById(id);
     }
@@ -72,11 +88,10 @@ public class ProductServiceV1 implements ProductService{
     public void updateProduct(Long id, ProductUpdateRequest dto, AuthMember authMember) {
 
 
-        Product findProduct = productRepository.findById(id)
+        Product findProduct = productRepository.findByIdWithOptions(id)
                 .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
 
-        Member findMember = memberService.findByEmail(authMember.getEmail());
-        checkIsAdminOrOwner(authMember, findMember, findProduct.getMember().getId());
+        memberService.isOwnerOrAdmin(authMember.getEmail(), findProduct.getMember().getId());
 
         findProduct.changeName(dto.getName());
         findProduct.changePrice(dto.getPrice());
@@ -87,16 +102,23 @@ public class ProductServiceV1 implements ProductService{
     public List<ProductResponse> findByEmail(AuthMember authMember) {
         Member findMember = memberService.findByEmail(authMember.getEmail());
 
-       return productRepository.findByMemberId(findMember.getId())
-                .stream().map(ProductResponse::new).toList();
+       return productRepository.findByMemberIdWithOptions(findMember.getId())
+                .stream().map(p->new ProductResponse(p, p.getOptions()
+                       .stream().map(o->new OptionResponse(o.getId(),o.getName(),o.getQuantity()))
+                       .toList()
+                       )
+               ).toList();
     }
 
     @Override
     public Page<ProductResponse> findByEmailWithPage(AuthMember authMember, Pageable pageable) {
         Member findMember = memberService.findByEmail(authMember.getEmail());
 
-        return productRepository.findByMemberIdWithPage(findMember.getId(), pageable)
-                .map(ProductResponse::new);
+        return productRepository.findByMemberIdWithOptionsAndPage(findMember.getId(), pageable)
+                .map(p -> new ProductResponse(p, p.getOptions()
+                        .stream().map(o -> new OptionResponse(o.getId(), o.getName(), o.getQuantity()))
+                        .toList())
+                );
     }
 
     public Product findById(Long productId) {
@@ -104,11 +126,14 @@ public class ProductServiceV1 implements ProductService{
                 .orElseThrow(()->new NotFoundEntityException("존재하는 상품이 아닙니다"));
     }
 
-    private void checkIsAdminOrOwner(AuthMember authMember, Member member,  Long ownerId) {
+    @Override
+    public List<OptionResponse> findAllOptions(AuthMember authMember, Long id) {
 
-        if (authMember.getRole() == Role.ADMIN) return;
+        Product product = productRepository.findByIdWithOptions(id)
+                .orElseThrow(() -> new NotFoundEntityException("존재하는 상품이 아닙니다"));
+        memberService.isOwnerOrAdmin(authMember.getEmail(), product.getMember().getId());
 
-        if (!member.getId().equals(ownerId))
-            throw new BadRequestEntityException("자신의 상품이 아닙니다.");
+        return product.getOptions().stream().map(o->new OptionResponse(o.getId(),o.getName(),o.getQuantity()))
+                .toList();
     }
 }
