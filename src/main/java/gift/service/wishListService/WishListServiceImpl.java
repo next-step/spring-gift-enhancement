@@ -37,12 +37,13 @@ public class WishListServiceImpl implements WishListService {
     @Transactional
     public WishItem addWishItem(CreateWishItemRequestDto createWishItemRequestDto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
 
         String itemName = createWishItemRequestDto.name();
         Optional<Item> findItem = itemService.findItemByName(itemName);
+
+        if (findItem.isEmpty()) {
+            throw new ItemNotFoundException();
+        }
 
         Item item = findItem.get();
         Integer quantity = createWishItemRequestDto.quantity();
@@ -59,9 +60,6 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public Page<WishItem> getItemList(String name, Integer price, String userEmail, Pageable pageable) {
         User user = userService.findUserByEmail(userEmail);
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
 
         Page<Item> items;
         if (name == null && price == null) {
@@ -83,9 +81,6 @@ public class WishListServiceImpl implements WishListService {
     @Transactional
     public WishItem deleteWishItem(String name, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
 
         Optional<Item> targetItem = itemService.findItemByName(name);
 
@@ -107,9 +102,6 @@ public class WishListServiceImpl implements WishListService {
     public WishItem updateWishItem(UpdateWishItemDto updateWishItemDto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
 
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
 
         String itemName = updateWishItemDto.itemName();
         Optional<Item> findItem = itemService.findItemByName(itemName);

@@ -55,7 +55,8 @@ public class ItemController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseItem> updateItem(@PathVariable Long id, @RequestBody @Valid ItemUpdateDto dto) {
-        Item updatedItem = itemService.updateItem(id, dto);
+        Item item = Item.from(dto);
+        Item updatedItem = itemService.updateItem(id, item);
         ItemResponseDto responseDto = ItemResponseDto.from(updatedItem);
 
         return ResponseEntity.ok(new ResponseItem(responseDto));

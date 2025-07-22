@@ -1,7 +1,6 @@
 package gift.service.itemService;
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
 import gift.repository.itemRepository.ItemRepository;
 import jakarta.transaction.Transactional;
@@ -51,16 +50,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item updateItem(Long id, ItemUpdateDto itemUpdateDto) {
-        Optional<Item> targetItem = findItemById(id);
+    public Item updateItem(Long id, Item item) {
+        Optional<Item> findItem = findItemById(id);
 
-        Item item = targetItem.get();
+        Item targetItem = findItem.get();
 
-        Item changeItem = itemUpdateDto.dtoToItem();
+        Item updatedItem = targetItem.update(item);
 
-        Item updatedItem = item.update(changeItem);
-
-        return itemRepository.save(updatedItem);
+        return save(updatedItem);
 
     }
 
@@ -103,6 +100,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Page<Item> findItemsByNameAndPrice(String name, Integer price, Pageable pageable) {
         return itemRepository.findByNameContainingAndPrice(name, price, pageable);
+    }
+
+    @Override
+    public Item save(Item updatedItem) {
+        return itemRepository.save(updatedItem);
     }
 
 

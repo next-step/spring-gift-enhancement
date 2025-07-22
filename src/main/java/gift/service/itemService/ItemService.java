@@ -1,7 +1,6 @@
 package gift.service.itemService;
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
@@ -16,7 +15,7 @@ public interface ItemService {
 
     void delete(String name);
 
-    Item updateItem(Long id, ItemUpdateDto itemUpdateDto);
+    Item updateItem(Long id, Item item);
 
     Optional<Item> findById(Long id);
 
@@ -33,4 +32,6 @@ public interface ItemService {
     Page<Item> findItemsByPrice(Integer price, Pageable pageable);
 
     Page<Item> findItemsByNameAndPrice(String name, Integer price, Pageable pageable);
+
+    Item save(Item updatedItem);
 }

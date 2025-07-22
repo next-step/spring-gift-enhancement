@@ -1,9 +1,11 @@
 package gift.entity;
 
+import gift.dto.itemDto.ItemUpdateDto;
 import gift.exception.itemException.ItemImageurlException;
 import gift.exception.itemException.ItemNameException;
 import gift.exception.itemException.ItemPriceException;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -54,6 +56,10 @@ public class Item {
         this.id = id;
         this.name = itemName;
 
+    }
+
+    public static Item from(@Valid ItemUpdateDto dto) {
+        return new Item(dto.id(), dto.name(), dto.price(), dto.imageUrl());
     }
 
     public Long getId() {
