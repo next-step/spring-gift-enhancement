@@ -26,11 +26,11 @@ public class OptionService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-        if(optionRepository.existsByNameAndProduct(request.getName(), product)) {
+        if(optionRepository.existsByNameAndProduct(request.name(), product)) {
             throw new IllegalArgumentException("이미 추가된 옵션입니다.");
         }
 
-        Option option = Option.of(request.getName(), request.getQuantity(), product);
+        Option option = Option.of(request.name(), request.quantity(), product);
 
         Option saved = optionRepository.save(option);
 
