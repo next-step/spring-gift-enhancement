@@ -1,6 +1,7 @@
 package gift.entity.vo;
 
 import gift.exception.InvalidOptionCreateException;
+import gift.exception.InvalidQuantityException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -30,6 +31,9 @@ public class OptionQuantity {
     }
 
     public void subtract(int quantity) {
+        if (value - quantity <= 0) {
+            throw new InvalidQuantityException("수량은 최소 1개 이상이어야 합니다.");
+        }
         value -= quantity;
     }
 }

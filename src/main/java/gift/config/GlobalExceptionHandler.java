@@ -69,4 +69,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlerException(DuplicateOptionException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(InvalidQuantityException.class)
+    public ResponseEntity<String> handlerException(InvalidQuantityException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
