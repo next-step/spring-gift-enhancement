@@ -2,6 +2,9 @@ package gift.common;
 
 import gift.member.exception.AuthenticationException;
 import gift.member.exception.DuplicatedException;
+import gift.option.excepiton.DuplicatedOptionNameException;
+import gift.option.excepiton.OptionNotFoundException;
+import gift.option.excepiton.OptionValidationException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.exception.ProductValidationException;
 import gift.wishlist.exception.DuplicatedWishException;
@@ -102,6 +105,33 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    @ExceptionHandler(OptionNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOptionNotFound(OptionNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "옵션을 찾을 수 없음",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(OptionValidationException.class)
+    public ResponseEntity<ErrorResponse> handleOptionValidation(OptionValidationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "유효하지 않은 옵션 데이터",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(DuplicatedOptionNameException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateOptionName(DuplicatedOptionNameException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "중복 옵션명",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     public record ErrorResponse(String errorCode, String message) {}

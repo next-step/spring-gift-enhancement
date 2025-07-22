@@ -28,8 +28,8 @@ public class Wish {
     private Long quantity;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
-    private LocalDateTime createdDate;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     public Wish(Long id, Long memberId, Long productId, Long quantity) {
         this.id = id;
@@ -60,8 +60,8 @@ public class Wish {
         return quantity;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setId(Long id) {

@@ -47,3 +47,8 @@
 - 페이지네이션 구현
   - Product 조회 (/api/products?page=0&size=10&sort=name,asc&categoryId=1)
   - Wish 조회 (/api/wishes?page=0&size=10&sort=createdDate,desc)
+
+- 옵션 구현
+  - 옵션 등록 기능 구현 (유효성 검사 기능 포함)
+  - 옵션에서 수량을 지정된 숫자만큼 빼는 기능 구현
+  - 옵션 삭제 기능 구현
