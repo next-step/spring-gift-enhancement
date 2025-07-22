@@ -42,6 +42,7 @@ public class ProductApiTest {
     @BeforeEach
     void setUp() {
         jdbcTemplate.update("DELETE FROM wishlists");
+        jdbcTemplate.update("DELETE FROM options");
         jdbcTemplate.update("DELETE FROM products");
         jdbcTemplate.update("ALTER TABLE products ALTER COLUMN id RESTART WITH 1");
 
