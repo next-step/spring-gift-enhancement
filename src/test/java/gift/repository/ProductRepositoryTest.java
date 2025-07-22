@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.common.exception.ProductOptionException;
 import gift.domain.product.Product;
 import gift.domain.product.ProductOption;
 import gift.dto.product.CreateProductOptionRequest;
@@ -12,7 +13,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
+import static gift.repository.ProductRepositoryTest.ProductRepositoryTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class ProductRepositoryTest {
@@ -29,7 +32,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 저장")
     void test1_1() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", OPTION);
         Product save = productRepository.save(product);
 
         assertThat(save.getId()).isNotNull();
@@ -38,9 +41,9 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("상품 저장 시 옵션도 같이 저장")
+    @DisplayName("상품 저장 시 반드시 1개의 옵션을 포함")
     void test1_2() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", OPTION);
         Product save = productRepository.save(product);
 
         em.flush();
@@ -60,7 +63,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 수정")
     void test2() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", OPTION);
         Product save = productRepository.save(product);
 
         em.flush();
@@ -81,7 +84,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 조회")
     void test3() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", OPTION);
         productRepository.save(product);
 
         em.flush();
@@ -96,7 +99,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 삭제")
     void test4_1() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", OPTION);
         productRepository.save(product);
 
         em.flush();
@@ -113,7 +116,7 @@ public class ProductRepositoryTest {
     @Test
     @DisplayName("상품 삭제시 옵션도 같이 삭제")
     void test4_2() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", OPTION);
         productRepository.save(product);
         Long optionId = product.getOptions().get(0).getId();
 
@@ -129,9 +132,9 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("상품에서 관리하는 옵션 리스트의 데이터를 제거할 경우 옵션은 삭제된다")
+    @DisplayName("상품에서 관리하는 옵션 리스트의 데이터를 제거할 경우 옵션은 삭제")
     void test4_3() {
-        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10)));
+        Product product = new Product("감자칩", "image", List.of(new CreateProductOptionRequest("양파맛", 1000, 10), new CreateProductOptionRequest("감자맛", 2000, 10)));
         Product save = productRepository.save(product);
 
         save.removeOption(save.getOptions().get(0));
@@ -141,7 +144,22 @@ public class ProductRepositoryTest {
 
         Product getProduct = productRepository.findById(save.getId()).get();
 
-        assertThat(getProduct.getOptions()).isEmpty();
+        assertThat(getProduct.getOptions().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("상품에 옵션 하나는 필수로 존재해야 하므로 옵션이 1개밖에 없다면 그 옵션은 삭제 불가")
+    void test4_4() {
+        Product product = new Product("감자칩", "image", OPTION);
+        Product save = productRepository.save(product);
+
+        assertThatThrownBy(() -> save.removeOption(save.getOptions().get(0))).isInstanceOf(ProductOptionException.class);
+    }
+
+
+
+    static class ProductRepositoryTestFixture {
+        public static final List<CreateProductOptionRequest> OPTION = List.of(new CreateProductOptionRequest("양파맛", 1000, 10));
     }
 
 }
