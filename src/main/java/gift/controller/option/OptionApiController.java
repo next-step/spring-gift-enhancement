@@ -36,7 +36,7 @@ public class OptionApiController {
     @PostMapping("/{optionId}")
     public ResponseEntity<OptionResponse> subtractOption(
         @PathVariable Long optionId,
-        @RequestBody OptionSubtractRequest optionSubtractRequest
+        @Valid @RequestBody OptionSubtractRequest optionSubtractRequest
     ){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(optionService.subtractOption(optionId, optionSubtractRequest));

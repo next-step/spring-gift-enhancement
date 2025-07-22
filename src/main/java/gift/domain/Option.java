@@ -41,9 +41,6 @@ public class Option {
     protected Option() {}
 
     public void subtractQuantity(int amount) {
-        if (amount <= 0) {
-            throw CustomException.from(ErrorCode.INVALID_SUBTRACT_AMOUNT);
-        }
         if (this.quantity - amount < 0) {
             throw CustomException.from(ErrorCode.INVALID_SUBTRACT_MINUS);
         }
