@@ -1,9 +1,12 @@
 package gift.dto;
 
 import gift.validator.NoKakao;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 public record ProductRequest(
         Long id,
@@ -17,5 +20,10 @@ public record ProductRequest(
         @NoKakao
         String name,
         int price,
-        String imageUrl) {
+        String imageUrl,
+
+        @NotEmpty(message = "상품에는 최소 1개 이상의 옵션이 필요합니다.")
+        @Valid
+        List<OptionRequest> options) {
+
 }

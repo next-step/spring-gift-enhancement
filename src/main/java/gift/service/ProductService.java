@@ -1,10 +1,13 @@
 package gift.service;
 
+import gift.dto.OptionResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponse addProduct(ProductRequest request) {
-        Product product = new Product(request.name(), request.price(), request.imageUrl());
+        List<Option> options = request.options().stream()
+                .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+                .toList();
+
+        Product product = new Product(request.name(), request.price(), request.imageUrl(), options);
+
         Product saved = productRepository.save(product);
         return new ProductResponse(saved);
     }
@@ -48,7 +56,14 @@ public class ProductService {
 
         product.update(request.name(), request.price(), request.imageUrl());
 
-        return new ProductResponse(product);
+        List<Option> newOptions = request.options().stream()
+                .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+                .toList();
+
+        product.updateOptions(newOptions);
+
+        Product updatedProduct = productRepository.save(product);
+        return new ProductResponse(updatedProduct);
     }
 
     @Transactional
@@ -57,5 +72,16 @@ public class ProductService {
             throw new ProductNotFoundException("해당 ID의 상품이 존재하지 않아 삭제할 수 없습니다: " + id);
         }
         productRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OptionResponse> getOptionsByProductId(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(
+                        () -> new ProductNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
+
+        return product.getOptions().stream()
+                .map(OptionResponse::from)
+                .toList();
     }
 }

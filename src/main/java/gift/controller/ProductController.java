@@ -1,10 +1,12 @@
 package gift.controller;
 
+import gift.dto.OptionResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,12 @@ public class ProductController {
 
     public ProductController(ProductService productService) {
         this.productService = productService;
+    }
+
+    @GetMapping("/{productId}/options")
+    public ResponseEntity<List<OptionResponse>> getOptionsForProduct(@PathVariable Long productId) {
+        List<OptionResponse> options = productService.getOptionsByProductId(productId);
+        return ResponseEntity.ok(options);
     }
 
     @GetMapping

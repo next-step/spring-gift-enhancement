@@ -11,6 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
 class WishRepositoryTest {
@@ -41,7 +44,10 @@ class WishRepositoryTest {
 
         // when
         wishRepository.save(wish);
-        List<Wish> wishes = wishRepository.findByMember(member);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Wish> wishPage = wishRepository.findByMember(member, pageable);
+        List<Wish> wishes = wishPage.getContent();
 
         // then
         assertThat(wishes).hasSize(1); // 위시리스트에 1개의 상품이 있는지 확인
