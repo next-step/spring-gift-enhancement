@@ -28,7 +28,7 @@ public class ProductService {
     }
 
     public ProductResponse addGift(ProductCreateRequest productCreateRequest) {
-        Product product = productCreateRequest.toEntity();
+        Product product = new Product(productCreateRequest);
         product.isKakaoMessageInclude();
         return ProductResponse.from(productRepository.save(product));
     }
