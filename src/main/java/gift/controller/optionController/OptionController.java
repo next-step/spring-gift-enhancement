@@ -24,7 +24,6 @@ public class OptionController {
     @PostMapping
     public ResponseEntity<OptionResponseDto> addItemOption(@RequestBody OptionRequestDto optionRequestDto, @RequestParam Long itemId) {
 
-        System.out.println(1);
         ItemOption itemOption = optionService.save(optionRequestDto, itemId);
         OptionResponseDto optionResponseDto = OptionResponseDto.from(itemOption);
 
@@ -33,7 +32,6 @@ public class OptionController {
 
     @GetMapping
     public ResponseEntity<OptionDtoList> getOptionList(@RequestParam Long itemId) {
-        System.out.println(2);
         List<ItemOption> optionList = optionService.getOptions(itemId);
 
         return ResponseEntity.ok(OptionDtoList.from(optionList));
@@ -41,8 +39,6 @@ public class OptionController {
 
     @PutMapping
     public ResponseEntity<OptionResponseDto> quantityControl(@RequestBody OptionRequestDto optionRequestDto, @RequestParam Long itemId) {
-
-        System.out.println(3);
         ItemOption itemOption = optionService.quantityControl(optionRequestDto, itemId);
         OptionResponseDto optionResponseDto = OptionResponseDto.from(itemOption);
 
