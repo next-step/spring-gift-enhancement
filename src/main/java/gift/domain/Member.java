@@ -5,10 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "member")
@@ -24,10 +21,8 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "member")
-    private List<Wish> wishes = new ArrayList<>();
-
     protected Member() {
+        // JPA 기본 생성자
     }
 
     private Member(Long id, String email, String password) {
@@ -55,10 +50,6 @@ public class Member {
 
     public String password() {
         return password;
-    }
-
-    public List<Wish> getWishes() {
-        return wishes;
     }
 
     public void assignId(Long id) {
