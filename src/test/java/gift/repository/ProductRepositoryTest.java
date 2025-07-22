@@ -40,16 +40,16 @@ public class ProductRepositoryTest {
 
     @Test
     void sortByIdAsc() {
-        productRepository.save(new Product("B", 2000L, "u2"));
-        productRepository.save(new Product("C", 3000L, "u1"));
-        productRepository.save(new Product("A", 1000L, "u3"));
+        Product a = productRepository.save(new Product("B", 2000L, "u2"));
+        Product b = productRepository.save(new Product("C", 3000L, "u1"));
+        Product c = productRepository.save(new Product("A", 1000L, "u3"));
         Page<Product> page = productRepository.findAll(
                 PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"))
         );
 
         List<Product> products = page.getContent();
         assertThat(products.stream().map(Product::getId).toList())
-                .containsExactly(6L,7L,8L);
+                .containsExactly(a.getId(),b.getId(),c.getId());
     }
 
     @Test

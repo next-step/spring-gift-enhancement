@@ -3,8 +3,11 @@ package gift.entity;
 import gift.dto.ProductRequestDto;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,6 +16,9 @@ public class Product {
     private String name;
     private Long price;
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductOption> options = new ArrayList<>();
 
     protected Product() {}
 
@@ -38,4 +44,5 @@ public class Product {
     public String getName() { return name; }
     public Long getPrice() { return price; }
     public String getImageUrl() { return imageUrl; }
+    public List<ProductOption> getOptions() { return options; }
 }

@@ -4,7 +4,7 @@ import gift.dto.WishRequestDto;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "wishes")
+@Table(name = "wish")
 public class Wish {
 
     @Id
