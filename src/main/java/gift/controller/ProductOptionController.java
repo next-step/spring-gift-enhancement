@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductOptionRequest;
 import gift.dto.ProductOptionResponse;
+import gift.entity.ProductOption;
 import gift.service.ProductOptionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +34,12 @@ public class ProductOptionController {
     }
 
     @PatchMapping("/{optionId}/subtract")
-    public ResponseEntity<Void> subtractQuantity(
+    public ResponseEntity<ProductOptionResponse> subtractQuantity(
             @PathVariable Long productId,
             @PathVariable Long optionId,
             @RequestParam int quantity) {
-        optionService.subtractOptionQuantity(productId, optionId, quantity);
-        return ResponseEntity.ok().build();
+        ProductOption option = optionService.subtractOptionQuantity(productId, optionId, quantity);
+        ProductOptionResponse response = new ProductOptionResponse(option);
+        return ResponseEntity.ok(response);
     }
 }

@@ -34,6 +34,7 @@ public class ProductOptionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ProductOptionResponse createOption(Long productId, ProductOptionRequest request) {
         Product product = findProductById(productId);
 
@@ -48,7 +49,8 @@ public class ProductOptionService {
         return ProductOptionResponse.from(savedOption);
     }
 
-    public void subtractOptionQuantity(Long productId, Long optionId, int quantity) {
+    @Transactional
+    public ProductOption subtractOptionQuantity(Long productId, Long optionId, int quantity) {
         validateProductExists(productId);
 
         ProductOption option = optionRepository.findByIdAndProductId(optionId, productId)
@@ -59,7 +61,7 @@ public class ProductOptionService {
         }
 
         option.subtract(quantity);
-        optionRepository.save(option);
+        return optionRepository.save(option);
     }
 
     private void validateProductExists(Long productId) {
