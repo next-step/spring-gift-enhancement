@@ -4,6 +4,7 @@ import gift.shared.annotation.AuthUser;
 import gift.user.dto.response.UserResponse;
 import gift.wishlist.dto.response.WishlistResponse;
 import gift.wishlist.service.WishlistService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,9 @@ public class WishlistController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<WishlistResponse>> getWishLists(
-            @AuthUser UserResponse user,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
-    ) {
-        return ResponseEntity.ok().body(wishlistService.getWishlists(user.id(), page, size));
+    public ResponseEntity<List<WishlistResponse>> getWishLists(@AuthUser UserResponse user, Pageable pageable) {
+        return ResponseEntity.ok()
+                .body(wishlistService.getWishlists(user.id(), pageable.getPageNumber(), pageable.getPageSize()));
     }
 
     @PostMapping("/{giftId}")

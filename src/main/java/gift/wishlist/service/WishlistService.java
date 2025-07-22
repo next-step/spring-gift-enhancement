@@ -37,7 +37,12 @@ public class WishlistService {
     public List<WishlistResponse> getWishlists(Long userId, Integer page, Integer size){
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Wishlist> wishlists = wishlistRepository.findAllByUserId(userId, pageable);
-        return wishlists.hasContent() ? wishlists.getContent().stream().map(WishlistResponse::from).toList() : Collections.emptyList();
+        if(wishlists.hasContent()){
+            return wishlists.getContent().stream()
+                    .map(WishlistResponse::from)
+                    .toList();
+        }
+        return Collections.emptyList();
     }
 
     public void addWishList(Long giftId, Long userId){
