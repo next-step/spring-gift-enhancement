@@ -1,5 +1,8 @@
 package gift.config;
 
+import gift.entity.Member;
+import gift.entity.MemberRole;
+import gift.repository.MemberRepository;
 import gift.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,9 +18,11 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final MemberRepository memberRepository;
 
-    public JwtAuthFilter(JwtService jwtService) {
+    public JwtAuthFilter(JwtService jwtService, MemberRepository memberRepository) {
         this.jwtService = jwtService;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -33,23 +38,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (requiresAuth(request.getRequestURI())) {
             if (!StringUtils.hasText(token) || !jwtService.validateToken(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러 발생
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("text/plain; charset=UTF-8");
-                response.getWriter().write("인증이 필요합니다.");
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().write("{\"message\": \"인증이 필요합니다.\"}");
                 return;
             }
 
-            // admin 경로에 대한 권한 확인
-            if (request.getRequestURI().startsWith("/admin")) {
-                String role = jwtService.extractRole(token);
-                if (!"ADMIN".equals(role)) {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 에러 발생
-                    response.setCharacterEncoding("UTF-8");
-                    response.setContentType("text/plain; charset=UTF-8");
-                    response.getWriter().write("관리자 권한이 필요합니다.");
-                    return;
-                }
-            }
+            // 토큰에서 회원 ID 추출
+            Long memberId = jwtService.extractMemberId(token);
+            String role = jwtService.extractRole(token);
+
+            // DB에서 Member 조회
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+            member.setRole(MemberRole.valueOf(role));
+            request.setAttribute("loginMember", member);
+
+
+
         }
 
         filterChain.doFilter(request, response);
