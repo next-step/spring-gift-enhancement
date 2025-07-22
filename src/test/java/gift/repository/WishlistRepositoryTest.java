@@ -1,12 +1,12 @@
 package gift.repository;
 
 import gift.member.Member;
+import gift.member.Role;
 import gift.member.repository.MemberRepository;
 import gift.product.Product;
 import gift.product.repository.ProductRepository;
 import gift.wishlist.Wishlist;
 import gift.wishlist.repository.WishlistRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -31,7 +31,7 @@ public class WishlistRepositoryTest {
 
     @Test
     void 위시리스트에_아이템을_저장한다() {
-        Member member = memberRepository.save(new Member("test@email.com", "password", "홍길동", "USER"));
+        Member member = memberRepository.save(new Member("test@email.com", "password", "홍길동", Role.USER));
         Product product = productRepository.save(new Product("초콜릿", 1500L, "http://image"));
 
         Wishlist wishlist = new Wishlist(member, product, 2L);
@@ -43,7 +43,7 @@ public class WishlistRepositoryTest {
 
     @Test
     void 위시리스트를_ID로_조회한다() {
-        Member member = memberRepository.save(new Member("kim@email.com", "pass", "김철수", "USER"));
+        Member member = memberRepository.save(new Member("kim@email.com", "pass", "김철수", Role.USER));
         Product product = productRepository.save(new Product("사탕", 1000L, "http://image2"));
 
         Wishlist wishlist = new Wishlist(member, product, 3L);
@@ -56,7 +56,7 @@ public class WishlistRepositoryTest {
 
     @Test
     void 위시리스트의_수량을_변경한다() {
-        Member member = memberRepository.save(new Member("lee@email.com", "pw", "이영희", "USER"));
+        Member member = memberRepository.save(new Member("lee@email.com", "pw", "이영희", Role.USER));
         Product product = productRepository.save(new Product("커피", 3000L, "http://image3"));
 
         Wishlist wishlist = new Wishlist(member, product, 1L);
@@ -70,7 +70,7 @@ public class WishlistRepositoryTest {
 
     @Test
     void 페이지네이션으로_위시리스트_조회() {
-        Member member = memberRepository.save(new Member("email@email.com", "pw", "이름", "USER"));
+        Member member = memberRepository.save(new Member("email@email.com", "pw", "이름", Role.USER));
 
         for (int i = 1; i <= 25; i++) {
             Product product = productRepository.save(new Product("상품" + i, 1000L * i, "http://url.com/" + i));

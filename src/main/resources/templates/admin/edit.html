@@ -73,6 +73,50 @@
 
         container.appendChild(optionGroup);
     }
+
+    //제출 버튼 눌렀을 때
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("productForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const optionRows = document.querySelectorAll(".option-group");
+            const options = [];
+
+            optionRows.forEach(row => {
+                const name = row.querySelector("input[class='optionName']").value.trim();
+                const quantity = parseInt(row.querySelector("input[class='optionQuantity']").value, 10);
+
+                if (name && !isNaN(quantity)) {
+                    options.push({name, quantity});
+                }
+            });
+
+            const formData = {
+                name: document.getElementById("name").value,
+                price: document.getElementById("price").value,
+                url: document.getElementById("url").value,
+                options: options
+            };
+            fetch("/admin/products/edit/", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(async (res) => {
+                    if (!(res.status === 201)) {
+                        const error = await res.json();
+                        document.getElementById(error.field).innerText = error.message;
+                    } else {
+                        location.href = "/admin/products";
+                    }
+                })
+                .catch((err) => {
+                    alert("서버 오류가 발생했습니다.");
+                });
+        });
+    });
 </script>
 </body>
 </html>
