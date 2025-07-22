@@ -54,8 +54,8 @@ public class OptionService {
     }
 
     // subtract 메서드
-    public OptionResponse subtractOption(OptionSubtractRequest optionSubtractRequest){
-        Option option = optionRepository.findByProductId(optionSubtractRequest.productId())
+    public OptionResponse subtractOption(Long optionId, OptionSubtractRequest optionSubtractRequest){
+        Option option = optionRepository.findById(optionId)
                 .orElseThrow(()-> CustomException.from(ErrorCode.NOT_EXISTS));
         option.subtractQuantity(optionSubtractRequest.quantity());
 

@@ -35,10 +35,11 @@ public class OptionApiController {
     // option subtract 메서드: 이후 관리자 기능으로 전환 예정
     @PostMapping("/{optionId}")
     public ResponseEntity<OptionResponse> subtractOption(
+        @PathVariable Long optionId,
         @RequestBody OptionSubtractRequest optionSubtractRequest
     ){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(optionService.subtractOption(optionSubtractRequest));
+                .body(optionService.subtractOption(optionId, optionSubtractRequest));
     }
 
     // option 생성 메서드: 이후 관리자 기능으로 전환 예정
