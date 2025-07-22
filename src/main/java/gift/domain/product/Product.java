@@ -1,6 +1,7 @@
 package gift.domain.product;
 
 import gift.common.exception.DuplicateOptionNameException;
+import gift.common.exception.ProductOptionException;
 import gift.dto.product.CreateProductOptionRequest;
 import jakarta.persistence.*;
 
@@ -61,6 +62,9 @@ public class Product {
     }
 
     public void removeOption(ProductOption option) {
+        if (options.size() < 2) {
+            throw new ProductOptionException();
+        }
         options.remove(option);
     }
 
