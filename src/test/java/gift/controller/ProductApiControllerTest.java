@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static gift.controller.ProductApiControllerTest.ProductApiControllerFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,7 +56,7 @@ class ProductApiControllerTest {
     void test1_1() throws Exception {
 
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("샤프", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                PRODUCT_EX1
         );
 
         mvc.perform(post("/api/products")
@@ -83,8 +84,8 @@ class ProductApiControllerTest {
     @DisplayName("로그인 없이 상품 목록 조회를 할 수 있다.")
     void test2() throws Exception {
         //2개의 더미 데이터 생성
-        productService.saveProduct(new CreateProductRequest("연필", "image1", List.of(new CreateProductOptionRequest("짧은 연필", 1000, 100))));
-        productService.saveProduct(new CreateProductRequest("가방", "image2", List.of(new CreateProductOptionRequest("큰 가방", 10000, 10))));
+        productService.saveProduct(PRODUCT_EX2);
+        productService.saveProduct(PRODUCT_EX3);
 
         mvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
@@ -98,11 +99,11 @@ class ProductApiControllerTest {
     @Test
     @DisplayName("상품 수정을 할 수 있다.")
     void test3() throws Exception {
-        Product product = productService.saveProduct(new CreateProductRequest("연필", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
+        Product product = productService.saveProduct(PRODUCT_EX2);
         Long id = product.getId();
 
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("샤프", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                PRODUCT_EX1
         );
 
         mvc.perform(put("/api/products/" + id)
@@ -115,7 +116,7 @@ class ProductApiControllerTest {
     @Test
     @DisplayName("상품 삭제를 할 수 있다.")
     void test4() throws Exception {
-        Product product = productService.saveProduct(new CreateProductRequest("연필", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
+        Product product = productService.saveProduct(PRODUCT_EX1);
         Long id = product.getId();
 
         mvc.perform(delete("/api/products/" + id)
@@ -127,7 +128,7 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증1 - 상품 이름에 허용되지 않은 특수문자를 사용할 경우 상태코드 400를 반환한다.")
     void test5_1() throws Exception {
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("??", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("??", "image", PRODUCT_OPTION)
         );
 
         mvc.perform(post("/api/products")
@@ -141,7 +142,7 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증2 - 상품 이름에 허용된 특수문자를 사용할 경우 상품을 생성할 수 있다.")
     void test5_2() throws Exception {
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("[]()+-&/_", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("[]()+-&/_", "image", PRODUCT_OPTION)
         );
 
         mvc.perform(post("/api/products")
@@ -155,7 +156,7 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증3 - 상품 이름에 [카카오] 라는 단어가 포함된 경우 상태코드 403을 반환한다.")
     void test5_3() throws Exception{
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("카카오톡", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("카카오톡", "image", PRODUCT_OPTION)
         );
 
         mvc.perform(post("/api/products")
@@ -169,7 +170,7 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증4 - 상품 이름이 공백을 포함하여 15자리가 넘어 갈 경우 상태코드 400을 반환한다.")
     void test5_4() throws Exception {
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("진짜 진짜 맛있는 고구마 칩[한정판]", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))) // 16자리
+                new CreateProductRequest("진짜 진짜 맛있는 고구마 칩[한정판]", "image", PRODUCT_OPTION) // 16자리
         );
 
         mvc.perform(post("/api/products")
@@ -183,11 +184,11 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증5 - 상품 이름이 문자 없이 공백만 있을 경우 상태코드 400을 반환한다.")
     void test5_5() throws Exception{
         String body1 = mapper.writeValueAsString(
-                new CreateProductRequest("", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("", "image", PRODUCT_OPTION)
         );
 
         String body2 = mapper.writeValueAsString(
-                new CreateProductRequest(" ", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest(" ", "image", PRODUCT_OPTION)
         );
 
         mvc.perform(post("/api/products")
@@ -207,7 +208,7 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증6 - 상품 이미지 값이 들어오지 않을 경우 상태코드 400을 반환한다.")
     void test5_6() throws Exception {
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("맛동산", null, List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("맛동산", null, PRODUCT_OPTION)
         );
 
         mvc.perform(post("/api/products")
@@ -221,7 +222,7 @@ class ProductApiControllerTest {
     @DisplayName("상품 생성 dto 유효성 검증7 - 상품 이미지 값이 빈 문자열로 들어올 경우 상태코드 400을 반환한다.")
     void test5_11() throws Exception {
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("맛동산", "", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("맛동산", "", PRODUCT_OPTION)
         );
 
         mvc.perform(post("/api/products")
@@ -236,7 +237,7 @@ class ProductApiControllerTest {
     @DisplayName("없는 아이디의 상품 수정을 요청할 경우 상태코드 400을 반환한다.")
     void test6() throws Exception{
         String body = mapper.writeValueAsString(
-                new CreateProductRequest("샤프", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)))
+                new CreateProductRequest("샤프", "image", PRODUCT_OPTION)
         );
 
         mvc.perform(put("/api/products/" + 11)
@@ -350,6 +351,13 @@ class ProductApiControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
+    }
+
+    static class ProductApiControllerFixture {
+        public static final CreateProductRequest PRODUCT_EX1 = new CreateProductRequest("샤프", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10)));
+        public static final CreateProductRequest PRODUCT_EX2 = new CreateProductRequest("연필", "image1", List.of(new CreateProductOptionRequest("짧은 연필", 1000, 100)));
+        public static final CreateProductRequest PRODUCT_EX3 = new CreateProductRequest("가방", "image2", List.of(new CreateProductOptionRequest("큰 가방", 10000, 10)));
+        public static final List<CreateProductOptionRequest> PRODUCT_OPTION = List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10));
     }
 
 }

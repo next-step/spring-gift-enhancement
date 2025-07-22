@@ -11,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -67,7 +65,7 @@ class ProductServiceTest {
         productService.saveProduct(createProductRequest);
 
         //beforeEach에서 생성한 것 까지 총 2건의 데이터 있음
-        List<ProductResponse> products = productService.getAllProducts(null, PageRequest.of(1, 10));
+        List<ProductResponse> products = productService.getAllProducts(null, 10);
         assertThat(products).isNotEmpty();
         assertThat(products.size()).isEqualTo(2);
     }
@@ -91,23 +89,8 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("getProducts() 메서드 페이지네이션 테스트 1 - cursor로 페이지를 구분하기 때문에 page 값이 들어오더라도 cursor 값에 의해서만 페이지가 변경되어야 한다.")
+    @DisplayName("getProducts() 메서드 페이지네이션 테스트 1 - 커서를 기준으로 다음 데이터를 불러올 수 있다.")
     void test6_1() {
-        productService.saveProduct(new CreateProductRequest("칫솔1", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
-        Product product2 = productService.saveProduct(new CreateProductRequest("칫솔2", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
-        productService.saveProduct(new CreateProductRequest("칫솔3", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
-
-        List<ProductResponse> products1 = productService.getAllProducts(product2.getId(), PageRequest.of(2, 3, Sort.by("id").descending())); //pageNumber = 2
-        List<ProductResponse> products2 = productService.getAllProducts(product2.getId(), PageRequest.of(4, 3, Sort.by("id").descending())); //pageNumber = 4
-
-        //product1과 product2의 결과는 같아야 함
-        assertThat(products1.size()).isEqualTo(products2.size());
-        assertThat(products1).isEqualTo(products2);
-    }
-
-    @Test
-    @DisplayName("getProducts() 메서드 페이지네이션 테스트 2 - 커서를 기준으로 다음 데이터를 불러올 수 있다.")
-    void test6_2() {
         Product product1 = productService.saveProduct(new CreateProductRequest("칫솔1", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
         productService.saveProduct(new CreateProductRequest("칫솔2", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
         productService.saveProduct(new CreateProductRequest("칫솔3", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
@@ -119,7 +102,7 @@ class ProductServiceTest {
         productService.saveProduct(new CreateProductRequest("칫솔9", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
         productService.saveProduct(new CreateProductRequest("칫솔10", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
 
-        List<ProductResponse> products = productService.getAllProducts(product1.getId(), PageRequest.of(0, 10, Sort.by("id").descending()));
+        List<ProductResponse> products = productService.getAllProducts(product1.getId(), 10);
 
         assertThat(products.size()).isEqualTo(1);
         assertThat(products.get(0).name()).isEqualTo("칫솔");
