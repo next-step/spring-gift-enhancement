@@ -39,4 +39,13 @@ public class OptionApiController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(optionService.subtractOption(optionSubtractRequest));
     }
+
+    // option 생성 메서드: 이후 관리자 기능으로 전환 예정
+    @PostMapping
+    public ResponseEntity<OptionResponse> createOption(
+        @RequestBody OptionRequest optionRequest
+    ){
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(optionService.insertOption(optionRequest));
+    }
 }

@@ -1,5 +1,6 @@
 package gift.domain;
 
+import gift.dto.option.OptionRequest;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -48,6 +49,10 @@ public class Option {
         }
 
         this.quantity -= amount;
+    }
+
+    public static Option of(String name, int quantity, Product product){
+        return new Option(null, name, quantity, product);
     }
 
     public Long getId() {
