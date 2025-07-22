@@ -89,6 +89,6 @@ public class ProductController {
     }
 
     private void throwInvalidProductException(BindingResult bindingResult) {
-        throw new InvalidProductException(bindingResult.getFieldErrors().getFirst().getField(),getDefaultMessage(bindingResult));
+        throw new InvalidProductException(bindingResult.getFieldErrors().getFirst().getField()+"Error",getDefaultMessage(bindingResult));
     }
 }

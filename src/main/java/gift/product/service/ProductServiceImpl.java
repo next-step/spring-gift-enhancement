@@ -6,7 +6,6 @@ import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductOptionAddRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.dto.ProductUpdateRequestDto;
-import gift.product.exception.InvalidProductException;
 import gift.product.exception.InvalidProductOptionException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,15 +28,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addProduct(ProductAddRequestDto requestDto) {
-        // 상품명 유효한지 확인
-        validateProductName(requestDto.name());
-
         // 옵션 생성
         List<ProductOption> options = createValidProductOptions(requestDto.options());
 
         // 상품 생성 후 옵션 할당
         Product product = new Product(requestDto.name(), requestDto.price(), requestDto.url());
-        product.addOptions(options);
+        product.setOptions(options);
 
         productRepository.save(product);
     }
@@ -64,28 +59,16 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
         Product product = findProductByIdOrElseThrow(id);
-        validateProductName(requestDto.name());
 
         List<ProductOption> options = createValidProductOptions(requestDto.options());
 
         product.update(requestDto);
-        product.addOptions(options);
+        product.setOptions(options);
     }
 
     @Override
     public void deleteProductById(Long id) {
         productRepository.deleteById(id);
-    }
-
-    @Override
-    public void validateProductName(String name) {
-        if (!name.matches("^[a-zA-Z0-9ㄱ-ㅎ가-힣 ()\\[\\]+\\-&/_]*$")) {
-            throw new InvalidProductException("productNameError","상품명에 허용되지 않는 특수 문자가 포함되어 있습니다.");
-        }
-
-        if (name.contains("카카오")) {
-            throw new InvalidProductException("productNameError","\"카카오\"가 포함된 상품명은 MD 협의 후 사용할 수 있습니다.");
-        }
     }
 
     @Override

@@ -36,7 +36,7 @@ public class ProductOption {
             throw new InvalidProductOptionException("optionError","옵션 이름은 50자 이하여야 합니다.");
         }
 
-        if (!name.matches("^[a-zA-Z0-9가-힣()\\[\\]+\\-\\&/_ ]+$")) {
+        if (!name.matches(ValidationPatterns.ALLOWED_NAME_PATTERN)) {
             throw new InvalidProductOptionException("optionError","옵션 이름에는 영어, 한글, 숫자와 특수문자 (), [], +, -, &, /, _ 만 사용할 수 있습니다.");
         }
     }
@@ -63,12 +63,12 @@ public class ProductOption {
         return name;
     }
 
-    public Long getQuantity() {
-        return quantity;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getQuantity() {
+        return quantity;
     }
 
     public void setProduct(Product product) {
