@@ -1,5 +1,10 @@
 # spring-gift-enhancement
 
+#### 상품 옵션 추가
+- Product Entity에 quantity 필드 및 ProductOption과의 연관 추가
+- Product Entity Service, Repository Layer 도입
+- Product Entity Test Code 추가
+
 #### JPA 리팩토링
 - JdbcTemplate/JdbcClient 기반 코드를 JPA로 Refactoring
 - Entity(Member/Product/Wish) 객체와 테이블을 매핑

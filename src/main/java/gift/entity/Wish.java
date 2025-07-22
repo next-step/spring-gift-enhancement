@@ -19,6 +19,7 @@ import jakarta.persistence.UniqueConstraint;
     )
 )
 public class Wish {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +32,8 @@ public class Wish {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    protected Wish() { }
+    protected Wish() {
+    }
 
     public Wish(Product product, Member member) {
         this(null, product, member);

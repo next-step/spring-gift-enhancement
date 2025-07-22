@@ -1,9 +1,9 @@
 package gift.service.member;
 
+import gift.dto.member.MemberCredentialDto;
 import gift.dto.member.MemberPasswordChangeDto;
 import gift.dto.member.MemberRequestDto;
 import gift.dto.member.MemberResponseDto;
-import gift.dto.member.MemberCredentialDto;
 
 public interface MemberService {
 

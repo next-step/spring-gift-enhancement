@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import gift.entity.Product;
+import gift.entity.ProductOption;
 import gift.repository.product.ProductRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +19,8 @@ public class ProductRepositoryTest {
 
     @Test
     void save() {
-        Product expected = new Product("test", 1, "test");
+        ProductOption option = new ProductOption("option1", 1);
+        Product expected = new Product("test", 1, "test", List.of(option));
 
         Product actual = productRepository.save(expected);
         assertAll(
@@ -29,7 +32,9 @@ public class ProductRepositoryTest {
 
     @Test
     void findById() {
-        Product expected = new Product("example1", 4700, "https://www.starbucks.co.kr/index.do");
+        ProductOption option = new ProductOption("option1", 1);
+        Product expected = new Product("example1", 4700, "https://www.starbucks.co.kr/index.do",
+            List.of(option));
 
         Product actual = productRepository.findById(1L).get();
         assertAll(
@@ -41,8 +46,10 @@ public class ProductRepositoryTest {
 
     @Test
     void update() {
-        Product origin = new Product("test", 1, "test");
-        Product expected = new Product("test2", 2, "test2");
+        ProductOption option = new ProductOption("option1", 1);
+
+        Product origin = new Product("test", 1, "test", List.of(option));
+        Product expected = new Product("test2", 2, "test2", List.of(option));
 
         Product beforeProduct = productRepository.save(origin);
         beforeProduct.change(expected.getName(), expected.getPrice(), expected.getImageUrl());
@@ -69,7 +76,8 @@ public class ProductRepositoryTest {
 
     @Test
     void deleteById() {
-        Product expected = new Product("test", 1, "test");
+        ProductOption option = new ProductOption("option1", 1);
+        Product expected = new Product("test", 1, "test", List.of(option));
 
         Product actual = productRepository.save(expected);
         productRepository.deleteById(actual.getId());

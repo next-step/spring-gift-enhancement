@@ -2,8 +2,6 @@ package gift.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleArgumentNotValidException(
         MethodArgumentNotValidException exception) {
@@ -29,7 +28,8 @@ public class GlobalExceptionHandler {
             ))
             .toList();
 
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, validationErrorList);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,
+            validationErrorList);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

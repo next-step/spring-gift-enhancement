@@ -3,6 +3,7 @@ package gift.service.product;
 import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
+import gift.entity.ProductOption;
 import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +52,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto create(ProductRequestDto requestDto) {
-        Long id = productRepository.save(
-            new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl())).getId();
+        List<ProductOption> productOptionList = requestDto.options().stream()
+            .map(option -> new ProductOption(option.name(), option.quantity()))
+            .toList();
+
+        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl(),
+            productOptionList);
+
+        Long id = productRepository.save(product).getId();
 
         return new ProductResponseDto(id, requestDto.name(), requestDto.price(),
-            requestDto.imageUrl());
+            requestDto.quantity(), requestDto.imageUrl());
     }
 
     @Override

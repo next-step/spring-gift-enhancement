@@ -34,11 +34,11 @@ public class ProductViewController {
         model.addAttribute("productList", productList);
 
         if (!model.containsAttribute("requestDto")) {
-            model.addAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+            model.addAttribute("requestDto", new ProductRequestDto(null, 0, 1, "", List.of()));
         }
 
         if (!model.containsAttribute("updateDto")) {
-            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, 1, "", List.of()));
         }
 
         if (!model.containsAttribute("productId")) {
@@ -56,7 +56,7 @@ public class ProductViewController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("openCreateModal", true);
             model.addAttribute("requestDto", requestDto);
-            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, 1, "", List.of()));
             model.addAttribute("productList", productService.findAll(0, 10));
             return "home";
         }
@@ -84,14 +84,15 @@ public class ProductViewController {
 
             if (!redirectAttributes.containsAttribute("requestDto")) {
                 redirectAttributes.addFlashAttribute("requestDto",
-                    new ProductRequestDto(null, 0, ""));
+                    new ProductRequestDto(null, 0, 1, "", List.of()));
             }
 
             return "redirect:/view/products";
         }
 
         productService.update(id,
-            new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
+            new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.quantity(),
+                requestDto.imageUrl(), List.of()));
 
         return "redirect:/view/products";
     }
@@ -104,11 +105,11 @@ public class ProductViewController {
         productService.delete(id);
 
         if (!model.containsAttribute("requestDto")) {
-            model.addAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+            model.addAttribute("requestDto", new ProductRequestDto(null, 0, 1, "", List.of()));
         }
 
         if (!model.containsAttribute("updateDto")) {
-            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, 1, "", List.of()));
         }
 
         if (!model.containsAttribute("productId")) {
