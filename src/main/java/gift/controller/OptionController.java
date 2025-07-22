@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.OptionRequest;
 import gift.dto.OptionResponse;
+import gift.enums.OptionSortKey;
 import gift.service.OptionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,13 @@ public class OptionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OptionResponse>> getOptions(@PathVariable Long productId) {
-        return new ResponseEntity<>(optionService.getAllOptions(productId), HttpStatus.OK);
+    public ResponseEntity<List<OptionResponse>> getOptionPage(@PathVariable Long productId,
+                                                           @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size,
+                                                           @RequestParam(defaultValue = "name-asc") String sortKey) {
+        List<OptionResponse> optionPage = optionService.getOptionPage(productId, page, size, OptionSortKey.from(sortKey));
+
+        return new ResponseEntity<>(optionPage, HttpStatus.OK);
     }
 
     @PostMapping

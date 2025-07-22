@@ -6,10 +6,12 @@ import gift.entity.Option;
 import gift.entity.Product;
 import gift.entity.vo.OptionName;
 import gift.entity.vo.OptionQuantity;
+import gift.enums.OptionSortKey;
 import gift.exception.DuplicateOptionException;
 import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,10 @@ public class OptionService {
         this.productRepository = productRepository;
     }
 
-    public List<OptionResponse> getAllOptions(Long productId) {
-        return optionRepository.findAllByProductId(productId)
+    public List<OptionResponse> getOptionPage(Long productId, int page, int size, OptionSortKey sortKey) {
+        PageRequest pageRequest = PageRequest.of(page, size, sortKey.getSort());
+
+        return optionRepository.findAllByProductId(productId, pageRequest)
                 .stream()
                 .map(OptionResponse::of)
                 .toList();
