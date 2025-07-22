@@ -75,6 +75,22 @@ public class ProductOptionIntegrationTest {
                 .andExpect(jsonPath("$.quantity").value(7));
     }
 
+    @DisplayName("옵션 재고 추가 - 성공")
+    @Test
+    void addOptionQuantity_success() throws Exception {
+        ProductResponseDto product = createProductWithDefaultOptions();
+        Long productId = product.id();
+        Long optionId = product.options().get(0).getId();
+
+        mockMvc.perform(patch("/api/products/" + productId + "/options/" + optionId + "/add")
+                        .header("Authorization", "Bearer " + token)
+                        .param("quantity", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(optionId))
+                .andExpect(jsonPath("$.name").value("기본 옵션"))
+                .andExpect(jsonPath("$.quantity").value(15));
+    }
+
     private ProductResponseDto createProductWithDefaultOptions() throws Exception {
         ProductRequestDto dto = new ProductRequestDto("단건상품", 2000L, "image.jpg", DEFAULT_OPTIONS);
 

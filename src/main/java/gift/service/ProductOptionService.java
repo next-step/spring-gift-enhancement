@@ -51,6 +51,21 @@ public class ProductOptionService {
 
     @Transactional
     public ProductOption subtractOptionQuantity(Long productId, Long optionId, int quantity) {
+        ProductOption option = findValidatedOption(productId, optionId);
+
+        option.subtract(quantity);
+        return optionRepository.save(option);
+    }
+
+    @Transactional
+    public ProductOption addOptionQuantity(Long productId, Long optionId, int quantity) {
+        ProductOption option = findValidatedOption(productId, optionId);
+
+        option.add(quantity);
+        return optionRepository.save(option);
+    }
+
+    private ProductOption findValidatedOption(Long productId, Long optionId) {
         validateProductExists(productId);
 
         ProductOption option = optionRepository.findByIdAndProductId(optionId, productId)
@@ -59,9 +74,7 @@ public class ProductOptionService {
         if (!option.getProduct().getId().equals(productId)) {
             throw new IllegalArgumentException("해당 상품의 옵션이 아닙니다.");
         }
-
-        option.subtract(quantity);
-        return optionRepository.save(option);
+        return option;
     }
 
     private void validateProductExists(Long productId) {

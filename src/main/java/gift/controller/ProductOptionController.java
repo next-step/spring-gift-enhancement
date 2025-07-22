@@ -42,4 +42,14 @@ public class ProductOptionController {
         ProductOptionResponse response = new ProductOptionResponse(option);
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/{optionId}/add")
+    public ResponseEntity<ProductOptionResponse> addQuantity(
+            @PathVariable Long productId,
+            @PathVariable Long optionId,
+            @RequestParam int quantity) {
+        ProductOption option = optionService.addOptionQuantity(productId, optionId, quantity);
+        ProductOptionResponse response = new ProductOptionResponse(option);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -45,6 +45,13 @@ public class ProductOption {
         this.quantity -= amount;
     }
 
+    public void add(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("추가할 수량은 1 이상이어야 합니다.");
+        }
+        this.quantity += amount;
+    }
+
     private void validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("옵션 이름은 필수입니다.");
