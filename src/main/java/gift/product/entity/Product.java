@@ -1,5 +1,6 @@
 package gift.product.entity;
 
+import gift.product.dto.request.ProductCreateRequest;
 import gift.product.dto.request.ProductModifyRequest;
 import jakarta.persistence.*;
 
@@ -40,6 +41,13 @@ public class Product {
         this.giftName = giftName;
         this.giftPrice = giftPrice;
         this.giftPhotoUrl = giftPhotoUrl;
+    }
+
+    public Product(ProductCreateRequest productCreateRequest) {
+        this.giftId = productCreateRequest.giftId();
+        this.giftName = productCreateRequest.giftName();
+        this.giftPrice = productCreateRequest.giftPrice();
+        this.giftPhotoUrl = productCreateRequest.giftPhotoUrl();
     }
 
     protected Product() {}

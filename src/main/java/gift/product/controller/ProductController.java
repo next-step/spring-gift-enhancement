@@ -2,11 +2,13 @@ package gift.product.controller;
 
 import gift.product.dto.request.OptionCreateRequest;
 import gift.product.dto.response.OptionResponse;
+import gift.product.entity.Option;
 import gift.product.service.OptionService;
 import gift.shared.annotation.AuthUser;
 import gift.product.dto.request.ProductCreateRequest;
 import gift.product.dto.request.ProductModifyRequest;
 import gift.product.dto.response.ProductResponse;
+import gift.shared.exception.option.OverQuantityException;
 import gift.user.dto.response.UserResponse;
 import gift.shared.exception.product.InValidSpecialCharException;
 import gift.shared.exception.product.NeedAcceptException;
@@ -14,12 +16,14 @@ import gift.shared.exception.product.NoProductException;
 import gift.shared.exception.product.NoValueException;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static gift.product.status.OptionStatus.*;
 import static gift.product.status.ProductStatus.*;
 
 @RestController
@@ -34,7 +38,7 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductResponse> addGift(
+    public ResponseEntity<ProductResponse> addProduct(
             @Valid @RequestBody ProductCreateRequest productCreateRequest,
             @AuthUser UserResponse user
     ) {
@@ -43,15 +47,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getGiftById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok().body(productService.getGiftById(id));
     }
 
-    public ResponseEntity<List<ProductResponse>> getAllGifts(
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
-    ) {
-        return ResponseEntity.ok().body(productService.getAllGifts(page, size));
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> getAllProducts(Pageable pageable) {
+        return ResponseEntity.ok()
+                .body(productService.getAllGifts(pageable.getPageNumber(), pageable.getPageSize()));
     }
 
     @PatchMapping("/{id}")
@@ -78,7 +81,7 @@ public class ProductController {
             @Valid @RequestBody OptionCreateRequest optionCreateRequest
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(optionService.save(id, optionCreateRequest.toEntity()));
+                .body(optionService.save(id, new Option(optionCreateRequest)));
     }
 
     @GetMapping("/{id}/options")
@@ -105,5 +108,10 @@ public class ProductController {
     @ExceptionHandler(value = NeedAcceptException.class)
     public ResponseEntity<?> handleException(NeedAcceptException e) {
         return ResponseEntity.status(NOT_ACCEPTED.getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = OverQuantityException.class)
+    public ResponseEntity<?> handleException(OverQuantityException e) {
+        return ResponseEntity.status(OVER_QUANTITY.getStatus()).body(e.getMessage());
     }
 }
