@@ -59,7 +59,7 @@ public class OptionApiTest {
     }
 
     @BeforeEach
-    void loginSetTup(){
+    void loginSetup(){
         MemberRequest memberRequest = new MemberRequest(null, "member1@mem", "password1");
         var loginUrl = "http://localhost:" + port + "/api/members/login";
 
