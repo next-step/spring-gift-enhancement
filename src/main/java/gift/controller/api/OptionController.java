@@ -5,10 +5,10 @@ import gift.common.mapper.EntityToDtoMapper;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.common.validation.annotation.AllowedSortFields;
-import gift.dto.option.CreateOptionRequest;
-import gift.dto.option.OptionDefaultResponse;
-import gift.dto.option.PatchOptionRequest;
-import gift.dto.option.UpdateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
+import gift.dto.option.OptionResponse;
+import gift.dto.option.OptionPatchRequest;
+import gift.dto.option.OptionUpdateRequest;
 import gift.entity.Option;
 import gift.entity.UserRole;
 import gift.service.option.OptionService;
@@ -31,7 +31,7 @@ public class OptionController {
     }
 
     @GetMapping
-    public ResponseEntity<CustomPage<OptionDefaultResponse>> getOptions(
+    public ResponseEntity<CustomPage<OptionResponse>> getOptions(
             @PathVariable Long productId,
             @AllowedSortFields(value = { "id", "name", "quantity", "createdAt", "updatedAt" }, showAllowedFields = true)
             @PageableDefault(size = 5)
@@ -42,7 +42,7 @@ public class OptionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OptionDefaultResponse> getOptionById(
+    public ResponseEntity<OptionResponse> getOptionById(
             @PathVariable Long productId,
             @PathVariable Long id
     ) {
@@ -52,10 +52,10 @@ public class OptionController {
 
     @PreAuthorize(UserRole.ROLE_USER)
     @PostMapping
-    public ResponseEntity<OptionDefaultResponse> createOption(
+    public ResponseEntity<OptionResponse> createOption(
             @PathVariable Long productId,
             @RequestAttribute("auth") CustomAuth auth,
-            @Valid @RequestBody CreateOptionRequest request
+            @Valid @RequestBody OptionCreateRequest request
             ) {
         var savedOption =
                 EntityToDtoMapper.toDto(optionService.create(productId, auth, request.name(), request.quantity()));
@@ -69,7 +69,7 @@ public class OptionController {
             @PathVariable Long productId,
             @PathVariable Long id,
             @RequestAttribute("auth") CustomAuth auth,
-            @Valid @RequestBody UpdateOptionRequest request
+            @Valid @RequestBody OptionUpdateRequest request
     ) {
         var updatedOption = optionService.update(id, productId, auth, request.name(), request.quantity());
         return ResponseEntity.ok(EntityToDtoMapper.toDto(updatedOption));
@@ -77,11 +77,11 @@ public class OptionController {
 
     @PreAuthorize(UserRole.ROLE_USER)
     @PatchMapping("/{id}")
-    public ResponseEntity<OptionDefaultResponse> updateOptionQuantity(
+    public ResponseEntity<OptionResponse> updateOptionQuantity(
             @PathVariable Long productId,
             @PathVariable Long id,
             @RequestAttribute("auth") CustomAuth auth,
-            @Valid @RequestBody PatchOptionRequest request
+            @Valid @RequestBody OptionPatchRequest request
             ) {
         Option updatedOption;
         if (request.increment()) {

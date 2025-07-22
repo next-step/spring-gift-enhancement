@@ -2,9 +2,9 @@ package gift.E2ETest.product;
 
 import gift.E2ETest.AbstractControllerTest;
 import gift.E2ETest.testutil.RestAssuredUtils;
-import gift.dto.option.CreateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
 import gift.dto.product.ProductCreateRequest;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
 import gift.entity.UserRole;
@@ -23,7 +23,7 @@ public abstract class AbstractProductTest extends AbstractControllerTest {
     private RestAssuredUtils restAssuredUtils;
     protected Map<UserRole, UserAdminResponse> testUsers;
     protected Map<UserRole, String> testUserTokens;
-    protected List<ProductDefaultResponse> testProducts;
+    protected List<ProductResponse> testProducts;
 
 
     @BeforeEach
@@ -47,7 +47,7 @@ public abstract class AbstractProductTest extends AbstractControllerTest {
             this.testUserTokens.put(key, restAssuredUtils.getToken(value));
         });
         // 테스트 옵션
-        var options = List.of(new CreateOptionRequest("테스트 옵션", 10L));
+        var options = List.of(new OptionCreateRequest("테스트 옵션", 10L));
 
         // 테스트용 제품 생성
          Stream.of(

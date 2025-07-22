@@ -1,7 +1,7 @@
 package gift.E2ETest.option;
 
-import gift.dto.option.CreateOptionRequest;
-import gift.dto.option.OptionDefaultResponse;
+import gift.dto.option.OptionCreateRequest;
+import gift.dto.option.OptionResponse;
 import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -26,7 +26,7 @@ public class OptionDeleteTest extends AbstractOptionTest {
             parameterWithName("id").description("수정할 옵션 ID")
     };
 
-    List<OptionDefaultResponse> testOptions;
+    List<OptionResponse> testOptions;
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider provider) {
@@ -34,8 +34,8 @@ public class OptionDeleteTest extends AbstractOptionTest {
         Long productId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         this.testOptions = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            CreateOptionRequest request = new CreateOptionRequest("옵션 " + (i + 1), 1000L + (i * 100));
-            OptionDefaultResponse response = createOptionToProduct(request, productId,this.adminToken);
+            OptionCreateRequest request = new OptionCreateRequest("옵션 " + (i + 1), 1000L + (i * 100));
+            OptionResponse response = createOptionToProduct(request, productId,this.adminToken);
             this.testOptions.add(response);
         }
     }
@@ -93,7 +93,7 @@ public class OptionDeleteTest extends AbstractOptionTest {
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getList("contents", OptionDefaultResponse.class);
+                .getList("contents", OptionResponse.class);
 
         for (int i=0; i < options.size() - 1; i++) {
             Long optionId = options.get(i).id();

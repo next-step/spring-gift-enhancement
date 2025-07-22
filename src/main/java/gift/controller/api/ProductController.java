@@ -5,7 +5,7 @@ import gift.common.mapper.DtoToEntityMapper;
 import gift.common.mapper.EntityToDtoMapper;
 import gift.common.model.CustomAuth;
 import gift.common.validation.annotation.AllowedSortFields;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import gift.common.model.CustomPage;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<CustomPage<ProductDefaultResponse>> getAllProducts(
+    public ResponseEntity<CustomPage<ProductResponse>> getAllProducts(
             @AllowedSortFields(value = { "id", "name", "price", "createdAt", "updatedAt" }, showAllowedFields = true)
             @PageableDefault(size = 5) Pageable  pageable
     ) {
@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDefaultResponse> getProductById(
+    public ResponseEntity<ProductResponse> getProductById(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
     ) {
         Product product = productService.findById(id);
@@ -54,7 +54,7 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize(UserRole.ROLE_USER)
-    public ResponseEntity<ProductDefaultResponse> createProduct(
+    public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductCreateRequest dto,
             @RequestAttribute("auth") CustomAuth auth
     ) {
@@ -65,7 +65,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize(UserRole.ROLE_USER)
-    public ResponseEntity<ProductDefaultResponse> updateProduct(
+    public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestAttribute("auth") CustomAuth auth

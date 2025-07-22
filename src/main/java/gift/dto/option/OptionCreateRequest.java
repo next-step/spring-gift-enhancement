@@ -3,7 +3,7 @@ package gift.dto.option;
 import gift.common.validation.annotation.ValidCharSet;
 import jakarta.validation.constraints.*;
 
-public record CreateOptionRequest(
+public record OptionCreateRequest(
         @NotNull
         @ValidCharSet(message = "옵션 이름은 문자, 숫자, 공백, 특수문자( ( ), [ ], +, -, &, /, _)만 허용됩니다.")
         @NotBlank(message = "옵션 이름은 빈칸일 수 없습니다.")

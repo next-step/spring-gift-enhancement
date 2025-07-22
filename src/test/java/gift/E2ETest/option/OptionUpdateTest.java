@@ -1,9 +1,9 @@
 package gift.E2ETest.option;
 
-import gift.dto.option.CreateOptionRequest;
-import gift.dto.option.OptionDefaultResponse;
-import gift.dto.option.PatchOptionRequest;
-import gift.dto.option.UpdateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
+import gift.dto.option.OptionResponse;
+import gift.dto.option.OptionPatchRequest;
+import gift.dto.option.OptionUpdateRequest;
 import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -53,10 +53,10 @@ public class OptionUpdateTest extends AbstractOptionTest {
     };
 
 
-    private Map<UserRole, OptionDefaultResponse> testOptions;
+    private Map<UserRole, OptionResponse> testOptions;
 
     private ValidatableResponse updateWithoutDocumentation(
-            Long productId, Long optionId, UpdateOptionRequest request, String token
+            Long productId, Long optionId, OptionUpdateRequest request, String token
     ) {
         return RestAssured.given()
                 .contentType("application/json")
@@ -68,7 +68,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
     }
 
     private ValidatableResponse patchWithoutDocumentation(
-            Long productId, Long optionId, PatchOptionRequest request, String token
+            Long productId, Long optionId, OptionPatchRequest request, String token
     ) {
         return RestAssured.given()
                 .contentType("application/json")
@@ -86,7 +86,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
 
         this.testOptions = new HashMap<>();
         this.testProducts.forEach((role, product) -> {
-            var createRequest = new CreateOptionRequest("test update option", 10L);
+            var createRequest = new OptionCreateRequest("test update option", 10L);
             var option = createOptionToProduct(createRequest, product.id(), this.adminToken);
             this.testOptions.put(role, option);
         });
@@ -97,7 +97,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
     public void update_Option_Success() {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         Long validId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
-        CreateOptionRequest request = new CreateOptionRequest("수정된 옵션", 20L);
+        OptionCreateRequest request = new OptionCreateRequest("수정된 옵션", 20L);
 
         RestAssured.given(this.spec)
                 .filter(document("옵션 수정 성공",
@@ -125,8 +125,8 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         Long validId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
         Stream.of(
-                new UpdateOptionRequest("수정된 옵션", null),
-                new UpdateOptionRequest(null, 20L)
+                new OptionUpdateRequest("수정된 옵션", null),
+                new OptionUpdateRequest(null, 20L)
         ).forEach(request ->
             updateWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(200)
@@ -141,7 +141,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
         String userToken = this.testUserTokens.get(UserRole.ROLE_USER);
         Long validProductId = this.testProducts.get(UserRole.ROLE_USER).id();
         Long validId = this.testOptions.get(UserRole.ROLE_USER).id();
-        UpdateOptionRequest request = new UpdateOptionRequest("수정된 옵션", 20L);
+        OptionUpdateRequest request = new OptionUpdateRequest("수정된 옵션", 20L);
         updateWithoutDocumentation(validProductId, validId, request, userToken)
                 .statusCode(200)
                 .body("id", notNullValue())
@@ -157,7 +157,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
     public void update_Option_Increment_Success() {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
-        var request = new PatchOptionRequest(5L, true); // 수량을 5 증가
+        var request = new OptionPatchRequest(5L, true); // 수량을 5 증가
         long expectedQuantity = validOption.quantity() + request.quantity();
         RestAssured.given(this.spec)
                 .filter(document("옵션 증감 성공",
@@ -186,7 +186,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
         String userToken = this.testUserTokens.get(UserRole.ROLE_USER);
         Long validProductId = this.testProducts.get(UserRole.ROLE_USER).id();
         var validOption = this.testOptions.get(UserRole.ROLE_USER);
-        var request = new PatchOptionRequest(5L, true); // 수량을 5 증가
+        var request = new OptionPatchRequest(5L, true); // 수량을 5 증가
         long expectedQuantity = validOption.quantity() + request.quantity();
 
         patchWithoutDocumentation(validProductId, validOption.id(), request, userToken)
@@ -206,18 +206,18 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Long validId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
         String longText = "a".repeat(256); // 256자 이상 문자열
         Stream.of(
-                new UpdateOptionRequest(longText, 20L), // 이름 길이 초과
-                new UpdateOptionRequest("<><>", 20L), // 이름에 유효하지 않은 특수문자 포함
-                new UpdateOptionRequest("수정된 옵션", -10L), // 수량 음수
-                new UpdateOptionRequest("수정된 옵션", 0L), // 수량 0
-                new UpdateOptionRequest("수정된 옵션", 100_000_001L) // 수량 1억 초과
+                new OptionUpdateRequest(longText, 20L), // 이름 길이 초과
+                new OptionUpdateRequest("<><>", 20L), // 이름에 유효하지 않은 특수문자 포함
+                new OptionUpdateRequest("수정된 옵션", -10L), // 수량 음수
+                new OptionUpdateRequest("수정된 옵션", 0L), // 수량 0
+                new OptionUpdateRequest("수정된 옵션", 100_000_001L) // 수량 1억 초과
         ).forEach(request ->
             updateWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(400)
                     .body("validationErrors", notNullValue())
         );
         Stream.of(
-                new PatchOptionRequest(-5L, true) // 수량 음수
+                new OptionPatchRequest(-5L, true) // 수량 음수
         ).forEach(request ->
             patchWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(400)
@@ -232,10 +232,10 @@ public class OptionUpdateTest extends AbstractOptionTest {
         var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
 
         // 수량을 음수로 만드는 요청
-        PatchOptionRequest negativeReq = new PatchOptionRequest(validOption.quantity() + 1, false); // 수량을 15 감소
+        OptionPatchRequest negativeReq = new OptionPatchRequest(validOption.quantity() + 1, false); // 수량을 15 감소
 
         // 수량을 1억 이상으로 만드는 요청
-        PatchOptionRequest overLimitReq = new PatchOptionRequest(100_000_001L, true); // 수량을 1억 증가
+        OptionPatchRequest overLimitReq = new OptionPatchRequest(100_000_001L, true); // 수량을 1억 증가
 
         patchWithoutDocumentation(validProductId, validOption.id(), negativeReq, this.adminToken)
                 .statusCode(400);
@@ -249,8 +249,8 @@ public class OptionUpdateTest extends AbstractOptionTest {
     public void update_Option_Failure_No_Auth() {
         Long adminProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         Long userOptionId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
-        UpdateOptionRequest updateReq = new UpdateOptionRequest("수정된 옵션", 20L);
-        PatchOptionRequest patchReq = new PatchOptionRequest(5L, true);
+        OptionUpdateRequest updateReq = new OptionUpdateRequest("수정된 옵션", 20L);
+        OptionPatchRequest patchReq = new OptionPatchRequest(5L, true);
 
         // 관리자 권한도 아니고 소유자도 아닌 사용자로 요청
         updateWithoutDocumentation(adminProductId, userOptionId, updateReq, this.testUserTokens.get(UserRole.ROLE_USER))
@@ -265,8 +265,8 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         Long invalidProductId = -1L; // 존재하지 않는 상품 ID
         Long invalidOptionId = -1L; // 존재하지 않는 옵션 ID
-        UpdateOptionRequest updateReq = new UpdateOptionRequest("수정된 옵션", 20L);
-        PatchOptionRequest patchReq = new PatchOptionRequest(5L, true);
+        OptionUpdateRequest updateReq = new OptionUpdateRequest("수정된 옵션", 20L);
+        OptionPatchRequest patchReq = new OptionPatchRequest(5L, true);
         // 존재하는 상품 ID로 요청
         updateWithoutDocumentation(invalidProductId, invalidOptionId, updateReq, this.adminToken)
                 .statusCode(404);
@@ -286,11 +286,11 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Long validId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
         // 새로운 옵션 생성
         var option = createOptionToProduct(
-                new CreateOptionRequest("test dup option", 10L), validProductId, this.adminToken
+                new OptionCreateRequest("test dup option", 10L), validProductId, this.adminToken
         );
 
         // 중복되는 이름으로 수정 요청
-        var request = new UpdateOptionRequest(option.name(), 20L);
+        var request = new OptionUpdateRequest(option.name(), 20L);
         updateWithoutDocumentation(validProductId, validId, request, this.adminToken)
                 .statusCode(409);
     }

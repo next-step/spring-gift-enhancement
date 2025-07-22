@@ -1,8 +1,8 @@
 package gift.E2ETest.product;
 
-import gift.dto.option.CreateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
 import gift.dto.product.ProductCreateRequest;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
@@ -41,12 +41,12 @@ public class ProductCreateTest extends AbstractProductTest {
     @DisplayName("제품 생성 성공 테스트")
     public void Product_Create_Success() {
         var options = List.of(
-                new CreateOptionRequest("옵션1", 10L),
-                new CreateOptionRequest("옵션2", 20L)
+                new OptionCreateRequest("옵션1", 10L),
+                new OptionCreateRequest("옵션2", 20L)
         );
         ProductCreateRequest request =
                 new ProductCreateRequest("새로운 제품", 1000L, "이미지 URL", options);
-        ProductDefaultResponse response = RestAssured.given(this.spec)
+        ProductResponse response = RestAssured.given(this.spec)
                 .filter(document("상품 생성 성공",
                         requestFields(PRODUCT_CREATE_REQUEST),
                         requestHeaders(AUTHENTICATE_HEADERS),
@@ -64,7 +64,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 .body("price", notNullValue())
                 .body("imageUrl", notNullValue())
                 .extract()
-                .as(ProductDefaultResponse.class);
+                .as(ProductResponse.class);
         this.testProducts.add(response);
     }
 
@@ -72,12 +72,12 @@ public class ProductCreateTest extends AbstractProductTest {
     @DisplayName("제품 생성 성공 - MD 권한으로 카카오 제품 생성 테스트")
     public void Product_Create_Success_MD() {
         var options = List.of(
-                new CreateOptionRequest("옵션1", 10L),
-                new CreateOptionRequest("옵션2", 20L)
+                new OptionCreateRequest("옵션1", 10L),
+                new OptionCreateRequest("옵션2", 20L)
         );
         ProductCreateRequest request = new ProductCreateRequest("카카오 제품", 1000L, "이미지 URL", options);
 
-        ProductDefaultResponse response = RestAssured.given(this.spec)
+        ProductResponse response = RestAssured.given(this.spec)
                 .filter(document("상품 생성 성공 - MD 권한",
                         requestFields(PRODUCT_CREATE_REQUEST),
                         requestHeaders(AUTHENTICATE_HEADERS),
@@ -95,7 +95,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 .body("price", equalTo(1000))
                 .body("imageUrl", equalTo("이미지 URL"))
                 .extract()
-                .as(ProductDefaultResponse.class);
+                .as(ProductResponse.class);
         this.testProducts.add(response);
     }
 
@@ -103,8 +103,8 @@ public class ProductCreateTest extends AbstractProductTest {
     @DisplayName("제품 생성 실패 - 필수 필드 누락 테스트 (400 Bad Request)")
     public void Product_Create_Failure_MissingFields() {
         var options = List.of(
-                new CreateOptionRequest("옵션1", 10L),
-                new CreateOptionRequest("옵션2", 20L)
+                new OptionCreateRequest("옵션1", 10L),
+                new OptionCreateRequest("옵션2", 20L)
         );
         List<ProductCreateRequest> requests = List.of(
                 new ProductCreateRequest(null, 1000L, "이미지 URL", options),
@@ -133,8 +133,8 @@ public class ProductCreateTest extends AbstractProductTest {
     @DisplayName("제품 생성 실패 - 유효성 검사 실패 테스트- USER 권한 상품 이름에 카카오 추가 (400 Bad Request)")
     public void Product_Create_Failure_ValidationError() {
         var options = List.of(
-                new CreateOptionRequest("옵션1", 10L),
-                new CreateOptionRequest("옵션2", 20L)
+                new OptionCreateRequest("옵션1", 10L),
+                new OptionCreateRequest("옵션2", 20L)
         );
         ProductCreateRequest request = new ProductCreateRequest("카카오 제품", 1000L, "이미지 URL", options);
 
@@ -161,8 +161,8 @@ public class ProductCreateTest extends AbstractProductTest {
     @DisplayName("제품 생성 실패 - 유효성 검증 오류 (400 Bad Request)")
     public void Product_Create_Failure_ValidationError_Case() {
         var options = List.of(
-                new CreateOptionRequest("옵션1", 10L),
-                new CreateOptionRequest("옵션2", 20L)
+                new OptionCreateRequest("옵션1", 10L),
+                new OptionCreateRequest("옵션2", 20L)
         );
         List<ProductCreateRequest> requests = List.of(
                 new ProductCreateRequest("테스트 제품", -1000L, "이미지 URL", options), // 가격이 음수
@@ -189,8 +189,8 @@ public class ProductCreateTest extends AbstractProductTest {
     @DisplayName("제품 생성 실패 - 권한 없음 테스트 (403 Forbidden)")
     public void Product_Create_Failure_Unauthorized() {
         var options = List.of(
-                new CreateOptionRequest("옵션1", 10L),
-                new CreateOptionRequest("옵션2", 20L)
+                new OptionCreateRequest("옵션1", 10L),
+                new OptionCreateRequest("옵션2", 20L)
         );
         ProductCreateRequest request = new ProductCreateRequest("제품 이름", 1000L, "이미지 URL", options);
 

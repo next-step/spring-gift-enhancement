@@ -1,7 +1,7 @@
 package gift.E2ETest.product;
 
 import gift.common.model.CustomPage;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
@@ -69,7 +69,7 @@ public class ProductReadTest extends AbstractProductTest {
     public void find_All_Products_Success_With_Page_And_Sort_Parameters() {
         // 페이지와 정렬 파라미터를 포함한 URL
         String url = getBaseUrl() + "/api/products";
-        CustomPage<ProductDefaultResponse> res = RestAssured.given()
+        CustomPage<ProductResponse> res = RestAssured.given()
                 .queryParam("page", 0)
                 .queryParam("size", 5)
                 .queryParam("sort", "price,desc")
@@ -81,7 +81,7 @@ public class ProductReadTest extends AbstractProductTest {
                 .as(new TypeRef<>() {});
 
         Long prevPrice = Long.MAX_VALUE;
-        for (ProductDefaultResponse product : res.getContents()) {
+        for (ProductResponse product : res.getContents()) {
             Long currentPrice = product.price();
             // 가격이 내림차순으로 정렬되어 있는지 확인
             if (currentPrice != null) {

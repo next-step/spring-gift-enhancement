@@ -1,7 +1,7 @@
 package gift.E2ETest.wishlist;
 
-import gift.dto.wishlist.PatchWishedProductRequest;
-import gift.dto.wishlist.UpdateWishedProductRequest;
+import gift.dto.wishlist.WishedProductPatchRequest;
+import gift.dto.wishlist.WishedProductUpdateRequest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
 
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        UpdateWishedProductRequest request = new UpdateWishedProductRequest(5);
+        WishedProductUpdateRequest request = new WishedProductUpdateRequest(5);
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 수정 성공",
                         requestFields(WISHLIST_UPDATE_REQUEST),
@@ -83,9 +83,9 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
 
-        List<UpdateWishedProductRequest> requests = List.of(
-                new UpdateWishedProductRequest(-1), // 음수 수량
-                new UpdateWishedProductRequest(null) // null 수량
+        List<WishedProductUpdateRequest> requests = List.of(
+                new WishedProductUpdateRequest(-1), // 음수 수량
+                new WishedProductUpdateRequest(null) // null 수량
         );
 
         requests.forEach(request ->
@@ -104,7 +104,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         // 위시리스트에 제품을 추가한 후, 해당 제품의 수량을 수정하는 테스트
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        UpdateWishedProductRequest request = new UpdateWishedProductRequest(5);
+        WishedProductUpdateRequest request = new WishedProductUpdateRequest(5);
         RestAssured.given(this.spec)
                 .contentType("application/json")
                 .body(request)
@@ -120,7 +120,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
 
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        PatchWishedProductRequest request = new PatchWishedProductRequest(null, null);
+        WishedProductPatchRequest request = new WishedProductPatchRequest(null, null);
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 수정 성공 - 증가",
                         requestFields(WISHLIST_PATCH_REQUEST),
@@ -153,7 +153,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
 
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        PatchWishedProductRequest request = new PatchWishedProductRequest(null, false);
+        WishedProductPatchRequest request = new WishedProductPatchRequest(null, false);
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 수정 성공 - 감소",
                         requestFields(WISHLIST_PATCH_REQUEST),
@@ -174,8 +174,8 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         // 위시리스트에 제품을 추가한 후, 해당 제품의 수량을 수정하는 테스트
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        List<PatchWishedProductRequest> requests = List.of(
-                new PatchWishedProductRequest(-1, null) // 음수 수량
+        List<WishedProductPatchRequest> requests = List.of(
+                new WishedProductPatchRequest(-1, null) // 음수 수량
         );
 
         requests.forEach(request ->
@@ -193,7 +193,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         // 위시리스트에 제품을 추가한 후, 해당 제품의 수량을 수정하는 테스트
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        PatchWishedProductRequest request = new PatchWishedProductRequest(null, null);
+        WishedProductPatchRequest request = new WishedProductPatchRequest(null, null);
         RestAssured.given(this.spec)
                 .contentType("application/json")
                 .body(request)

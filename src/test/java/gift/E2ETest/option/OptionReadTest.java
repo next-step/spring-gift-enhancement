@@ -1,7 +1,7 @@
 package gift.E2ETest.option;
 
-import gift.dto.option.CreateOptionRequest;
-import gift.dto.option.OptionDefaultResponse;
+import gift.dto.option.OptionCreateRequest;
+import gift.dto.option.OptionResponse;
 import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -41,7 +41,7 @@ public class OptionReadTest extends  AbstractOptionTest {
     });
 
     private Long testProductId;
-    private List<OptionDefaultResponse> testOptions;
+    private List<OptionResponse> testOptions;
 
     private ValidatableResponse findAllWithoutDocumentation(int page, int size, String sort) {
         return RestAssured.given()
@@ -69,7 +69,7 @@ public class OptionReadTest extends  AbstractOptionTest {
         this.testOptions = new ArrayList<>();
         // 테스트를 위한 옵션 데이터 생성
         for (int i = 0; i < 5; i++) {
-            var request = new CreateOptionRequest("옵션 " + i, 10L * (i + 1));
+            var request = new OptionCreateRequest("옵션 " + i, 10L * (i + 1));
             var res = createOptionToProduct(request, this.testProductId, this.adminToken);
             this.testOptions.add(res);
         }
@@ -117,11 +117,11 @@ public class OptionReadTest extends  AbstractOptionTest {
                 .statusCode(200)
                 .extract()
                 .jsonPath()
-                .getList("contents", OptionDefaultResponse.class);
+                .getList("contents", OptionResponse.class);
 
         // 수량이 내림차순으로 정렬되었는지 확인
         Long prevQuantity = Long.MAX_VALUE;
-        for (OptionDefaultResponse option : sortedOptions) {
+        for (OptionResponse option : sortedOptions) {
             assertThat(option.quantity(), lessThanOrEqualTo(prevQuantity));
             prevQuantity = option.quantity();
         }

@@ -5,9 +5,9 @@ import gift.common.mapper.EntityToDtoMapper;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.common.validation.annotation.AllowedSortFields;
-import gift.dto.wishlist.CreateWishedProductRequest;
-import gift.dto.wishlist.PatchWishedProductRequest;
-import gift.dto.wishlist.UpdateWishedProductRequest;
+import gift.dto.wishlist.WishedProductCreateRequest;
+import gift.dto.wishlist.WishedProductPatchRequest;
+import gift.dto.wishlist.WishedProductUpdateRequest;
 import gift.dto.wishlist.WishedProductResponse;
 import gift.entity.UserRole;
 import gift.entity.WishedProduct;
@@ -59,7 +59,7 @@ public class WishlistController {
     @PostMapping()
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<WishedProductResponse> addWishlistItem(
-            @Valid @RequestBody CreateWishedProductRequest request,
+            @Valid @RequestBody WishedProductCreateRequest request,
             @RequestAttribute("auth") CustomAuth auth
     ) {
         WishedProduct wishedProduct = wishedProductService.create(auth.userId(), request.productId(), request.quantity());
@@ -70,7 +70,7 @@ public class WishlistController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<?> updateWishlistItem(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateWishedProductRequest request,
+            @Valid @RequestBody WishedProductUpdateRequest request,
             @RequestAttribute("auth") CustomAuth auth
     ) {
         var wishedProduct = wishedProductService.updateQuantityBy(auth.userId(), id, request.quantity());
@@ -84,7 +84,7 @@ public class WishlistController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<?> patchWishlistItem(
             @PathVariable Long id,
-            @Valid @RequestBody PatchWishedProductRequest request,
+            @Valid @RequestBody WishedProductPatchRequest request,
             @RequestAttribute("auth") CustomAuth auth
     ) {
         Optional<WishedProduct> wishedProduct;

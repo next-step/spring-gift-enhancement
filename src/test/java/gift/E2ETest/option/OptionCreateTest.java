@@ -1,6 +1,6 @@
 package gift.E2ETest.option;
 
-import gift.dto.option.CreateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
 import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -34,7 +34,7 @@ public class OptionCreateTest extends AbstractOptionTest {
     };
 
     private ValidatableResponse requestWithoutDocumentation(
-            CreateOptionRequest request, Long productId, String token
+            OptionCreateRequest request, Long productId, String token
     ) {
         return RestAssured.given()
                 .contentType("application/json")
@@ -48,7 +48,7 @@ public class OptionCreateTest extends AbstractOptionTest {
     @Test
     @DisplayName("옵션 생성 요청 성공 테스트")
     public void Option_Create_Success() {
-        CreateOptionRequest request = new CreateOptionRequest("Test Create Option",1000L);
+        OptionCreateRequest request = new OptionCreateRequest("Test Create Option",1000L);
         Long testProductId = this.testProducts.get(UserRole.ROLE_USER).id();
 
         RestAssured.given(this.spec)
@@ -76,7 +76,7 @@ public class OptionCreateTest extends AbstractOptionTest {
     @Test
     @DisplayName("옵션 생성 요청 성공 테스트 - 소유중인 상품에 소유자가 옵션 생성 요청")
     public void Option_Create_Success_Owner() {
-        CreateOptionRequest request = new CreateOptionRequest("Test Create Option", 1000L);
+        OptionCreateRequest request = new OptionCreateRequest("Test Create Option", 1000L);
         Long testProductId = this.testProducts.get(UserRole.ROLE_USER).id();
         String ownerToken = this.testUserTokens.get(UserRole.ROLE_USER);
 
@@ -95,14 +95,14 @@ public class OptionCreateTest extends AbstractOptionTest {
         Long testProductId = this.testProducts.get(UserRole.ROLE_USER).id();
         String longText = "a".repeat(256); // 256자 이상의 긴 문자열
         Stream.of(
-                new CreateOptionRequest(null, 1000L), // 이름이 null인 경우
-                new CreateOptionRequest("", 1000L), // 이름이 빈 문자열인 경우
-                new CreateOptionRequest("Valid Name", null), // 수량이 null인 경우
-                new CreateOptionRequest("Valid Name", -100L), // 수량이 음수인 경우
-                new CreateOptionRequest("Valid Name", 0L), // 수량이 0인 경우
-                new CreateOptionRequest("Valid Name", 1_00_000_000L), // 수량이 1억 이상인 경우
-                new CreateOptionRequest(longText, 1000L), // 이름이 너무 긴 경우
-                new CreateOptionRequest("Invalid Name<>", 1000L) // 이름에 유효하지 않은 문자가 포함된 경우
+                new OptionCreateRequest(null, 1000L), // 이름이 null인 경우
+                new OptionCreateRequest("", 1000L), // 이름이 빈 문자열인 경우
+                new OptionCreateRequest("Valid Name", null), // 수량이 null인 경우
+                new OptionCreateRequest("Valid Name", -100L), // 수량이 음수인 경우
+                new OptionCreateRequest("Valid Name", 0L), // 수량이 0인 경우
+                new OptionCreateRequest("Valid Name", 1_00_000_000L), // 수량이 1억 이상인 경우
+                new OptionCreateRequest(longText, 1000L), // 이름이 너무 긴 경우
+                new OptionCreateRequest("Invalid Name<>", 1000L) // 이름에 유효하지 않은 문자가 포함된 경우
         ).forEach(request ->
                 requestWithoutDocumentation(request, testProductId, this.adminToken)
                         .statusCode(400)
@@ -116,7 +116,7 @@ public class OptionCreateTest extends AbstractOptionTest {
     @DisplayName("옵션 생성 요청 실패 테스트 - 소유하지 않은 일반 사용자가 옵션 생성 요청(403 Forbidden)")
     public void Option_Create_Failure_Not_Owner() {
         // 일반 사용자가 자신이 소유하지 않은 상품에 옵션 생성 요청 시도
-        CreateOptionRequest request = new CreateOptionRequest("Test Create Option", 1000L);
+        OptionCreateRequest request = new OptionCreateRequest("Test Create Option", 1000L);
         Long testProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         String unauthorizedToken = this.testUserTokens.get(UserRole.ROLE_USER);
 
@@ -140,7 +140,7 @@ public class OptionCreateTest extends AbstractOptionTest {
     @Test
     @DisplayName("옵션 생성 요청 실패 테스트 - 존재하지 않는 상품에 옵션 생성 요청(404 Not Found)")
     public void Option_Create_Failure_Non_Existent_Product() {
-        CreateOptionRequest request = new CreateOptionRequest("Test Create Option", 1000L);
+        OptionCreateRequest request = new OptionCreateRequest("Test Create Option", 1000L);
         Long nonExistentProductId = 9999L; // 존재하지 않는 상품 ID
 
         requestWithoutDocumentation(request, nonExistentProductId, this.adminToken)
@@ -152,7 +152,7 @@ public class OptionCreateTest extends AbstractOptionTest {
     @Test
     @DisplayName("옵션 생성 요청 실패 테스트 - 같은 이름의 옵션이 이미 존재하는 경우(409 Conflict)")
     public void Option_Create_Failure_Already_Exists() {
-        CreateOptionRequest request = new CreateOptionRequest("Test Create Option", 1000L);
+        OptionCreateRequest request = new OptionCreateRequest("Test Create Option", 1000L);
         Long testProductId = this.testProducts.get(UserRole.ROLE_USER).id();
         // 먼저 옵션을 생성
         requestWithoutDocumentation(request, testProductId, this.adminToken)

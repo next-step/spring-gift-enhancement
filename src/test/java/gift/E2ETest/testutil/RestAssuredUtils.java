@@ -2,13 +2,13 @@ package gift.E2ETest.testutil;
 
 import gift.dto.auth.LoginRequest;
 import gift.dto.auth.TokenResponse;
-import gift.dto.option.CreateOptionRequest;
-import gift.dto.option.OptionDefaultResponse;
+import gift.dto.option.OptionCreateRequest;
+import gift.dto.option.OptionResponse;
 import gift.dto.product.ProductCreateRequest;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
-import gift.dto.wishlist.CreateWishedProductRequest;
+import gift.dto.wishlist.WishedProductCreateRequest;
 import gift.dto.wishlist.WishedProductResponse;
 import io.restassured.RestAssured;
 
@@ -63,7 +63,7 @@ public class RestAssuredUtils {
         return "Bearer " + response.token();
     }
 
-    public ProductDefaultResponse createProduct(ProductCreateRequest request, String token) {
+    public ProductResponse createProduct(ProductCreateRequest request, String token) {
         return RestAssured.given()
                 .header(AUTH_HEADER_KEY, token)
                 .contentType("application/json")
@@ -72,7 +72,7 @@ public class RestAssuredUtils {
                 .then()
                 .statusCode(201)
                 .extract()
-                .as(ProductDefaultResponse.class);
+                .as(ProductResponse.class);
     }
 
     public void deleteProduct(Long productId) {
@@ -84,7 +84,7 @@ public class RestAssuredUtils {
     }
 
     public WishedProductResponse addProductToWishlist(Long productId, Integer quantity, String token) {
-        CreateWishedProductRequest request = new CreateWishedProductRequest(productId, quantity);
+        WishedProductCreateRequest request = new WishedProductCreateRequest(productId, quantity);
         return RestAssured.given()
                 .contentType("application/json")
                 .body(request)
@@ -96,7 +96,7 @@ public class RestAssuredUtils {
                 .as(WishedProductResponse.class);
     }
 
-    public OptionDefaultResponse createOptionToProduct(CreateOptionRequest request, Long productId, String token) {
+    public OptionResponse createOptionToProduct(OptionCreateRequest request, Long productId, String token) {
         return RestAssured.given()
                 .header(AUTH_HEADER_KEY, this.adminToken)
                 .contentType("application/json")
@@ -106,7 +106,7 @@ public class RestAssuredUtils {
                 .then()
                 .statusCode(201)
                 .extract()
-                .as(OptionDefaultResponse.class);
+                .as(OptionResponse.class);
     }
 
 }

@@ -1,7 +1,7 @@
 package gift.common.mapper;
 
-import gift.dto.option.OptionDefaultResponse;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.option.OptionResponse;
+import gift.dto.product.ProductResponse;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserDefaultResponse;
 import gift.dto.wishlist.WishedProductResponse;
@@ -17,8 +17,8 @@ public class EntityToDtoMapper {
 
 
 
-    public static ProductDefaultResponse toDto(Product product) {
-        return new ProductDefaultResponse(
+    public static ProductResponse toDto(Product product) {
+        return new ProductResponse(
             product.getId(),
             product.getName(),
             product.getPrice(),
@@ -65,8 +65,8 @@ public class EntityToDtoMapper {
         );
     }
 
-    public static OptionDefaultResponse toDto(Option option) {
-        return new OptionDefaultResponse(
+    public static OptionResponse toDto(Option option) {
+        return new OptionResponse(
             option.getId(),
             option.getName(),
             option.getQuantity(),

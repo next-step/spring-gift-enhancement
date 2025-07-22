@@ -2,10 +2,10 @@ package gift.E2ETest.option;
 
 import gift.E2ETest.AbstractControllerTest;
 import gift.E2ETest.testutil.RestAssuredUtils;
-import gift.dto.option.CreateOptionRequest;
-import gift.dto.option.OptionDefaultResponse;
+import gift.dto.option.OptionCreateRequest;
+import gift.dto.option.OptionResponse;
 import gift.dto.product.ProductCreateRequest;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
 import gift.entity.UserRole;
@@ -22,9 +22,9 @@ public class AbstractOptionTest extends AbstractControllerTest {
 
     protected Map<UserRole, UserAdminResponse> testUsers;
     protected Map<UserRole, String> testUserTokens;
-    protected Map<UserRole, ProductDefaultResponse> testProducts;
+    protected Map<UserRole, ProductResponse> testProducts;
 
-    protected OptionDefaultResponse createOptionToProduct(CreateOptionRequest request, Long productId, String token) {
+    protected OptionResponse createOptionToProduct(OptionCreateRequest request, Long productId, String token) {
         return restAssuredUtils.createOptionToProduct(request, productId, token);
     }
 
@@ -45,7 +45,7 @@ public class AbstractOptionTest extends AbstractControllerTest {
             this.testUsers.put(role, restAssuredUtils.createUser(request));
             var token = restAssuredUtils.getToken(request);
             this.testUserTokens.put(role, token);
-            var optionRequest = new CreateOptionRequest(role.name() + " Option", 100L);
+            var optionRequest = new OptionCreateRequest(role.name() + " Option", 100L);
             var productRequest = new ProductCreateRequest(
                     role.name() + " Prod", 1000L, "www.example.com/image.jpg", List.of(optionRequest)
             );

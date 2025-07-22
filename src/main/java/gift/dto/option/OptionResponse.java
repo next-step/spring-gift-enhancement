@@ -2,7 +2,7 @@ package gift.dto.option;
 
 import java.time.Instant;
 
-public record OptionDefaultResponse(
+public record OptionResponse(
         Long id,
         String name,
         Long quantity,

@@ -4,7 +4,7 @@ import gift.common.validation.annotation.KakaoNotContained;
 import gift.common.validation.annotation.UniqueOptionName;
 import gift.common.validation.annotation.ValidCharSet;
 import gift.common.validation.group.AuthenticationGroups;
-import gift.dto.option.CreateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +30,6 @@ public record ProductCreateRequest(
     @NotNull(message = "옵션 목록은 필수입니다.")
     @Size(min = 1, message = "상품은 최소 하나의 옵션을 가져야 합니다.")
     @UniqueOptionName
-    List<CreateOptionRequest> options
+    List<OptionCreateRequest> options
 ) {
 }

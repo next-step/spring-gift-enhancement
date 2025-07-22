@@ -1,6 +1,6 @@
 package gift.common.mapper;
 
-import gift.dto.option.CreateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
 import gift.dto.user.UserCreateRequest;
@@ -64,7 +64,7 @@ public class DtoToEntityMapper {
         return user;
     }
 
-    public static Option toEntity(CreateOptionRequest request) {
+    public static Option toEntity(OptionCreateRequest request) {
         return new Option(
                 request.name(),
                 request.quantity()

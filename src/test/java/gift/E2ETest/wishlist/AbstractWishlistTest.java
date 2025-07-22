@@ -2,9 +2,9 @@ package gift.E2ETest.wishlist;
 
 import gift.E2ETest.AbstractControllerTest;
 import gift.E2ETest.testutil.RestAssuredUtils;
-import gift.dto.option.CreateOptionRequest;
+import gift.dto.option.OptionCreateRequest;
 import gift.dto.product.ProductCreateRequest;
-import gift.dto.product.ProductDefaultResponse;
+import gift.dto.product.ProductResponse;
 import gift.dto.user.UserCreateRequest;
 import gift.dto.wishlist.WishedProductResponse;
 import io.restassured.RestAssured;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class AbstractWishlistTest extends AbstractControllerTest {
     private RestAssuredUtils restAssuredUtils;
-    protected List<ProductDefaultResponse> testProducts;
+    protected List<ProductResponse> testProducts;
     protected String testToken;
 
     protected WishedProductResponse addProductToWishlist(Long productId, Integer quantity) {
@@ -30,15 +30,15 @@ public abstract class AbstractWishlistTest extends AbstractControllerTest {
         this.restAssuredUtils = new RestAssuredUtils(getBaseUrl(), adminToken);
         this.testProducts = new ArrayList<>();
         var options = List.of(
-                new CreateOptionRequest("옵션1", 100L),
-                new CreateOptionRequest("옵션2", 200L)
+                new OptionCreateRequest("옵션1", 100L),
+                new OptionCreateRequest("옵션2", 200L)
         );
 
         for (int i= 0; i < 5; i++) {
             ProductCreateRequest request = new ProductCreateRequest(
                     "테스트 제품 " + i, 1000L + i, "이미지 URL " + i, options
             );
-            ProductDefaultResponse response = restAssuredUtils.createProduct(request, this.adminToken);
+            ProductResponse response = restAssuredUtils.createProduct(request, this.adminToken);
             this.testProducts.add(response);
         }
         var testUserRequest = new UserCreateRequest(
