@@ -67,13 +67,9 @@ public class ProductOptionService {
 
     private ProductOption findValidatedOption(Long productId, Long optionId) {
         validateProductExists(productId);
-
         ProductOption option = optionRepository.findByIdAndProductId(optionId, productId)
                 .orElseThrow(() -> new IllegalArgumentException("옵션을 찾을 수 없습니다: " + optionId));
 
-        if (!option.getProduct().getId().equals(productId)) {
-            throw new IllegalArgumentException("해당 상품의 옵션이 아닙니다.");
-        }
         return option;
     }
 
