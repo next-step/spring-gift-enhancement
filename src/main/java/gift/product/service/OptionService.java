@@ -1,5 +1,6 @@
 package gift.product.service;
 
+import gift.product.dto.request.OptionCreateRequest;
 import gift.product.dto.response.OptionResponse;
 import gift.product.entity.Option;
 import gift.product.entity.Product;
@@ -27,9 +28,10 @@ public class OptionService {
                 .toList();
     }
 
-    public OptionResponse save(Long productId, Option option){
+    public OptionResponse save(Long productId, OptionCreateRequest optionCreateRequest) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoProductException(ProductStatus.NO_GIFT.getMessage()));
+        Option option = new Option(optionCreateRequest, product);
         product.addOption(option);
         return OptionResponse.from(optionRepository.save(option));
     }

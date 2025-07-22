@@ -13,7 +13,7 @@ public class Option {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column(nullable = false)
@@ -22,14 +22,16 @@ public class Option {
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    public Option(String name, Integer quantity) {
+    public Option(String name, Integer quantity, Product product) {
         this.name = name;
         this.quantity = quantity;
+        this.product = product;
     }
 
-    public Option(OptionCreateRequest request){
+    public Option(OptionCreateRequest request, Product product) {
         this.name = request.name();
         this.quantity = request.quantity();
+        this.product = product;
     }
 
     protected Option() {
@@ -52,5 +54,9 @@ public class Option {
             throw new OverQuantityException(OVER_QUANTITY.getMessage());
         }
         this.quantity -= quantity;
+    }
+
+    public boolean isSameName(String name){
+        return this.name.equals(name);
     }
 }

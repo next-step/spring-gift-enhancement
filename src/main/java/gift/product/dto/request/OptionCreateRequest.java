@@ -17,7 +17,4 @@ public record OptionCreateRequest(
         @Max(99999999)
         Integer quantity
 ) {
-    public Option toEntity(){
-        return new Option(this.name, this.quantity);
-    }
 }
