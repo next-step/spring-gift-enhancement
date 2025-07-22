@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(OptionNotFoundException.class)
+    public ResponseEntity<String> handleOptionNotFoundException(OptionNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
@@ -36,6 +41,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidFieldException.class)
     public ResponseEntity<String> handleInvalidFieldException(InvalidFieldException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(InvalidQuantityException.class)
+    public ResponseEntity<String> handleInvalidQuantityException(InvalidQuantityException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidOptionNameException.class)
+    public ResponseEntity<String> handleInvalidOptionNameException(InvalidOptionNameException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

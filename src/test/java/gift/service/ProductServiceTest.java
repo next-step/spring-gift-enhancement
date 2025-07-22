@@ -11,6 +11,7 @@ import gift.dto.PaginationResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.entity.Product;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,9 @@ public class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private OptionRepository optionRepository;
 
     @InjectMocks
     private ProductService productService;
