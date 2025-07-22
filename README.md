@@ -63,5 +63,6 @@
 - [x] 테스트 코드 추가 작성
   - [x] OptionRepository 테스트 코드 작성
   - [x] Option 도메인 테스트 코드 작성
+  - [x] Product 도메인 테스트 코드 작성
 - [x] 미사용 코드 제거
 - [x] OptionService에 옵션의 수량을 줄이는 기능 구현
