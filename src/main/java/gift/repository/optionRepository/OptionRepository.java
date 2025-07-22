@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface OptionRepository extends JpaRepository<ItemOption,Long> {
+public interface OptionRepository extends JpaRepository<ItemOption, Long> {
     ItemOption findByItem(Item item);
 }

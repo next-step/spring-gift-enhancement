@@ -1,8 +1,6 @@
 package gift.validation.optionPolicy.OptionCreatePolicy;
 
-import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.optionDto.OptionRequestDto;
-import gift.validation.itemPolicy.ItemPolicy;
 import gift.validation.itemPolicy.ItemViolationHandler.ViolationHandler;
 import gift.validation.optionPolicy.OptionPolicy;
 import jakarta.validation.ConstraintValidatorContext;

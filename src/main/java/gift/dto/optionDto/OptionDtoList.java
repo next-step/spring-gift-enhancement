@@ -1,7 +1,6 @@
 package gift.dto.optionDto;
 
 import gift.entity.ItemOption;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;

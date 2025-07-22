@@ -5,7 +5,6 @@ import gift.entity.Item;
 import gift.entity.ItemOption;
 import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.itemException.OptionDuplicatedException;
-import gift.exception.itemException.OptionExceptionException;
 import gift.repository.itemRepository.ItemRepository;
 import gift.repository.optionRepository.OptionRepository;
 import gift.service.itemService.ItemService;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class OptionServiceImpl implements OptionService{
+public class OptionServiceImpl implements OptionService {
 
     private final OptionRepository optionRepository;
     private final ItemService itemService;
@@ -60,8 +59,6 @@ public class OptionServiceImpl implements OptionService{
 
         return optionRepository.save(changedOption);
     }
-
-
 
 
 }

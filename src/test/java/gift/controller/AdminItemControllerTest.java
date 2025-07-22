@@ -2,7 +2,6 @@ package gift.controller;
 
 import gift.Jwt.JwtUtil;
 import gift.Jwt.TokenUtils;
-import gift.dto.itemDto.ItemCreateDto;
 import gift.entity.User;
 import gift.entity.UserRole;
 import gift.repository.itemRepository.ItemRepository;
@@ -17,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,15 +65,15 @@ class AdminItemControllerTest {
                 .anyMatch(item -> item.getName().equals("카카오"));
     }
 
-        @Test
-        void 인증없이상품저장_오류응답() throws Exception {
-            mockMvc.perform(post("/admin/products")
-                            .param("name", "카카오")
-                            .param("price", "1500")
-                            .param("imageUrl", "juice.png")
-                            .param("useKakaoName", "false"))
-                    .andExpect(status().is4xxClientError());
-        }
+    @Test
+    void 인증없이상품저장_오류응답() throws Exception {
+        mockMvc.perform(post("/admin/products")
+                        .param("name", "카카오")
+                        .param("price", "1500")
+                        .param("imageUrl", "juice.png")
+                        .param("useKakaoName", "false"))
+                .andExpect(status().is4xxClientError());
+    }
 
     @Test
     void 토큰에서이메일_추출성공() {
