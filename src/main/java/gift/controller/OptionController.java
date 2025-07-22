@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -28,7 +29,7 @@ public class OptionController {
     @PostMapping(value = "/{productId}/options")
     public ResponseEntity<OptionResponseDto> addOption(
         @PathVariable("productId") Long productId,
-        @Valid OptionRequestDto optionRequestDto) {
+        @Valid @RequestBody OptionRequestDto optionRequestDto) {
 
         return new ResponseEntity<>(
             optionService.addOption(productId, optionRequestDto),
@@ -39,7 +40,7 @@ public class OptionController {
     public ResponseEntity<OptionResponseDto> updateOption(
         @PathVariable("productId") Long productId,
         @PathVariable("optionId") Long optionId,
-        @Valid OptionRequestDto optionRequestDto
+        @Valid @RequestBody OptionRequestDto optionRequestDto
     ) {
         return new ResponseEntity<>(
             optionService.updateOption(productId, optionId, optionRequestDto),
