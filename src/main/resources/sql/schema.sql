@@ -21,3 +21,11 @@ CREATE TABLE wishes (
                         FOREIGN KEY (product_id) REFERENCES products(id),
                         UNIQUE (member_id, product_id)
 );
+
+CREATE TABLE options (
+                         id          BIGINT          PRIMARY KEY AUTO_INCREMENT,
+                         name        VARCHAR(50)     NOT NULL,
+                         quantity    INT             NOT NULL,
+                         product_id  BIGINT          NOT NULL,
+                         FOREIGN KEY (product_id) REFERENCES products(id)
+);

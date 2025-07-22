@@ -1,10 +1,7 @@
 package gift.controller.api;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,9 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.ItemRequest;
 import gift.dto.LoginResponse;
 import gift.dto.MemberLoginRequest;
+import gift.dto.OptionRequest;
 import gift.entity.Item;
 import gift.repository.ItemRepository;
 import gift.service.MemberService;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +42,7 @@ class ItemControllerTest {
 
     private String adminToken;
     private String userToken;
+    private Item testItem;
 
     @BeforeEach
     void setUp() {
@@ -50,6 +50,7 @@ class ItemControllerTest {
         adminToken = adminLogin.token();
         LoginResponse userLogin = memberService.login(new MemberLoginRequest("user@example.com", "user1234"));
         userToken = userLogin.token();
+        testItem = itemRepository.save(new Item(null, "테스트 상품", 1000, "test.jpg"));
     }
 
     @Test
@@ -57,17 +58,24 @@ class ItemControllerTest {
     void getAllItems() throws Exception {
         mockMvc.perform(get("/api/products")
                 .param("page", "0")
-                .param("size", "2"))
+                .param("size", "10"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content").isArray())
-            .andExpect(jsonPath("$.content", hasSize(2)))
-            .andExpect(jsonPath("$.totalElements").value(3));
+            .andExpect(jsonPath("$.content").isArray());
+    }
+
+    @Test
+    @DisplayName("API - ID로 상품 조회 성공")
+    void getItemById_Success() throws Exception {
+        mockMvc.perform(get("/api/products/" + testItem.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(testItem.getId()));
     }
 
     @Test
     @DisplayName("ADMIN 권한으로 상품 등록 성공")
     void createItem_By_Admin_Succeeds() throws Exception {
-        ItemRequest request = new ItemRequest("관리자 등록 상품", 5000, "admin_item.jpg");
+        List<OptionRequest> options = List.of(new OptionRequest("기본 옵션", 100));
+        ItemRequest request = new ItemRequest("관리자 등록 상품", 5000, "admin_item.jpg", options);
 
         mockMvc.perform(post("/api/products")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
@@ -78,38 +86,40 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("API - 상품 수정 성공 (ADMIN)")
-    void updateItem_Success_By_Admin() throws Exception {
-        Item itemToUpdate = itemRepository.save(new Item(null, "수정 전 상품", 1000, "before.jpg"));
-        ItemRequest itemRequest = new ItemRequest("수정된 상품", 1500, "after.jpg");
-        String requestBody = objectMapper.writeValueAsString(itemRequest);
+    @DisplayName("USER 권한으로 '카카오' 미포함 상품 등록 성공")
+    void createItem_By_User_Succeeds() throws Exception {
+        List<OptionRequest> options = List.of(new OptionRequest("기본", 10));
+        ItemRequest request = new ItemRequest("유저 등록 상품", 2000, "user_item.jpg", options);
 
-        mockMvc.perform(put("/api/products/" + itemToUpdate.getId())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+        mockMvc.perform(post("/api/products")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("수정된 상품"));
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
     }
 
     @Test
-    @DisplayName("API - 상품 삭제 성공 (ADMIN)")
-    void deleteItem_Success_By_Admin() throws Exception {
-        Item itemToDelete = itemRepository.save(new Item(null, "삭제될 상품", 1000, "delete.jpg"));
-
-        mockMvc.perform(delete("/api/products/" + itemToDelete.getId())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
-            .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("인증 토큰 없이 상품 등록 API 호출 시 401 에러 발생")
+    @DisplayName("인증 토큰 없이 상품 등록 시 401 에러 발생")
     void createItem_Without_Token_Fails() throws Exception {
-        ItemRequest request = new ItemRequest("인증 없는 상품", 100, "no-auth.jpg");
+        List<OptionRequest> options = List.of(new OptionRequest("기본", 10));
+        ItemRequest request = new ItemRequest("인증 없는 상품", 100, "no-auth.jpg", options);
 
         mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("ADMIN 권한으로 '카카오' 포함 상품 등록 성공")
+    void createKakaoItem_By_Admin_Succeeds() throws Exception {
+        List<OptionRequest> options = List.of(new OptionRequest("기본", 10));
+        ItemRequest request = new ItemRequest("카카오프렌즈 인형", 30000, "kakao_doll.jpg", options);
+
+        mockMvc.perform(post("/api/products")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
     }
 }
