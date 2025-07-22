@@ -4,6 +4,8 @@ import gift.dto.optionDto.OptionRequestDto;
 import gift.entity.Item;
 import gift.entity.ItemOption;
 import gift.exception.itemException.ItemNotFoundException;
+import gift.exception.itemException.OptionDuplicatedException;
+import gift.exception.itemException.OptionExceptionException;
 import gift.repository.optionRepository.OptionRepository;
 import gift.service.itemService.ItemService;
 import gift.service.optionService.OptionServiceImpl;
@@ -95,4 +97,43 @@ public class ItemOptionServiceTest {
         assertThat(result.getQuantity()).isEqualTo(10);
         verify(optionRepository).save(any(ItemOption.class));
     }
+
+    @Test
+    void 옵션이름에_허용된_특수문자_저장_성공() {
+        String optionName = "초콜릿(다크)[1000원]";
+        OptionRequestDto requestDto = new OptionRequestDto(optionName, 5);
+        ItemOption savedOption = new ItemOption(item, optionName, 5);
+
+        when(itemService.findById(1L)).thenReturn(Optional.of(item));
+        when(optionRepository.save(any())).thenReturn(savedOption);
+
+        ItemOption result = optionService.save(requestDto, 1L);
+
+        assertThat(result.getOptionName()).isEqualTo(optionName);
+    }
+
+    @Test
+    void 옵션이름에_허용되지_않은_특수문자_저장_실패() {
+        String optionName = "초콜릿#다크 맛있음!";
+        OptionRequestDto requestDto = new OptionRequestDto(optionName, 5);
+
+        when(itemService.findById(1L)).thenReturn(Optional.of(item));
+
+        assertThatThrownBy(() -> optionService.save(requestDto, 1L))
+                .isInstanceOf(OptionExceptionException.class);
+    }
+
+    @Test
+    void 옵션이_중복되면_예외발생() {
+        ItemOption targetOption = new ItemOption(item, "다크초콜릿", 5);
+        item.getOptions().add(targetOption);
+
+        OptionRequestDto requestDto = new OptionRequestDto("다크초콜릿", 10);
+
+        when(itemService.findById(1L)).thenReturn(Optional.of(item));
+
+        assertThatThrownBy(() -> optionService.save(requestDto, 1L))
+                .isInstanceOf(OptionDuplicatedException.class);
+    }
+
 }

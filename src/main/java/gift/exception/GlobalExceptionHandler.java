@@ -4,6 +4,7 @@ import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.itemException.ItemQuantityException;
+import gift.exception.itemException.OptionDuplicatedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -58,6 +59,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ItemQuantityException.class)
     public ResponseEntity<String> handleItemQuantityError(ItemQuantityException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(OptionDuplicatedException.class)
+    public ResponseEntity<String> handleOptionDuplicatedError(OptionDuplicatedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

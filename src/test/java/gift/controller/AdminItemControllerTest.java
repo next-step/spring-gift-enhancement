@@ -44,7 +44,6 @@ class AdminItemControllerTest {
 
     @Test
     void 관리자가아닌경우상품저장_예외발생() {
-        // given
         ItemCreateDto dto = new ItemCreateDto("카카오", 1500, "juice.png", false);
 
         assertThatThrownBy(() -> itemService.saveItem(dto)).isInstanceOf(RuntimeException.class);

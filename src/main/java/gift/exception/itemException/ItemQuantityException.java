@@ -1,7 +1,5 @@
 package gift.exception.itemException;
 
-import gift.exception.ApplicationException;
-import org.springframework.http.HttpStatus;
 
 public class ItemQuantityException extends RuntimeException {
 

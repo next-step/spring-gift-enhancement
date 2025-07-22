@@ -4,6 +4,8 @@ import gift.dto.optionDto.OptionRequestDto;
 import gift.entity.Item;
 import gift.entity.ItemOption;
 import gift.exception.itemException.ItemNotFoundException;
+import gift.exception.itemException.OptionDuplicatedException;
+import gift.exception.itemException.OptionExceptionException;
 import gift.repository.itemRepository.ItemRepository;
 import gift.repository.optionRepository.OptionRepository;
 import gift.service.itemService.ItemService;
@@ -27,6 +29,12 @@ public class OptionServiceImpl implements OptionService{
     public ItemOption save(OptionRequestDto optionRequestDto, Long itemId) {
         Item item = itemService.findById(itemId)
                 .orElseThrow(ItemNotFoundException::new);
+
+        for (ItemOption option : item.getOptions()) {
+            if (option.getOptionName().equals(optionRequestDto.optionName())) {
+                throw new OptionDuplicatedException();
+            }
+        }
 
         ItemOption itemOption = new ItemOption(item, optionRequestDto.optionName(), optionRequestDto.quantity());
 
@@ -52,6 +60,8 @@ public class OptionServiceImpl implements OptionService{
 
         return optionRepository.save(changedOption);
     }
+
+
 
 
 }
