@@ -26,8 +26,7 @@ public class ProductService {
     }
 
     public ProductResponse getProductById(Long productId) {
-        Product product = productRepository.findById(productId)
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        Product product = productRepository.findOrThrow(productId);
 
         return ProductResponse.from(product);
     }
@@ -51,8 +50,7 @@ public class ProductService {
     @Transactional
     public void update(ProductRequest request) {
         // 이 경우에는 request.id()에 수정하고자 하는 상품id가 담겨서 넘어옵니다.
-        productRepository.findById(request.id())
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        productRepository.findOrThrow(request.id());
 
         if (request.name().contains("카카오")) {
             throw CustomException.from(ErrorCode.INVALID_KAKAO_NAME);
@@ -62,8 +60,7 @@ public class ProductService {
     }
 
     public void deleteById(Long productId) {
-        productRepository.findById(productId)
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        productRepository.findOrThrow(productId);
 
         productRepository.deleteById(productId);
     }

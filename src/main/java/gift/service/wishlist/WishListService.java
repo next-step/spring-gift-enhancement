@@ -64,11 +64,9 @@ public class WishListService {
     @Transactional
     public WishListResponse update(Long memberId, WishListRequest wishListRequest) {
 
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+        Member member = memberRepository.findOrThrow(memberId);
 
-        Product product = productRepository.findById(wishListRequest.productId())
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+        Product product = productRepository.findOrThrow(wishListRequest.productId());
 
         Optional<WishList> wishList = wishListRepository.findByMemberIdAndProductId(memberId,
             wishListRequest.productId());

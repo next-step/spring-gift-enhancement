@@ -25,16 +25,14 @@ public class OptionService {
 
     // 조회 메서드
     public OptionResponse getOptionById(Long optionId){
-        Option option = optionRepository.findById(optionId)
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        Option option = optionRepository.findOrThrow(optionId);
 
         return OptionResponse.from(option);
     }
 
     // 생성 메서드
     public OptionResponse insertOption(OptionRequest optionRequest){
-        Product product = productRepository.findById(optionRequest.productId())
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        Product product = productRepository.findOrThrow(optionRequest.productId());
 
         if(optionRepository.existsByProductIdAndName(optionRequest.productId(), optionRequest.name())){
             throw CustomException.from(ErrorCode.ALREADY_EXISTS_NAME);
@@ -51,8 +49,7 @@ public class OptionService {
 
     // subtract 메서드
     public OptionResponse subtractOption(Long optionId, OptionSubtractRequest optionSubtractRequest){
-        Option option = optionRepository.findById(optionId)
-                .orElseThrow(()-> CustomException.from(ErrorCode.NOT_EXISTS));
+        Option option = optionRepository.findOrThrow(optionId);
         option.subtractQuantity(optionSubtractRequest.quantity());
 
         return OptionResponse.from(option);

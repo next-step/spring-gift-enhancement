@@ -55,8 +55,7 @@ public class MemberService {
 
     // 관리자용 메서드
     public Member findById(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        return memberRepository.findOrThrow(memberId);
     }
 
     // 관리자용 메서드
@@ -66,16 +65,14 @@ public class MemberService {
 
     @Transactional
     public void update(Long memberId, MemberRequest request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> CustomException.from(ErrorCode.NOT_EXISTS));
+        Member member = memberRepository.findOrThrow(memberId);
 
         member.update(request, passwordEncoder);
     }
 
     // 관리자용 메서드
     public void deleteById(Long memberId) {
-        memberRepository.findById(memberId)
-                .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        memberRepository.findOrThrow(memberId);
 
         memberRepository.deleteById(memberId);
     }
