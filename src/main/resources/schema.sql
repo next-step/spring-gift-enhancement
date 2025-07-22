@@ -28,7 +28,7 @@ create table wishlists
 create table options
 (
     id         bigint auto_increment primary key,
-    name       varchar(50) unique,
+    name       varchar(50),
     product_id bigint,
     quantity   int
 );

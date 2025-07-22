@@ -4,6 +4,7 @@ import gift.dto.option.OptionRequest;
 import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionSubtractRequest;
 import gift.service.option.OptionService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class OptionApiController {
     // option 생성 메서드: 이후 관리자 기능으로 전환 예정
     @PostMapping
     public ResponseEntity<OptionResponse> createOption(
-        @RequestBody OptionRequest optionRequest
+        @Valid @RequestBody OptionRequest optionRequest
     ){
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(optionService.insertOption(optionRequest));
