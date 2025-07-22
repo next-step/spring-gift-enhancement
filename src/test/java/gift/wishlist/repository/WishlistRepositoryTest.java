@@ -8,6 +8,9 @@ import gift.wishlist.entity.Wishlist;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -51,12 +54,14 @@ class WishlistRepositoryTest {
         String password = "test";
         User user = userRepository.save(new User(email,password));
 
+        Pageable pageable = PageRequest.of(0, 1);
+
         wishlistRepository.save(new Wishlist(user, product));
         wishlistRepository.save(new Wishlist(user, product2));
-        List<Wishlist> wishlist = wishlistRepository.findAllByUserId(user.getId());
+        Page<Wishlist> wishlist = wishlistRepository.findAllByUserId(user.getId(), pageable);
 
         assertNotNull(wishlist);
-        assertEquals(2, wishlist.size());
+        assertEquals(2, wishlist.getTotalElements());
     }
 
     @Test
@@ -67,11 +72,14 @@ class WishlistRepositoryTest {
         String email = "test@gmail.com";
         String password = "test";
         User user = userRepository.save(new User(email,password));
+
+        Pageable pageable = PageRequest.of(0, 1);
+
         wishlistRepository.save(new Wishlist(user, product));
         wishlistRepository.save(new Wishlist(user, product2));
         wishlistRepository.deleteById(1L);
-        List<Wishlist> wishlist = wishlistRepository.findAllByUserId(user.getId());
+        Page<Wishlist> wishlist = wishlistRepository.findAllByUserId(user.getId(), pageable);
         assertNotNull(wishlist);
-        assertEquals(1, wishlist.size());
+        assertEquals(1, wishlist.getTotalElements());
     }
 }
