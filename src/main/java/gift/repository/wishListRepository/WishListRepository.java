@@ -27,5 +27,11 @@ public interface WishListRepository extends JpaRepository<WishItem, Long> {
 
     WishItem findByUserEmailAndItem(String userEmail, Optional<Item> item);
 
-    WishItem findByItem(Optional<Item> item);
+    Page<WishItem> findByUserAndItem_NameContainingAndItem_Price(User user, String itemName, Integer itemPrice, Pageable pageable);
+
+    Page<WishItem> findByUserAndItem_NameContaining(User user, String itemName, Pageable pageable);
+
+    Page<WishItem> findByUserAndItem_Price(User user, Integer itemPrice, Pageable pageable);
+
+    Page<WishItem> findByUser(User user, Pageable pageable);
 }

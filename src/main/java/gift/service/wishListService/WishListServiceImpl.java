@@ -7,7 +7,6 @@ import gift.entity.User;
 import gift.entity.WishItem;
 import gift.exception.itemException.ItemDuplicatedException;
 import gift.exception.itemException.ItemNotFoundException;
-import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
 import gift.service.userService.UserService;
@@ -61,21 +60,17 @@ public class WishListServiceImpl implements WishListService {
     public Page<WishItem> getItemList(String name, Integer price, String userEmail, Pageable pageable) {
         User user = userService.findUserByEmail(userEmail);
 
-        Page<Item> items;
-        if (name == null && price == null) {
-            items = itemService.getAllItems(pageable);
+        if (name != null && price != null) {
+            return wishListRepository.findByUserAndItem_NameContainingAndItem_Price(user, name, price, pageable);
+        } else if (name != null) {
+            return wishListRepository.findByUserAndItem_NameContaining(user, name, pageable);
+        } else if (price != null) {
+            return wishListRepository.findByUserAndItem_Price(user, price, pageable);
         } else {
-            items = itemService.findItemsByNameAndPrice(name, price, pageable);
+            return wishListRepository.findByUser(user, pageable);
         }
-
-        List<Item> itemList = items.getContent();
-        if (itemList.isEmpty()) {
-            return Page.empty(pageable);
-        }
-
-        Page<WishItem> wishItems = wishListRepository.findByUserAndItemIn(user, itemList, pageable);
-        return wishItems;
     }
+
 
     @Override
     @Transactional
@@ -101,7 +96,6 @@ public class WishListServiceImpl implements WishListService {
     @Transactional
     public WishItem updateWishItem(UpdateWishItemDto updateWishItemDto, String userEmail) {
         User user = userService.findUserByEmail(userEmail);
-
 
         String itemName = updateWishItemDto.itemName();
         Optional<Item> findItem = itemService.findItemByName(itemName);
