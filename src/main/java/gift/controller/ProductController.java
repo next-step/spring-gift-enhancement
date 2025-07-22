@@ -1,7 +1,9 @@
 package gift.controller;
 
 
+import gift.dto.request.ProductOptionRequestDto;
 import gift.dto.request.ProductRequestDto;
+import gift.dto.response.ProductOptionResponseDto;
 import gift.dto.response.ProductResponseDto;
 import gift.entity.Product;
 import gift.service.ProductService;
@@ -76,5 +78,18 @@ public class ProductController {
         Page<Product> productPage = productService.getAllProducts(pageable);
         Page<ProductResponseDto> responsePage = productPage.map(ProductResponseDto::new);
         return ResponseEntity.ok(responsePage);
+    }
+
+
+    @PostMapping("/{id}/options")
+    public ResponseEntity<Void> addOption(@PathVariable Long id, @RequestBody @Valid ProductOptionRequestDto dto) {
+        productService.addOption(id,dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
+    @GetMapping("/{id}/options")
+    public ResponseEntity<List<ProductOptionResponseDto>> getOptions(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getOptionsByProductId(id));
     }
 }

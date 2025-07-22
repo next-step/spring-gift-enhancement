@@ -52,7 +52,7 @@ public class WishController {
     }
 
 
-    @GetMapping("/page")
+    @GetMapping("/paged")
     public ResponseEntity<Page<WishResponseDto>> getWishesWithPagination(
             @LoginMember Member member,
             Pageable pageable) {
