@@ -7,7 +7,7 @@ import gift.common.model.CustomPage;
 import gift.common.validation.annotation.AllowedSortFields;
 import gift.dto.wishlist.WishedProductCreateRequest;
 import gift.dto.wishlist.WishedProductPatchRequest;
-import gift.dto.wishlist.WishedProductUpdateRequest;
+import gift.dto.wishlist.UpdateWishedProductRequest;
 import gift.dto.wishlist.WishedProductResponse;
 import gift.entity.UserRole;
 import gift.entity.WishedProduct;
@@ -70,7 +70,7 @@ public class WishlistController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<?> updateWishlistItem(
             @PathVariable Long id,
-            @Valid @RequestBody WishedProductUpdateRequest request,
+            @Valid @RequestBody UpdateWishedProductRequest request,
             @RequestAttribute("auth") CustomAuth auth
     ) {
         var wishedProduct = wishedProductService.updateQuantityBy(auth.userId(), id, request.quantity());
@@ -88,11 +88,7 @@ public class WishlistController {
             @RequestAttribute("auth") CustomAuth auth
     ) {
         Optional<WishedProduct> wishedProduct;
-        if (request.increment()) {
-            wishedProduct = wishedProductService.increaseQuantityBy(auth.userId(), id, request.quantity());
-        } else {
-            wishedProduct = wishedProductService.decreaseQuantityBy(auth.userId(), id, request.quantity());
-        }
+        wishedProduct = wishedProductService.changeQuantityBy(auth.userId(), id, request.amount());
         if (wishedProduct.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

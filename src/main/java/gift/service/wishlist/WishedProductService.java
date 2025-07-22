@@ -13,6 +13,5 @@ public interface WishedProductService {
     void deleteBy(Long userId, Long wishedProductId);
     void deleteAll(Long userId);
     Optional<WishedProduct> updateQuantityBy(Long userId, Long wishedProductId, Integer quantity);
-    Optional<WishedProduct> increaseQuantityBy(Long userId, Long wishedProductId, Integer quantity);
-    Optional<WishedProduct> decreaseQuantityBy(Long userId, Long wishedProductId, Integer quantity);
+    Optional<WishedProduct> changeQuantityBy(Long userId, Long wishedProductId, Integer amount);
 }

@@ -1,7 +1,7 @@
 package gift.E2ETest.wishlist;
 
 import gift.dto.wishlist.WishedProductPatchRequest;
-import gift.dto.wishlist.WishedProductUpdateRequest;
+import gift.dto.wishlist.UpdateWishedProductRequest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +24,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
     };
 
     private static final FieldDescriptor[] WISHLIST_PATCH_REQUEST = {
-          fieldWithPath("quantity").description("수정할 제품의 수량(기본값 1)").type(JsonFieldType.NUMBER).optional(),
-        fieldWithPath("increment").description("수량을 증가시킬지 여부 (true: 증가, false: 감소)").type(JsonFieldType.BOOLEAN).optional()
+          fieldWithPath("amount").description("수정할 제품 수량의 크기(음수 가능)").type(JsonFieldType.NUMBER)
     };
 
     static final FieldDescriptor[] PRODUCT_RESPONSE = {
@@ -48,7 +47,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
 
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        WishedProductUpdateRequest request = new WishedProductUpdateRequest(5);
+        UpdateWishedProductRequest request = new UpdateWishedProductRequest(5);
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 수정 성공",
                         requestFields(WISHLIST_UPDATE_REQUEST),
@@ -83,9 +82,9 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
 
-        List<WishedProductUpdateRequest> requests = List.of(
-                new WishedProductUpdateRequest(-1), // 음수 수량
-                new WishedProductUpdateRequest(null) // null 수량
+        List<UpdateWishedProductRequest> requests = List.of(
+                new UpdateWishedProductRequest(-1), // 음수 수량
+                new UpdateWishedProductRequest(null) // null 수량
         );
 
         requests.forEach(request ->
@@ -104,7 +103,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         // 위시리스트에 제품을 추가한 후, 해당 제품의 수량을 수정하는 테스트
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        WishedProductUpdateRequest request = new WishedProductUpdateRequest(5);
+        UpdateWishedProductRequest request = new UpdateWishedProductRequest(5);
         RestAssured.given(this.spec)
                 .contentType("application/json")
                 .body(request)
@@ -120,7 +119,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
 
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        WishedProductPatchRequest request = new WishedProductPatchRequest(null, null);
+        WishedProductPatchRequest request = new WishedProductPatchRequest(1);
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 수정 성공 - 증가",
                         requestFields(WISHLIST_PATCH_REQUEST),
@@ -149,11 +148,10 @@ public class WishListUpdateTest extends AbstractWishlistTest {
     @Test
     @DisplayName("위시리스트 제품 수량 감소 성공 테스트: quantity 0으로 감소됬을 때 204 반환")
     public void WishList_Patch_Decrease_Success() {
-        // 위시리스트에 제품을 추가한 후(quantity = 1), 해당 제품의 수량을 감소시키는 테스트
 
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        WishedProductPatchRequest request = new WishedProductPatchRequest(null, false);
+        WishedProductPatchRequest request = new WishedProductPatchRequest(-1); // 수량을 감소시키는 요청
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 수정 성공 - 감소",
                         requestFields(WISHLIST_PATCH_REQUEST),
@@ -175,7 +173,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
         List<WishedProductPatchRequest> requests = List.of(
-                new WishedProductPatchRequest(-1, null) // 음수 수량
+                new WishedProductPatchRequest(null) // null 수량
         );
 
         requests.forEach(request ->
@@ -193,7 +191,7 @@ public class WishListUpdateTest extends AbstractWishlistTest {
         // 위시리스트에 제품을 추가한 후, 해당 제품의 수량을 수정하는 테스트
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
-        WishedProductPatchRequest request = new WishedProductPatchRequest(null, null);
+        WishedProductPatchRequest request = new WishedProductPatchRequest(1); // 수량을 증가시키는 요청
         RestAssured.given(this.spec)
                 .contentType("application/json")
                 .body(request)

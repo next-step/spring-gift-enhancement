@@ -116,21 +116,13 @@ public class WishedProductServiceImpl implements WishedProductService {
 
     @Override
     @Transactional
-    public Optional<WishedProduct> increaseQuantityBy(Long userId, Long wishedProductId, Integer quantity) {
-        var existingProduct =  findBy(userId, wishedProductId);
-        existingProduct.setQuantity(existingProduct.getQuantity() + quantity);
-        return Optional.of(wishedProductRepository.save(existingProduct));
-    }
-
-    @Override
-    @Transactional
-    public Optional<WishedProduct> decreaseQuantityBy(Long userId, Long wishedProductId, Integer quantity) {
+    public Optional<WishedProduct> changeQuantityBy(Long userId, Long wishedProductId, Integer amount) {
         var wishedProduct = findBy(userId, wishedProductId);
-        if (wishedProduct.getQuantity() <= quantity) {
+        if (wishedProduct.getQuantity() + amount <= 0) {
             wishedProductRepository.deleteById(wishedProductId);
             return Optional.empty();
         }
-        wishedProduct.setQuantity(wishedProduct.getQuantity() - quantity);
+        wishedProduct.setQuantity(wishedProduct.getQuantity() + amount);
         return Optional.of(wishedProductRepository.save(wishedProduct));
     }
 }
