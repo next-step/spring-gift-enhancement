@@ -29,6 +29,15 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+
+    public void addOption(String name, int quantity) {
+        this.options.add(new ProductOption(name, quantity, this));
+    }
+
+    public List<ProductOption> getOptions() {
+        return options;
+    }
+
     public Long getId() {
         return id;
     }
