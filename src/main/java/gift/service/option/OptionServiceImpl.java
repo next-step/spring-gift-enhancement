@@ -42,26 +42,6 @@ public class OptionServiceImpl implements OptionService{
         }
     }
 
-
-    private Option updateAndReturn(Option option, String name, Long quantity) {
-        if (name != null) {
-            if (optionRepository.existsByNameAndProductId(name, option.getProduct().getId())) {
-                throw new DuplicateKeyException("이미 존재하는 옵션 이름입니다. name: " + name + ", productId: " + option.getProduct().getId());
-            }
-            option.setName(name);
-        }
-        if (quantity != null) {
-            if (quantity <= 0) {
-                throw new IllegalArgumentException("수정될 수량은 0보다 커야 합니다.");
-            }
-            if (quantity >= 1_00_000_000L) {
-                throw new IllegalArgumentException("수정될 수량은 10억 미만이어야 합니다.");
-            }
-            option.setQuantity(quantity);
-        }
-        return optionRepository.save(option);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public CustomPage<Option> findAllBy(Long productId, Pageable pageable) {
@@ -98,27 +78,37 @@ public class OptionServiceImpl implements OptionService{
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
-        return updateAndReturn(existingOption, name, quantity);
+        if (name != null) {
+            if (optionRepository.existsByNameAndProductId(name, existingOption.getProduct().getId())) {
+                throw new DuplicateKeyException("이미 존재하는 옵션 이름입니다. name: " + name + ", productId: " + productId);
+            }
+            existingOption.setName(name);
+        }
+        if (quantity != null) {
+            if (quantity <= 0 || quantity >= 1_00_000_000L) {
+                throw new IllegalArgumentException("수정될 수량은 0보다 커야 하며, 10억 미만이어야 합니다.");
+            }
+            existingOption.setQuantity(quantity);
+        }
+        return optionRepository.save(existingOption);
+
 
     }
 
     @Override
     @Transactional
-    public Option increaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
+    public Option changeQuantityBy(Long id, Long productId, CustomAuth auth, Long amount){
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
-        return updateAndReturn(existingOption, null, existingOption.getQuantity() + quantity);
-    }
+        Long newQuantity = existingOption.getQuantity() + amount;
 
-    @Override
-    @Transactional
-    public Option decreaseQuantityBy(Long id, Long productId, CustomAuth auth, Long quantity) {
-        Product product = productService.findById(productId);
-        validateAuthorization(auth, product);
-        Option existingOption = findBy(id, productId);
-        return updateAndReturn(existingOption, null, existingOption.getQuantity() - quantity);
-
+        if (newQuantity < 0 || newQuantity >= 1_00_000_000L) {
+            throw new IllegalArgumentException("수량은 0 이상, 10억 미만이어야 합니다. 현재 수량: %d, 변경량, %d"
+                    .formatted(existingOption.getQuantity(), amount));
+        }
+        existingOption.setQuantity(newQuantity);
+        return optionRepository.save(existingOption);
     }
 
     @Override

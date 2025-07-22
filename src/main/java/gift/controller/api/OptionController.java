@@ -9,7 +9,6 @@ import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionPatchRequest;
 import gift.dto.option.OptionUpdateRequest;
-import gift.entity.Option;
 import gift.entity.UserRole;
 import gift.service.option.OptionService;
 import jakarta.validation.Valid;
@@ -83,12 +82,7 @@ public class OptionController {
             @RequestAttribute("auth") CustomAuth auth,
             @Valid @RequestBody OptionPatchRequest request
             ) {
-        Option updatedOption;
-        if (request.increment()) {
-            updatedOption = optionService.increaseQuantityBy(id, productId, auth, request.quantity());
-        } else {
-            updatedOption = optionService.decreaseQuantityBy(id, productId, auth, request.quantity());
-        }
+        var updatedOption = optionService.changeQuantityBy(id, productId, auth, request.amount());
         return ResponseEntity.ok(EntityToDtoMapper.toDto(updatedOption));
     }
 

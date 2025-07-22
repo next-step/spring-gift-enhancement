@@ -35,8 +35,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
     };
 
     private static final FieldDescriptor[] OPTION_PATCH_REQUEST = {
-            fieldWithPath("quantity").description("증감할 옵션 수량").type(JsonFieldType.NUMBER).optional(),
-            fieldWithPath("increment").description("수량 증감 여부").type(JsonFieldType.BOOLEAN).optional()
+            fieldWithPath("amount").description("증감할 옵션 수량").type(JsonFieldType.NUMBER),
     };
 
     private static final ParameterDescriptor[] OPTION_UPDATE_PATH_PARAMETERS = {
@@ -157,8 +156,8 @@ public class OptionUpdateTest extends AbstractOptionTest {
     public void update_Option_Increment_Success() {
         Long validProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
-        var request = new OptionPatchRequest(5L, true); // 수량을 5 증가
-        long expectedQuantity = validOption.quantity() + request.quantity();
+        var request = new OptionPatchRequest(5L); // 수량을 5 증가
+        long expectedQuantity = validOption.quantity() + request.amount();
         RestAssured.given(this.spec)
                 .filter(document("옵션 증감 성공",
                         requestFields(OPTION_PATCH_REQUEST),
@@ -186,8 +185,8 @@ public class OptionUpdateTest extends AbstractOptionTest {
         String userToken = this.testUserTokens.get(UserRole.ROLE_USER);
         Long validProductId = this.testProducts.get(UserRole.ROLE_USER).id();
         var validOption = this.testOptions.get(UserRole.ROLE_USER);
-        var request = new OptionPatchRequest(5L, true); // 수량을 5 증가
-        long expectedQuantity = validOption.quantity() + request.quantity();
+        var request = new OptionPatchRequest(5L); // 수량을 5 증가
+        long expectedQuantity = validOption.quantity() + request.amount();
 
         patchWithoutDocumentation(validProductId, validOption.id(), request, userToken)
                 .statusCode(200)
@@ -217,7 +216,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
                     .body("validationErrors", notNullValue())
         );
         Stream.of(
-                new OptionPatchRequest(-5L, true) // 수량 음수
+                new OptionPatchRequest(null) // 수량이 null
         ).forEach(request ->
             patchWithoutDocumentation(validProductId, validId, request, this.adminToken)
                     .statusCode(400)
@@ -232,10 +231,9 @@ public class OptionUpdateTest extends AbstractOptionTest {
         var validOption = this.testOptions.get(UserRole.ROLE_ADMIN);
 
         // 수량을 음수로 만드는 요청
-        OptionPatchRequest negativeReq = new OptionPatchRequest(validOption.quantity() + 1, false); // 수량을 15 감소
-
+        OptionPatchRequest negativeReq = new OptionPatchRequest(validOption.quantity() * -1 -1); // 수량을 음수로 변경
         // 수량을 1억 이상으로 만드는 요청
-        OptionPatchRequest overLimitReq = new OptionPatchRequest(100_000_001L, true); // 수량을 1억 증가
+        OptionPatchRequest overLimitReq = new OptionPatchRequest(100_000_001L); // 수량을 1억 증가
 
         patchWithoutDocumentation(validProductId, validOption.id(), negativeReq, this.adminToken)
                 .statusCode(400);
@@ -250,7 +248,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Long adminProductId = this.testProducts.get(UserRole.ROLE_ADMIN).id();
         Long userOptionId = this.testOptions.get(UserRole.ROLE_ADMIN).id();
         OptionUpdateRequest updateReq = new OptionUpdateRequest("수정된 옵션", 20L);
-        OptionPatchRequest patchReq = new OptionPatchRequest(5L, true);
+        OptionPatchRequest patchReq = new OptionPatchRequest(5L);
 
         // 관리자 권한도 아니고 소유자도 아닌 사용자로 요청
         updateWithoutDocumentation(adminProductId, userOptionId, updateReq, this.testUserTokens.get(UserRole.ROLE_USER))
@@ -266,7 +264,7 @@ public class OptionUpdateTest extends AbstractOptionTest {
         Long invalidProductId = -1L; // 존재하지 않는 상품 ID
         Long invalidOptionId = -1L; // 존재하지 않는 옵션 ID
         OptionUpdateRequest updateReq = new OptionUpdateRequest("수정된 옵션", 20L);
-        OptionPatchRequest patchReq = new OptionPatchRequest(5L, true);
+        OptionPatchRequest patchReq = new OptionPatchRequest(5L);
         // 존재하는 상품 ID로 요청
         updateWithoutDocumentation(invalidProductId, invalidOptionId, updateReq, this.adminToken)
                 .statusCode(404);
