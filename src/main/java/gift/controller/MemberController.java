@@ -25,7 +25,8 @@ public class MemberController {
 
         MemberDto response = memberService.register(memberDto);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
     // 2. 로그인

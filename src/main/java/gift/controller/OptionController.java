@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,12 +34,14 @@ public class OptionController {
         Option option = optionService.create(productId, request);
 
         CreateOptionResponse response = new CreateOptionResponse(option.getId(), option.getName(), option.getQuantity());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<Option>> getAllOptions(@PathVariable Long productId) {
         List<Option> options = optionService.getAllOption(productId);
-        return new ResponseEntity<>(options, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(options);
     }
 }

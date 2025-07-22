@@ -33,20 +33,23 @@ public class WishRestController {
     public ResponseEntity<CreateWishResponse> addWish(@Authenticated Member member,
             @RequestBody CreateWishRequest request) {
         wishService.addWish(member, request.getProductId());
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteWish(@Authenticated Member member,
             @RequestParam Long productId) {
         wishService.removeWish(member, productId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @GetMapping
     public ResponseEntity<Page<ProductResponseDto>> getMyWishes(@Authenticated Member member, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductResponseDto> wishes = wishService.getAllWish(member, pageable);
-        return new ResponseEntity<>(wishes, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(wishes);
     }
 }
