@@ -15,6 +15,6 @@ public record MemberAddRequestDto(
         Role role) {
 
     public MemberAddRequestDto() {
-        this("", "", "", null);
+        this("", "", "", Role.USER);
     }
 }

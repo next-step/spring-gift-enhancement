@@ -1,6 +1,7 @@
 package gift.member;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import gift.member.exception.InvalidMemberException;
 
 public enum Role {
     ADMIN,
@@ -13,7 +14,7 @@ public enum Role {
                 return role;
             }
         }
-        return null;
+        throw new InvalidMemberException("잘못된 등급입니다.","roleError");
     }
 
 }

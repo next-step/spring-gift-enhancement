@@ -1,10 +1,9 @@
-package gift.admin.controller;
+package gift.admin.restController;
 
 import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.exception.InvalidProductException;
 import gift.product.service.ProductService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/products")
-public class AdminProductAjaxController {
+public class AdminProductRestController {
 
     private final ProductService productService;
 
-    public AdminProductAjaxController(ProductService productService) {
+    public AdminProductRestController(ProductService productService) {
         this.productService = productService;
     }
 

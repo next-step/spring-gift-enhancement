@@ -1,24 +1,15 @@
 package gift.member.exception;
 
 public class InvalidMemberException extends RuntimeException {
-    private String viewName;
-    private String attributeName;
+    private String field;
+    private InvalidMemberException invalidMemberException;
 
-    public InvalidMemberException(String message) {
+    public InvalidMemberException(String message, String field) {
         super(message);
+        this.field = field;
     }
 
-    public InvalidMemberException(String message, String viewName, String attributeName) {
-        super(message);
-        this.viewName = viewName;
-        this.attributeName = attributeName;
-    }
-
-    public String getViewName() {
-        return this.viewName;
-    }
-
-    public String getAttributeName() {
-        return attributeName;
+    public String getField() {
+        return this.field;
     }
 }
