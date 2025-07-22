@@ -60,7 +60,8 @@ public class ItemServiceImpl implements ItemService {
 
         Item updatedItem = item.update(changeItem);
 
-        return updatedItem;
+        return itemRepository.save(updatedItem);
+
     }
 
     @Override
@@ -102,16 +103,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Page<Item> findItemsByNameAndPrice(String name, Integer price, Pageable pageable) {
         return itemRepository.findByNameContainingAndPrice(name, price, pageable);
-    }
-
-
-    @Override
-    @Transactional
-    public Item save(Item updatedItem) {
-        Item savedItem = itemRepository.save(updatedItem);
-        System.out.println(savedItem.getName());
-        return savedItem;
-
     }
 
 
