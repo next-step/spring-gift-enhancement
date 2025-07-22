@@ -3,7 +3,6 @@ package gift.controller;
 import gift.dto.OptionResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
-import gift.service.OptionService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -28,16 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
-    private final OptionService optionService;
 
-    public ProductController(ProductService productService, OptionService optionService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.optionService = optionService;
     }
 
     @GetMapping("/{productId}/options")
     public ResponseEntity<List<OptionResponse>> getOptionsForProduct(@PathVariable Long productId) {
-        List<OptionResponse> options = optionService.getOptionsForProduct(productId);
+        List<OptionResponse> options = productService.getOptionsByProductId(productId);
         return ResponseEntity.ok(options);
     }
 

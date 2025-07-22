@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.OptionResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.entity.Option;
@@ -7,6 +8,7 @@ import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -84,5 +86,16 @@ public class ProductService {
                 throw new IllegalArgumentException("옵션 이름은 중복될 수 없습니다: " + optionRequest.name());
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<OptionResponse> getOptionsByProductId(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(
+                        () -> new ProductNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + productId));
+
+        return product.getOptions().stream()
+                .map(OptionResponse::from)
+                .toList();
     }
 }
