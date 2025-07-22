@@ -49,7 +49,7 @@ public class OptionService {
 
         Option option = product.getOptionByOptionId(optionId);
 
-        product.validateOptionForUpdate(optionId, optionRequestDto.name());
+        product.validateOptionForUpdate(optionRequestDto.name(), optionId);
 
         option.updateOption(optionRequestDto.name(), optionRequestDto.quantity());
 
@@ -60,9 +60,7 @@ public class OptionService {
     public void deleteOption(Long productId, Long optionId) {
         Product product = getProduct(productId);
 
-        Option option = product.getOptionByOptionId(optionId);
-
-        product.removeOption(option);
+        product.removeOption(optionId);
     }
 
     private Product getProduct(Long productId) {

@@ -31,7 +31,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
 
-    protected Product() {}
+    protected Product() {
+    }
 
     public Product(Long id, String name, Long price, String imageUrl, Boolean isKakaoApprovedByMd) {
         this.id = id;
@@ -41,58 +42,85 @@ public class Product {
         this.isKakaoApprovedByMd = (isKakaoApprovedByMd == null) ? false : isKakaoApprovedByMd;
     }
 
-    public Product(String name, Long price, String imageUrl, Boolean isKakaoApprovedByMd){
+    public Product(String name, Long price, String imageUrl, Boolean isKakaoApprovedByMd) {
         this(null, name, price, imageUrl, isKakaoApprovedByMd);
     }
 
-    public Long getId(){return id;}
-    public String getName(){return name;}
-    public Long getPrice(){return price;}
-    public String getImageUrl(){return imageUrl;}
-    public Boolean getIsKakaoApprovedByMd(){return isKakaoApprovedByMd;}
-    public List<Option> getOptions(){return options;}
+    public Long getId() {
+        return id;
+    }
 
-    public void updateProduct(String name,Long price,String imageUrl,Boolean isKakaoApprovedByMd){
+    public String getName() {
+        return name;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public Boolean getIsKakaoApprovedByMd() {
+        return isKakaoApprovedByMd;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void updateProduct(String name, Long price, String imageUrl, Boolean isKakaoApprovedByMd) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.isKakaoApprovedByMd = (isKakaoApprovedByMd == null) ? false : isKakaoApprovedByMd;
     }
 
-    public void addOption(Option option){
+    public void addOption(Option option) {
         validateOptionForAdd(option.getName());
         this.options.add(option);
         option.setProduct(this);
     }
 
-    public void validateOptionForUpdate(Long optionId, String name){
-        Stream<Option> streamExceptMine = this.options.stream()
-                .filter(option -> !option.getId().equals(optionId));
-
-        checkDuplicateOptionName(streamExceptMine, name);
+    public void validateOptionForUpdate(String name, Long optionId) {
+        checkDuplicateOptionName(name, optionId);
     }
 
-    public void removeOption(Option option){
-        if(this.options.size() <= 1){
-            throw new IllegalArgumentException("옵션이 한 개이기 때문에 삭제가 불가능합니다.");
+    public void removeOption(Long optionId) {
+        if (this.options.size() <= 1) {
+            throw new IllegalArgumentException("상품의 옵션이 한 개이기 때문에 삭제가 불가능합니다.");
         }
-        this.options.remove(option);
+
+        boolean isRemoved = this.options.removeIf(option -> !option.getId().equals(optionId));
+
+        if (isRemoved) {
+            throw new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다.");
+        }
     }
 
-    public Option getOptionByOptionId(Long optionId){
+    public Option getOptionByOptionId(Long optionId) {
         return this.options.stream()
                 .filter(option -> option.equals(optionId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
     }
 
-    private void validateOptionForAdd(String name){
-        checkDuplicateOptionName(this.options.stream(), name);
+    private void validateOptionForAdd(String name) {
+        checkDuplicateOptionName(name, null);
     }
 
-    private void checkDuplicateOptionName(Stream<Option> stream, String name){
-        if(stream.anyMatch(
-                option -> option.getName().equals(name))){
+    private void checkDuplicateOptionName(String name, Long optionId) {
+        Stream<Option> stream = this.options.stream();
+
+        if (optionId != null) {
+            stream = stream.filter(option -> !option.getId().equals(optionId));
+        }
+
+        boolean isDuplicated = stream.anyMatch(
+                option -> option.getName().equals(name));
+
+        if (isDuplicated) {
             throw new IllegalArgumentException(name + "는 이미 존재하는 옵션명입니다.");
         }
     }
