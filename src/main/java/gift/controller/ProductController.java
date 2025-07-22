@@ -36,14 +36,14 @@ public class ProductController {
         @Valid @RequestBody ProductRequestDTO dto) {
         Optional<ProductResponseDTO> productResponse = productService.update(id, dto);
         return productResponse.map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.noContent().build());
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
         Optional<ProductResponseDTO> productResponse = productService.findProductById(id);
         return productResponse.map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.noContent().build());
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
