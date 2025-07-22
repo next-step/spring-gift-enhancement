@@ -2,6 +2,9 @@ spring:
   application:
     name: spring-gift
 
+  profiles:
+    active: prod
+
   h2:
     console:
       enabled: true

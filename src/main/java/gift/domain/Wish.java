@@ -26,6 +26,9 @@ public class Wish {
     @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     public Wish(){
 
     }
@@ -34,18 +37,6 @@ public class Wish {
         this.member = member;
         this.product = product;
         this.quantity = quantity;
-    }
-
-    public void updateQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -60,6 +51,15 @@ public class Wish {
 
     public int getQuantity(){
         return quantity;
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
 }

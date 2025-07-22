@@ -29,19 +29,16 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    @Transactional(readOnly = true)
     public List<Product> getAll(){
         return productRepository.findAll();
     }
 
 
-    @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다."));
     }
 
-    @Transactional(readOnly = true)
     public PageResponse<ProductResponse> getProductPage(Pageable pageable) {
         Page<Product> products = productRepository.findAll(pageable);
         List<ProductResponse> content = products.stream()

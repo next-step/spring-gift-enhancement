@@ -26,11 +26,6 @@ public class WishController {
     }
 
     @GetMapping
-    public List<WishResponse> getWishes(@LoginMember Member member) {
-        return wishService.getWishes(member.getId());
-    }
-
-    @GetMapping("/member")
     public ResponseEntity<PageResponse<WishResponse>> getWishesPage(
             @LoginMember Member member,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {

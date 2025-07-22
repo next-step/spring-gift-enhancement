@@ -23,14 +23,6 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    @Transactional(readOnly = true)
-    public List<WishResponse> getWishes(Long memberId) {
-        return wishRepository.findAllByMemberId(memberId).stream()
-                .map(WishResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
     public PageResponse<WishResponse> getWishesPage(Long memberId, Pageable pageable) {
         Page<Wish> wishes = wishRepository.findAllByMemberId(memberId, pageable);
         List<WishResponse> content = wishes.stream()

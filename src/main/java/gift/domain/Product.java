@@ -1,10 +1,10 @@
 package gift.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -16,6 +16,9 @@ public class Product {
 
     @Column(nullable = false, length = 255)
     private String name;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOption> options = new ArrayList<>();
 
     @Column(nullable = false)
     private int price;
@@ -42,17 +45,6 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void update(String name, int price, String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
-
     public Product(Long id) { this.id = id; }
 
     public Long getId() {
@@ -71,8 +63,42 @@ public class Product {
         return imageUrl;
     }
 
+    public List<ProductOption> getOptions() {
+        return options;
+    }
+
     public void setId(Long id){
         this.id = id;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void update(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
+    public void addOption(ProductOption option) {
+        if (isDuplicateOptionName(option.getName())) {
+            throw new IllegalArgumentException("중복된 옵션 이름입니다.");
+        }
+        option.assignToProduct(this);
+        options.add(option);
+    }
+
+    private boolean isDuplicateOptionName(String name) {
+        return options.stream()
+                .anyMatch(o -> o.getName().equals(name));
+    }
+
+    public void validateAtLeastOneOption() {
+        if (options.isEmpty()) {
+            throw new IllegalStateException("상품에는 최소 하나 이상의 옵션이 존재해야 합니다.");
+        }
     }
 
 }
