@@ -36,12 +36,8 @@ public class OptionService {
         Product product = productRepository.findById(optionRequest.productId())
             .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
 
-        // 중복이름 유효성 검사
-        List<Option> optionList = optionRepository.findAllByProductId(optionRequest.productId());
-        for(Option op : optionList){
-            if(op.getName().equals(optionRequest.name())){
-                throw CustomException.from(ErrorCode.ALREADY_EXISTS_NAME);
-            }
+        if(optionRepository.existsByProductIdAndName(optionRequest.productId(), optionRequest.name())){
+            throw CustomException.from(ErrorCode.ALREADY_EXISTS_NAME);
         }
 
         Option option = Option.of(
