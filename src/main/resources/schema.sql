@@ -31,3 +31,19 @@ ALTER TABLE IF EXISTS wish
     ADD CONSTRAINT fk_wish_product
     FOREIGN KEY (product_id)
     REFERENCES product(id);
+
+CREATE TABLE option
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT        NOT NULL,
+    name       VARCHAR(50)   NOT NULL,
+    quantity   INT           NOT NULL,
+    CONSTRAINT uq_option_product_name UNIQUE (product_id, name),
+    CONSTRAINT chk_option_quantity CHECK (quantity >= 1 AND quantity < 100000000)
+);
+
+ALTER TABLE IF EXISTS option
+    ADD CONSTRAINT fk_option_product
+    FOREIGN KEY (product_id)
+    REFERENCES product(id)
+    ON DELETE CASCADE;

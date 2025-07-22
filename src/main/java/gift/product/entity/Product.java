@@ -1,11 +1,17 @@
 package gift.product.entity;
 
+import gift.option.entity.Option;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
 
     @Column(nullable = false)
@@ -13,6 +19,14 @@ public class Product {
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
+
+    public void addOption(Option option) {
+        options.add(option);
+        option.setProduct(this);
+    }
 
     protected Product() {}
 

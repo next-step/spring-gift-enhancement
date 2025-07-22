@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class WishServiceImpl implements WishService {
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;
@@ -34,6 +35,7 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
+    @Transactional
     public WishResponseDto createWish(Long memberId, Long productId) {
         if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
             throw new DuplicateWishException(memberId, productId);

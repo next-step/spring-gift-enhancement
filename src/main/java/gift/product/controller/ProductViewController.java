@@ -1,5 +1,6 @@
 package gift.product.controller;
 
+import gift.option.dto.OptionCreateRequestDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -25,7 +28,11 @@ public class ProductViewController {
     // 상품 등록
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("product", new ProductRequestDto("하리보 콜라맛", 2000, "test.jpg"));
+        model.addAttribute("product", new ProductRequestDto(
+                "하리보 콜라맛",
+                2000,
+                "test.jpg"
+        , List.of(new OptionCreateRequestDto("낱개", 1))));
         return "product/create";
     }
 
