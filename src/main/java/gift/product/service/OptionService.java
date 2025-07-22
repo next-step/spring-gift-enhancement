@@ -47,12 +47,7 @@ public class OptionService {
     public OptionResponseDto updateOption(Long productId, Long optionId, OptionRequestDto optionRequestDto) {
         Product product = getProduct(productId);
 
-        Option option = optionRepository.findById(optionId)
-                .orElseThrow(()->new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
-
-        if(!option.isEqualProduct(product)) {
-            throw new IllegalArgumentException(productId + "번 상품에 해당하는 상품 옵션이 아닙니다.");
-        }
+        Option option = product.getOptionByOptionId(optionId);
 
         product.validateOptionForUpdate(optionId, optionRequestDto.name());
 
@@ -65,12 +60,7 @@ public class OptionService {
     public void deleteOption(Long productId, Long optionId) {
         Product product = getProduct(productId);
 
-        Option option = optionRepository.findById(optionId)
-                .orElseThrow(()-> new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
-
-        if(!option.isEqualProduct(product)) {
-            throw new IllegalArgumentException(productId + "번 상품에 해당하는 상품 옵션이 아닙니다.");
-        }
+        Option option = product.getOptionByOptionId(optionId);
 
         product.removeOption(option);
     }

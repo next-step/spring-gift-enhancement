@@ -79,6 +79,13 @@ public class Product {
         this.options.remove(option);
     }
 
+    public Option getOptionByOptionId(Long optionId){
+        return this.options.stream()
+                .filter(option -> option.equals(optionId))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
+    }
+
     private void validateOptionForAdd(String name){
         checkDuplicateOptionName(this.options.stream(), name);
     }
