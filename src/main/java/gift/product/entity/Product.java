@@ -113,7 +113,7 @@ public class Product {
 
     public Option getOptionByOptionId(Long optionId) {
         return this.options.stream()
-                .filter(option -> option.equals(optionId))
+                .filter(option -> option.getId().equals(optionId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(optionId + "에 해당하는 옵션을 찾을 수 없습니다."));
     }

@@ -56,10 +56,6 @@ public class Option {
         this.quantity = quantity;
     }
 
-    public boolean isEqualProduct(Product product) {
-        return this.product.equals(product);
-    }
-
     private void validateQuantity(int quantity) {
         if(quantity < 1) {
             throw new IllegalArgumentException("옵션의 최소 수량은 1개입니다.");
