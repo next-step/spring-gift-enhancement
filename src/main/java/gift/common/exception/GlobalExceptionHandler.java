@@ -50,4 +50,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
+
+    @ExceptionHandler(ProductOptionRequiredException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleProductOptionRequired(ProductOptionRequiredException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
 }

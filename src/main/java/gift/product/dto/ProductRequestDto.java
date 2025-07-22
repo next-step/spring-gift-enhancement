@@ -1,8 +1,12 @@
 package gift.product.dto;
 
+import gift.option.dto.OptionRequestDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 public record ProductRequestDto (
         @NotBlank(message = "상품명을 입력해주세요")
@@ -10,5 +14,7 @@ public record ProductRequestDto (
         @Pattern(regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$", message = "특수문자는 ( ) [ ] + - & / _ 만 허용됩니다.")
         String name,
         int price,
-        String imageUrl
+        String imageUrl,
+        @Valid
+        List<OptionRequestDto> options
 ) { }

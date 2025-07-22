@@ -28,9 +28,14 @@ public class DefaultProductService implements ProductService {
             throw new ForbiddenWordException("카카오");
         }
 
-        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl());
-        Product savedProduct = productRepository.save(product);
+        Product product = Product.createProduct(
+                requestDto.name(),
+                requestDto.price(),
+                requestDto.imageUrl(),
+                requestDto.options()
+        );
 
+        Product savedProduct = productRepository.save(product);
         return new ProductResponseDto(savedProduct);
     }
 

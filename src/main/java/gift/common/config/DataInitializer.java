@@ -2,11 +2,14 @@ package gift.common.config;
 
 import gift.member.entity.Role;
 import gift.member.repository.MemberRepository;
+import gift.option.dto.OptionRequestDto;
 import gift.product.entity.Product;
 import gift.member.entity.Member;
 import gift.product.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -15,7 +18,8 @@ public class DataInitializer implements CommandLineRunner {
     private final MemberRepository memberRepository;
 
     public DataInitializer(ProductRepository productRepository,
-                           MemberRepository memberRepository) {
+                           MemberRepository memberRepository
+                           ) {
         this.productRepository = productRepository;
         this.memberRepository = memberRepository;
     }
@@ -23,9 +27,34 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 제품 초기 데이터
-        productRepository.save(new Product("Cold Brew", 5100, "https://image.istarbucks.co.kr/upload/store/skuimg/2025/06/[9200000000038]_20250626095744579.jpg"));
-        productRepository.save(new Product("Frappuccino", 6200, "https://image.istarbucks.co.kr/upload/store/skuimg/2025/06/[168016]_20250626113601250.jpg"));
-        productRepository.save(new Product("Malcha Latte", 6300, "https://image.istarbucks.co.kr/upload/store/skuimg/2023/11/[9200000004954]_20231127093740911.jpg"));
+        Product coldBrew = Product.createProduct(
+                "콜드브루", 4500,
+                "https://image.istarbucks.co.kr/upload/store/skuimg/2025/06/[9200000000038]_20250626095744579.jpg",
+                List.of(
+                        new OptionRequestDto("Tall", 3)
+                )
+        );
+
+        Product americano = Product.createProduct(
+                "아메리카노", 4000,
+                "https://image.istarbucks.co.kr/upload/store/skuimg/2025/06/[110563]_20250626094354080.jpg",
+                List.of(
+                        new OptionRequestDto("Tall", 10),
+                        new OptionRequestDto("Grande", 5)
+                )
+        );
+
+        Product cappuccino = Product.createProduct(
+                "카푸치노", 5000,
+                "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[38]_20210415154821991.jpg",
+                List.of(
+                        new OptionRequestDto("Venti", 2)
+                )
+        );
+
+        productRepository.save(coldBrew);
+        productRepository.save(americano);
+        productRepository.save(cappuccino);
 
         // 회원 초기 데이터
         memberRepository.save(new Member("user1@example.com", "password1", Role.USER));
