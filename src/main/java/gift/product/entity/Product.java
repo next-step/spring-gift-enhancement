@@ -2,10 +2,14 @@ package gift.product.entity;
 
 import gift.product.dto.request.ProductCreateRequest;
 import gift.product.dto.request.ProductModifyRequest;
+import gift.product.status.OptionStatus;
+import gift.shared.exception.option.SameNameException;
 import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.Objects;
+
+import static gift.product.status.OptionStatus.*;
 
 @Entity
 @Table(name = "products")
@@ -29,10 +33,10 @@ public class Product {
     @Column(nullable = false)
     private boolean isKakaoMDAccepted = true;
 
-    // CascadeType.ALL 을 사용한 이유
+    // CascadeType.REMOVE 을 사용한 이유
     // 상품마다 다른 옵션을 가지고 있고, 부모 entity 에 의해서 전의를 하게 두어도
-    // 다른 상품에서 이에 대해 정보를 가지고 있을 수 없으니까, ALL 로 설정하게 되었다.
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // 다른 상품에서 이에 대해 정보를 가지고 있을 수 없으니까, REMOVE 로 설정하게 되었다.
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private List<Option> options;
 
@@ -77,6 +81,11 @@ public class Product {
     }
 
     public void addOption(Option option) {
+        for(Option singleOption: options){
+            if(singleOption.isSameName(option.getName())){
+                throw new SameNameException(SAME_NAME.getMessage());
+            }
+        }
         options.add(option);
     }
 

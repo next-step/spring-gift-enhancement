@@ -80,8 +80,7 @@ public class ProductController {
             @PathVariable Long id,
             @Valid @RequestBody OptionCreateRequest optionCreateRequest
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(optionService.save(id, new Option(optionCreateRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(optionService.save(id, optionCreateRequest));
     }
 
     @GetMapping("/{id}/options")

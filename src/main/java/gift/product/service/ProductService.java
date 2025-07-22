@@ -42,9 +42,12 @@ public class ProductService {
     public List<ProductResponse> getAllGifts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Product> productPage = productRepository.findAll(pageable);
-        return productPage.hasContent() ? productPage.getContent().stream()
-                .map(ProductResponse::from)
-                .toList() : Collections.emptyList();
+        if(productPage.hasContent()) {
+            return productPage.getContent().stream()
+                    .map(ProductResponse::from)
+                    .toList();
+        }
+        return Collections.emptyList();
     }
 
     public ProductResponse updateGift(Long id, ProductModifyRequest productModifyRequest) {
