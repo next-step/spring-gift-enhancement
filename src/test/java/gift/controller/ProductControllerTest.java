@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.OptionRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.domain.Product;
@@ -47,7 +48,7 @@ public class ProductControllerTest {
     void Validation_테스트(ProductRequestDto productRequestDto, List<String> messages) {
         HttpClientErrorException.BadRequest exception = assertThrows(HttpClientErrorException.BadRequest.class,
                 () -> {
-                    postProduct(productRequestDto);
+                    addProduct(productRequestDto);
                 });
 
         boolean anyMatch = messages.stream()
@@ -78,7 +79,7 @@ public class ProductControllerTest {
 
     @Test
     void 카카오_들어가는_이름_테스트_입력_테스트() {
-        ResponseEntity<String> response = postProduct(new ProductRequestDto(
+        ResponseEntity<String> response = addProduct(new ProductRequestDto(
                 "카카오 들어감",
                 123,
                 "http://path/"
@@ -124,7 +125,8 @@ public class ProductControllerTest {
     @Test
     void Pagenation_Test() {
         for (int i = 0; i < 10; i++) {
-            postProduct(new ProductRequestDto("name" + i, 123, "path"));
+            addProduct(new ProductRequestDto("name" + i, 123, "path"));
+            addOption(1+i, new OptionRequestDto("name" + i, 123));
         }
 
         ResponseEntity<ProductsResponseDto> responseEntity = getProducts(PageRequest.of(0, 5));
@@ -144,10 +146,18 @@ public class ProductControllerTest {
                 .toEntity(ProductsResponseDto.class);
     }
 
-    private ResponseEntity<String> postProduct(ProductRequestDto productRequestDto) {
+    private ResponseEntity<String> addProduct(ProductRequestDto productRequestDto) {
         return client.post()
                 .uri(baseUrl + "/api/products")
                 .body(productRequestDto)
+                .retrieve()
+                .toEntity(String.class);
+    }
+
+    private ResponseEntity<String> addOption(long productId, OptionRequestDto optionRequestDto) {
+        return client.post()
+                .uri(baseUrl + "/api/products/" + productId + "/options")
+                .body(optionRequestDto)
                 .retrieve()
                 .toEntity(String.class);
     }

@@ -44,9 +44,9 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ProductsResponseDto> getApprovedProducts(Pageable pageable) {
+    public ResponseEntity<ProductsResponseDto> getReadyProducts(Pageable pageable) {
         return ResponseEntity.ok(
-                new ProductsResponseDto(productService.findApprovedProducts(pageable))
+                new ProductsResponseDto(productService.findReadyProducts(pageable))
         );
     }
 

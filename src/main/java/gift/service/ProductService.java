@@ -44,8 +44,8 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> findApprovedProducts(Pageable pageable) {
-        return productRepository.findByStatus(Product.Status.APPROVED, pageable).stream()
+    public List<ProductResponseDto> findReadyProducts(Pageable pageable) {
+        return productRepository.findAllByStatusHavingOptions(Product.Status.APPROVED, pageable).stream()
                 .map(ProductResponseDto::new)
                 .toList();
     }

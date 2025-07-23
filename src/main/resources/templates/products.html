@@ -31,7 +31,8 @@
                         <td th:text="${product.status}"></td>
                         <td>
                             <button type="button" th:onclick="openModal('update', [[${product.id}]])">Update</button> |
-                            <button type="button" th:onclick="deleteProduct([[${product.id}]])">Delete</button>
+                            <button type="button" th:onclick="deleteProduct([[${product.id}]])">Delete</button> |
+                            <a th:href="'/admin/products/' + ${product.id} + '/options'">Options</a>
                         </td>
                     </tr>
                 </tbody>
