@@ -92,7 +92,7 @@ public class Product {
         return options;
     }
 
-    public void validateHasOptions() {
+    private void validateHasOptions() {
         if (this.options.isEmpty()) {
             throw new IllegalStateException("상품에는 최소 하나 이상의 옵션이 있어야 합니다.");
         }
