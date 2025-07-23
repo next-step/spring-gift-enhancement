@@ -36,16 +36,19 @@ public class Option {
     @Column(nullable = false)
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     protected Option() {
     }
 
-    public Option(String name, int quantity, Product product) {
+    public Option(String name, int quantity) {
         this.name = name;
         this.quantity = quantity;
+    }
+
+    public void setProduct(Product product) {
         this.product = product;
     }
 
