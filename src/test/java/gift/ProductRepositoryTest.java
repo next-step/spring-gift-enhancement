@@ -24,7 +24,8 @@ public class ProductRepositoryTest {
     void save() {
         List<ProductOption> options = new ArrayList<>();
         options.add(new ProductOption("option1", 100));
-        Product expected = new Product("선풍기", 1000, "");
+        Product expected = new Product("선풍기", 1000, "", new ArrayList<>());
+        expected.addOption(options.getFirst());
         Product actual = productRepository.save(expected);
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),

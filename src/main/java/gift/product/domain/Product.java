@@ -22,15 +22,23 @@ public class Product {
     private String imageUrl;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOption> options = new ArrayList<>();
+    private List<ProductOption> options;
 
     protected Product() {}
+
 
     public Product(Long id, String name, Integer price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public Product(String name, Integer price, String imageUrl, List<ProductOption> options) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.options = options;
     }
 
     public Product(String name, Integer price, String imageUrl) {
