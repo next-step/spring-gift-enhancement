@@ -2,6 +2,8 @@ package gift.product.controller;
 
 
 import gift.product.commons.annotations.Authenticated;
+import gift.product.dto.CreateOptionRequest;
+import gift.product.dto.GetOptionsResponse;
 import gift.product.service.ItemService;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
@@ -54,5 +56,18 @@ public class ItemController {
 	@DeleteMapping("/{itemId}")
 	public void deleteItem(@PathVariable Long itemId, @RequestAttribute("userId") Long userId) {
 		itemService.deleteItem(itemId, userId);
+	}
+
+	// 옵션 조회
+	@GetMapping("/{itemId}/options")
+	public List<GetOptionsResponse> getOptions(@PathVariable Long itemId) {
+		return itemService.getOptions(itemId);
+	}
+
+	// 옵션 추가
+	@Authenticated
+	@PostMapping("/{itemId}/options")
+	public Long addOption(@PathVariable Long itemId, @Valid @RequestBody CreateOptionRequest req, @RequestAttribute("userId") Long userId) {
+		return itemService.addOption(itemId, req, userId);
 	}
 }

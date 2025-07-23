@@ -3,6 +3,8 @@ package gift.product.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 public class Item {
@@ -21,6 +23,9 @@ public class Item {
 
 	private String imageUrl;
 
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<Option> options;
+
 	public Item(Long id, User user, String name, Integer price, String imageUrl) {
 		validateKakaoKeyword(name);
 
@@ -36,6 +41,12 @@ public class Item {
 
 	public static ItemBuilder builder() {
 		return new ItemBuilder();
+	}
+
+
+	public boolean duplicateOptionNameCheck(String optionName) {
+		return this.options.stream()
+			.anyMatch(option -> option.getOptionName().equals(optionName));
 	}
 
 	public static class ItemBuilder {
@@ -101,6 +112,10 @@ public class Item {
 
 	public String getImageUrl() {
 		return imageUrl;
+	}
+
+	public List<Option> getOptions() {
+		return options;
 	}
 
 }
