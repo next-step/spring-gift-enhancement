@@ -42,7 +42,6 @@ public class ProductService {
     public Optional<ProductResponseDTO> update(Long id, ProductRequestDTO dto) {
         return productRepository.findById(id).map(product -> {
             product.updateFromProductRequestDTO(dto);
-            product.validateHasOptions();
             return productRepository.save(product);
         }).map(ProductResponseDTO::new);
     }

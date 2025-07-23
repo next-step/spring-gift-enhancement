@@ -45,6 +45,13 @@ public class Product {
         this.name = dto.getName();
         this.price = dto.getPrice();
         this.imageUrl = dto.getImageUrl();
+
+        this.options.clear();
+        for (var optionDTO : dto.getOptions()) {
+            Option option = new Option(optionDTO.name(), optionDTO.quantity(), this);
+            this.options.add(option);
+        }
+        validateHasOptions();
     }
 
     public Long getId() {
