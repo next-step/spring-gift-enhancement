@@ -52,20 +52,17 @@ public class OptionService {
     public void updateOption(Long productId, Long optionId, OptionRequestDTO optionRequestDTO) {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
-        Option option = optionRepository.findById(optionId)
-            .orElseThrow(() -> new IllegalArgumentException("옵션을 찾을 수 없습니다."));
 
-        if (!option.getProduct().getId().equals(product.getId())) {
-            throw new IllegalArgumentException("상품에 해당 옵션이 존재하지 않습니다.");
-        }
+        Option option = product.getOptionById(optionId);
+        boolean isDuplicateName = product.getOptions().stream()
+            .filter(opt -> !opt.getId().equals(optionId))
+            .anyMatch(opt -> opt.getName().equals(optionRequestDTO.name()));
 
-        if (!option.getName().equals(optionRequestDTO.name()) &&
-            product.hasOptionWithName(optionRequestDTO.name())) {
+        if (isDuplicateName) {
             throw new IllegalArgumentException("동일한 상품 내에서 옵션 이름이 중복될 수 없습니다.");
         }
 
-        option.setName(optionRequestDTO.name());
-        option.setQuantity(optionRequestDTO.quantity());
+        option.update(optionRequestDTO.name(), optionRequestDTO.quantity());
         optionRepository.save(option);
     }
 

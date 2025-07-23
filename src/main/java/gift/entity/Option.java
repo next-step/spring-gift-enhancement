@@ -51,6 +51,15 @@ public class Option {
         this.product = product;
     }
 
+    public void update(String name, int quantity) {
+        if (name != null && !name.isEmpty()) {
+            this.name = name;
+        }
+        if (quantity > 0) {
+            this.quantity = quantity;
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -59,16 +68,8 @@ public class Option {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public Product getProduct() {

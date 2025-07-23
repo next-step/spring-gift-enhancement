@@ -91,6 +91,13 @@ public class Product {
             .anyMatch(option -> option.getName().equals(name));
     }
 
+    public Option getOptionById(Long optionId) {
+        return this.options.stream()
+            .filter(option -> option.getId().equals(optionId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품에서 옵션을 찾을 수 없습니다."));
+    }
+
     public List<Option> getOptions() {
         return options;
     }
