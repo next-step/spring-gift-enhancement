@@ -29,7 +29,7 @@ public class MemberService {
         }
 
         String hashedPassword = BCrypt.hashpw(dto.password(), BCrypt.gensalt());
-        Member member = new Member(dto.email(), hashedPassword, Role.USER.name());
+        Member member = new Member(dto.email(), hashedPassword, Role.USER);
         memberRepository.save(member);
     }
 

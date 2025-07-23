@@ -5,6 +5,7 @@ import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,23 +24,18 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String list(@RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       @RequestParam(defaultValue = "id,desc") String sort,
+    public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                       @RequestParam(required = false) String sort,
                        Model model) {
+        Pageable safePageable = pageable;
+        if ("null".equals(sort)) {
+            safePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
+        }
 
-        String[] parts = sort.split(",");
-        String property = parts[0];
-        String direction = (parts.length > 1) ? parts[1] : "asc";
-
-        Sort sortObj = Sort.by(new Sort.Order(Sort.Direction.fromString(direction), property));
-        Pageable pageable = PageRequest.of(page, size, sortObj);
-
-        Page<ProductResponseDto> productPage = productService.getProductList(pageable);
+        Page<ProductResponseDto> productPage = productService.getProductList(safePageable);
         model.addAttribute("productPage", productPage);
         return "admin/list";
     }
-
 
 
     @GetMapping("/new")
@@ -58,6 +54,14 @@ public class AdminProductController {
         }
         productService.addProduct(requestDto);
         return "redirect:/admin/products";
+    }
+
+    @PostMapping("/{id}/options")
+    public String addOption(@PathVariable Long id,
+                            @RequestParam String name,
+                            @RequestParam int quantity) {
+        productService.addOptionToProduct(id, name, quantity);
+        return "redirect:/admin/products/" + id + "/edit";
     }
 
     @GetMapping("/{id}/edit")

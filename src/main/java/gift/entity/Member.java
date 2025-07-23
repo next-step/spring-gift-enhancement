@@ -1,11 +1,6 @@
 package gift.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "member")
@@ -21,13 +16,14 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
     protected Member() {
     }
 
-    public Member(String email, String password, String role) {
+    public Member(String email, String password, Role role) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -45,7 +41,7 @@ public class Member {
         return password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }

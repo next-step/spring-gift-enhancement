@@ -28,21 +28,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDto>> getProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,desc") String[] sort) {
-
-        Sort sortObj = Sort.by(
-                Arrays.stream(sort)
-                        .map(s -> {
-                            String[] parts = s.split(",");
-                            return new Sort.Order(Sort.Direction.fromString(parts[1]), parts[0]);
-                        })
-                        .toList()
-        );
-
-        Pageable pageable = PageRequest.of(page, size, sortObj);
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(Pageable pageable) {
         Page<ProductResponseDto> productPage = productService.getProductList(pageable);
         return ResponseEntity.ok(productPage);
     }

@@ -2,6 +2,7 @@ package gift;
 
 import gift.entity.Member;
 import gift.entity.Product;
+import gift.entity.Role;
 import gift.entity.Wish;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
@@ -28,7 +29,7 @@ class WishRepositoryTest {
 
     @Test
     void save() {
-        Member member = new Member("wish@example.com", "pw123", "USER");
+        Member member = new Member("wish@example.com", "pw123", Role.USER);
         memberRepository.save(member);
 
         Product product = new Product("mouse", "http://image.com/mouse", 20000);

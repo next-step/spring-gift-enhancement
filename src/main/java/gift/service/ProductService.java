@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.entity.ProductOption;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,15 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         return new ProductResponseDto(savedProduct);
     }
+
+    @Transactional
+    public void addOptionToProduct(Long productId, String name, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+        ProductOption option = new ProductOption(name, quantity);
+        product.addOption(option);
+    }
+
 
     @Transactional
     public void updateProduct(Long id, ProductRequestDto requestDto) {
