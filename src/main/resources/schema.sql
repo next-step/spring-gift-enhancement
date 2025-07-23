@@ -16,3 +16,12 @@ CREATE TABLE wish (
                       member_id BIGINT NOT NULL,
                       product_id BIGINT NOT NULL
 );
+
+CREATE TABLE product_option (
+                                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                product_id BIGINT NOT NULL,
+                                name VARCHAR(50) NOT NULL,
+                                quantity INT NOT NULL,
+                                CONSTRAINT fk_product_option_product
+                                    FOREIGN KEY (product_id) REFERENCES product(id)
+);

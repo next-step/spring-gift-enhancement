@@ -1,8 +1,13 @@
 package gift.dto;
 
+import gift.domain.ProductOption;
 import gift.validation.NoKakao;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
+import java.util.List;
 public class ProductRequest {
     private Long id;
 
@@ -20,6 +25,8 @@ public class ProductRequest {
 
     @NotBlank(message = "이미지 URL은 필수입니다.")
     private String imageUrl;
+
+    private List<ProductOption> options;
 
     public ProductRequest(Long id, String name, int price, String imageUrl) {
         this.id = id;
@@ -63,4 +70,11 @@ public class ProductRequest {
         this.imageUrl = imageUrl;
     }
 
+    public List<ProductOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<ProductOption> options) {
+        this.options = options;
+    }
 }

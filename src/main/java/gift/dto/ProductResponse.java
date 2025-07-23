@@ -1,9 +1,14 @@
 package gift.dto;
+
+import gift.domain.ProductOption;
+import java.util.List;
+
 public class ProductResponse {
     private Long id;
     private String name;
     private int price;
     private String imageUrl;
+    private List<ProductOption> options;
 
     public ProductResponse(Long id, String name, int price, String imageUrl) {
         this.id = id;
@@ -25,6 +30,13 @@ public class ProductResponse {
         return imageUrl;
     }
 
+    public List<ProductOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<ProductOption> options) {
+        this.options = options;
+    }
 }
 
 
