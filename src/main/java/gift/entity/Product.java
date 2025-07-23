@@ -71,6 +71,9 @@ public class Product {
     }
 
     public void addOption(Option option) {
+        if (hasOptionWithName(option.getName())) {
+            throw new IllegalArgumentException("동일한 상품 내에서 옵션 이름이 중복될 수 없습니다.");
+        }
         this.options.add(option);
         option.setProduct(this);
     }
