@@ -6,16 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.example.demo.dto.user.UserDataInfo;
 import com.example.demo.dto.user.UserRequestDto;
 import com.example.demo.jwt.Jwt;
-import com.example.demo.service.user.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -23,6 +21,7 @@ import org.springframework.web.client.RestClient;
 @TestPropertySource(properties = {
     "jwt.secret=ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789012"
 })
+@Transactional
 class UserLoginTest {
 
   @LocalServerPort

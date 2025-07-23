@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.dto.wish.WishPagingResponseDto;
 import com.example.demo.dto.wish.WishRequestDto;
 import com.example.demo.entity.User;
 import com.example.demo.service.wish.WishService;
 import com.example.demo.validation.LoginMember;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,13 +36,9 @@ public class WishController {
   @GetMapping
   public ResponseEntity<WishPagingResponseDto> getWishes(
       @LoginMember User user,
-      @RequestParam(defaultValue = "1") int page,
-      @RequestParam(defaultValue = "10") int size
+      @Valid PageRequestDto dto
   ) {
-    if (page < 1){
-      throw new IllegalArgumentException("페이지 번호는 1 이상이어야 합니다.");
-    }
-    WishPagingResponseDto result = wishService.getWishList(user.getId(), page, size);
+    WishPagingResponseDto result = wishService.getWishList(user.getId(), dto.page(), dto.size());
     return ResponseEntity.ok(result);
   }
 

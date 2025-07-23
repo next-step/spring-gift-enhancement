@@ -1,6 +1,7 @@
 package com.example.demo.dto.product;
 
 import com.example.demo.validation.NoForbiddenWords;
+import com.example.demo.validation.ValidationConstants;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,11 +11,11 @@ public class ProductRequestDto {
 
   private Long id;
 
-  @NotBlank(message = "상품이름은 공백일 수 없습니다.")
-  @Size(max= 15, message = "싱품의 이름은 공백 포함 15자 이하로 입력해주세요.")
+  @NotBlank(message = ValidationConstants.PRODUCT_NAME_NOT_BLANK)
+  @Size(max = 15, message = ValidationConstants.PRODUCT_NAME_SIZE)
   @Pattern(
-      regexp = "^[a-zA-Z0-9가-힣  ()\\[\\]+\\-&/_]*$",
-      message = "상품 이름에는 (), [], +, -, &, /, _ 외 특수문자는 사용할 수 없습니다."
+      regexp = ValidationConstants.NAME_REGEX,
+      message = ValidationConstants.NAME_PATTERN_MESSAGE
   )
   @NoForbiddenWords
   private String name;
@@ -60,6 +61,8 @@ public class ProductRequestDto {
   }
 
   public void setName(String name) {this.name = name;}
+
   public void setPrice(int price) {this.price = price;}
+
   public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 }

@@ -3,6 +3,7 @@ package com.example.demo.exception.handler;
 import com.example.demo.controller.user.UserController;
 import com.example.demo.dto.ErrorResponseDto;
 import com.example.demo.exception.InvalidLoginException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -97,5 +98,21 @@ public class UserExceptionHandler {
     return ResponseEntity
         .status(HttpStatus.NOT_FOUND)
         .body(errorResponseDto);
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<ErrorResponseDto> handleUnauthorized(
+      UnauthorizedException ex,
+      HttpServletRequest request
+  ) {
+    ErrorResponseDto dto = new ErrorResponseDto(
+        "https://example.com/unauthorized",
+        "Unauthorized",
+        HttpStatus.UNAUTHORIZED.value(),
+        ex.getMessage(),
+        request.getRequestURI(),
+        null
+    );
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(dto);
   }
 }
