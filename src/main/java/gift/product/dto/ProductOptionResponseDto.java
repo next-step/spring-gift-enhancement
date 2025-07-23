@@ -8,7 +8,7 @@ public class ProductOptionResponseDto {
     private Integer quantity;
     private Long productId; // product 전체가 아니라 id만 둠으로써 순환 참조 차단
 
-    public ProductOptionResponseDto() {
+    protected ProductOptionResponseDto() {
 
     }
 

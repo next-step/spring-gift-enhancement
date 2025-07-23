@@ -6,7 +6,7 @@ public class UserPatchRequestDto {
     String email;
     String password;
 
-    public UserPatchRequestDto() {}
+    protected UserPatchRequestDto() {}
 
     public UserPatchRequestDto(String email, String password) {
         this.email = email;

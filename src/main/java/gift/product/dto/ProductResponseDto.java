@@ -10,7 +10,7 @@ public class ProductResponseDto {
     private String imageUrl;
     private List<ProductOptionResponseDto> options;
 
-    public ProductResponseDto() {}
+    protected ProductResponseDto() {}
 
     public ProductResponseDto(String name, Integer price, String imageUrl) {
         this.name = name;

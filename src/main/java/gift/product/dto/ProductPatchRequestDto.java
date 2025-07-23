@@ -15,7 +15,7 @@ public class ProductPatchRequestDto {
     private Integer price;
     private String imageUrl;
 
-    public ProductPatchRequestDto() {}
+    protected ProductPatchRequestDto() {}
 
     public ProductPatchRequestDto(Product product) {
         this.name = product.getName();

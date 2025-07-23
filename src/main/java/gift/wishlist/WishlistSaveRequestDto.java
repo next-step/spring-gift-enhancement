@@ -4,7 +4,7 @@ public class WishlistSaveRequestDto {
 
     private Long productId;
 
-    public WishlistSaveRequestDto() {}
+    protected WishlistSaveRequestDto() {}
 
     public WishlistSaveRequestDto(Long productId) {
         this.productId = productId;
