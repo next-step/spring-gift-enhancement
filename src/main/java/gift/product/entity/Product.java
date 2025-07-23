@@ -1,5 +1,6 @@
 package gift.product.entity;
 
+import gift.option.entity.Option;
 import gift.product.dto.ProductResponse;
 import gift.wish.entity.Wish;
 
@@ -27,6 +28,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wish> wishes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
 
     protected Product() {
     }
@@ -78,10 +82,6 @@ public class Product {
         wishes.add(wish);
     }
 
-    public ProductResponse toResponse() {
-        return new ProductResponse(id, name, price, imgUrl);
-    }
-
     public Long getId() {
         return id;
     }
@@ -111,5 +111,10 @@ public class Product {
     public void updateImgUrl(String imgUrl) {
         validateImgUrl(imgUrl);
         this.imgUrl = imgUrl;
+    }
+
+    public void addOption(Option option) {
+        options.add(option);
+        option.updateProduct(this);
     }
 }

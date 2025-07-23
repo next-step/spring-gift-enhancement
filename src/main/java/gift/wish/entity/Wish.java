@@ -20,14 +20,22 @@ public class Wish {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Column(nullable = false)
+    private int quantity;
+
     protected Wish() {
     }
 
     public Wish(Member member, Product product) {
         this.member = member;
         this.product = product;
-        //member.addWish(this);
-        //product.addWish(this);
+        this.quantity = 1;
+    }
+
+    public Wish(Member member, Product product, int quantity) {
+        this.member = member;
+        this.product = product;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -40,5 +48,13 @@ public class Wish {
 
     public Product getProduct() {
         return product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

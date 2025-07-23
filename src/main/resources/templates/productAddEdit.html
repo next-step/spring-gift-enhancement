@@ -30,6 +30,13 @@
       <input type="text" th:field="*{imgUrl}" class="form-control" required />
       <div class="text-danger" th:if="${#fields.hasErrors('imgUrl')}" th:errors="*{imgUrl}"></div>
     </div>
+    <!--
+    <div class="mb-3">
+      <label class="form-label">옵션</label>
+      <input type="text" class="form-control" value="옵션없음 (기본)" readonly disabled />
+    </div>
+    -->
+
     <button type="submit" class="btn btn-primary" th:text="${productId != null} ? '수정' : '등록'">등록</button>
     <a th:href="@{/admin/products}" class="btn btn-secondary">취소</a>
   </form>

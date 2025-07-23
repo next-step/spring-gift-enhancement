@@ -1,5 +1,6 @@
 package gift.member.service;
 
+import gift.global.exception.MemberNotFoundException;
 import gift.member.dto.LoginResponse;
 import gift.member.dto.MemberRequest;
 import gift.member.dto.MemberResponse;
@@ -39,7 +40,8 @@ public class MemberService {
     }
 
     public LoginResponse login(MemberRequest request) {
-        Member member = memberRepository.getByEmailOrThrow(request.email());
+        Member member = memberRepository.findByEmail(request.email())
+                .orElseThrow(() -> new MemberNotFoundException(request.email()));
 
         if (!BCrypt.checkpw(request.password(), member.getPassword())) {
             throw new LoginFailedException();
@@ -50,7 +52,8 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest request) {
-        Member member = memberRepository.getByIdOrThrow(id);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
 
         if (!member.getEmail().equals(request.email())) {
             validateDuplicateEmail(request.email());
@@ -65,7 +68,7 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
-        Member member = memberRepository.getByIdOrThrow(id);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
         memberRepository.delete(member);
     }
 
@@ -76,7 +79,7 @@ public class MemberService {
     }
 
     public MemberResponse findMemberById(Long id) {
-        return MemberResponse.from(memberRepository.getByIdOrThrow(id));
+        return MemberResponse.from(memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id)));
     }
 
     private void validateDuplicateEmail(String email) {

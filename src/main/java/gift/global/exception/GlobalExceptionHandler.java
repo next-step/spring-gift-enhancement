@@ -4,6 +4,7 @@ import gift.member.dto.ErrorResponse;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +67,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleWishAlreadyExists(WishAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(ErrorCode.WISH_ALREADY_EXISTS.getMessage()));
+    }
+
+    @ExceptionHandler(OptionAlreadyExistsException.class)
+    public String handleOptionAlreadyExists(OptionAlreadyExistsException ex, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        return "redirect:/admin/products/" + ex.getProductId();
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,5 +1,7 @@
 package gift.product.controller;
 
+import gift.option.dto.OptionResponse;
+import gift.option.service.OptionService;
 import gift.product.dto.ProductRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.entity.Product;
@@ -13,14 +15,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/products")
 public class ProductViewController {
 
     private final ProductService productService;
+    private final OptionService optionService;
 
-    public ProductViewController(ProductService productService) {
+    public ProductViewController(ProductService productService, OptionService optionService) {
         this.productService = productService;
+        this.optionService = optionService;
     }
 
     @GetMapping
@@ -74,6 +80,26 @@ public class ProductViewController {
     public String delete(@PathVariable Long id) {
         productService.delete(id);
         return "redirect:/admin/products";
+    }
+
+    @GetMapping("/{productId}")
+    public String showProductDetail(@PathVariable Long productId, Model model) {
+        ProductResponse product = productService.findById(productId);
+        List<OptionResponse> options = optionService.getOptions(productId);
+
+        model.addAttribute("product", product);
+        model.addAttribute("options", options);
+        return "product/productDetail";
+    }
+
+    @PostMapping("/{productId}/options")
+    public String addOption(
+            @PathVariable Long productId,
+            @RequestParam String name,
+            @RequestParam int quantity
+    ) {
+        optionService.addOption(productId, name, quantity);
+        return "redirect:/admin/products/" + productId;
     }
 }
 

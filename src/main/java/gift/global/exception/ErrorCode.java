@@ -26,7 +26,13 @@ public enum ErrorCode {
     INVALID_TOKEN("유효하지 않은 토큰입니다."),
 
     //위시관련
-    WISH_ALREADY_EXISTS("이미 위시리스트에 있습니다");
+    WISH_ALREADY_EXISTS("이미 위시리스트에 있습니다"),
+
+    // 옵션 관련
+    OPTION_NAME_INVALID("옵션 이름 형식이 올바르지 않습니다."),
+    OPTION_QUANTITY_INVALID("옵션 수량은 1 이상 1억 미만이어야 합니다."),
+    OPTION_ALREADY_EXISTS("이미 존재하는 옵션입니다."),
+    OPTION_NOT_FOUND("해당 옵션을 찾을 수 없습니다.");
 
     private final String message;
 

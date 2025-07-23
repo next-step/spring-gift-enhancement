@@ -1,5 +1,7 @@
 package gift.product.service;
 
+import gift.global.exception.ProductNotFoundException;
+import gift.option.entity.Option;
 import gift.product.dto.ProductRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.entity.Product;
@@ -35,20 +37,25 @@ public class ProductService {
     }
 
     public ProductResponse findById(Long id) {
-        Product product = repository.getByIdOrThrow(id);;
+        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         return ProductResponse.from(product);
     }
 
     @Transactional
     public ProductResponse create(ProductRequest request) {
         Product product = new Product(request.getName(), request.getPrice(), request.getImgUrl());
+
+        Option defaultOption = new Option("dafault", 1, product);
+        product.addOption(defaultOption);
+
         Product saved = repository.save(product);
-        return ProductResponse.from(product);
+        return ProductResponse.from(saved);
     }
+
 
     @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
-        Product existing = repository.getByIdOrThrow(id);
+        Product existing = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
 
         existing.updateName(request.getName());
         existing.updatePrice(request.getPrice());
@@ -59,7 +66,7 @@ public class ProductService {
 
     @Transactional
     public void delete(Long id) {
-        Product existing = repository.getByIdOrThrow(id);
+        Product existing = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         repository.delete(existing);
     }
 
