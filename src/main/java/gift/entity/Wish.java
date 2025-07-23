@@ -33,9 +33,7 @@ public class Wish {
     }
 
     public Wish(Member member, Product product) {
-        this.member = member;
-        this.product = product;
-        this.quantity = 1;
+        this(member, product, 1);
     }
 
     public Wish(Member member, Product product, int quantity) {
