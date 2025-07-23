@@ -1,14 +1,14 @@
 package gift.service;
 
 import gift.common.exception.ProductNotFoundException;
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductManageResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,19 +19,18 @@ import java.util.Optional;
 public class ProductManageService {
 
     private final ProductRepository productRepository;
-    private static final int PAGE_SIZE = 10;
 
     public ProductManageService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductManageResponse> getAllProducts(int page) {
-        return productRepository.findAll(PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending())).map(ProductManageResponse::from);
+    public Page<ProductManageResponse> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), pageable.getSort())).map(ProductManageResponse::from);
     }
 
     public Product saveProduct(CreateProductRequest request) {
-        Product product = new Product(request.name(), request.imageUrl(), request.price(), request.quantity());
+        Product product = new Product(request.name(), request.imageUrl(), request.options());
         return productRepository.save(product);
     }
 
@@ -51,7 +50,7 @@ public class ProductManageService {
 
     public Product updateProduct(Long id, UpdateProductRequest request) {
         Product product = getById(id);
-        product.update(request.name(),  request.imageUrl(), request.price(), request.quantity());
+        product.update(request.name(),  request.imageUrl());
         return product;
     }
 }

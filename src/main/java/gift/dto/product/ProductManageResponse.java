@@ -1,10 +1,12 @@
 package gift.dto.product;
 
-import gift.domain.Product;
+import gift.domain.product.Product;
 
-public record ProductManageResponse(Long id, String name, Integer price, Integer quantity, String imageUrl) {
+import java.util.List;
+
+public record ProductManageResponse(Long id, String name, String imageUrl, List<ProductOptionResponse> options) {
 
     public static ProductManageResponse from(Product product) {
-        return new ProductManageResponse(product.getId(), product.getName(), product.getPrice(), product.getQuantity(), product.getImageUrl());
+        return new ProductManageResponse(product.getId(), product.getName(), product.getImageUrl(), product.getOptions().stream().map(ProductOptionResponse::from).toList());
     }
 }

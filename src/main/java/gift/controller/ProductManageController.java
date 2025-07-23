@@ -7,6 +7,9 @@ import gift.dto.product.UpdateProductRequest;
 import gift.service.ProductManageService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,9 +27,11 @@ public class ProductManageController {
     }
 
     @GetMapping
-    public String getProductsForm(@RequestParam(required = false, defaultValue = "1") int page, Model model) {
-        Page<ProductManageResponse> products = productManageService.getAllProducts(page);
+    public String getProductsForm(@PageableDefault(sort = "id", direction = Sort.Direction.DESC, page = 1) Pageable pageable, Model model) {
+        Page<ProductManageResponse> products = productManageService.getAllProducts(pageable);
         model.addAttribute("products", products);
+        String currentSort = pageable.getSort().toString().replace(": ", ",").toLowerCase();
+        model.addAttribute("currentSort", currentSort);
         return "/admin/product/productList";
     }
 

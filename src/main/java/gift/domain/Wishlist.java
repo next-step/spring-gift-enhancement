@@ -1,5 +1,6 @@
 package gift.domain;
 
+import gift.domain.product.Product;
 import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.*;
@@ -31,7 +32,7 @@ public class Wishlist {
         return product;
     }
 
-    public Wishlist() {
+    protected Wishlist() {
     }
 
     public Wishlist(User user, Product product) {

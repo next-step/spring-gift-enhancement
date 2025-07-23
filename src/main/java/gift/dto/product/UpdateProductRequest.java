@@ -9,19 +9,9 @@ public record UpdateProductRequest(
         String name,
 
         @NotNull
-        String imageUrl,
-
-        @NotNull(message = "가격은 필수 입력 값입니다.")
-        @Min(value = 0, message = "가격은 0 이상이어야 합니다.")
-        @Max(value = 100_000_000, message = "가격은 1억원 이하여야 합니다.")
-        Integer price,
-
-        @NotNull(message = "수량은 필수 입력 값입니다.")
-        @Min(value = 0, message = "수량은 0 이상이어야 합니다.")
-        @Max(value = 100_000_000, message = "수량은 1억개 이하여야 합니다.")
-        Integer quantity
+        String imageUrl
 ) {
     public static UpdateProductRequest from(ProductManageResponse response) {
-        return new UpdateProductRequest(response.name(), response.imageUrl(), response.price(), response.quantity());
+        return new UpdateProductRequest(response.name(), response.imageUrl());
     }
 }

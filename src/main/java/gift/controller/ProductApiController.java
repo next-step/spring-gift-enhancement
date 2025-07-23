@@ -1,12 +1,16 @@
 package gift.controller;
 
 import gift.common.exception.InvalidUserException;
-import gift.domain.Product;
+import gift.domain.product.Product;
+import gift.dto.product.CreateProductOptionRequest;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +36,11 @@ public class ProductApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getProducts(@RequestParam(required = false) Long cursor) {
-        List<ProductResponse> products = productService.getAllProducts(cursor);
+    public ResponseEntity<List<ProductResponse>> getProducts(
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        List<ProductResponse> products = productService.getAllProducts(cursor, size);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -48,6 +55,13 @@ public class ProductApiController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/options")
+    public ResponseEntity<ProductResponse> addProductOption(@PathVariable Long id, @RequestBody @Valid CreateProductOptionRequest request) {
+        Product product = productService.addOption(id, request);
+        ProductResponse response = ProductResponse.from(product);
+        return ResponseEntity.ok(response);
     }
 
     private void validProductName(String name) {

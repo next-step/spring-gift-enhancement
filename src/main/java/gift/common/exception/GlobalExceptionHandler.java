@@ -52,4 +52,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleWishlistAlreadyExistsException(WishlistAlreadyExistsException e) {
         return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DuplicateOptionNameException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateOptionNameException(DuplicateOptionNameException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,9 +1,10 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.domain.Product;
+import gift.domain.product.Product;
 import gift.domain.User;
 import gift.domain.Wishlist;
+import gift.dto.product.CreateProductOptionRequest;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.user.CreateUserRequest;
 import gift.dto.user.LoginRequest;
@@ -21,6 +22,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,7 +58,7 @@ class WishlistApiControllerTest {
         user = userService.saveUser(new CreateUserRequest("tkddnr@thanks.com", "1234"));
         accessToken = "Bearer " + userService.login(new LoginRequest("tkddnr@thanks.com", "1234")).accessToken();
 
-        product = productService.saveProduct(new CreateProductRequest("연필", "image", 10000, 100));
+        product = productService.saveProduct(new CreateProductRequest("연필", "image", List.of(new CreateProductOptionRequest("튼튼한 샤프", 10000, 10))));
     }
 
     @Test
@@ -105,7 +108,7 @@ class WishlistApiControllerTest {
     @DisplayName("위시리스트 목록을 조회할 수 있다.")
     void test4() throws Exception {
 
-        Product product2 = productService.saveProduct(new CreateProductRequest("가방", "image2", 30000, 10));
+        Product product2 = productService.saveProduct(new CreateProductRequest("가방", "image2", List.of(new CreateProductOptionRequest("큰 가방", 10000, 10))));
         wishlistService.saveWishlist(user.getId(), new CreateWishlistRequest(product.getId()));
         wishlistService.saveWishlist(user.getId(), new CreateWishlistRequest(product2.getId()));
 
@@ -115,10 +118,8 @@ class WishlistApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content[0].productName").value("가방"))
-                .andExpect(jsonPath("$.content[0].productPrice").value(30000))
                 .andExpect(jsonPath("$.content[0].productImageUrl").value("image2"))
                 .andExpect(jsonPath("$.content[1].productName").value("연필"))
-                .andExpect(jsonPath("$.content[1].productPrice").value(10000))
                 .andExpect(jsonPath("$.content[1].productImageUrl").value("image"));
     }
 
