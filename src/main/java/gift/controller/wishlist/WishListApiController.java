@@ -37,13 +37,8 @@ public class WishListApiController {
         @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.ASC)
         Pageable pageable
     ) {
-        wishListService.validate(pageable);
-
-        Page<WishListResponse> wishListsPage = wishListService.findAllPageByMemberId(memberId,
-            pageable);
-
         return ResponseEntity.status(HttpStatus.OK)
-            .body(wishListsPage);
+            .body(wishListService.findAllPageByMemberId(memberId, pageable));
     }
 
     // wishList 단건 조회: memberId, productId로 조회
@@ -66,11 +61,8 @@ public class WishListApiController {
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
         @RequestBody WishListRequest wishListRequest
     ) {
-        // 본인 위시리스트 중 특정 productId의 수량을 변경하는 요청
-        Long wishListId = wishListService.update(memberId, wishListRequest);
-
         return ResponseEntity.status(HttpStatus.OK)
-            .body(IdResponse.from(wishListId));
+            .body(wishListService.update(memberId, wishListRequest));
     }
 
     // quantity 수정과 별개로, 위시리스트 테이블에 저장된 레코드 자체를 삭제

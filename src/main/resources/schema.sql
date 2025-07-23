@@ -25,6 +25,14 @@ create table wishlists
     quantity   int
 );
 
+create table options
+(
+    id         bigint auto_increment primary key,
+    name       varchar(50),
+    product_id bigint,
+    quantity   int
+);
+
 alter table if exists wishlists
     add constraint fk_wish_member_id_ref_member_id
     foreign key (member_id)
@@ -32,5 +40,10 @@ alter table if exists wishlists
 
 alter table if exists wishlists
     add constraint fk_wish_product_id_ref_product_id
+    foreign key (product_id)
+    references products;
+
+alter table if exists options
+    add constraint fk_option_product_id_ref_product_id
     foreign key (product_id)
     references products;

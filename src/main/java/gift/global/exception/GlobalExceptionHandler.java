@@ -20,6 +20,24 @@ public class GlobalExceptionHandler {
             .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+            .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<?> handleInvalidRequestException(InvalidRequestException e) {
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+            .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<?> handleAlreadyExistException(AlreadyExistsException e) {
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+            .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
     // jdbcTemplate.query()의 결과값이 없을 때
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<?> handleDataAccessException(EmptyResultDataAccessException e) {

@@ -7,6 +7,8 @@ import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidRequestException;
+import gift.global.exception.NotFoundException;
 import gift.repository.member.MemberJpaRepository;
 import gift.repository.product.ProductJpaRepository;
 import gift.repository.wishlist.WishListJpaRepository;
@@ -47,6 +49,8 @@ public class WishListService {
 
     // wishList 페이지 조회
     public Page<WishListResponse> findAllPageByMemberId(Long memberId, Pageable pageable) {
+        validate(pageable);
+
         return wishListRepository.findAllPageByMemberId(memberId, pageable)
             .map(WishListResponse::from);
     }
@@ -54,37 +58,36 @@ public class WishListService {
     // wishlist 단건 조회
     public WishListResponse findByMemberAndProduct(Long memberId, Long productId) {
         WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId, productId)
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+            .orElseThrow(() -> NotFoundException.from(ErrorCode.NOT_EXISTS));
 
         return WishListResponse.from(wishList);
     }
 
     @Transactional
-    public Long update(Long memberId, WishListRequest wishListRequest) {
+    public WishListResponse update(Long memberId, WishListRequest wishListRequest) {
 
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+        Member member = memberRepository.findOrThrow(memberId);
 
-        Product product = productRepository.findById(wishListRequest.productId())
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+        Product product = productRepository.findOrThrow(wishListRequest.productId());
 
         Optional<WishList> wishList = wishListRepository.findByMemberIdAndProductId(memberId,
             wishListRequest.productId());
 
         // wishList가 존재하지 않으면 새로 생성
         if (wishList.isEmpty()) {
-            return wishListRepository.save(WishList.of(member, product, wishListRequest.quantity()))
-                .getId();
+            return WishListResponse.from(
+                wishListRepository.save(WishList.of(member, product, wishListRequest.quantity())));
         }
 
+
         wishList.get().update(wishListRequest.quantity());
-        return wishList.get().getId();
+        return WishListResponse.from(wishList.get());
     }
 
     public void delete(Long memberId, WishListRequest wishListRequest) {
         WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId,
                 wishListRequest.productId())
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+            .orElseThrow(() -> NotFoundException.from(ErrorCode.NOT_EXISTS));
 
         wishListRepository.deleteById(wishList.getId());
     }
@@ -95,7 +98,7 @@ public class WishListService {
 
         for (Sort.Order order : sort) {
             if (!ALLOWED_SORT_NAMES.contains(order.getProperty())) {
-                throw CustomException.from(ErrorCode.INVALID_SORT_NAMES);
+                throw InvalidRequestException.from(ErrorCode.INVALID_SORT_NAMES);
             }
 
         }

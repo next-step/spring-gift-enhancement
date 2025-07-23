@@ -46,20 +46,17 @@ public class ProductApiController {
         @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.ASC)
         Pageable pageable
     ) {
-        productService.validate(pageable);
-
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.getProductPage(pageable));
     }
 
     // 상품 생성
     @PostMapping
-    public ResponseEntity<IdResponse> createProduct(
+    public ResponseEntity<ProductResponse> createProduct(
         @Valid @RequestBody ProductRequest request
     ) {
-        Long id = productService.insert(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(IdResponse.from(id));
+            .body(productService.insert(request));
     }
 
     // 상품 수정

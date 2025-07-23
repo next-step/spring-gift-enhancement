@@ -1,10 +1,10 @@
 package gift.repository.member;
 
 import gift.domain.Member;
+import gift.repository.BaseRepository;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberJpaRepository extends JpaRepository<Member, Long> {
+public interface MemberJpaRepository extends BaseRepository<Member, Long> {
 
     Optional<Member> findByEmail(String email);
 }

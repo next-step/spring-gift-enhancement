@@ -3,8 +3,9 @@ package gift.service.member;
 import gift.domain.Member;
 import gift.dto.jwt.TokenResponse;
 import gift.dto.member.MemberRequest;
-import gift.global.exception.CustomException;
+import gift.global.exception.AlreadyExistsException;
 import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidRequestException;
 import gift.global.jwt.JwtUtil;
 import gift.repository.member.MemberJpaRepository;
 import java.util.List;
@@ -31,11 +32,11 @@ public class MemberService {
     public TokenResponse login(MemberRequest request) {
         Member member = memberRepository.findByEmail(request.email())
             // member를 찾지 못한 경우: 해당 이메일로 가입한 계정이 없는 경우
-            .orElseThrow(() -> CustomException.from(ErrorCode.INCORRECT_LOGIN_INFO));
+            .orElseThrow(() -> InvalidRequestException.from(ErrorCode.INCORRECT_LOGIN_INFO));
 
         // Member 클래스에 정의된 비밀번호 확인 메서드를 사용하도록 변경
         if (!member.matches(request.password(), passwordEncoder)) {
-            throw CustomException.from(ErrorCode.INCORRECT_LOGIN_INFO);
+            throw InvalidRequestException.from(ErrorCode.INCORRECT_LOGIN_INFO);
         }
 
         String token = jwtUtil.generateToken(member.getId());
@@ -46,7 +47,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(request.email());
 
         if (member.isPresent()) {
-            throw CustomException.from(ErrorCode.DUPLICATE_EMAIL);
+            throw AlreadyExistsException.from(ErrorCode.DUPLICATE_EMAIL);
         }
 
         return memberRepository.save(
@@ -55,8 +56,7 @@ public class MemberService {
 
     // 관리자용 메서드
     public Member findById(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        return memberRepository.findOrThrow(memberId);
     }
 
     // 관리자용 메서드
@@ -66,16 +66,14 @@ public class MemberService {
 
     @Transactional
     public void update(Long memberId, MemberRequest request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> CustomException.from(ErrorCode.NOT_EXISTS));
+        Member member = memberRepository.findOrThrow(memberId);
 
         member.update(request, passwordEncoder);
     }
 
     // 관리자용 메서드
     public void deleteById(Long memberId) {
-        memberRepository.findById(memberId)
-                .orElseThrow(()->CustomException.from(ErrorCode.NOT_EXISTS));
+        memberRepository.findOrThrow(memberId);
 
         memberRepository.deleteById(memberId);
     }
