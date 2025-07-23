@@ -1,12 +1,18 @@
 package gift.service;
 
+import gift.dto.CreateOptionRequestDto;
 import gift.dto.CreateProductRequestDto;
+import gift.dto.OptionResponseDto;
 import gift.dto.ProductPageDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateProductRequestDto;
+import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +29,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponseDto createProduct(CreateProductRequestDto requestDto) {
-
+        List<Option> optionList = new ArrayList<>();
         Product newProduct = new Product(requestDto.name(), requestDto.price(),
-                requestDto.imageUrl());
-
+                requestDto.imageUrl(), optionList);
+        for (CreateOptionRequestDto requestOptionDto : requestDto.options()){
+            Option option = new Option(requestOptionDto.name(), requestOptionDto.quantity(), newProduct);
+            newProduct.addOption(option);
+        }
         Product savedProduct = productRepository.save(newProduct);
-
         return new ProductResponseDto(savedProduct.getId(), savedProduct.getName(),
                 savedProduct.getPrice(), savedProduct.getImageUrl());
     }
@@ -51,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDto updateProductById(Long id, CreateProductRequestDto requestDto) {
+    public ProductResponseDto updateProductById(Long id, UpdateProductRequestDto requestDto) {
         Product product = findProductByIdOrElseThrow(id);
         product.changeName(requestDto.name());
         product.changePrice(requestDto.price());
@@ -62,12 +71,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProductById(Long id) {
         findProductByIdOrElseThrow(id);
         productRepository.deleteById(id);
     }
 
-    private Product findProductByIdOrElseThrow(Long id) {
+    @Override
+    public Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.ProductNotfound));
     }

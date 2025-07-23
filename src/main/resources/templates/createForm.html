@@ -17,6 +17,13 @@
   <div>
     <input type="text" name="imageUrl" placeholder="이미지 Url">
   </div>
+
+  <div>
+    <input type="text" name="options[0].name" placeholder="옵션 명">
+  </div>
+  <div>
+    <input type="number" name="options[0].quantity" placeholder="수량">
+  </div>
   <div>
     <button type="button" th:onclick="|location.href='@{/admin/boards}'|">취소</button>
     <button type="submit">등록</button>

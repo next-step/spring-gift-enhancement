@@ -29,9 +29,11 @@ public class WishRepositoryTest {
     @Test
     @DisplayName("위시 저장 테스트")
     void save() {
-        Product product = new Product(1L, "아이스아메리카노", 1500L, "asd.dsa");
+        Product product = new Product("아이스아메리카노", 1500L, "asd.dsa");
         Member member = new Member(1L, "asd@asd.asd", "dasdada", "user");
         Wish expected = new Wish(product, member, 4L);
+        memberRepository.save(member);
+        productRepository.save(product);
         wishRepository.save(expected);
         Long id = expected.getId();
         Wish actual = wishRepository.findById(id).get();

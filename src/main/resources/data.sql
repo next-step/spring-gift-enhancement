@@ -41,3 +41,28 @@ insert into wishes(product_id, member_id, quantity) values(4,2,99);
 insert into wishes(product_id, member_id, quantity) values(5,2,99);
 
 insert into wishes(product_id, member_id, quantity) values(6,2,99);
+
+insert into product_options(name, quantity, product_id) values('슈붕',9999,2);
+insert into product_options(name, quantity, product_id) values('팥붕',9999,2);
+
+insert into product_options(name, quantity, product_id) values('그냥 아아',9999,1);
+insert into product_options(name, quantity, product_id) values('1샷',9999,1);
+insert into product_options(name, quantity, product_id) values('2샷',9999,1);
+
+insert into product_options(name, quantity, product_id) values('우유식빵',9999,3);
+insert into product_options(name, quantity, product_id) values('밤식빵',9999,3);
+
+insert into product_options(name, quantity, product_id) values('우유식빵',9999,4);
+insert into product_options(name, quantity, product_id) values('밤식빵',9999,4);
+
+insert into product_options(name, quantity, product_id) values('우유식빵',9999,5);
+insert into product_options(name, quantity, product_id) values('밤식빵',9999,5);
+
+insert into product_options(name, quantity, product_id) values('우유식빵',9999,6);
+insert into product_options(name, quantity, product_id) values('밤식빵',9999,6);
+
+insert into product_options(name, quantity, product_id) values('우유식빵',9999,7);
+insert into product_options(name, quantity, product_id) values('밤식빵',9999,7);
+
+insert into product_options(name, quantity, product_id) values('우유식빵',9999,8);
+insert into product_options(name, quantity, product_id) values('밤식빵',9999,8);

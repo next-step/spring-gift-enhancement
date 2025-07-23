@@ -59,7 +59,9 @@
   <tbody>
   <tr th:each="product : ${products.contents()}">
     <td><span th:text="${product.id}"></span></td>
-    <td><span th:text="${product.name}"></span></td>
+    <td>
+      <a th:href="@{/admin/boards/{id}(id=${product.id})}" th:text="${product.name}"></a>
+    </td>
     <td><span th:text="${product.price}"></span></td>
     <td><span th:text="${product.imageUrl}"></span></td>
     <td>

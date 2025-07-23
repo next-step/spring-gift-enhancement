@@ -24,6 +24,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public JWTResponseDto createMember(CreateMemberRequestDto requestDto) {
         throwIfMemberFindByEmail(requestDto.email());
         Member newMember = new Member(requestDto.email(), requestDto.password(), "user");
@@ -51,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void deleteMember(DeleteMemberRequestDto requestDto) {
         Member member = findMemberByEmailOrElseThrow(requestDto.email());
 

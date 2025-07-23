@@ -99,7 +99,7 @@ public class WishControllerTest {
     @Test
     @DisplayName("로그인 하지 않은 사용자 위시 수정 실패 테스트")
     void 위시수정시_로그인_하지_않은_사용자는_401이_반환된다() {
-        String url = "http://localhost:" + port + "/api/wishes/999";
+        String url = "http://localhost:" + port + "/api/wishes/1";
         UpdateWishQuantityRequstDto requestDto = new UpdateWishQuantityRequstDto(10L);
 
         assertThatExceptionOfType(HttpClientErrorException.Unauthorized.class)
@@ -116,7 +116,7 @@ public class WishControllerTest {
     @DisplayName("위시 수량 변경 테스트")
     void 등록한_위시의_수량변경에_성공하면_200가_반환된다() {
 
-        String url = "http://localhost:" + port + "/api/wishes/2";
+        String url = "http://localhost:" + port + "/api/wishes/1";
 
         UpdateWishQuantityRequstDto updateRequestDto = new UpdateWishQuantityRequstDto(99L);
         ResponseEntity<WishResponseDto> response = client.patch()
@@ -131,7 +131,7 @@ public class WishControllerTest {
     @Test
     @DisplayName("로그인 하지 않을 시 위시 삭제 실패 테스트")
     void 위시삭제시_로그인_하지_않은_사용자는_401이_반환된다() {
-        String url = "http://localhost:" + port + "/api/wishes/1";
+        String url = "http://localhost:" + port + "/api/wishes/3";
         assertThatExceptionOfType(HttpClientErrorException.Unauthorized.class)
                 .isThrownBy(() ->
                         client.delete()
@@ -161,7 +161,7 @@ public class WishControllerTest {
         String url = "http://localhost:" + port + "/api/wishes";
 
         ResponseEntity<Void> response = client.delete()
-                .uri(url + "/1")
+                .uri(url + "/6")
                 .header("Authorization", token)
                 .retrieve()
                 .toBodilessEntity();

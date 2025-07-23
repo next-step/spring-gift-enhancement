@@ -1,12 +1,16 @@
 package gift.controller;
 
 import gift.dto.CreateProductRequestDto;
+import gift.dto.OptionResponseDto;
 import gift.dto.ProductPageDto;
+import gift.dto.UpdateProductRequestDto;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
 import gift.service.MemberService;
+import gift.service.OptionService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -28,16 +32,22 @@ public class AdminProductController {
 
     private final MemberService memberService;
 
+    private final OptionService optionService;
+
     private final String BOARD_PAGE = "/admin/boards";
 
-    public AdminProductController(ProductService productService,
-            MemberService memberService) {
+    public AdminProductController(
+            ProductService productService,
+            MemberService memberService,
+            OptionService optionService) {
         this.productService = productService;
         this.memberService = memberService;
+        this.optionService = optionService;
     }
 
     @GetMapping
-    public String showAdminPage(Model model, @PageableDefault(size = 5, sort = "name", direction = Direction.ASC) Pageable pageable) {
+    public String showAdminPage(Model model,
+            @PageableDefault(size = 5, sort = "name", direction = Direction.ASC) Pageable pageable) {
         ProductPageDto products = productService.findAllProducts(pageable);
         model.addAttribute("products", products);
         return "dashboard";
@@ -56,6 +66,15 @@ public class AdminProductController {
         return "updateForm";
     }
 
+    @GetMapping("/{id}")
+    public String showOptionPage(
+            @PathVariable Long id,
+            Model model) {
+        List<OptionResponseDto> options = optionService.findProductOptionById(id);
+        model.addAttribute("options", options);
+        return "optionInfo";
+    }
+
     @PostMapping
     public String createProduct(
             @Valid @ModelAttribute CreateProductRequestDto requestDto) {
@@ -68,7 +87,7 @@ public class AdminProductController {
 
     @PutMapping("/{id}")
     public String updateProduct(@PathVariable Long id,
-            @Valid @ModelAttribute CreateProductRequestDto requestDto) {
+            @Valid @ModelAttribute UpdateProductRequestDto requestDto) {
         if (requestDto.name().contains("카카오")) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
