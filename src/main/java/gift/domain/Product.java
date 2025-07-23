@@ -6,8 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.List;
+import org.springframework.util.Assert;
 
 @Entity
 public class Product {
@@ -20,36 +20,51 @@ public class Product {
     private String imageUrl;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Option> options = new ArrayList<>();
+    private List<Option> options;
 
-    // 기본 생성자 추가 !
-    public Product() {
-        this.id = null;
-        this.name = "";
-        this.price = 0;
-        this.imageUrl = "";
+    protected Product() {
     }
 
-    public Product(String name, int price, String imageUrl) {
+    public Product(String name, int price, String imageUrl, List<Option> options) {
+        Assert.hasText(name, "상품 이름은 비어 있을 수 없습니다.");
+        Assert.isTrue(price >= 0, "상품 가격은 0 이상이어야 합니다.");
+        Assert.notEmpty(options, "상품에는 하나 이상의 옵션이 있어야 합니다.");
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.options = options;
+        options.forEach(option -> option.setProduct(this));
     }
 
-    public Product(Long id, String name, int price, String imageUrl) {
-        this.id = id;
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void update(String name, int price, String imageUrl, List<Option> options) {
+        Assert.hasText(name, "상품 이름은 비어 있을 수 없습니다.");
+        Assert.isTrue(price >= 0, "상품 가격은 0 이상이어야 합니다.");
+        Assert.notEmpty(options, "상품에는 하나 이상의 옵션이 있어야 합니다.");
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.options.clear();
+        this.options.addAll(options);
+        options.forEach(option -> option.setProduct(this));
     }
-
-    public Long   getId()       { return id; }
-    public String getName()     { return name; }
-    public int    getPrice()    { return price; }
-    public String getImageUrl() { return imageUrl; }
-
-    public void setId(Long id)             { this.id = id; }
-    public void setName(String name)       { this.name = name; }
-    public void setPrice(int price)        { this.price = price; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }
