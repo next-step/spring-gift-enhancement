@@ -1,12 +1,15 @@
 # spring-gift-enhancement
 
-## STEP2 - 페이지네이션
+## STEP3 - 상품 옵션
 
-### STEP1 관련 피드백 코드 리팩토링
+### STEP2 관련 피드백 코드 리팩토링
 
-### STEP2 구현 목록
-- [ ] **Repository 수정:** `JpaRepository`의 페이지네이션 기능을 사용하도록 `ProductRepository`와 `WishRepository`를 수정한다.
-- [ ] **Service 수정:** `Pageable` 객체를 파라미터로 받고, `Page` 객체를 반환하도록 서비스 로직을 수정한다.
-- [ ] **API Controller 수정:** 상품 목록 API가 페이지네이션 파라미터(`page`, `size`, `sort`)를 받아 페이징된 결과를 JSON으로 반환하도록 수정한다.
-- [ ] **View Controller 수정:** 관리자 화면 컨트롤러가 페이지 정보를 모델에 담아 뷰로 전달하도록 수정한다.
-- [ ] **Thymeleaf 템플릿 수정:** 상품 목록 페이지에 페이지 번호, 이전/다음 버튼 등 페이지네이션 UI를 구현한다.paTest`를 사용하여 JPA Repository가 올바르게 동작하는지 테스트한다.
+### STEP3 구현 목록
+- [ ] **데이터베이스 스키마 변경:** 상품 옵션 정보를 저장할 `product_option` 테이블을 추가한다.
+- [ ] **도메인 모델 리팩토링:**
+    - [ ] `Option` 엔티티를 생성하고, 이름과 수량에 대한 유효성 검증 책임을 부여한다.
+    - [ ] `Product` 엔티티가 `Option` 목록을 갖도록 `@OneToMany` 연관 관계를 설정한다.
+    - [ ] "상품에는 최소 하나의 옵션이 있어야 한다"는 비즈니스 규칙을 적용한다.
+- [ ] **DTO 수정:** 상품 및 옵션 DTO를 새로운 도메인 모델에 맞게 수정한다.
+- [ ] **Repository, Service, Controller 구현:** 상품 옵션을 관리하기 위한 데이터 접근, 비즈니스 로직, API 엔드포인트를 구현한다.
+- [ ] **단위 테스트 작성:** `Option` 엔티티의 `subtract` 메소드와 같이 단위 테스트가 가능한 로직에 대한 테스트를 작성한다.
