@@ -1,9 +1,7 @@
 package gift.controller.wishListController;
 
 import gift.config.LoginUser;
-import gift.dto.wishListDto.CreateWishItemRequestDto;
-import gift.dto.wishListDto.ResponseWishItem;
-import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.dto.wishListDto.*;
 import gift.entity.WishItem;
 import gift.service.wishListService.WishListService;
 import jakarta.validation.Valid;
@@ -46,6 +44,18 @@ public class WishListController {
         return ResponseEntity.ok(ResponseWishItem.from(wishItemList));
     }
 
+    @PostMapping("/option")
+    public ResponseEntity<QuantityWishItemDto> controlWishItemQuantity(@LoginUser String userEmail, @RequestParam String itemName, @RequestParam Integer quantity) {
+
+        WishItem wishItem = wishListService.controlWishItemQuantity(itemName, userEmail, quantity);
+        String updatedItemName = wishItem.getItem().getName();
+
+        QuantityWishItemDto quantityWishItemDto = new QuantityWishItemDto(wishItem.getId(), updatedItemName, quantity);
+
+        return new ResponseEntity<>(quantityWishItemDto, HttpStatus.ACCEPTED);
+    }
+
+
     @DeleteMapping
     public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {
 
@@ -54,10 +64,10 @@ public class WishListController {
         return new ResponseEntity<>(ResponseWishItemDto.from(targetWishItem), HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping
-    public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestParam Integer quantity, @RequestParam String name) {
+    @PutMapping("/option")
+    public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestBody UpdateWishItemDto updateWishItemDto) {
 
-        WishItem updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
+        WishItem updatedWishItem = wishListService.updateWishItem(updateWishItemDto, userEmail);
 
         return new ResponseEntity<>(ResponseWishItemDto.from(updatedWishItem), HttpStatus.ACCEPTED);
     }

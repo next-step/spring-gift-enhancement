@@ -1,5 +1,4 @@
+## Step 3
 
-## Step 1
-1. 엔티티 레코드에서 클래스로 변환하기
-2. 조건을 만족하는 엔티티 클래스 수정
-3. 기존 레포지토리 JDBC template 방식에서 JPA 형식으로 변환
+1. updateWishItem 추가
+2. Item 이름 변경 

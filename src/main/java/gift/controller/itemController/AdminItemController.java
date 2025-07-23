@@ -73,7 +73,8 @@ public class AdminItemController {
 
     @PostMapping("/{id}/edit")
     public String updateItem(@PathVariable Long id, @ModelAttribute @Valid ItemUpdateDto dto) {
-        itemService.updateItem(id, dto);
+        Item item = Item.from(dto);
+        itemService.updateItem(id, item);
         return "redirect:/admin/products";
     }
 

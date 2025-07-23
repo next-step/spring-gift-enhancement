@@ -51,9 +51,6 @@ public class UserServiceImpl implements UserService {
 
         User findUser = findUserByEmail(targetEmail);
 
-        if (findUser == null) {
-            throw new UserNotFoundException(targetEmail);
-        }
         if (!findUser.checkPassword(userLoginDto.password())) {
             throw new UserPasswordInputException();
         }
@@ -66,7 +63,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByEmail(userEmail);
 
         if (user == null) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(userEmail);
         }
 
         return user;

@@ -1,11 +1,16 @@
 package gift.entity;
 
+import gift.dto.itemDto.ItemUpdateDto;
 import gift.exception.itemException.ItemImageurlException;
 import gift.exception.itemException.ItemNameException;
 import gift.exception.itemException.ItemPriceException;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -26,6 +31,9 @@ public class Item {
     @Column(name = "image_url", length = 255, nullable = true)
     private String imageUrl;
 
+    @OneToMany(mappedBy = "item")
+    private List<ItemOption> options = new ArrayList<>();
+
     protected Item() {
 
     }
@@ -41,6 +49,16 @@ public class Item {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public Item(Long id, String itemName, Integer quantity) {
+        this.id = id;
+        this.name = itemName;
+
+    }
+
+    public static Item from(@Valid ItemUpdateDto dto) {
+        return new Item(dto.id(), dto.name(), dto.price(), dto.imageUrl());
     }
 
     public Long getId() {
@@ -83,5 +101,19 @@ public class Item {
         }
 
         return new Item(this.id, item.getName(), item.getPrice(), item.getImageUrl());
+    }
+
+    public Item changeName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public void addOption(ItemOption option) {
+        options.add(option);
+        option.setItem(this);
+    }
+
+    public List<ItemOption> getOptions() {
+        return this.options;
     }
 }

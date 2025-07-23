@@ -24,7 +24,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        // 그런데 아직 자세히 공부해보진 않았지만 다른 파라미터가 들어올수도 있지 않나?
 
         String token = tokenUtils.extractToken(authHeader);
         tokenUtils.validateToken(token);

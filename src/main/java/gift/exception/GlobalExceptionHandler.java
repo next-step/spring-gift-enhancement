@@ -3,6 +3,10 @@
 //import gift.dto.itemDto.ItemCreateDto;
 //import gift.dto.itemDto.ItemUpdateDto;
 //import gift.exception.itemException.ItemNotFoundException;
+//import gift.exception.itemException.ItemQuantityException;
+//import gift.exception.itemException.OptionDuplicatedException;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
 //import org.springframework.ui.Model;
 //import org.springframework.validation.FieldError;
 //import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,10 +21,6 @@
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
 //    public String handleValidationError(MethodArgumentNotValidException e, Model model) {
 //        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-//
-//        for (FieldError fieldError : fieldErrors) {
-//            System.out.println("fieldError = " + fieldError);
-//        }
 //
 //        String errorMessage = "오류 발생";
 //        if (!fieldErrors.isEmpty()) {
@@ -55,5 +55,15 @@
 //        model.addAttribute("errorMessage", "오류 발생");
 //        model.addAttribute("itemDTO", new ItemCreateDto("", 0, "", false));
 //        return "admin/createForm";
+//    }
+//
+//    @ExceptionHandler(ItemQuantityException.class)
+//    public ResponseEntity<String> handleItemQuantityError(ItemQuantityException e) {
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//    }
+//
+//    @ExceptionHandler(OptionDuplicatedException.class)
+//    public ResponseEntity<String> handleOptionDuplicatedError(OptionDuplicatedException e) {
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 //    }
 //}
