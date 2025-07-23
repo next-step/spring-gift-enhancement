@@ -2,6 +2,7 @@ package gift.product.service;
 
 import gift.global.common.dto.PageResponseDto;
 import gift.product.domain.Product;
+import gift.product.domain.ProductOption;
 import gift.product.dto.CreateProductRequestDto;
 import gift.product.dto.GetProductResponseDto;
 import gift.product.dto.UpdateProductRequestDto;
@@ -52,12 +53,12 @@ public class ProductService {
     public Long createProduct(CreateProductRequestDto dto) {
         productValidator.validateProductName(dto.name());
 
-        Product newProduct = Product.of(
-            dto.name(),
-            dto.price(),
-            dto.description(),
-            dto.imageUrl()
-        );
+        List<ProductOption> options = dto.options().stream()
+            .map(opt -> ProductOption.of(opt.name(), opt.quantity()))
+            .toList();
+
+        Product newProduct = Product.of(dto.name(), dto.price(), dto.description(), dto.imageUrl(),
+            options);
 
         return productRepository.save(newProduct).getId();
     }
