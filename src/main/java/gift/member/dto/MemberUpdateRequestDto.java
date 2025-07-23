@@ -1,5 +1,6 @@
 package gift.member.dto;
 
+import gift.member.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,9 +11,9 @@ public record MemberUpdateRequestDto(
         String name,
         @Email
         String email,
-        String role
+        Role role
 ) {
     public MemberUpdateRequestDto() {
-        this("", "", "");
+        this("", "", null);
     }
 }

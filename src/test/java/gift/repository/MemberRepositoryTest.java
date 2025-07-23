@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.member.Member;
+import gift.member.Role;
 import gift.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class MemberRepositoryTest {
 
     @Test
     void 회원저장_그리고_조회() {
-        Member member = new Member("rusy@kakao.com", "1234", "rusy", "USER");
+        Member member = new Member("rusy@kakao.com", "1234", "rusy", Role.USER);
         memberRepository.save(member);
 
         Optional<Member> foundMember = memberRepository.findByEmail("rusy@kakao.com");
@@ -29,7 +30,7 @@ public class MemberRepositoryTest {
 
     @Test
     void 회원삭제() {
-        Member member = new Member("rusy@kakao.com", "1234", "rusy", "USER");
+        Member member = new Member("rusy@kakao.com", "1234", "rusy", Role.USER);
         memberRepository.save(member);
 
         Optional<Member> foundMember = memberRepository.findByEmail("rusy@kakao.com");

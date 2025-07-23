@@ -5,6 +5,8 @@ import gift.authorization.exception.UnauthorizedException;
 import gift.member.exception.InvalidMemberException;
 import gift.member.exception.MemberNotFoundException;
 import gift.product.exception.InvalidProductException;
+import gift.product.exception.InvalidProductOptionException;
+import gift.product.exception.NotEnoughInventoryException;
 import gift.product.exception.ProductIsInWishlistException;
 import gift.product.exception.ProductNotFoundException;
 import gift.wishlist.exception.WishlistItemNotFoundException;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleProductNotFound(ProductNotFoundException ex) {
         ErrorResponseDto responseDto = ErrorResponseDto.of(
@@ -36,14 +39,37 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidProductException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidProduct(InvalidProductException ex) {
-        ErrorResponseDto responseDto = ErrorResponseDto.of(
+    public ResponseEntity<FieldErrorResponseDto> handleInvalidProduct(InvalidProductException ex) {
+        FieldErrorResponseDto responseDto = FieldErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid Product",
+                ex.getMessage(),
+                ex.getField()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
+    @ExceptionHandler(InvalidProductOptionException.class)
+    public ResponseEntity<FieldErrorResponseDto> handleInvalidProductOption(InvalidProductOptionException ex) {
+        FieldErrorResponseDto responseDto = FieldErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid ProductOption",
+                ex.getMessage(),
+                ex.getField()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
+    @ExceptionHandler(NotEnoughInventoryException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotEnoughInventory(NotEnoughInventoryException ex) {
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST.value(),
+                "Not Enough Inventory",
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
+
 
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException ex) {

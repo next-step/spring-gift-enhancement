@@ -1,6 +1,5 @@
 package gift.admin.controller;
 
-import gift.product.dto.ProductAddRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.service.ProductService;
@@ -9,7 +8,12 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -32,21 +36,7 @@ public class AdminProductController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("product", new ProductAddRequestDto());
         return "admin/add";
-    }
-
-    @PostMapping("/add")
-    public String addProduct(
-            @Valid @ModelAttribute("product") ProductAddRequestDto requestDto,
-            BindingResult bindingResult,
-            HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            return "admin/add";
-        }
-        request.setAttribute("product", requestDto);
-        productService.addProduct(requestDto);
-        return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")

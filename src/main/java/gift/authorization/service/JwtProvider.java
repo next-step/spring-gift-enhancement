@@ -1,5 +1,6 @@
 package gift.authorization.service;
 
+import gift.member.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String createToken(Long memberId, String name, String email, String role) {
+    public String createToken(Long memberId, String name, String email, Role role) {
         return Jwts.builder()
                 .subject(memberId.toString())
                 .claim("name", name)

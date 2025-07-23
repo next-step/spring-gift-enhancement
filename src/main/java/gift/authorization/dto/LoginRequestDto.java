@@ -1,8 +1,8 @@
-package gift.member.dto;
+package gift.authorization.dto;
 
 import jakarta.validation.constraints.Email;
 
-public record MemberLoginRequestDto(
+public record LoginRequestDto(
         @Email
         String email,
         String password) {

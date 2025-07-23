@@ -2,11 +2,11 @@ package gift.wishlist.service;
 
 import gift.member.Member;
 import gift.member.service.MemberService;
+import gift.product.Product;
 import gift.product.service.ProductServiceImpl;
+import gift.wishlist.Wishlist;
 import gift.wishlist.dto.WishlistItemRequestDto;
 import gift.wishlist.dto.WishlistItemResponseDto;
-import gift.product.Product;
-import gift.wishlist.Wishlist;
 import gift.wishlist.exception.WishlistItemNotFoundException;
 import gift.wishlist.repository.WishlistRepository;
 import org.springframework.data.domain.Page;
@@ -71,14 +71,6 @@ public class WishlistServiceImpl implements WishlistService {
 
     public Wishlist findWishlistByIdOrElseThrow(Long id) {
         return wishlistRepository.findById(id).orElseThrow(() -> new WishlistItemNotFoundException(id));
-    }
-
-    @Override
-    public void existsByIdOrElseThrow(Long id) {
-        boolean isWishlist = wishlistRepository.existsById(id);
-        if (!isWishlist) {
-            throw new WishlistItemNotFoundException(id);
-        }
     }
 
 }

@@ -24,3 +24,12 @@ CREATE TABLE wishlist
     foreign key (member_id) references member (id) on delete cascade,
     foreign key (product_id) references product (id) on delete cascade
 );
+
+CREATE TABLE product_option
+(
+    id         bigint auto_increment primary key,
+    product_id bigint,
+    name VARCHAR(50),
+    quantity   bigint,
+    foreign key (product_id) references product (id) on delete cascade
+);

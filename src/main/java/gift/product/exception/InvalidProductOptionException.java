@@ -1,10 +1,10 @@
 package gift.product.exception;
 
-public class InvalidProductException extends RuntimeException {
+public class InvalidProductOptionException extends RuntimeException {
 
     private String field;
 
-    public InvalidProductException(String field, String message) {
+    public InvalidProductOptionException(String field, String message) {
         super(message);
         this.field = field;
     }
