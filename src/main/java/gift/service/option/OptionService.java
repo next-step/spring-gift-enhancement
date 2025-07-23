@@ -5,6 +5,7 @@ import gift.domain.Product;
 import gift.dto.option.OptionRequest;
 import gift.dto.option.OptionSubtractRequest;
 import gift.dto.option.OptionResponse;
+import gift.global.exception.AlreadyExistsException;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
 import gift.repository.option.OptionJpaRepository;
@@ -35,7 +36,7 @@ public class OptionService {
         Product product = productRepository.findOrThrow(optionRequest.productId());
 
         if(optionRepository.existsByProductIdAndName(optionRequest.productId(), optionRequest.name())){
-            throw CustomException.from(ErrorCode.ALREADY_EXISTS_NAME);
+            throw AlreadyExistsException.from(ErrorCode.ALREADY_EXISTS_NAME);
         }
 
         Option option = Option.of(

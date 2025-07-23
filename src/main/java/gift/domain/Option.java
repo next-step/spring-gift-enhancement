@@ -42,7 +42,7 @@ public class Option {
 
     public void subtractQuantity(int amount) {
         if (this.quantity - amount < 0) {
-            throw CustomException.from(ErrorCode.INVALID_SUBTRACT_MINUS);
+            throw CustomException.from(ErrorCode.INSUFFICIENT_QUANTITY);
         }
 
         this.quantity -= amount;

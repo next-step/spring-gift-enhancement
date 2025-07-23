@@ -21,19 +21,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleNotFoundException(CustomException e) {
+    public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
             .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ExceptionHandler(InvalidRequestException.class)
-    public ResponseEntity<?> handleInvalidRequestException(CustomException e) {
+    public ResponseEntity<?> handleInvalidRequestException(InvalidRequestException e) {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
             .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleAlreadyExistException(CustomException e) {
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<?> handleAlreadyExistException(AlreadyExistsException e) {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
             .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }

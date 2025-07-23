@@ -7,6 +7,8 @@ import gift.dto.wishlist.WishListRequest;
 import gift.dto.wishlist.WishListResponse;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidRequestException;
+import gift.global.exception.NotFoundException;
 import gift.repository.member.MemberJpaRepository;
 import gift.repository.product.ProductJpaRepository;
 import gift.repository.wishlist.WishListJpaRepository;
@@ -56,7 +58,7 @@ public class WishListService {
     // wishlist 단건 조회
     public WishListResponse findByMemberAndProduct(Long memberId, Long productId) {
         WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId, productId)
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+            .orElseThrow(() -> NotFoundException.from(ErrorCode.NOT_EXISTS));
 
         return WishListResponse.from(wishList);
     }
@@ -85,7 +87,7 @@ public class WishListService {
     public void delete(Long memberId, WishListRequest wishListRequest) {
         WishList wishList = wishListRepository.findByMemberIdAndProductId(memberId,
                 wishListRequest.productId())
-            .orElseThrow(() -> CustomException.from(ErrorCode.NOT_EXISTS));
+            .orElseThrow(() -> NotFoundException.from(ErrorCode.NOT_EXISTS));
 
         wishListRepository.deleteById(wishList.getId());
     }
@@ -96,7 +98,7 @@ public class WishListService {
 
         for (Sort.Order order : sort) {
             if (!ALLOWED_SORT_NAMES.contains(order.getProperty())) {
-                throw CustomException.from(ErrorCode.INVALID_SORT_NAMES);
+                throw InvalidRequestException.from(ErrorCode.INVALID_SORT_NAMES);
             }
 
         }

@@ -5,6 +5,7 @@ import gift.dto.product.ProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidRequestException;
 import gift.repository.product.ProductJpaRepository;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,7 @@ public class ProductService {
 
     public ProductResponse insert(ProductRequest request) {
         if (request.name().contains("카카오")) {
-            throw CustomException.from(ErrorCode.INVALID_KAKAO_NAME);
+            throw InvalidRequestException.from(ErrorCode.INVALID_KAKAO_NAME);
         }
 
         return ProductResponse.from(productRepository.save(Product.from(request)));
@@ -53,7 +54,7 @@ public class ProductService {
         productRepository.findOrThrow(request.id());
 
         if (request.name().contains("카카오")) {
-            throw CustomException.from(ErrorCode.INVALID_KAKAO_NAME);
+            throw InvalidRequestException.from(ErrorCode.INVALID_KAKAO_NAME);
         }
 
         productRepository.save(Product.from(request));
@@ -71,7 +72,7 @@ public class ProductService {
 
         for (Sort.Order order : sort) {
             if (!ALLOWED_SORT_NAMES.contains(order.getProperty())) {
-                throw CustomException.from(ErrorCode.INVALID_SORT_NAMES);
+                throw InvalidRequestException.from(ErrorCode.INVALID_SORT_NAMES);
             }
 
         }
