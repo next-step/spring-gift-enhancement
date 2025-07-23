@@ -39,4 +39,6 @@ public class MemberService {
                 .orElseThrow(() -> new UnauthorizedException("인증 정보가 올바르지 않습니다."));
     }
 
+
+
 }

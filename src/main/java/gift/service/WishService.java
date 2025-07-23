@@ -7,6 +7,8 @@ import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -44,5 +46,9 @@ public class WishService {
                 .filter(wish -> wish.getProduct().getId().equals(productId))
                 .findFirst()
                 .ifPresent(wishRepository::delete);
+    }
+
+    public Page<Wish> getPagedWishes(Member member, Pageable pageable) {
+        return wishRepository.findByMemberEmail(member.getEmail(), pageable);
     }
 }
