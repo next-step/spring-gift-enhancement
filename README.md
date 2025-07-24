@@ -15,6 +15,18 @@
 - WishServiceTest - 찜 상품 추가 test
 
 
+## 2,3단계 구현
+
+### 요구사항
+- 페이지네이션 및 옵션 기능 추가
+
+### 파일 추가
+- ProductOptionService
+- ProductOptionRepository
+- ProductOption
+- ProductOptionRequest
+- ProductOptionController
+
 # spring-gift-product
 
 
