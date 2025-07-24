@@ -16,7 +16,10 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다."),
     WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "위시리스트를 찾을 수 없습니다."),
-    WISHLIST_DELETE_FAILED(HttpStatus.CONFLICT, "삭제할 리소스를 찾을 수 없어 삭제에 실패했습니다.");
+    WISHLIST_DELETE_FAILED(HttpStatus.CONFLICT, "삭제할 리소스를 찾을 수 없어 삭제에 실패했습니다."),
+    OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "옵션을 찾을 수 없습니다."),
+    OPTION_NAME_DUPLICATE(HttpStatus.CONFLICT, "동일한 상품 내의 옵션 이름은 중복될 수 없습니다."),
+    OPTION_QUANTITY_INSUFFICIENT(HttpStatus.BAD_REQUEST, "옵션 재고가 부족합니다.");
     private final HttpStatus status;
     private final String description;
 

@@ -31,6 +31,7 @@ public class Product {
     private List<Wish> wishes = new ArrayList<>();
 
     protected Product() {
+        // JPA 기본 생성자
     }
 
     public Product(Long id, String name, Integer price, String imageUrl) {
