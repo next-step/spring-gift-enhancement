@@ -1,12 +1,18 @@
 package gift.product.service;
 
 import gift.exception.KakaoApprovalException;
+import gift.exception.OptionNotFoundException;
+import gift.exception.OverlappingOptionNameException;
 import gift.exception.ProductNotFoundException;
+import gift.option.dto.OptionResponseDto;
+import gift.option.entity.Option;
+import gift.option.dto.OptionRequestDto;
 import gift.product.dto.PageRequestDto;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class ProductService {
@@ -25,8 +33,7 @@ public class ProductService {
   }
 
   private Product findProductByIdOrFail(Long id) {
-     Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-     return product;
+    return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
   }
 
   public ProductResponseDto findProductById(Long productId) {
@@ -34,14 +41,30 @@ public class ProductService {
     return ProductResponseDto.from(product);
   }
 
+  @Transactional(readOnly = true)
+  public List<OptionResponseDto> getProductOptions(Long productId) {
+    Product product = findProductByIdOrFail(productId);
+    return product.getOptions().stream()
+        .map(OptionResponseDto::from)
+        .toList();
+  }
+
+  @Transactional
   public ProductResponseDto saveProduct(ProductRequestDto dto) {
-    Product product = new Product(dto.name(),dto.price(),dto.imageUrl());
+
+    List<Option> options = dto.options().stream()
+        .map(optionRequest -> new Option(optionRequest.name(), optionRequest.quantity()))
+        .toList();
+
+    Product product = new Product(dto.name(), dto.price(), dto.imageUrl());
 
     if (product.getName().contains("카카오") && !product.isKakaoApproval()) {
       throw new KakaoApprovalException();
     }
 
+    options.forEach(product::addOption);
     Product savedProduct = productRepository.save(product);
+
     return ProductResponseDto.from(savedProduct);
   }
 
@@ -49,10 +72,21 @@ public class ProductService {
   public ProductResponseDto updateProduct(Long productId, ProductRequestDto dto) {
     Product product = findProductByIdOrFail(productId);
 
+    if (dto.name().contains("카카오") && !product.isKakaoApproval()) {
+      throw new KakaoApprovalException();
+    }
+
     product.setName(dto.name());
     product.setPrice(dto.price());
     product.setImageUrl(dto.imageUrl());
+    product.getOptions().clear();
 
+    List<Option> options = dto.options().stream().map(optionRequestDto -> new Option(
+        optionRequestDto.name(), optionRequestDto.quantity())).toList();
+
+    options.forEach(product::addOption);
+
+    //Dirty checking
     return ProductResponseDto.from(product);
   }
 
@@ -76,5 +110,4 @@ public class ProductService {
       throw new KakaoApprovalException();
     }
   }
-
 }

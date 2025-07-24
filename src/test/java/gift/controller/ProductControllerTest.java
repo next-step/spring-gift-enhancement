@@ -14,6 +14,7 @@ import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
 import gift.security.AdminInterceptor;
 import gift.user.service.UserService;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,7 +46,8 @@ public class ProductControllerTest {
         {
         "name" : "평범한상품",
         "price" : 10000,
-        "imageUrl" : "https://thisisurl.com"
+        "imageUrl" : "https://thisisurl.com",
+        "options" : []
         }
         """;
 
@@ -54,7 +56,8 @@ public class ProductControllerTest {
         "평범한상품",
         10000,
         "https://thisisurl.com",
-        false
+        false,
+        List.of()
     );
 
     when(productService.saveProduct(any(ProductRequestDto.class)))
@@ -78,7 +81,8 @@ public class ProductControllerTest {
         {
         "name" : "글자수가15자를초과하는상품명입니다",
         "price" : 10000,
-        "imageUrl" : "https://thisisurl.com"
+        "imageUrl" : "https://thisisurl.com",
+        "options" : []
         }
         """;
 
@@ -97,7 +101,8 @@ public class ProductControllerTest {
         {
         "name" : "$불허용특수문자상품$",
         "price" : 10000,
-        "imageUrl" : "https://thisisurl.com"
+        "imageUrl" : "https://thisisurl.com",
+        "options" : []
         }
         """;
 
@@ -116,7 +121,8 @@ public class ProductControllerTest {
         {
         "name" : "카카오주식",
         "price" : 10000,
-        "imageUrl" : "https://thisisurl.com"
+        "imageUrl" : "https://thisisurl.com",
+        "options" : []
         }
         """;
 

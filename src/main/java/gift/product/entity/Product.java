@@ -1,11 +1,19 @@
 package gift.product.entity;
 
+import gift.exception.OverlappingOptionNameException;
+import gift.option.entity.Option;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "product")
@@ -22,6 +30,8 @@ public class Product {
   private String imageUrl;
   @Column(nullable = false)
   private boolean kakaoApproval = false;
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Option> options = new ArrayList<>();
 
   public void setName(String name) {
     this.name = name;
@@ -40,6 +50,10 @@ public class Product {
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
+  }
+
+  public List<Option> getOptions() {
+    return options;
   }
 
   public Product(String name, int price, String imageUrl,boolean kakaoApproval) {
@@ -77,6 +91,19 @@ public class Product {
   }
 
   protected Product() {
+  }
 
+  private void validateUniqueOptionNames(String optionName) {
+    for(Option option : this.options) {
+      if(option.getName().equals(optionName)) {
+        throw new OverlappingOptionNameException();
+      }
+    }
+  }
+
+  public void addOption(Option option) {
+    validateUniqueOptionNames(option.getName());
+    option.setProduct(this);
+    options.add(option);
   }
 }
