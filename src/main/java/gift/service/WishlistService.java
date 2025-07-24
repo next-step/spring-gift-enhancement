@@ -29,7 +29,7 @@ public class WishlistService {
     }
 
     public Product addProduct(String email, Long productId) {
-        boolean exist = wishlistRepository.existsByUserEmailAndProductId(email, productId);
+        boolean exist = wishlistRepository.existsByMemberEmailAndProductId(email, productId);
         if (!exist) {
             try {
                 Product product = productRepository
@@ -52,6 +52,6 @@ public class WishlistService {
     }
 
     public void deleteProduct(String email, Long productId) {
-        wishlistRepository.deleteByUserEmailAndProductId(email, productId);
+        wishlistRepository.deleteByMemberEmailAndProductId(email, productId);
     }
 }

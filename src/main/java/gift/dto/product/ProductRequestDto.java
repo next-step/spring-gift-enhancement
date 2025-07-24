@@ -1,8 +1,5 @@
 package gift.dto.product;
 
-
-import gift.model.Product;
-
 import jakarta.validation.constraints.*;
 
 
@@ -22,6 +19,9 @@ public class ProductRequestDto {
 
     private String imageUrl;
 
+    private String optionName;
+    private int optionQuantity;
+
     @AssertTrue(message = "'카카오'가 포함된 상품명은 담당 MD와 협의가 필요합니다.")
     private boolean isKakaoPolicyCompliant() {
         if (name != null && name.contains("카카오")) {
@@ -31,27 +31,15 @@ public class ProductRequestDto {
         return true;
     }
 
-
-    public Product toEntity() {
-        return new Product(this.id, this.name, this.price, this.imageUrl);
-    }
-
     public ProductRequestDto() {}
-    public ProductRequestDto(Long id, String name, int price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
 
     public Long getId() {return id;}
     public  void setId(Long id) {this.id = id;}
     public String getName() {return name;}
     public  void setName(String name) {this.name = name;}
     public int getPrice() {return price;}
-    public  void setPrice(int price) {this.price = price;}
     public String getImageUrl() {return imageUrl;}
-    public  void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
     public boolean getUsableKakao() {return usableKakao;}
-    public void setUsableKakao(boolean usableKakao) {this.usableKakao = usableKakao;}
+    public String getOptionName() {return optionName;}
+    public int getOptionQuantity() {return optionQuantity;}
 }

@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.dto.product.ProductRequestDto;
+import gift.model.Options;
 import gift.model.Product;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,7 @@ public class ProductService {
             product = new Product(productDto.getName(), productDto.getPrice(),
                     productDto.getUsableKakao(), productDto.getImageUrl());
         }
+        product.addOption(new Options(productDto.getOptionName(), productDto.getOptionQuantity()));
         productRepository.save(product);
         productDto.setId(product.getId());
     }
@@ -48,11 +50,14 @@ public class ProductService {
     public void updateProduct(ProductRequestDto productDto) {
         Product product = productRepository.findById(productDto.getId())
                 .orElseThrow(()->new IllegalArgumentException("상품이 없습니다."));
-        productRepository.update(product);
+        product.update(
+                productDto.getName(),
+                productDto.getPrice(),
+                productDto.getImageUrl());
     }
 
     @Transactional
     public void deleteProduct(Long id) {
-        productRepository.delete(id);
+        productRepository.deleteById(id);
     }
 }

@@ -11,7 +11,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     @Query("SELECT w FROM Wishlist w JOIN FETCH w.member m JOIN FETCH w.product p")
     Page<Wishlist> findByUserEmail(Pageable attr0, String userEmail);
 
-    boolean existsByUserEmailAndProductId(String userEmail, Long productId);
+    boolean existsByMemberEmailAndProductId(String email, Long productId);
 
-    void deleteByUserEmailAndProductId(String email, Long productId);
+    void deleteByMemberEmailAndProductId(String email, Long productId);
 }

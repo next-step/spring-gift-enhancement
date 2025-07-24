@@ -63,7 +63,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@ModelAttribute ProductRequestDto productRequestDto) {
+    public String updateProduct(@Valid @ModelAttribute ProductRequestDto productRequestDto) {
         service.updateProduct(productRequestDto);
         return "redirect:/admin/products";
     }
