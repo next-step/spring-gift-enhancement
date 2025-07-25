@@ -1,4 +1,4 @@
-package gift.Entity;
+package gift.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -6,12 +6,14 @@ import java.util.Objects;
 public class WishId implements Serializable {
     private String member;
     private Long product;
+    private Long option;
 
     public WishId() {}
 
-    public WishId(String member, Long product) {
+    public WishId(String member, Long product, Long option) {
         this.member = member;
         this.product = product;
+        this.option = option;
     }
 
     @Override
@@ -20,12 +22,13 @@ public class WishId implements Serializable {
         if (!(o instanceof WishId)) return false;
         WishId wishId = (WishId) o;
         return Objects.equals(member, wishId.member) &&
-                Objects.equals(product, wishId.product);
+                Objects.equals(product, wishId.product)&&
+                Objects.equals(option, wishId.option);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(member, product);
+        return Objects.hash(member, product, option);
     }
 }
 

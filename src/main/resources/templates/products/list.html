@@ -7,7 +7,7 @@
 
 <table border="1">
   <tr>
-    <th>ID</th><th>Name</th><th>Price</th><th>Image</th><th>Manage</th>
+    <th>ID</th><th>Name</th><th>Price</th><th>Image</th><th>Option</th><th>Manage</th>
   </tr>
   <tr th:each="p : ${productPage.content}">
     <td th:text="${p.id}">1</td>
@@ -15,11 +15,20 @@
     <td th:text="${p.price}">가격</td>
     <td><img th:src="${p.imageUrl}" width="100" /></td>
     <td>
-      <form th:action="@{'/user/wishes/' + ${p.id} + '/wish'}" method="post" style="display:inline">
+      <form th:action="@{/user/wishes/wish}" method="post">
+        <select name="optionId" required>
+          <option value="" disabled selected>옵션 선택</option>
+          <option th:each="opt : ${p.options}"
+                  th:value="${opt.id}"
+                  th:text="${opt.name} + ' (재고: ' + ${opt.quantity} + ')'">
+          </option>
+        </select>
         <button type="submit">위시 추가</button>
       </form>
-
-      <form th:action="@{'/user/wishes/' + ${p.id} + '/delete'}" method="post" style="display:inline">
+    </td>
+    <td>
+      <form th:action="@{/user/wishes/delete}" method="post" style="display:inline">
+        <input type="hidden" name="productId" th:value="${p.id}" />
         <button type="submit">위시 제거</button>
       </form>
     </td>
@@ -27,7 +36,7 @@
 
   <!-- 상품이 없을 경우에 출력함 -->
   <tr th:if="${productPage.content.isEmpty()}">
-    <td colspan="5">이 페이지에는 상품이 없습니다.</td>
+    <td colspan="6">이 페이지에는 상품이 없습니다.</td>
   </tr>
 </table>
 

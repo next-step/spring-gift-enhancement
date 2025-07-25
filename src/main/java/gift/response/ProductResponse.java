@@ -1,6 +1,6 @@
 package gift.response;
 
-import gift.Entity.Product;
+import gift.entity.Product;
 
 public class ProductResponse {
     private Long id;

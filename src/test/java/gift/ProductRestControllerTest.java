@@ -1,6 +1,6 @@
 package gift;
 
-import gift.Entity.Product;
+import gift.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;

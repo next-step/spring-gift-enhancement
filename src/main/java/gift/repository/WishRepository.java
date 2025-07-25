@@ -1,15 +1,12 @@
 package gift.repository;
 
-import gift.Entity.Wish;
-import gift.Entity.WishId;
-import gift.Entity.Member;
+import gift.entity.Wish;
+import gift.entity.WishId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface WishRepository extends JpaRepository<Wish, WishId> {
     // N+1 방지 + 최적화된 페이지네이션

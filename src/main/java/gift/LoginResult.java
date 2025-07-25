@@ -1,6 +1,6 @@
 package gift;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 
 public class LoginResult {
     private final String token;

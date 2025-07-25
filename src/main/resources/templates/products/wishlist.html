@@ -8,17 +8,20 @@
 
 <table border="1">
   <tr>
-    <th>ID</th><th>이름</th><th>가격</th><th>이미지</th><th>관리</th>
+    <th>ID</th><th>이름</th><th>가격</th><th>이미지</th><th>옵션</th>><th>관리</th>
   </tr>
-  <tr th:each="p : ${wishPage.content}">
-    <td th:text="${p.id}">1</td>
-    <td th:text="${p.name}">이름</td>
-    <td th:text="${p.price}">가격</td>
+  <tr th:each="w : ${wishPage.content}">
+    <td th:text="${w.product.id}">1</td>
+    <td th:text="${w.product.name}">이름</td>
+    <td th:text="${w.product.price}">가격</td>
+    <td><img th:src="${w.product.imageUrl}" alt="이미지" width="100"></td>
     <td>
-      <img th:src="${p.imageUrl}" alt="이미지" width="100">
+      <span th:text="${w.option.name}">옵션 이름</span><br/>
+      <span th:text="'재고: ' + ${w.option.quantity}">재고</span>
     </td>
     <td>
-      <form th:action="@{'/user/wishes/' + ${p.id} + '/delete'}" method="post" style="display:inline">
+      <form th:action="@{/user/wishes/delete}" method="post">
+        <input type="hidden" name="optionId" th:value="${w.option.id}" />
         <button type="submit">위시 제거</button>
       </form>
     </td>

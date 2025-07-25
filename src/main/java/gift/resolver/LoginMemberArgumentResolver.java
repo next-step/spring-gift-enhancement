@@ -1,6 +1,6 @@
 package gift.resolver;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 import gift.Jwt.JwtUtil;
 import gift.annotation.LoginMember;
 import io.jsonwebtoken.Claims;

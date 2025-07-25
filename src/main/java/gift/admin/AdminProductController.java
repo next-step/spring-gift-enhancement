@@ -1,6 +1,7 @@
 package gift.admin;
 
-import gift.Entity.Product;
+import gift.entity.Option;
+import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -48,6 +49,11 @@ public class AdminProductController {
             return "admin/product_form";
         }
 
+        if (product.getOptions() != null) {
+            List<Option> options = new ArrayList<>(product.getOptions());
+            product.setOptions(options);
+        }
+
         productservice.save(product);
         return "redirect:/admin/products";
     }
@@ -64,24 +70,32 @@ public class AdminProductController {
 
     // 상품 수정 처리
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute @Valid Product product,
+    public String updateProduct(@PathVariable Long id,
+                                @ModelAttribute @Valid Product product,
                                 BindingResult bindingResult,
                                 Model model) {
         if (!productservice.validateProduct(product, bindingResult)) {
-            model.addAttribute("formType", "add");
+            model.addAttribute("formType", "edit");
             return "admin/product_form";
         }
 
-        productservice.save(product);
-        return "redirect:/admin/product_products";
+        if (product.getOptions() != null) {
+            List<Option> options = new ArrayList<>(product.getOptions());
+            product.setOptions(options);
+        }
+
+        productservice.updateProduct(id, product);
+        return "redirect:/admin/products";
     }
+
+
 
     // 상품 삭제 처리
     // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @PostMapping("/{id}/delete")
     public String deleteProduct(@PathVariable Long id) {
         productservice.delete(id);
-        return "redirect:/admin/product_products";
+        return "redirect:/admin/products";
     }
 
 }

@@ -1,6 +1,6 @@
 package gift.response;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 
 public class TokenResponse {
     private String token;

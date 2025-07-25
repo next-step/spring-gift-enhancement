@@ -1,7 +1,7 @@
 package gift;
 
-import gift.Entity.Member;
-import gift.Entity.Product;
+import gift.entity.Member;
+import gift.entity.Product;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.request.MemberRequest;

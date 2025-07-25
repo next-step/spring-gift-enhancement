@@ -1,6 +1,6 @@
 package gift.Jwt;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

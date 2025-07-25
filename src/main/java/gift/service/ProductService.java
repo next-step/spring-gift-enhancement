@@ -1,6 +1,9 @@
 package gift.service;
 
-import gift.Entity.Product;
+import gift.entity.Product;
+import gift.entity.Option;
+import gift.exception.ProductNotFoundException;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +17,11 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, OptionRepository optionRepository) {
         this.productRepository = productRepository;
+        this.optionRepository = optionRepository;
     }
 
     // if문으로 제어해보기
@@ -56,4 +61,29 @@ public class ProductService {
     public void delete(Long id) {
         productRepository.deleteById(id);
     }
+
+    // 옵션
+    public List<Option> findOptionsByProductId(Long productId) {
+        return optionRepository.findByProductId(productId);
+    }
+
+    public Option findOptionById(Long id) {
+        return optionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("옵션을 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public void updateProduct(Long id, Product updatedProduct) {
+        Product existing = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+
+        // 기본 상품 정보 업데이트
+        existing.updateBasicInfo(updatedProduct);
+
+        // 옵션을 교체 (orphanRemoval=true 로 인해 기존 옵션 자동 삭제됨)
+        existing.setOptions(updatedProduct.getOptions());
+
+        // dirty checking을 통해 커밋 시점에 자동 반영됨 (save 필요 없음)
+    }
+
 }

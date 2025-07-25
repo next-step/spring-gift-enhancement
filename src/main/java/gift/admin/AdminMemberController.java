@@ -1,6 +1,6 @@
 package gift.admin;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 import gift.repository.MemberRepository;
 import gift.service.MemberService;
 import jakarta.validation.Valid;

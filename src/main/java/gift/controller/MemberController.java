@@ -1,6 +1,6 @@
-package gift.Controller;
+package gift.controller;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 import gift.LoginResult;
 import gift.request.MemberRequest;
 import gift.service.MemberService;

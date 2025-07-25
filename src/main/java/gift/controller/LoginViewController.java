@@ -1,7 +1,6 @@
-package gift.Controller;
+package gift.controller;
 
-import gift.Entity.Member;
-import gift.Jwt.JwtUtil;
+import gift.entity.Member;
 import gift.LoginResult;
 import gift.repository.MemberRepository;
 import gift.request.MemberRequest;

@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 import gift.LoginResult;
 import gift.Jwt.JwtUtil;
 import gift.repository.MemberRepository;

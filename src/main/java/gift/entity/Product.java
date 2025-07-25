@@ -1,7 +1,11 @@
-package gift.Entity;
+package gift.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -52,7 +56,43 @@ public class Product {
     public void setPrice(int price) { this.price = price; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
+    public void updateBasicInfo(Product other) {
+        this.name = other.name;
+        this.price = other.price;
+        this.imageUrl = other.imageUrl;
+        this.MDapproved = other.MDapproved;
+    }
+
     // MD 확인여부 getter와 setter
     public boolean getMDapproved() { return MDapproved; }
     public void setMDapproved(boolean MDapproved) { this.MDapproved = MDapproved; }
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Valid
+    private List<Option> options = new ArrayList<>();
+
+    // 옵션 리스트 getter/setter 추가
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void addOption(Option option) {
+        if (isDuplicateOptionName(option.getName())) {
+            throw new IllegalArgumentException("이미 존재하는 옵션명입니다: " + option.getName());
+        }
+        this.options.add(option);
+        option.setProduct(this);
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options.clear();
+        for (Option opt : options) {
+            addOption(opt);
+        }
+    }
+
+    private boolean isDuplicateOptionName(String name) {
+        return this.options.stream()
+                .anyMatch(opt -> opt.getName().equals(name));
+    }
 }

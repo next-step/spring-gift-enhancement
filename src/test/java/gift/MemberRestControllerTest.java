@@ -1,6 +1,6 @@
 package gift;
 
-import gift.Entity.Member;
+import gift.entity.Member;
 import gift.repository.MemberRepository;
 import gift.request.MemberRequest;
 import gift.response.TokenResponse;
