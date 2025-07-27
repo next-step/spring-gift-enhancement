@@ -2,6 +2,9 @@ package gift.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 public class Product {
@@ -37,4 +40,12 @@ public class Product {
     public void setName(String name) { this.name = name; }
     public void setPrice(int price) { this.price = price; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOption> options = new ArrayList<>();
+
+    public void addOption(ProductOption option) {
+        this.options.add(option);
+    }
+
 }
