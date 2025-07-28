@@ -23,3 +23,12 @@ CREATE TABLE wish (
     CONSTRAINT fk_wishlist_product FOREIGN KEY (productid) REFERENCES product(id) ON DELETE CASCADE,
     CONSTRAINT uc_user_product UNIQUE (userid, productid)
 );
+
+CREATE TABLE product_option (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    quantity INT NOT NULL CHECK (quantity >= 1 AND quantity < 100000000),
+    CONSTRAINT fk_option_product FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    CONSTRAINT uc_product_option_name UNIQUE (product_id, name)
+);

@@ -27,12 +27,12 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, Integer price, String imageUrl, Boolean mdApproved) {
+    public Product(Long id, String name, Integer price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.image = imageUrl;
-        this.mdApproved = mdApproved != null ? mdApproved : false;
+        this.mdApproved = name != null && !name.contains("카카오");
     }
 
     public Long getId() { return id; }

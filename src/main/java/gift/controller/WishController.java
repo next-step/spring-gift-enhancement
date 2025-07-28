@@ -1,7 +1,7 @@
 package gift.controller;
 
-import gift.DTO.WishDTO;
-import gift.DTO.WishRequestDTO;
+import gift.dto.WishDTO;
+import gift.dto.WishRequestDTO;
 import gift.annotation.LoginUser;
 import gift.model.User;
 import gift.model.Wish;

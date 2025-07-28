@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.DTO.LoginRequestDTO;
+import gift.dto.LoginRequestDTO;
 import gift.jwt.JwtTokenProvider;
 import gift.model.User;
 import gift.repository.UserRepository;

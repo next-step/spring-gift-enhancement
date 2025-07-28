@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.DTO.LoginRequestDTO;
+import gift.dto.LoginRequestDTO;
 import gift.model.User;
 import gift.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
